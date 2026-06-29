@@ -332,6 +332,9 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 
 <script>
 (function(){
+  if('scrollRestoration' in history){history.scrollRestoration='manual';}
+  window.scrollTo(0,0);
+  window.addEventListener('load',function(){window.scrollTo(0,0);});
   var t=document.getElementById('topbar');
   var mc=document.querySelector('.mobile-cta');
   var projet=document.getElementById('projet');
