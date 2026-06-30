@@ -133,14 +133,29 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .feature .eyebrow{margin-bottom:14px}
 .feature h2{color:#fff;margin:0;max-width:740px;font-size:clamp(2rem,4.4vw,3rem)}
 
-/* dark closing */
-.closing{color:#fff;padding:64px 0;margin-top:56px;background-image:linear-gradient(rgba(8,10,24,.88),rgba(8,10,24,.93)),url('expometro-img/new_project.jpg');background-size:cover;background-position:center}
-.closing h2{color:#fff}
-.closing p{color:rgba(255,255,255,.84)}
-.closing .pull{color:#fff;border-left-color:var(--accent)}
-.closing .signup{background:rgba(255,255,255,.05);border-color:var(--line-d)}
-.closing .signup-q{color:#fff}
-.closing .reassure{color:rgba(255,255,255,.6)}
+/* light closing */
+.closing{color:var(--ink);padding:64px 0;margin-top:56px;background:#fff}
+.closing h2{color:var(--ink)}
+.closing p{color:#3c4456}
+.closing .lead{color:var(--ink);font-weight:700}
+/* Florence image teaser (blurred) with centered eye anchor */
+.closing-cta{position:relative;overflow:hidden;margin:32px 0 28px;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:300px}
+.closing-cta::before{content:"";position:absolute;inset:0;background-image:url('expometro-img/new_project.jpg');background-size:cover;background-position:center;filter:blur(3px);transform:scale(1.06)}
+.closing-cta::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(8,10,24,.42),rgba(8,10,24,.6))}
+.reveal{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;text-decoration:none;cursor:pointer}
+.reveal-eye{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;transition:transform .2s ease,background .2s ease}
+.reveal:hover .reveal-eye{transform:scale(1.07);background:rgba(255,255,255,.24)}
+.reveal-eye i{font-size:30px;color:#fff}
+.reveal-cap{font-family:var(--sans);font-size:14px;letter-spacing:.02em;color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,0,0,.45)}
+/* email form below the image (on white) */
+.closing-form{scroll-margin-top:90px}
+.closing-form .signup-q{color:var(--ink)}
+.form-light .input{border:1px solid #d2d7e0;background:#fff;color:var(--ink)}
+.form-light .input::placeholder{color:#9aa1ad}
+.form-light .input:focus{border-color:var(--accent);background:#fff}
+.closing .reassure{color:var(--ink)}
+.closing .consent{color:#7a8294}
+.closing .consent a{color:#7a8294}
 .btn-final{font-size:15px;padding:17px 28px}
 
 /* author bio */
@@ -303,7 +318,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       </figure>
     </div>
 
-    <p class="signup-q">Tu veux savoir pourquoi tous ces artistes vivent l'expérience de leur vie ?</p>
+    <p class="signup-q">Tu veux vivre la même expérience ?</p>
     <form class="hero-form" onsubmit="return false">
       <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
       <button class="btn">Je veux savoir <i class="ti ti-arrow-right"></i></button>
@@ -316,23 +331,30 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   </article>
 </div>
 
-<!-- dark closing -->
+<!-- light closing -->
 <section class="closing" id="projet">
   <div class="wrap">
     <h2>Si tu lis encore ces quelques lignes…</h2>
     <p>… alors j’ai une bonne nouvelle pour toi.</p>
-    <p>Nous préparons le projet le plus ambitieux de notre histoire. Je ne peux pas encore tout dévoiler. Mais je peux déjà te dire une chose : il sera ouvert à tous les artistes. Quel que soit ton niveau, ton style ou ton parcours.</p>
-    <p style="color:#fff;font-weight:600">Les premiers inscrits recevront les informations avant tout le monde.</p>
-    <p>Alors laisse ton email et je t’envoie vite le lien du projet.</p>
-    <form class="hero-form" onsubmit="return false">
-      <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
-      <button class="btn">Je veux savoir <i class="ti ti-arrow-right"></i></button>
-    </form>
-    <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
-    </p>
-    <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#">Politique de confidentialité</a></p>
+    <p>Nous préparons un nouveau projet dans un lieu iconique avec des artistes du monde entier.</p>
+    <div class="closing-cta">
+      <a class="reveal" href="#closing-form" aria-label="Laisser mon email pour découvrir le lieu">
+        <span class="reveal-eye"><i class="ti ti-eye"></i></span>
+        <span class="reveal-cap">Le lieu reste secret… pour l’instant.</span>
+      </a>
+    </div>
+    <div class="closing-form" id="closing-form">
+      <p class="signup-q">Laisse ton email et je t’envoie le lien.</p>
+      <form class="hero-form form-light" onsubmit="return false">
+        <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
+        <button class="btn">Je veux savoir <i class="ti ti-arrow-right"></i></button>
+      </form>
+      <p class="reassure" style="font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
+        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
+      </p>
+      <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#">Politique de confidentialité</a></p>
+    </div>
   </div>
 </section>
 
