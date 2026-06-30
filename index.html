@@ -201,7 +201,27 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   .v-text{padding:24px}
   .voice.rev .v-media{order:0}
   .reassure{gap:4px 16px !important}
+  .modal-box{padding:28px 22px}
 }
+
+/* modals + confirmation */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(6,8,20,.72);backdrop-filter:blur(3px)}
+.modal.open{display:flex}
+.modal-box{position:relative;background:#fff;color:#1d2433;border-radius:14px;max-width:620px;width:100%;max-height:85vh;overflow-y:auto;padding:40px 38px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.modal-box h3{font-family:var(--sans);font-weight:700;font-size:1.5rem;color:#0e1431;margin:0 0 18px}
+.modal-box p{font-family:var(--sans);font-size:14.5px;line-height:1.65;color:#3c4456;margin:0 0 14px}
+.modal-box p strong{color:#0e1431}
+.modal-box a{color:var(--accent)}
+.modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:none;background:#eef0f4;color:#3c4456;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.modal-close:hover{background:#e2e5ec}
+/* confirmation */
+.confirm-box{text-align:center;max-width:520px}
+.confirm-icon{width:74px;height:74px;border-radius:50%;background:rgba(255,82,103,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.confirm-icon i{font-size:40px;color:var(--accent)}
+.confirm-box h3{font-size:1.9rem;margin-bottom:14px}
+.confirm-box .c-email{font-weight:700;color:#0e1431}
+.confirm-box .c-spam{font-size:13px;color:#7a8294;margin-top:18px}
+.confirm-box .c-resend{display:inline-block;margin-top:6px;font-family:var(--sans);font-size:14px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -249,7 +269,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
       <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
     </p>
-    <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#">Politique de confidentialité</a></p>
+    <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#" data-modal="privacy">Politique de confidentialité</a></p>
   </div>
 </section>
 
@@ -352,14 +372,55 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
         <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
         <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
       </p>
-      <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#">Politique de confidentialité</a></p>
+      <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#" data-modal="privacy">Politique de confidentialité</a></p>
     </div>
   </div>
 </section>
 
 <footer>TON ART DANS LA VILLE
-  <span class="foot-links"><a href="#">Politique de confidentialité</a> · <a href="#">Mentions légales</a></span>
+  <span class="foot-links"><a href="#" data-modal="privacy">Politique de confidentialité</a> · <a href="#" data-modal="legal">Mentions légales</a></span>
 </footer>
+
+<!-- Politique de confidentialité -->
+<div class="modal" id="privacy" role="dialog" aria-modal="true" aria-labelledby="privacy-t">
+  <div class="modal-box">
+    <button class="modal-close" data-close aria-label="Fermer">&times;</button>
+    <h3 id="privacy-t">Politique de confidentialité</h3>
+    <p><strong>Responsable du traitement.</strong> ExpoMetro collecte ton adresse email via ce formulaire.</p>
+    <p><strong>Pourquoi&nbsp;?</strong> Uniquement pour t’envoyer des informations sur notre projet et nos prochaines expositions. Pas de revente, pas de partage à des tiers à des fins commerciales.</p>
+    <p><strong>Base légale.</strong> Ton consentement, donné en laissant ton email. Tu peux le retirer à tout moment.</p>
+    <p><strong>Durée de conservation.</strong> Ton email est conservé tant que tu es inscrit, et supprimé sur simple demande ou à ta désinscription.</p>
+    <p><strong>Tes droits.</strong> Tu disposes d’un droit d’accès, de rectification, d’effacement, de limitation et d’opposition. Pour les exercer&nbsp;: <a href="mailto:hello@expometro.co">hello@expometro.co</a>.</p>
+    <p><strong>Désinscription.</strong> Chaque email contient un lien de désinscription en un clic.</p>
+    <p style="font-size:12px;color:#9aa1ad">Dernière mise à jour&nbsp;: 2026.</p>
+  </div>
+</div>
+
+<!-- Mentions légales -->
+<div class="modal" id="legal" role="dialog" aria-modal="true" aria-labelledby="legal-t">
+  <div class="modal-box">
+    <button class="modal-close" data-close aria-label="Fermer">&times;</button>
+    <h3 id="legal-t">Mentions légales</h3>
+    <p><strong>Éditeur du site.</strong> ExpoMetro — [Raison sociale], [forme juridique au capital de X €], immatriculée sous le n° [SIRET / RCS], dont le siège social est situé [adresse complète].</p>
+    <p><strong>Contact.</strong> <a href="mailto:hello@expometro.co">hello@expometro.co</a></p>
+    <p><strong>Directeur de la publication.</strong> [Nom du responsable].</p>
+    <p><strong>Hébergement.</strong> Ce site est hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA.</p>
+    <p><strong>Propriété intellectuelle.</strong> L’ensemble des contenus (textes, images, logos) est la propriété d’ExpoMetro, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+    <p style="font-size:12px;color:#9aa1ad">⚠️ Champs entre crochets à compléter avant mise en ligne définitive.</p>
+  </div>
+</div>
+
+<!-- Confirmation après inscription -->
+<div class="modal" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-t">
+  <div class="modal-box confirm-box">
+    <button class="modal-close" data-close aria-label="Fermer">&times;</button>
+    <div class="confirm-icon"><i class="ti ti-mail-check"></i></div>
+    <h3 id="confirm-t">Félicitations&nbsp;!</h3>
+    <p>Tu vas recevoir un email sur <span class="c-email">ton@email.com</span> de la part de <strong>hello@expometro.co</strong>.</p>
+    <p class="c-spam">Tu ne le vois pas&nbsp;? Pense à vérifier dans tes <strong>spams</strong>.</p>
+    <p>Une erreur dans ton email&nbsp;?<br><button class="c-resend" data-close>Renvoyer mon email</button></p>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -383,6 +444,46 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
     lb.addEventListener('click',function(e){e.stopPropagation();var o=lm.classList.toggle('open');lb.setAttribute('aria-expanded',o);});
     document.addEventListener('click',function(){lm.classList.remove('open');lb.setAttribute('aria-expanded',false);});
   }
+
+  /* ---------- Modals (privacy / legal / confirmation) ---------- */
+  function openModal(id){var m=document.getElementById(id);if(m)m.classList.add('open');}
+  function closeModal(m){m.classList.remove('open');}
+  document.querySelectorAll('[data-modal]').forEach(function(el){
+    el.addEventListener('click',function(e){e.preventDefault();openModal(el.getAttribute('data-modal'));});
+  });
+  document.querySelectorAll('.modal').forEach(function(m){
+    m.addEventListener('click',function(e){
+      if(e.target===m||e.target.hasAttribute('data-close')||e.target.closest('[data-close]'))closeModal(m);
+    });
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(closeModal);
+  });
+
+  /* ---------- Capture email + confirmation ---------- */
+  var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var confirmModal=document.getElementById('confirm');
+  document.querySelectorAll('form.hero-form').forEach(function(f){
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var input=f.querySelector('input[type=email]');
+      var email=(input.value||'').trim();
+      if(!EMAIL_RE.test(email)){input.focus();input.reportValidity&&input.reportValidity();return;}
+
+      /* TODO — brancher l'enregistrement de l'email ici (voir note Brevo).
+         Exemple :
+         fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}); */
+
+      confirmModal.querySelector('.c-email').textContent=email;
+      openModal('confirm');
+      f.reset();
+    });
+  });
+  /* "Renvoyer mon email" : ferme la confirmation et redonne le focus */
+  confirmModal.querySelector('.c-resend').addEventListener('click',function(){
+    var first=document.querySelector('form.hero-form input[type=email]');
+    if(first)setTimeout(function(){first.focus();},120);
+  });
 })();
 </script>
 
