@@ -386,7 +386,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   <div class="modal-box">
     <button class="modal-close" data-close aria-label="Fermer">&times;</button>
     <h3 id="privacy-t">Politique de confidentialité</h3>
-    <p><strong>Responsable du traitement.</strong> ExpoMetro collecte ton adresse email via ce formulaire.</p>
+    <p><strong>Responsable du traitement.</strong> VISIONART (SAS), éditeur d’ExpoMetro, 231 rue Saint-Honoré, 75001 Paris, collecte ton adresse email via ce formulaire.</p>
     <p><strong>Pourquoi&nbsp;?</strong> Uniquement pour t’envoyer des informations sur notre projet et nos prochaines expositions. Pas de revente, pas de partage à des tiers à des fins commerciales.</p>
     <p><strong>Base légale.</strong> Ton consentement, donné en laissant ton email. Tu peux le retirer à tout moment.</p>
     <p><strong>Durée de conservation.</strong> Ton email est conservé tant que tu es inscrit, et supprimé sur simple demande ou à ta désinscription.</p>
@@ -401,12 +401,11 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   <div class="modal-box">
     <button class="modal-close" data-close aria-label="Fermer">&times;</button>
     <h3 id="legal-t">Mentions légales</h3>
-    <p><strong>Éditeur du site.</strong> ExpoMetro — [Raison sociale], [forme juridique au capital de X €], immatriculée sous le n° [SIRET / RCS], dont le siège social est situé [adresse complète].</p>
+    <p><strong>Éditeur du site.</strong> ExpoMetro est un service édité par <strong>VISIONART</strong>, société par actions simplifiée (SAS) au capital de 1&nbsp;000&nbsp;€, immatriculée au RCS de Paris sous le n°&nbsp;897&nbsp;581&nbsp;682, dont le siège social est situé 231 rue Saint-Honoré, 75001 Paris. Code APE&nbsp;: 8230Z.</p>
     <p><strong>Contact.</strong> <a href="mailto:hello@expometro.co">hello@expometro.co</a></p>
-    <p><strong>Directeur de la publication.</strong> [Nom du responsable].</p>
+    <p><strong>Directeur de la publication.</strong> Rudolph Van Valkenburg, président.</p>
     <p><strong>Hébergement.</strong> Ce site est hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA.</p>
-    <p><strong>Propriété intellectuelle.</strong> L’ensemble des contenus (textes, images, logos) est la propriété d’ExpoMetro, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
-    <p style="font-size:12px;color:#9aa1ad">⚠️ Champs entre crochets à compléter avant mise en ligne définitive.</p>
+    <p><strong>Propriété intellectuelle.</strong> L’ensemble des contenus (textes, images, logos) est la propriété de VISIONART, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
   </div>
 </div>
 
@@ -460,25 +459,43 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
     if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(closeModal);
   });
 
-  /* ---------- Capture email + confirmation ---------- */
+  /* ---------- Capture email (Brevo) + confirmation ---------- */
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var confirmModal=document.getElementById('confirm');
+  var isPreview=(location.protocol==='file:');  /* aperçu local : pas d'API, on montre juste la popup */
+
+  function showConfirm(email){
+    confirmModal.querySelector('.c-email').textContent=email;
+    openModal('confirm');
+  }
+
   document.querySelectorAll('form.hero-form').forEach(function(f){
     f.addEventListener('submit',function(e){
       e.preventDefault();
       var input=f.querySelector('input[type=email]');
+      var btn=f.querySelector('button');
       var email=(input.value||'').trim();
       if(!EMAIL_RE.test(email)){input.focus();input.reportValidity&&input.reportValidity();return;}
 
-      /* TODO — brancher l'enregistrement de l'email ici (voir note Brevo).
-         Exemple :
-         fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}); */
+      if(isPreview){showConfirm(email);f.reset();return;}
 
-      confirmModal.querySelector('.c-email').textContent=email;
-      openModal('confirm');
-      f.reset();
+      var label=btn.innerHTML;btn.disabled=true;btn.innerHTML='…';
+      fetch('/api/subscribe',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email:email})
+      }).then(function(r){
+        if(!r.ok)throw new Error('subscribe failed');
+        showConfirm(email);
+        f.reset();
+      }).catch(function(){
+        alert('Oups, une erreur est survenue. Réessaie dans un instant.');
+      }).then(function(){
+        btn.disabled=false;btn.innerHTML=label;
+      });
     });
   });
+
   /* "Renvoyer mon email" : ferme la confirmation et redonne le focus */
   confirmModal.querySelector('.c-resend').addEventListener('click',function(){
     var first=document.querySelector('form.hero-form input[type=email]');
