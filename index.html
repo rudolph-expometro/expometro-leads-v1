@@ -475,7 +475,8 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   /* ---------- Capture email (Brevo) + confirmation ---------- */
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var confirmModal=document.getElementById('confirm');
-  var isPreview=(location.protocol==='file:');  /* aperçu local : pas d'API, on montre juste la popup */
+  var DEMO=true;  /* ⚠️ MODE DÉMO : la popup s'affiche sans enregistrer l'email. Passer à false pour activer Brevo. */
+  var isPreview=(location.protocol==='file:'||DEMO);  /* aperçu / démo : pas d'API, on montre juste la popup */
 
   function showConfirm(email){
     confirmModal.querySelector('.c-email').textContent=email;
