@@ -215,13 +215,23 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 .modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:none;background:#eef0f4;color:#3c4456;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
 .modal-close:hover{background:#e2e5ec}
 /* confirmation */
-.confirm-box{text-align:center;max-width:520px}
-.confirm-icon{width:74px;height:74px;border-radius:50%;background:rgba(255,82,103,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
-.confirm-icon i{font-size:40px;color:var(--accent)}
-.confirm-box h3{font-size:1.9rem;margin-bottom:14px}
+.modal-box.confirm-box{text-align:center;max-width:480px;padding:0;overflow:hidden}
+.confirm-hero{height:170px;background-image:url('expometro-img/monde.jpg');background-size:cover;background-position:center}
+.confirm-body{padding:0 32px 36px}
+.confirm-icon{width:74px;height:74px;border-radius:50%;background:var(--accent);box-shadow:0 10px 26px rgba(255,82,103,.45),0 0 0 5px #fff;display:flex;align-items:center;justify-content:center;margin:-37px auto 16px}
+.confirm-icon i{font-size:38px;color:#fff}
+.confirm-box h3{font-size:1.85rem;margin:0 0 12px}
 .confirm-box .c-email{font-weight:700;color:#0e1431}
 .confirm-box .c-spam{font-size:13px;color:#7a8294;margin-top:18px}
 .confirm-box .c-resend{display:inline-block;margin-top:6px;font-family:var(--sans);font-size:14px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.confirm-box .modal-close{background:rgba(0,0,0,.35);color:#fff}
+.confirm-box .modal-close:hover{background:rgba(0,0,0,.55)}
+/* effet pop joyeux */
+@keyframes popIn{0%{transform:scale(.82);opacity:0}55%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+@keyframes popIcon{0%{transform:scale(0) rotate(-25deg)}60%{transform:scale(1.18) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+.modal.open .modal-box{animation:popIn .36s cubic-bezier(.18,.89,.32,1.28) both}
+.modal.open .confirm-icon{animation:popIcon .52s .12s cubic-bezier(.2,.7,.2,1.35) both}
+@media(prefers-reduced-motion:reduce){.modal.open .modal-box,.modal.open .confirm-icon{animation:none}}
 </style>
 </head>
 <body>
@@ -359,7 +369,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
     <div class="closing-cta">
       <a class="reveal" href="#closing-form" aria-label="Laisser mon email pour découvrir le lieu">
         <span class="reveal-eye"><i class="ti ti-eye"></i></span>
-        <span class="reveal-cap">Le lieu reste secret… pour l’instant.</span>
+        <span class="reveal-cap">Laisse ton email et je te dévoile le lieu…</span>
       </a>
     </div>
     <div class="closing-form" id="closing-form">
@@ -413,11 +423,14 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 <div class="modal" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-t">
   <div class="modal-box confirm-box">
     <button class="modal-close" data-close aria-label="Fermer">&times;</button>
-    <div class="confirm-icon"><i class="ti ti-mail-check"></i></div>
-    <h3 id="confirm-t">Félicitations&nbsp;!</h3>
-    <p>Tu vas recevoir un email sur <span class="c-email">ton@email.com</span> de la part de <strong>hello@expometro.co</strong>.</p>
-    <p class="c-spam">Tu ne le vois pas&nbsp;? Pense à vérifier dans tes <strong>spams</strong>.</p>
-    <p>Une erreur dans ton email&nbsp;?<br><button class="c-resend" data-close>Renvoyer mon email</button></p>
+    <div class="confirm-hero"></div>
+    <div class="confirm-body">
+      <div class="confirm-icon"><i class="ti ti-mail-check"></i></div>
+      <h3 id="confirm-t">Félicitations&nbsp;! 🎉</h3>
+      <p>Tu vas recevoir un email sur <span class="c-email">ton@email.com</span> de la part de <strong>hello@expometro.co</strong>.</p>
+      <p class="c-spam">Tu ne le vois pas&nbsp;? Pense à vérifier dans tes <strong>spams</strong>.</p>
+      <p>Une erreur dans ton email&nbsp;?<br><button class="c-resend" data-close>Renvoyer mon email</button></p>
+    </div>
   </div>
 </div>
 
@@ -479,11 +492,12 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 
       if(isPreview){showConfirm(email);f.reset();return;}
 
+      var lang=(document.documentElement.lang||'fr').slice(0,2);
       var label=btn.innerHTML;btn.disabled=true;btn.innerHTML='…';
       fetch('/api/subscribe',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email:email})
+        body:JSON.stringify({email:email,lang:lang})
       }).then(function(r){
         if(!r.ok)throw new Error('subscribe failed');
         showConfirm(email);
