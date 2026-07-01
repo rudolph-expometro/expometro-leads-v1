@@ -69,7 +69,7 @@ h1.hero-title{font-family:var(--sans);font-weight:800;font-size:clamp(2.3rem,5vw
 .byline-link{color:var(--head);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .byline-link:hover{color:#fff}
 [id]{scroll-margin-top:90px}
-article{padding:64px 0 10px}
+article{padding:64px 0 48px}
 .kicker-line{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--accent);margin:34px 0 6px}
 h2{font-family:var(--sans);font-weight:700;font-size:clamp(1.7rem,3.4vw,2.3rem);line-height:1.14;letter-spacing:-.015em;color:var(--head);margin:48px 0 22px;max-width:600px}
 p{font-size:1.25rem;line-height:1.72;margin:0 0 1.3rem;color:var(--text)}
@@ -121,6 +121,11 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .v-text{padding:30px 34px;display:flex;flex-direction:column;justify-content:center}
 .vquote{font-family:var(--serif);font-weight:500;font-size:1.7rem;line-height:1.32;color:var(--head);margin:0 0 14px}
 .vname{font-family:var(--sans);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tvoices{margin:28px 0 8px}
+.claim{font-family:var(--sans);font-weight:600;font-size:1.12rem;line-height:1.4;color:var(--head);margin:34px 0 14px}
+.tquote{border-left:3px solid var(--accent);margin:0 0 22px;padding:2px 0 2px 22px}
+.tquote p{font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.42;color:var(--head);margin:0 0 7px}
+.tquote cite{font-family:var(--sans);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-style:normal}
 .vtag{display:inline-block;font-family:var(--sans);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,82,103,.2);color:#ffb0ba;padding:3px 9px;border-radius:20px;margin-bottom:8px}
 .more-voices{font-family:var(--serif);font-size:1.15rem;color:var(--muted);margin-top:22px}
 .more-voices b{font-family:var(--sans);font-weight:700;font-size:1.7rem;color:var(--accent);display:inline-block;margin-right:6px}
@@ -133,11 +138,18 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .feature .eyebrow{margin-bottom:14px}
 .feature h2{color:#fff;margin:0;max-width:740px;font-size:clamp(2rem,4.4vw,3rem)}
 
-/* light closing */
-.closing{color:var(--ink);padding:64px 0;margin-top:56px;background:#fff}
-.closing h2{color:var(--ink)}
-.closing p{color:#3c4456}
-.closing .lead{color:var(--ink);font-weight:700}
+/* founder block (white) */
+.founder{background:#fff;color:var(--ink);padding:48px 0}
+.founder h2{color:var(--ink);margin-top:0}
+.founder p{color:#3c4456}
+.founder .bio-img{border-radius:12px}
+.founder .sign b{color:var(--ink)}
+.founder .sign span{color:#6b7280}
+/* dark closing */
+.closing{color:#fff;padding:48px 0;background:var(--paper)}
+.closing h2{color:#fff}
+.closing p{color:rgba(255,255,255,.84)}
+.closing .lead{color:#fff;font-weight:700}
 /* Florence image teaser (blurred) with centered eye anchor */
 .closing-cta{position:relative;overflow:hidden;margin:32px 0 28px;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:300px}
 .closing-cta::before{content:"";position:absolute;inset:0;background-image:url('expometro-img/new_project.jpg');background-size:cover;background-position:center;filter:blur(3px);transform:scale(1.06)}
@@ -149,13 +161,10 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .reveal-cap{font-family:var(--sans);font-size:14px;letter-spacing:.02em;color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,0,0,.45)}
 /* email form below the image (on white) */
 .closing-form{scroll-margin-top:90px}
-.closing-form .signup-q{color:var(--ink)}
-.form-light .input{border:1px solid #d2d7e0;background:#fff;color:var(--ink)}
-.form-light .input::placeholder{color:#9aa1ad}
-.form-light .input:focus{border-color:var(--accent);background:#fff}
-.closing .reassure{color:var(--ink)}
-.closing .consent{color:#7a8294}
-.closing .consent a{color:#7a8294}
+.closing-form .signup-q{color:#fff}
+.closing .reassure{color:#fff}
+.closing .consent{color:rgba(255,255,255,.5)}
+.closing .consent a{color:rgba(255,255,255,.5)}
 .btn-final{font-size:15px;padding:17px 28px}
 
 /* author bio */
@@ -348,7 +357,28 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       </figure>
     </div>
 
-    <p class="signup-q">Tu veux vivre une expérience incroyable ?</p>
+    <p>Il y a quelque chose de magique qui se produit lorsque des centaines d’artistes venus des quatre coins du monde exposent ensemble.</p>
+    <div class="stanza">
+      <p>Des cultures différentes.</p>
+      <p>Des histoires différentes.</p>
+      <p>Des styles artistiques différents.</p>
+    </div>
+    <p>Tous unis dans des œuvres collectives monumentales.</p>
+    <p>Beaucoup d’artistes expriment le même sentiment.</p>
+    <div class="tvoices">
+      <p class="claim">Des artistes qui n’avaient jamais exposé auparavant.</p>
+      <blockquote class="tquote"><p>«&nbsp;C’est la première fois que je montre mon art. Merci de donner enfin une scène aux artistes.&nbsp;»</p><cite>Sheila-Dee Domingo 🇨🇦</cite></blockquote>
+
+      <p class="claim">Des artistes qui avaient perdu confiance.</p>
+      <blockquote class="tquote"><p>«&nbsp;Chaque exposition est une nouvelle rencontre avec le public et les artistes. Je suis reconnaissante de partager mon travail et mes émotions à travers mon art.&nbsp;»</p><cite>Lilie Perline 🇫🇷</cite></blockquote>
+
+      <p class="claim">Des artistes qui ont enfin osé rendre leur art visible.</p>
+      <blockquote class="tquote"><p>«&nbsp;C’est un grand honneur d’exposer dans une ville, c’est une expérience à la fois enrichissante et inspirante.&nbsp;»</p><cite>Jean-Pierre Mignan 🇫🇷</cite></blockquote>
+    </div>
+
+    <p>C’est cette énergie, cette fierté et cette émotion qui créent des moments mémorables et qui font réellement vivre ton art.</p>
+
+    <p class="signup-q">Toi aussi tu veux sortir l’art de chez toi ?</p>
     <form class="hero-form" onsubmit="return false">
       <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
       <button class="btn">Rejoindre le mouvement <i class="ti ti-arrow-right"></i></button>
@@ -361,7 +391,19 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   </article>
 </div>
 
-<!-- light closing -->
+<!-- founder (white) -->
+<section class="founder">
+  <div class="wrap">
+    <h2>Qui suis-je ?</h2>
+    <img class="bio-img" src="expometro-img/rudolph.png" alt="Rudolph, fondateur du mouvement"/>
+    <p>Je m’appelle Rudolph. En 2018, j’ai lancé ce mouvement mondial d’art public, baptisé <b>ExpoMetro</b>, pour rendre les artistes visibles là où la vie se passe vraiment : au cœur de la ville.</p>
+    <p>Depuis, plus de <b>6 000 artistes</b> venus de plus de <b>100 pays</b> ont exposé dans certains des lieux publics les plus iconiques du monde : Paris, Londres, Madrid, Rome…</p>
+    <p>Je crois profondément que les villes peuvent devenir les plus grandes galeries d’art du monde. Et ce n’est que le début.</p>
+    <p class="sign"><b>Rudolph van Valkenburg</b><span>Fondateur</span></p>
+  </div>
+</section>
+
+<!-- dark closing -->
 <section class="closing" id="projet">
   <div class="wrap">
     <h2>Si tu lis encore ces quelques lignes…</h2>
@@ -374,8 +416,8 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       </a>
     </div>
     <div class="closing-form" id="closing-form">
-      <p class="signup-q">Inscris-toi vite, les places sont limitées.</p>
-      <form class="hero-form form-light" onsubmit="return false">
+      <p class="signup-q">Inscris-toi vite et rejoins le mouvement.</p>
+      <form class="hero-form" onsubmit="return false">
         <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
         <button class="btn">Je veux savoir <i class="ti ti-arrow-right"></i></button>
       </form>
