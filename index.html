@@ -121,6 +121,10 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .v-text{padding:30px 34px;display:flex;flex-direction:column;justify-content:center}
 .vquote{font-family:var(--serif);font-weight:500;font-size:1.7rem;line-height:1.32;color:var(--head);margin:0 0 14px}
 .vname{font-family:var(--sans);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.vrole{font-family:var(--sans);font-size:12.5px;color:var(--muted);margin:5px 0 0;line-height:1.4}
+.mquote{font-family:var(--serif);font-size:1.25rem;line-height:1.6;color:var(--head);border-left:4px solid var(--accent);padding:4px 0 4px 26px;margin:36px 0}
+.mquote p{font-size:inherit;line-height:1.6;color:inherit;margin:0 0 2px;font-weight:500}
+.mquote cite{display:block;margin-top:18px;font-family:var(--sans);font-style:normal;font-size:14px;letter-spacing:.03em;color:var(--muted)}
 .tvoices{margin:28px 0 8px}
 .claim{font-family:var(--sans);font-weight:600;font-size:1.12rem;line-height:1.4;color:var(--head);margin:34px 0 14px}
 .tquote{display:flex;gap:16px;align-items:center;margin:0 0 24px}
@@ -180,6 +184,7 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .sign span{font-size:13px;color:var(--muted)}
 
 footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font-family:var(--sans);font-size:12px;letter-spacing:.06em;padding:30px}
+.foot-logo{width:84px;height:auto;display:block;margin:0 auto 16px}
 .foot-links{display:block;margin-top:12px;font-size:11px;letter-spacing:.04em}
 .foot-links a{color:rgba(255,255,255,.6);text-decoration:none;margin:0 5px}
 .foot-links a:hover{text-decoration:underline}
@@ -287,11 +292,11 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
     <p class="signup-q">Tu veux savoir comment rendre ton art visible à des milliers de personnes ?</p>
     <form class="hero-form" onsubmit="return false">
       <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
-      <button class="btn">Je veux savoir <i class="ti ti-arrow-right"></i></button>
+      <button class="btn">Oui je veux savoir <i class="ti ti-arrow-right"></i></button>
     </form>
     <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes</span>
     </p>
     <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#" data-modal="privacy">Politique de confidentialité</a></p>
   </div>
@@ -301,18 +306,20 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 <div class="wrap">
   <article>
 
-    <p>Depuis toujours, l’art est resté à l’intérieur.</p>
-    <div class="stanza">
+    <blockquote class="mquote">
+      <p>Depuis toujours, l’art est resté à l’intérieur.</p>
       <p>À l’intérieur des maisons.</p>
       <p>À l’intérieur des galeries.</p>
       <p>À l’intérieur des musées.</p>
       <p>Et aujourd’hui, dans nos téléphones.</p>
-    </div>
+      <cite>— Rudolph, Fondateur d’ExpoMetro</cite>
+    </blockquote>
 
     <h2>Et si on sortait ton art pour enfin l'exposer au grand jour ?</h2>
 
     <figure>
       <img class="fig-img" src="expometro-img/grandjour.jpg" alt="Un artiste devant son œuvre affichée en grand dans la ville"/>
+      <figcaption>Baldo Cicero, peintre &amp; illustrateur, Belgique — ExpoMetro Rome, janvier 2026</figcaption>
     </figure>
 
     <p>Imagine ton œuvre affichée sur une place publique.</p>
@@ -325,8 +332,8 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       <button class="btn">Oui je veux <i class="ti ti-arrow-right"></i></button>
     </form>
     <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes</span>
     </p>
 
 
@@ -336,6 +343,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
         <div class="v-text">
           <p class="vquote">«&nbsp;Un rêve devenu réalité&nbsp;»</p>
           <p class="vname">Heike Kolles — Austria 🇦🇹</p>
+          <p class="vrole">Artiste peintre — ExpoMetro Rome, janvier 2026</p>
         </div>
       </figure>
       <figure class="voice rev">
@@ -343,13 +351,15 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
         <div class="v-text">
           <p class="vquote">«&nbsp;C’est la première fois que je ressens ça&nbsp;»</p>
           <p class="vname">Poupée Caussin Belon — France 🇫🇷</p>
+          <p class="vrole">Artiste peintre — ExpoMetro Times Square, 2023</p>
         </div>
       </figure>
       <figure class="voice">
         <img class="v-media" src="expometro-img/temoignage3.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
         <div class="v-text">
-          <p class="vquote">«&nbsp;C’est incroyable&nbsp;»</p>
+          <p class="vquote">«&nbsp;Quelle fierté et quel bonheur&nbsp;»</p>
           <p class="vname">James William Moore — United States 🇺🇸</p>
+          <p class="vrole">Photographe — ExpoMetro Rome, janvier 2026</p>
         </div>
       </figure>
       <figure class="voice rev">
@@ -357,6 +367,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
         <div class="v-text">
           <p class="vquote">«&nbsp;Je ne pensais pas que cela pouvait m’arriver un jour&nbsp;»</p>
           <p class="vname">Mayte Prusiazul — Spain 🇪🇸</p>
+          <p class="vrole">Illustratrice — ExpoMetro Times Square, 2023</p>
         </div>
       </figure>
     </div>
@@ -388,7 +399,9 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       </blockquote>
     </div>
 
-    <p class="pull">C’est cette énergie, cette fierté et cette émotion qui créent des moments mémorables et qui font réellement vivre ton art.</p>
+    <blockquote class="mquote">
+      <p>C’est cette énergie, cette fierté et cette émotion qui créent des moments mémorables et qui font réellement vivre ton art.</p>
+    </blockquote>
 
     <p class="signup-q">Toi aussi tu veux vivre une expérience avec des artistes du monde entier ?</p>
     <form class="hero-form" onsubmit="return false">
@@ -396,8 +409,8 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       <button class="btn">Rejoindre le mouvement <i class="ti ti-arrow-right"></i></button>
     </form>
     <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes</span>
     </p>
 
   </article>
@@ -411,7 +424,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
     <p>Je m’appelle Rudolph. En 2018, j’ai lancé ce mouvement mondial d’art public, baptisé <b>ExpoMetro</b>, pour rendre les artistes visibles là où la vie se passe vraiment : au cœur de la ville.</p>
     <p>Depuis, plus de <b>6 000 artistes</b> venus de plus de <b>100 pays</b> ont exposé dans certains des lieux publics les plus iconiques du monde : Paris, Londres, Madrid, Rome…</p>
     <p>Je crois profondément que les villes peuvent devenir les plus grandes galeries d’art du monde. Et ce n’est que le début.</p>
-    <p class="sign"><b>Rudolph van Valkenburg</b><span>Fondateur</span></p>
+    <p class="sign"><b>Rudolph van Valkenburg</b><span>Fondateur d’ExpoMetro</span></p>
   </div>
 </section>
 
@@ -434,15 +447,17 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
         <button class="btn">Découvrir l’expo publique <i class="ti ti-arrow-right"></i></button>
       </form>
       <p class="reassure" style="font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Sans engagement</span>
-        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible à tous les artistes</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes</span>
       </p>
       <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#" data-modal="privacy">Politique de confidentialité</a></p>
     </div>
   </div>
 </section>
 
-<footer>TON ART DANS LA VILLE
+<footer>
+  <img class="foot-logo" src="expometro-img/logo-mark.png" alt="ExpoMetro"/>
+  TON ART DANS LA VILLE
   <span class="foot-links"><a href="#" data-modal="privacy">Politique de confidentialité</a> · <a href="#" data-modal="legal">Mentions légales</a></span>
 </footer>
 
