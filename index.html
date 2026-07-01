@@ -507,8 +507,23 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 <script>
 (function(){
   if('scrollRestoration' in history){history.scrollRestoration='manual';}
-  window.scrollTo(0,0);
-  window.addEventListener('load',function(){window.scrollTo(0,0);});
+  // Au chargement : effacer tout hash (#closing-form…) et forcer le haut de page
+  function toTop(){
+    if(location.hash){history.replaceState(null,'',location.pathname+location.search);}
+    window.scrollTo(0,0);
+  }
+  toTop();
+  window.addEventListener('load',toTop);
+  window.addEventListener('pageshow',toTop);
+  // L'œil défile vers le formulaire SANS écrire de hash dans l'URL
+  var revealLink=document.querySelector('.reveal');
+  if(revealLink){
+    revealLink.addEventListener('click',function(e){
+      e.preventDefault();
+      var target=document.getElementById('closing-form');
+      if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  }
   var t=document.getElementById('topbar');
   var mc=document.querySelector('.mobile-cta');
   var projet=document.getElementById('projet');
