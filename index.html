@@ -123,9 +123,11 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .vname{font-family:var(--sans);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .tvoices{margin:28px 0 8px}
 .claim{font-family:var(--sans);font-weight:600;font-size:1.12rem;line-height:1.4;color:var(--head);margin:34px 0 14px}
-.tquote{border-left:3px solid var(--accent);margin:0 0 22px;padding:2px 0 2px 22px}
-.tquote p{font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.42;color:var(--head);margin:0 0 7px}
-.tquote cite{font-family:var(--sans);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-style:normal}
+.tquote{display:flex;gap:16px;align-items:center;margin:0 0 24px}
+.tart{width:92px;height:92px;flex-shrink:0;border-radius:10px;object-fit:cover;display:block}
+.tbody{padding:2px 0}
+.tbody p{font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.4;color:var(--head);margin:0 0 7px}
+.tbody cite{font-family:var(--sans);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-style:normal}
 .vtag{display:inline-block;font-family:var(--sans);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,82,103,.2);color:#ffb0ba;padding:3px 9px;border-radius:20px;margin-bottom:8px}
 .more-voices{font-family:var(--serif);font-size:1.15rem;color:var(--muted);margin-top:22px}
 .more-voices b{font-family:var(--sans);font-weight:700;font-size:1.7rem;color:var(--accent);display:inline-block;margin-right:6px}
@@ -211,6 +213,8 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   .v-text{padding:24px}
   .voice.rev .v-media{order:0}
   .reassure{gap:4px 16px !important}
+  .tart{width:74px;height:74px}
+  .tbody p{font-size:1.05rem}
   .modal-box{padding:28px 22px}
 }
 
@@ -364,19 +368,27 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
       <p>Des styles artistiques différents.</p>
     </div>
     <p>Tous unis dans des œuvres collectives monumentales.</p>
-    <p>Beaucoup d’artistes expriment le même sentiment.</p>
     <div class="tvoices">
       <p class="claim">Des artistes qui n’avaient jamais exposé auparavant.</p>
-      <blockquote class="tquote"><p>«&nbsp;C’est la première fois que je montre mon art. Merci de donner enfin une scène aux artistes.&nbsp;»</p><cite>Sheila-Dee Domingo 🇨🇦</cite></blockquote>
+      <blockquote class="tquote">
+        <img class="tart" src="expometro-img/art-sheila.jpg" alt="Œuvre de Sheila-Dee Domingo"/>
+        <div class="tbody"><p>«&nbsp;C’est la première fois que je montre mon art. Merci de donner enfin une scène aux artistes.&nbsp;»</p><cite>Sheila-Dee Domingo 🇨🇦</cite></div>
+      </blockquote>
 
       <p class="claim">Des artistes qui avaient perdu confiance.</p>
-      <blockquote class="tquote"><p>«&nbsp;Chaque exposition est une nouvelle rencontre avec le public et les artistes. Je suis reconnaissante de partager mon travail et mes émotions à travers mon art.&nbsp;»</p><cite>Lilie Perline 🇫🇷</cite></blockquote>
+      <blockquote class="tquote">
+        <img class="tart" src="expometro-img/art-lilie.jpg" alt="Œuvre de Lilie Perline"/>
+        <div class="tbody"><p>«&nbsp;Chaque exposition est une nouvelle rencontre avec le public et les artistes. Je suis reconnaissante de partager mon travail et mes émotions à travers mon art.&nbsp;»</p><cite>Lilie Perline 🇫🇷</cite></div>
+      </blockquote>
 
       <p class="claim">Des artistes qui ont enfin osé rendre leur art visible.</p>
-      <blockquote class="tquote"><p>«&nbsp;C’est un grand honneur d’exposer dans une ville, c’est une expérience à la fois enrichissante et inspirante.&nbsp;»</p><cite>Jean-Pierre Mignan 🇫🇷</cite></blockquote>
+      <blockquote class="tquote">
+        <img class="tart" src="expometro-img/art-jeanpierre.jpg" alt="Œuvre de Jean-Pierre Mignan"/>
+        <div class="tbody"><p>«&nbsp;C’est un grand honneur d’exposer dans une ville, c’est une expérience à la fois enrichissante et inspirante.&nbsp;»</p><cite>Jean-Pierre Mignan 🇫🇷</cite></div>
+      </blockquote>
     </div>
 
-    <p>C’est cette énergie, cette fierté et cette émotion qui créent des moments mémorables et qui font réellement vivre ton art.</p>
+    <p class="pull">C’est cette énergie, cette fierté et cette émotion qui créent des moments mémorables et qui font réellement vivre ton art.</p>
 
     <p class="signup-q">Toi aussi tu veux sortir l’art de chez toi ?</p>
     <form class="hero-form" onsubmit="return false">
