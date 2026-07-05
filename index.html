@@ -54,6 +54,8 @@ input::placeholder{color:rgba(255,255,255,.65)}
 .hero-inner{max-width:1120px;margin:0 auto;width:100%;padding:0 40px}
 .hero-col{max-width:680px}
 h1.hero-title{font-family:var(--sans);font-weight:800;font-size:clamp(2.3rem,5vw,3.8rem);line-height:1.06;letter-spacing:-.01em;text-transform:uppercase;margin:0 0 18px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.rotword{display:inline-block;color:var(--accent);transition:opacity .45s ease}
+.rotword.out{opacity:0}
 .hero-pain{font-family:var(--serif);font-size:clamp(1.1rem,2.1vw,1.35rem);line-height:1.5;color:#fff;max-width:560px;margin:0 0 18px}
 .hero-promise{font-family:var(--sans);font-weight:600;font-size:clamp(1.05rem,2.2vw,1.4rem);line-height:1.35;color:#fff;max-width:560px;margin:0 0 16px;text-shadow:0 1px 12px rgba(0,0,0,.45)}
 .hero-lead{font-family:var(--serif);font-size:clamp(1.15rem,2.2vw,1.4rem);line-height:1.6;color:rgba(255,255,255,.86);max-width:560px;margin:0 0 14px}
@@ -279,8 +281,8 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   <div class="hero-body">
     <div class="hero-inner">
       <div class="hero-col">
-        <p class="eyebrow">Peintres, dessinateurs, illustrateurs</p>
-        <h1 class="hero-title">Tes œuvres méritent<br>d'être vues</h1>
+        <p class="eyebrow">Artistes et photographes indépendants</p>
+        <h1 class="hero-title">Tes <span class="rotword" id="rotWord">œuvres</span><br>méritent d'être vues</h1>
         <p class="hero-promise">Je te dévoile comment exposer ton art dans la ville.</p>
       </div>
     </div>
@@ -505,6 +507,21 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 </div>
 
 <script>
+// Mot rotatif dans le titre du hero : œuvres <-> photos
+(function(){
+  var el=document.getElementById('rotWord');
+  if(!el)return;
+  var words=['œuvres','photos'],i=0;
+  var HOLD=2600; // durée d'affichage de chaque mot (ms)
+  setInterval(function(){
+    el.classList.add('out');
+    setTimeout(function(){
+      i=(i+1)%words.length;
+      el.textContent=words[i];
+      el.classList.remove('out');
+    },450);
+  },HOLD);
+})();
 (function(){
   if('scrollRestoration' in history){history.scrollRestoration='manual';}
   // Au chargement : effacer tout hash (#closing-form…) et forcer le haut de page
