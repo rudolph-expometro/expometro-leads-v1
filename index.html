@@ -512,15 +512,16 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   var el=document.getElementById('rotWord');
   if(!el)return;
   var words=['œuvres','photos'],i=0;
-  var HOLD=2600; // durée d'affichage de chaque mot (ms)
-  setInterval(function(){
+  var HOLD=2400,FIRST=1000; // 1er changement rapide (avant que l'utilisateur scrolle), puis rythme calme
+  function swap(){
     el.classList.add('out');
     setTimeout(function(){
       i=(i+1)%words.length;
       el.textContent=words[i];
       el.classList.remove('out');
     },450);
-  },HOLD);
+  }
+  setTimeout(function(){swap();setInterval(swap,HOLD);},FIRST);
 })();
 (function(){
   if('scrollRestoration' in history){history.scrollRestoration='manual';}
