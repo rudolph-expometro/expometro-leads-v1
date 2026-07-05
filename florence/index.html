@@ -56,7 +56,7 @@ a{color:inherit}
 
 /* HERO */
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;overflow:hidden;
-  background:linear-gradient(180deg,rgba(7,10,23,.55) 0%,rgba(7,10,23,.15) 40%,rgba(7,10,23,.85) 100%),var(--night) url('img/tunnel-hero.jpg');
+  background:linear-gradient(180deg,rgba(7,10,23,.55) 0%,rgba(7,10,23,.15) 40%,rgba(7,10,23,.85) 100%),var(--night) url('/florence/img/tunnel-hero.jpg');
   background-size:cover;background-position:center}
 .hero-top{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px}
 .hero-inner{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px 8vh}
@@ -83,7 +83,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .intro-p:last-child{margin-bottom:0}
 .hl{color:var(--head)}
 .em{color:var(--accent)}
-.david{width:100px;height:100px;border-radius:50%;float:left;margin:5px 20px 6px 0;border:1px solid var(--line);background:var(--night) url('img/david.jpg') center/cover no-repeat}
+.david{width:100px;height:100px;border-radius:50%;float:left;margin:5px 20px 6px 0;border:1px solid var(--line);background:var(--night) url('/florence/img/david.jpg') center/cover no-repeat}
 .narr-title{font-family:var(--sans);font-weight:800;font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.16;letter-spacing:-.01em;color:var(--head);margin:52px 0 18px;max-width:660px}
 .narr-title .em{color:var(--accent)}
 .narr-q{font-family:var(--sans);font-weight:700;font-size:clamp(1.3rem,2.6vw,1.6rem);color:var(--head);margin:48px 0 0}
@@ -194,7 +194,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .tunnel-specs{width:100%;border-radius:14px;border:1px solid var(--line);margin:32px 0 0}
 
 /* ambition — full image band, CAPS */
-.megaband{position:relative;padding:140px 0;text-align:center;color:#fff;overflow:hidden;background:var(--night) url('img/tunnel-hero.jpg') center/cover no-repeat}
+.megaband{position:relative;padding:140px 0;text-align:center;color:#fff;overflow:hidden;background:var(--night) url('/florence/img/tunnel-hero.jpg') center/cover no-repeat}
 .megaband::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(7,10,23,.5),rgba(7,10,23,.72))}
 .megaband>*{position:relative;z-index:2}
 .mega-title{font-family:var(--sans);font-weight:800;font-size:clamp(2rem,6vw,4rem);line-height:1.03;letter-spacing:-.01em;text-transform:uppercase;color:#fff;margin:0 auto 20px;max-width:920px;text-shadow:0 3px 24px rgba(0,0,0,.55)}
@@ -251,7 +251,7 @@ footer a{color:rgba(255,255,255,.55)}
 <!-- TOPBAR -->
 <header class="topbar" id="topbar">
   <div class="topbar-inner">
-    <div class="tb-brand"><img src="img/logo-color.png" alt="ExpoMetro"/></div>
+    <div class="tb-brand"><img src="/florence/img/logo-color.png" alt="ExpoMetro"/></div>
     <div class="topbar-right">
       <div class="lang">
         <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> FR <i class="ti ti-chevron-down"></i></button>
@@ -271,7 +271,7 @@ footer a{color:rgba(255,255,255,.55)}
 <!-- HERO -->
 <section class="hero">
   <div class="hero-top">
-    <img class="hero-photo" src="img/tunnel-hero.jpg" alt="Le Tunnel de l'Art — Florence"/>
+    <img class="hero-photo" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art — Florence"/>
     <div class="hero-headline">
       <p class="hero-meta">
         <span><i class="ti ti-map-pin"></i>Florence, Italie</span>
@@ -295,7 +295,7 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Sortir les œuvres de ton <span class="hl">atelier</span>.<br>Sortir les œuvres de ton <span class="hl">salon</span>.<br>Sortir les œuvres de ton <span class="hl">téléphone</span>…</p>
 
     <h2 class="narr-title">Et si tu exposais ton œuvre dans la ville, aux côtés des plus grands chefs-d'œuvre de l'histoire de l'art ?</h2>
-    <img class="plan-img" loading="lazy" src="img/plan-florence.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/>
+    <img class="plan-img" loading="lazy" src="/florence/img/plan-florence.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/>
 
     <p class="intro-p">En 1504, Florence dressait le David de Michel-Ange aux yeux de tous. Cinq siècles plus tard, c'est <span class="hl">ton œuvre</span> qui sera visible au grand public.</p>
 
@@ -305,8 +305,8 @@ footer a{color:rgba(255,255,255,.55)}
 
     <h2 class="narr-title">Bienvenue dans le Tunnel de l'Art.</h2>
     <figure class="video-fig">
-      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="img/tunnel-hero.jpg">
-        <source src="img/art-tunnel.mp4" type="video/mp4"/>
+      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/florence/img/tunnel-hero.jpg">
+        <source src="/florence/img/art-tunnel.mp4" type="video/mp4"/>
       </video>
       <figcaption>Aperçu du tunnel à Florence où seront exposées les œuvres.</figcaption>
     </figure>
@@ -315,7 +315,7 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Les passants pourront littéralement plonger au milieu des œuvres d'artistes du monde entier et vivre une expérience artistique hors-norme.</p>
 
     <h2 class="narr-title"><span class="em">1,7 seconde</span> : c'est le temps moyen d'attention de ton œuvre sur Instagram.</h2>
-    <img class="narr-img" loading="lazy" src="img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
+    <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
     <p class="intro-p">Tu as travaillé pendant des heures, des jours ou des semaines… Tu postes ton œuvre sur Instagram et, le temps de cligner des yeux, elle est déjà remplacée par l'image suivante…</p>
 
     <p class="intro-p"><span class="em">27 secondes</span> : c'est le même œil, devant un tableau au Metropolitan Museum de New York.</p>
@@ -327,8 +327,8 @@ footer a{color:rgba(255,255,255,.55)}
 
     <h2 class="narr-title">À Barcelone, c'était déjà immense. Mais cette fois, nous voulons faire encore plus grand.</h2>
     <figure class="video-fig">
-      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="img/monde.jpg">
-        <source src="img/barcelone.mp4" type="video/mp4"/>
+      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/florence/img/monde.jpg">
+        <source src="/florence/img/barcelone.mp4" type="video/mp4"/>
       </video>
       <figcaption>ExpoMetro Barcelone — plus de 1 000 artistes réunis.</figcaption>
     </figure>
@@ -338,49 +338,49 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Avant de te montrer comment ça marche, voici ce que les artistes disent de leur expérience :</p>
 
     <div class="oneliners">
-      <div class="oneliner"><img loading="lazy" src="img/temoin-1.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: It's just amazing to replace advertising to art. -->«&nbsp;C'est incroyable de remplacer la publicité par de l'art.&nbsp;»</p></div>
-      <div class="oneliner"><img loading="lazy" src="img/temoin-2.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I love ExpoMetro because I can showcase my art, meet all the artists and see all the artworks. -->«&nbsp;J'adore ExpoMetro : je peux exposer mon art, rencontrer tous les artistes et voir toutes les œuvres.&nbsp;»</p></div>
-      <div class="oneliner"><img loading="lazy" src="img/temoin-3.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: This is a significant opportunity for all emerging artists. -->«&nbsp;C'est une vraie opportunité pour tous les artistes émergents.&nbsp;»</p></div>
-      <div class="oneliner"><img loading="lazy" src="img/temoin-4.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: This is a symbol of connection. -->«&nbsp;C'est un symbole de connexion.&nbsp;»</p></div>
-      <div class="oneliner"><img loading="lazy" src="img/temoin-5.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: People can enjoy different types of art like paintings, drawings and photography. -->«&nbsp;On peut y découvrir toutes les formes d'art : peinture, dessin, photographie.&nbsp;»</p></div>
-      <div class="oneliner"><img loading="lazy" src="img/temoin-6.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I meant to inspire, but in return I got really inspired by all these free souls and people who are fighting for art. -->«&nbsp;Je venais pour inspirer, et j'ai été inspirée en retour par tous ces esprits libres qui se battent pour l'art.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-1.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: It's just amazing to replace advertising to art. -->«&nbsp;C'est incroyable de remplacer la publicité par de l'art.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-2.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I love ExpoMetro because I can showcase my art, meet all the artists and see all the artworks. -->«&nbsp;J'adore ExpoMetro : je peux exposer mon art, rencontrer tous les artistes et voir toutes les œuvres.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-3.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: This is a significant opportunity for all emerging artists. -->«&nbsp;C'est une vraie opportunité pour tous les artistes émergents.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-4.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: This is a symbol of connection. -->«&nbsp;C'est un symbole de connexion.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-5.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: People can enjoy different types of art like paintings, drawings and photography. -->«&nbsp;On peut y découvrir toutes les formes d'art : peinture, dessin, photographie.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-6.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I meant to inspire, but in return I got really inspired by all these free souls and people who are fighting for art. -->«&nbsp;Je venais pour inspirer, et j'ai été inspirée en retour par tous ces esprits libres qui se battent pour l'art.&nbsp;»</p></div>
     </div>
 
     <figure class="video-fig" style="max-width:330px;margin:34px auto 0;text-align:center">
-      <video class="watch-video" controls playsinline preload="metadata" src="img/temoignages-barcelone.mp4#t=0.1"></video>
+      <video class="watch-video" controls playsinline preload="metadata" src="/florence/img/temoignages-barcelone.mp4#t=0.1"></video>
       <figcaption>Les artistes de Barcelone racontent leur expérience.</figcaption>
     </figure>
 
     <h2 class="narr-title">Tu habites à l'autre bout du monde et tu te demandes si c'est fait pour toi ?</h2>
-    <img class="worldmap" loading="lazy" src="img/world-map.png" alt="Des artistes du monde entier"/>
+    <img class="worldmap" loading="lazy" src="/florence/img/world-map.png" alt="Des artistes du monde entier"/>
     <p class="intro-p">La réponse est <span class="em">OUI</span>.</p>
     <p class="intro-p">ExpoMetro est ouvert à <b>TOUS</b> les artistes et photographes indépendants.</p>
     <p class="intro-p">Tu n'es pas obligé de venir sur place.</p>
-    <div class="cart"><img loading="lazy" src="img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Comme 90&nbsp;% des artistes, tu pourras suivre l'événement en direct sur <b>Instagram&nbsp;Live</b>.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Comme 90&nbsp;% des artistes, tu pourras suivre l'événement en direct sur <b>Instagram&nbsp;Live</b>.</p></div>
 
     <p class="intro-p" style="margin-top:38px">Tout a été conçu pour offrir aux artistes le maximum pour le minimum…</p>
 
     <p class="maxmin"><i class="ti ti-eye"></i>Visibilité maximum</p>
-    <div class="cart"><img loading="lazy" src="img/benefit-3.jpg" alt=""/><p>Ton œuvre est exposée dans un espace public iconique, visible par 160 000 passants.</p></div>
-    <div class="cart"><img loading="lazy" src="img/benefit-6.jpg" alt=""/><p>Ton œuvre est accessible en ligne à travers un QR code, avec un lien direct vers ton site et tes réseaux sociaux.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-3.jpg" alt=""/><p>Ton œuvre est exposée dans un espace public iconique, visible par 160 000 passants.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-6.jpg" alt=""/><p>Ton œuvre est accessible en ligne à travers un QR code, avec un lien direct vers ton site et tes réseaux sociaux.</p></div>
 
     <p class="maxmin"><i class="ti ti-speakerphone"></i>Promotion maximum</p>
-    <div class="cart"><img loading="lazy" src="img/benefit-11.jpg" alt=""/><p>Ton œuvre est mise en avant dans un grand reportage photos et vidéos professionnelles.</p></div>
-    <div class="cart"><img loading="lazy" src="img/benefit-7.jpg" alt=""/><p>Ton œuvre est mise en avant sur les réseaux sociaux.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt=""/><p>Ton œuvre est mise en avant dans un grand reportage photos et vidéos professionnelles.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><p>Ton œuvre est mise en avant sur les réseaux sociaux.</p></div>
 
     <p class="maxmin"><i class="ti ti-sparkles"></i>Expérience maximum</p>
-    <div class="cart"><img loading="lazy" src="img/monde.jpg" alt=""/><p>Tu participes à un événement hors-norme avec des artistes du monde entier.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/monde.jpg" alt=""/><p>Tu participes à un événement hors-norme avec des artistes du monde entier.</p></div>
 
     <p class="maxmin"><i class="ti ti-bolt"></i>Effort minimum</p>
-    <div class="cart"><img loading="lazy" src="img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/><p>Tu sélectionnes ta place, tu enregistres l'image de ton œuvre et c'est tout&nbsp;!</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/><p>Tu sélectionnes ta place, tu enregistres l'image de ton œuvre et c'est tout&nbsp;!</p></div>
     <div class="effort-line"><i class="ti ti-camera"></i><span>Une photo prise avec ton téléphone est parfaite.</span></div>
     <div class="effort-line"><i class="ti ti-crop"></i><span>Au moment de l'enregistrement, tu pourras rogner ton image au bon format.</span></div>
     <div style="margin:24px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a></div>
 
     <p class="maxmin"><i class="ti ti-coin"></i>Budget minimum</p>
-    <img class="tunnel-specs" loading="lazy" src="img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
+    <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
     <p class="intro-p" style="margin-top:26px">Tu as le choix entre plusieurs formats.</p>
-    <img loading="lazy" src="img/formats-scale.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/>
+    <img loading="lazy" src="/florence/img/formats-scale.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/>
   </div>
 </section>
 
@@ -436,7 +436,7 @@ footer a{color:rgba(255,255,255,.55)}
   <div class="narrow">
     <p class="kicker">Qui suis-je ?</p>
     <div class="founder-row">
-      <img loading="lazy" src="img/rudolph.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
+      <img loading="lazy" src="/florence/img/rudolph.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
       <div class="ft">
         <p>Je m'appelle Rudolph. En 2018, j'ai lancé ExpoMetro pour une raison simple : les espaces publics ne devraient pas être réservés aux grandes marques. Ils appartiennent aussi aux artistes.</p>
         <p>Notre mission ? <b>Sortir l'art de chez toi et de ton téléphone pour l'afficher au grand public.</b></p>
@@ -456,7 +456,7 @@ footer a{color:rgba(255,255,255,.55)}
 </section>
 
 <footer>
-  <img class="foot-logo" src="img/logo-mark.png" alt="ExpoMetro"/>
+  <img class="foot-logo" src="/florence/img/logo-mark.png" alt="ExpoMetro"/>
   EXPOMETRO · THE ART TUNNEL — FLORENCE, 28 NOV. 2026<br>
   <a href="/">Retour à l'accueil</a>
 </footer>
