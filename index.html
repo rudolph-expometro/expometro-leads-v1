@@ -54,8 +54,9 @@ input::placeholder{color:rgba(255,255,255,.65)}
 .hero-inner{max-width:1120px;margin:0 auto;width:100%;padding:0 40px}
 .hero-col{max-width:680px}
 h1.hero-title{font-family:var(--sans);font-weight:800;font-size:clamp(2.3rem,5vw,3.8rem);line-height:1.06;letter-spacing:-.01em;text-transform:uppercase;margin:0 0 18px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
-.rotword{display:inline-block;color:var(--accent);transition:opacity .45s ease}
-.rotword.out{opacity:0}
+.rotword{color:var(--accent)}
+.rotword::after{content:"";display:inline-block;width:3px;height:1.05em;background:var(--accent);margin-left:4px;vertical-align:-0.12em;animation:caret .85s step-end infinite}
+@keyframes caret{0%,100%{opacity:1}50%{opacity:0}}
 .hero-pain{font-family:var(--serif);font-size:clamp(1.1rem,2.1vw,1.35rem);line-height:1.5;color:#fff;max-width:560px;margin:0 0 18px}
 .hero-promise{font-family:var(--sans);font-weight:600;font-size:clamp(1.05rem,2.2vw,1.4rem);line-height:1.35;color:#fff;max-width:560px;margin:0 0 16px;text-shadow:0 1px 12px rgba(0,0,0,.45)}
 .hero-lead{font-family:var(--serif);font-size:clamp(1.15rem,2.2vw,1.4rem);line-height:1.6;color:rgba(255,255,255,.86);max-width:560px;margin:0 0 14px}
@@ -507,21 +508,26 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 </div>
 
 <script>
-// Mot rotatif dans le titre du hero : œuvres <-> photos
+// Effet machine à écrire dans le titre du hero : œuvres <-> photos
 (function(){
   var el=document.getElementById('rotWord');
   if(!el)return;
-  var words=['œuvres','photos'],i=0;
-  var HOLD=2400,FIRST=1000; // 1er changement rapide (avant que l'utilisateur scrolle), puis rythme calme
-  function swap(){
-    el.classList.add('out');
-    setTimeout(function(){
-      i=(i+1)%words.length;
-      el.textContent=words[i];
-      el.classList.remove('out');
-    },450);
+  var words=['œuvres','photos'];
+  var wi=0,ci=0,deleting=false;
+  var TYPE=95,ERASE=55,HOLD_FULL=1600,HOLD_EMPTY=350;
+  function tick(){
+    var w=words[wi];
+    if(!deleting){
+      ci++;el.textContent=w.slice(0,ci);
+      if(ci===w.length){deleting=true;return setTimeout(tick,HOLD_FULL);}
+      return setTimeout(tick,TYPE);
+    }
+    ci--;el.textContent=w.slice(0,ci);
+    if(ci===0){deleting=false;wi=(wi+1)%words.length;return setTimeout(tick,HOLD_EMPTY);}
+    return setTimeout(tick,ERASE);
   }
-  setTimeout(function(){swap();setInterval(swap,HOLD);},FIRST);
+  el.textContent='';
+  setTimeout(tick,700);
 })();
 (function(){
   if('scrollRestoration' in history){history.scrollRestoration='manual';}
