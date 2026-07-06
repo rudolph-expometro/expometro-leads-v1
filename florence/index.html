@@ -244,7 +244,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .founder-light .sign b{color:#141b31}
 .founder-light .sign span{color:#6b7280}
 @media(max-width:620px){.founder-light .founder-row img{width:100%;max-width:320px;margin:0 auto}}
-.vision-video{position:relative;line-height:0;background:#000}
+.vision-video{position:relative;line-height:0;margin:36px 0 0;border-radius:16px;overflow:hidden}
 .vision-video video{width:100%;height:auto;display:block}
 .vsound{position:absolute;right:16px;bottom:16px;z-index:3;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.45);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s}
 .vsound:hover{background:rgba(0,0,0,.7)}
@@ -348,8 +348,8 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Tu as travaillé pendant des heures, des jours ou des semaines… Tu postes ton œuvre sur Instagram et, le temps de cligner des yeux, elle est déjà remplacée par l'image suivante…</p>
 
     <p class="intro-p"><span class="em">27 secondes</span> : c'est le même œil, devant un tableau au Metropolitan Museum de New York.</p>
-    <p class="intro-p" style="color:var(--head);font-weight:700;margin:1.8rem 0 .3rem">À Florence ? C'est 800× plus.</p>
-    <p class="intro-p">Les œuvres sont exposées <span class="em">non-stop 30 secondes par minute</span>, pendant une journée.</p>
+    <p class="intro-p" style="color:var(--accent);font-weight:700;margin:1.8rem 0 .3rem">À Florence ? C'est 800× plus.</p>
+    <p class="intro-p">Les œuvres sont exposées <span class="hl">non-stop 30 secondes par minute</span>, pendant une journée.</p>
 
     <p class="intro-p">Tu veux exposer ton œuvre dans Le Tunnel de l'Art ?</p>
     <div style="margin:22px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
@@ -513,15 +513,13 @@ footer a{color:rgba(255,255,255,.55)}
         <p>J'ai hâte de découvrir ton œuvre et de te rencontrer lors de notre prochaine expo&nbsp;!</p>
       </div>
     </div>
+    <div class="vision-video">
+      <video class="vfull" muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/vision-poster.jpg">
+        <source src="/florence/img/expometro-vision.mp4" type="video/mp4"/>
+      </video>
+      <button class="vsound" id="vSound" aria-label="Activer le son"><i class="ti ti-volume-off"></i></button>
+    </div>
   </div>
-</section>
-
-<!-- VIDÉO VISION — PLEINE LARGEUR -->
-<section class="vision-video">
-  <video class="vfull" muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/vision-poster.jpg">
-    <source src="/florence/img/expometro-vision.mp4" type="video/mp4"/>
-  </video>
-  <button class="vsound" id="vSound" aria-label="Activer le son"><i class="ti ti-volume-off"></i></button>
 </section>
 
 <!-- FINAL : LA PLUS GRANDE EXPO DU MONDE -->
