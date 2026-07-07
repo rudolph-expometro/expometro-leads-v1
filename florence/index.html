@@ -117,7 +117,9 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
   .how-step .n{font-size:10px;letter-spacing:.06em;margin:9px 0 5px}
   .how-step h3{font-size:.78rem;line-height:1.25}
 }
-.plan-img{width:100%;border-radius:14px;border:1px solid var(--line);margin:8px 0 6px}
+.plan-wrap{position:relative;display:block;container-type:inline-size;margin:8px 0 6px}
+.plan-img{width:100%;border-radius:14px;border:1px solid var(--line);display:block}
+.plan-tag{position:absolute;left:38%;top:44%;transform:translateX(-50%);text-align:center;margin:0;font-weight:800;color:#fff;line-height:.98;font-size:4.8cqw;letter-spacing:-.5px;text-shadow:0 2px 14px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.6);pointer-events:none;text-transform:uppercase}
 .video-fig{margin:14px 0 0}
 .tunnel-video{width:100%;border-radius:14px;display:block;border:1px solid var(--line);background:var(--night)}
 .video-fig figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--muted);margin-top:10px}
@@ -354,7 +356,7 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Sortir les œuvres de ton <span class="hl">atelier</span>.<br>Sortir les œuvres de ton <span class="hl">salon</span>.<br>Sortir les œuvres de ton <span class="hl">téléphone</span>…</p>
 
     <h2 class="narr-title">Et si tu exposais ton œuvre dans la ville, aux côtés des plus grands chefs-d'œuvre de l'histoire de l'art ?</h2>
-    <img class="plan-img" loading="lazy" src="/florence/img/plan-florence2.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/>
+    <div class="plan-wrap"><img class="plan-img" loading="lazy" src="/florence/img/plan-florence4.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/><span class="plan-tag">Ton art<br>ici</span></div>
 
     <p class="intro-p">En 1504, Florence dressait le David de Michel-Ange aux yeux de tous. Cinq siècles plus tard, c'est <span class="hl">ton œuvre</span> qui sera visible au grand public.</p>
 
