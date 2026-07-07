@@ -5,7 +5,13 @@
 <!-- maj 2026-07-05 : CTA « et photographes » -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ExpoMetro Florence — Le Tunnel de l'Art 100 % immersif</title>
+<title>ExpoMetro Florence — Le Tunnel de l'Art</title>
+<meta name="description" content="Expose ton œuvre sur les murs et le plafond d'un tunnel de 25 mètres au cœur de Florence, avec des artistes du monde entier. Le 28 novembre 2026."/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="ExpoMetro Florence — Le Tunnel de l'Art"/>
+<meta property="og:description" content="Expose ton œuvre dans un tunnel de 25 mètres recouvert d'art, au cœur de Florence, avec des artistes du monde entier. Le 28 novembre 2026."/>
+<meta property="og:image" content="https://artinthe.city/florence/img/tunnel-hero.jpg"/>
+<meta property="og:url" content="https://artinthe.city/florence"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt_sz,wght@0,18..72,400;0,18..72,500;0,18..72,600;1,18..72,400&display=swap" rel="stylesheet"/>
@@ -58,7 +64,7 @@ a{color:inherit}
 
 /* HERO */
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;overflow:hidden;
-  background:linear-gradient(180deg,rgba(7,10,23,.55) 0%,rgba(7,10,23,.15) 40%,rgba(7,10,23,.85) 100%),var(--night) url('/florence/img/tunnel-hero.jpg');
+  background:linear-gradient(180deg,rgba(7,10,23,.5) 0%,rgba(7,10,23,.22) 30%,rgba(7,10,23,.72) 64%,rgba(7,10,23,.96) 100%),var(--night) url('/florence/img/tunnel-hero.jpg');
   background-size:cover;background-position:center}
 .hero-top{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px}
 .hero-inner{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px 8vh}
@@ -91,6 +97,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .narr-q{font-family:var(--sans);font-weight:700;font-size:clamp(1.3rem,2.6vw,1.6rem);color:var(--head);margin:48px 0 0}
 .maxmin{display:flex;align-items:center;gap:11px;font-family:var(--sans);font-weight:700;font-size:1.35rem;color:var(--head);margin:42px 0 12px}
 .maxmin i{color:var(--accent);font-size:24px;flex-shrink:0}
+.mtitle{font-family:var(--sans);font-weight:700;font-size:1.35rem;line-height:1.3;color:var(--head);margin:42px 0 12px;max-width:680px}
 .cart{display:flex;align-items:stretch;height:118px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 14px}
 .cart img{width:224px;height:100%;object-fit:cover;flex-shrink:0;background:#fff}
 .cart p{margin:0;font-family:var(--serif);font-size:1.2rem;line-height:1.4;color:#dfe4ee;padding:0 20px;align-self:center}
@@ -178,6 +185,22 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .cta-left{text-align:left;margin:30px 0 0}
 .cta-left .reassure{justify-content:flex-start}
 @media(max-width:560px){.mergebox{flex-direction:column;gap:18px;padding:22px;text-align:center}.mergebox .merge-txt{text-align:center}}
+.valuebox{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin:34px 0 0;text-align:left}
+.valuebox h3{font-family:var(--sans);font-weight:800;font-size:1.35rem;color:var(--head);margin:0 0 18px;letter-spacing:-.01em}
+.valuebox ul{list-style:none;margin:0;padding:0}
+.valuebox li{display:flex;gap:12px;align-items:flex-start;margin:0 0 13px;font-family:var(--serif);font-size:1.12rem;line-height:1.45;color:#dfe4ee}
+.valuebox li:last-child{margin-bottom:0}
+.valuebox li i{color:var(--accent);font-size:20px;flex-shrink:0;margin-top:2px}
+.valuebox li b{color:var(--head)}
+.anchor-price,.opp-cost{font-family:var(--serif);font-size:1.25rem;line-height:1.6;color:#c7cedb;text-align:left;margin:24px 0 0}
+@media(max-width:560px){.valuebox{padding:22px}.valuebox li{font-size:1.04rem}}
+.valuewrap{max-width:720px;margin:0 auto;text-align:left}
+.miniproc{margin:18px 0 0}
+.mp-step{display:flex;align-items:flex-start;gap:13px;margin:0 0 13px}
+.mp-step i{color:var(--accent);font-size:23px;flex-shrink:0;margin-top:1px}
+.mp-step span{font-family:var(--serif);font-size:1.18rem;line-height:1.45;color:#dfe4ee}
+.mp-step b{color:var(--head)}
+.imgcap{font-family:var(--serif);font-style:italic;font-size:.92rem;color:var(--muted);margin:8px 0 0;text-align:left}
 /* comparison image */
 .cmp-img{width:100%;height:130px;object-fit:cover;border-radius:10px;margin:0 0 18px}
 /* world map (PNG transparent, sur le fond nuit) */
@@ -234,7 +257,8 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 @media(max-width:640px){.tgrid{grid-template-columns:1fr}}
 
 /* founder */
-.founder-light{background:#000;color:#fff;padding:64px 0}
+.founder-light{background:#000;color:#fff;padding:44px 0 64px}
+.founder-light .narr-title{margin-top:0}
 .founder-light .kicker{color:var(--accent);text-align:center}
 .founder-light .founder-row{align-items:flex-start;gap:36px}
 .founder-light .founder-row img{width:280px;height:auto;object-fit:contain;border-radius:14px}
@@ -353,7 +377,7 @@ footer a{color:rgba(255,255,255,.55)}
     <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
     <p class="intro-p">Tu as travaillé pendant des heures, des jours ou des semaines… Tu postes ton œuvre sur Instagram et, le temps de cligner des yeux, elle est déjà remplacée par l'image suivante…</p>
 
-    <p class="intro-p" style="color:var(--accent);font-weight:700;margin:1.4rem 0 .3rem">À Florence ? Jusqu'à 12 700× plus de temps d'exposition.</p>
+    <p class="mtitle">À Florence&nbsp;? Jusqu'à <span class="em">12.700×</span> plus de temps d'exposition.</p>
     <p class="intro-p">Les œuvres sont exposées <span class="hl">non-stop 30 secondes par minute</span>, pendant une journée.</p>
 
     <p class="intro-p">Tu veux exposer ton œuvre dans Le Tunnel de l'Art ?</p>
@@ -368,7 +392,7 @@ footer a{color:rgba(255,255,255,.55)}
     </figure>
 
     <p class="intro-p" style="margin-top:26px">En juin 2025, nous avions lancé une première édition du Tunnel de l'Art dans le métro, au cœur de Barcelone. Cette expo monumentale avait réuni <span class="hl">plus de 1 000 artistes de 88 pays</span>.</p>
-    <p class="intro-p">Notre ambition ?<br>Créer <span class="em">la plus grande expo publique du monde</span> et ton œuvre peut en faire partie.</p>
+    <p class="mtitle">Notre ambition : Créer <span class="em">la plus grande expo publique du monde</span> et ton œuvre peut en faire partie.</p>
     <p class="intro-p">Avant de te montrer comment ça marche, voici ce que les artistes disent de leur expérience :</p>
 
     <div class="oneliners">
@@ -395,7 +419,8 @@ footer a{color:rgba(255,255,255,.55)}
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-amela.jpg" alt="Amela Muranovic Alagic"/><div><p class="q"><!-- EN: I'm already 10th time to participate on your exhibitions everywhere and every time is amazing! Thank you a lot expo metro to make me happy I love you a lot ! -->«&nbsp;C'est déjà ma 10ᵉ participation à vos expositions partout dans le monde, et à chaque fois c'est incroyable&nbsp;! Merci ExpoMetro de me rendre si heureuse, je vous adore&nbsp;!&nbsp;»</p><p class="who">Amela Muranovic Alagic <span>· France 🇫🇷</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-ranjit.jpg" alt="Ranjit Sihat"/><div><p class="q"><!-- EN: This is my 8th Expo Metro and every time is such a treat. I just love being part of this creative community… it's so inspiring and up-lifting. Love it! -->«&nbsp;C'est mon 8ᵉ ExpoMetro et c'est à chaque fois un vrai bonheur. J'adore faire partie de cette communauté créative… c'est tellement inspirant et stimulant. J'adore&nbsp;!&nbsp;»</p><p class="who">Ranjit Sihat <span>· Royaume-Uni 🇬🇧 · Hong Kong 2025</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-kukumaria.jpg" alt="Kukumaria"/><div><p class="q"><!-- EN: It's just fantastic and very inspiring what ExpoMetro is doing! These colourful beautiful art shows of hundreds of artists from different countries, the amazing locations, the warm atmosphere! In Milano it will already be my third participation!! -->«&nbsp;C'est tout simplement fantastique et très inspirant, ce que fait ExpoMetro&nbsp;! Ces expos magnifiques et colorées avec des centaines d'artistes de différents pays, ces lieux incroyables, cette atmosphère chaleureuse&nbsp;! À Milan, ce sera déjà ma troisième participation&nbsp;!!&nbsp;»</p><p class="who">Kukumaria <span>· Belgique 🇧🇪</span></p></div></div>
-    <p class="intro-p">Quand j'ai commencé l'aventure en décembre 2018, j'avais une idée simple&nbsp;: <b class="em">remplacer la pub par de l'art</b>.</p>
+    <p class="intro-p">Quand j'ai commencé l'aventure en décembre 2018, j'avais une idée simple&nbsp;:</p>
+    <p class="mtitle" style="margin-top:8px">Remplacer la pub par de <span class="em">l'art</span>.</p>
     <p class="intro-p">Depuis cette date, plus de <span class="hl">6 000 artistes de 100 nationalités</span> ont rejoint le mouvement dans les endroits les plus emblématiques des grandes villes.</p>
     <div class="expogrid">
       <figure><img loading="lazy" src="/florence/img/wt-newyork.jpg" alt="ExpoMetro New York 2023"/><figcaption>New York · 2023</figcaption></figure>
@@ -458,39 +483,34 @@ footer a{color:rgba(255,255,255,.55)}
 </section>
 
 <!-- FORMATS -->
-<section class="sec" style="padding-top:6px">
+<section class="sec" style="padding-top:6px;padding-bottom:40px">
   <div class="wrap" style="text-align:center">
     <div class="formats">
       <div class="fmt-card">
         <div class="fmt-visual"><div class="fmt-box" style="width:40px;height:40px"></div></div>
         <div class="fmt-name">Small</div><div class="fmt-tag">Mur</div>
         <div class="fmt-dim">25 × 25 cm</div>
-        <div class="fmt-price" data-price="49">49 €</div>
         <div class="fmt-slots">120 places</div>
       </div>
       <div class="fmt-card">
         <div class="fmt-visual"><div class="fmt-box" style="width:62px;height:62px"></div></div>
         <div class="fmt-name">Medium</div><div class="fmt-tag">Mur</div>
         <div class="fmt-dim">50 × 50 cm</div>
-        <div class="fmt-price" data-price="99">99 €</div>
         <div class="fmt-slots">30 places</div>
       </div>
       <div class="fmt-card">
         <div class="fmt-visual"><div class="fmt-box" style="width:78px;height:117px"></div></div>
         <div class="fmt-name">Large</div><div class="fmt-tag">Mur</div>
         <div class="fmt-dim">100 × 150 cm</div>
-        <div class="fmt-price" data-price="329">329 €</div>
         <div class="fmt-slots low">5 places seulement</div>
       </div>
       <div class="fmt-card">
         <div class="fmt-visual"><div class="fmt-box" style="width:120px;height:90px"></div></div>
         <div class="fmt-name">Extra Large</div><div class="fmt-tag">Plafond</div>
         <div class="fmt-dim">2,5 × 1,88 m</div>
-        <div class="fmt-price" data-price="599">599 €</div>
         <div class="fmt-slots low">4 places seulement</div>
       </div>
     </div>
-    <p style="text-align:center;color:var(--muted);font-size:12.5px;margin:18px 0 0">Prix affichés automatiquement dans ta devise locale.</p>
     <div class="mergebox">
       <div class="mergegrid">
         <span class="m"><i class="ti ti-arrows-maximize"></i></span>
@@ -500,7 +520,35 @@ footer a{color:rgba(255,255,255,.55)}
       </div>
       <p class="merge-txt">Tu peux aussi <b>fusionner plusieurs emplacements</b> pour créer une œuvre encore plus grande.</p>
     </div>
-    <div class="cta-left"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
+    <div class="valuewrap">
+    <div class="valuebox">
+      <h3>Ce que tu reçois concrètement</h3>
+      <ul>
+        <li><i class="ti ti-check"></i><span>Ton œuvre exposée dans un tunnel iconique au cœur de Florence, vue par <b>160 000 personnes</b></span></li>
+        <li><i class="ti ti-check"></i><span>Un <b>reportage photos et vidéos professionnelles</b> de ton œuvre exposée — pour ton site, tes réseaux, ton book</span></li>
+        <li><i class="ti ti-check"></i><span>Un <b>QR code</b> avec lien direct vers ton site et tes réseaux</span></li>
+        <li><i class="ti ti-check"></i><span>Une <b>mise en avant</b> sur nos réseaux</span></li>
+        <li><i class="ti ti-check"></i><span>L'accès au <b>meetup international</b> des artistes</span></li>
+        <li><i class="ti ti-check"></i><span>Un <b>réseau mondial</b> d'artistes et de contacts</span></li>
+        <li><i class="ti ti-check"></i><span>Une <b>expo internationale à ajouter à ta bio</b> d'artiste</span></li>
+        <li><i class="ti ti-check"></i><span>Un <b>certificat de participation personnalisé</b></span></li>
+      </ul>
+    </div>
+    <p class="mtitle">Rien qu'une séance photos et vidéos pro coûterait bien plus cher en studio.</p>
+    <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/expo-callao.jpg" alt="Œuvres d'artistes exposées sur le grand écran de Callao à Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, juin 2026</figcaption></figure>
+    <p class="intro-p">Ici, tu obtiens tout ça (l'expo, les contenus, le réseau, la ligne sur ta bio) <span class="em">pour le prix d'un dîner au restaurant.</span></p>
+    <p class="intro-p">Et pas besoin de préparation, de matériel, de montage d'un stand ou d'assurance comme pour une expo traditionnelle.</p>
+    <p class="intro-p" style="margin-bottom:4px">Ici, c'est ultra-simple :</p>
+    <div class="miniproc">
+      <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Tu réserves ta place en <b>2 minutes</b>.</span></div>
+      <div class="mp-step"><i class="ti ti-photo"></i><span>Tu enregistres l'image de ton œuvre.</span></div>
+      <div class="mp-step"><i class="ti ti-circle-check"></i><span>Et c'est tout&nbsp;! <b>Ton œuvre est prête à être exposée à Florence.</b></span></div>
+    </div>
+    <p class="mtitle">Et le vrai coût&nbsp;? C'est de <span class="em">ne pas le faire</span>.</p>
+    <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/artiste-heureux.jpg" alt="Des artistes heureux à ExpoMetro Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, juin 2026</figcaption></figure>
+    <p class="intro-p">Pendant que ton art reste dans ton téléphone, d'autres artistes prennent la place, sont vus, se connectent et ajoutent une expo internationale à leur parcours. <span class="hl">Cette édition n'aura lieu qu'une fois.</span></p>
+    <div class="cta-left" style="margin-top:30px"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
+    </div>
   </div>
 </section>
 
@@ -512,9 +560,10 @@ footer a{color:rgba(255,255,255,.55)}
       <img loading="lazy" src="/florence/img/rudolph.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
       <div class="ft">
         <p>Je m'appelle Rudolph.</p>
+        <p>Après un parcours classique dans les grandes maisons de ventes aux enchères et les galeries d'art prestigieuses, j'ai voulu casser les codes du marché de l'art, parce que j'en avais marre de voir autant d'artistes de talent perdus sur internet ou n'ayant aucun moyen d'exposer hors de chez eux.</p>
         <p>En 2018, j'ai lancé ExpoMetro pour une raison simple : les espaces publics ne devraient pas être réservés aux grandes marques. Ils appartiennent aussi aux artistes.</p>
         <p>Aujourd'hui, je suis en mission : <b>sortir l'art de ton téléphone pour l'afficher au grand public.</b></p>
-        <p>Ensemble, nous pouvons réellement rendre l'art accessible à tous dans la vraie vie, au cœur de la ville.</p>
+        <p>Après l'ère du «&nbsp;tout accessible en ligne&nbsp;», nous pouvons enfin rendre l'art accessible à tous dans la vraie vie, au cœur de la ville.</p>
         <p>Si toi aussi tu crois que l'art peut changer le monde, <b>je t'invite à rejoindre notre mouvement mondial d'art public.</b></p>
         <p>J'ai hâte de découvrir ton œuvre et de te rencontrer lors de notre prochaine expo&nbsp;!</p>
       </div>
