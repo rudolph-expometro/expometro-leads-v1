@@ -189,7 +189,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 @media(max-width:560px){.mergebox{flex-direction:column;gap:18px;padding:22px;text-align:center}.mergebox .merge-txt{text-align:center}}
 .valuebox{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin:34px 0 0;text-align:left}
 .valuebox h3{font-family:var(--sans);font-weight:800;font-size:1.35rem;color:var(--head);margin:0 0 18px;letter-spacing:-.01em}
-.valuebox .vb-img{width:100%;max-width:260px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;display:block;margin:0 0 20px;border:1px solid var(--line)}
+.valuebox .vb-img,.procbox .vb-img{width:100%;max-width:260px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;display:block;margin:0 0 20px;border:1px solid var(--line)}
 .valuebox ul{list-style:none;margin:0;padding:0}
 .valuebox li{display:flex;gap:12px;align-items:flex-start;margin:0 0 13px;font-family:var(--serif);font-size:1.12rem;line-height:1.45;color:#dfe4ee}
 .valuebox li:last-child{margin-bottom:0}
@@ -198,6 +198,11 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .anchor-price,.opp-cost{font-family:var(--serif);font-size:1.25rem;line-height:1.6;color:#c7cedb;text-align:left;margin:24px 0 0}
 @media(max-width:560px){.valuebox{padding:22px}.valuebox li{font-size:1.04rem}}
 .valuewrap{max-width:720px;margin:0 auto;text-align:left}
+.procbox{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin:22px 0 0;text-align:left}
+.procbox h3{font-family:var(--sans);font-weight:800;font-size:1.35rem;color:var(--head);margin:0 0 18px;letter-spacing:-.01em}
+.procbox .miniproc{margin:0}
+.procbox .mp-step:last-child{margin-bottom:0}
+@media(max-width:560px){.procbox{padding:22px}.procbox h3{font-size:1.2rem}}
 .miniproc{margin:18px 0 0}
 .mp-step{display:flex;align-items:flex-start;gap:13px;margin:0 0 13px}
 .mp-step i{color:var(--accent);font-size:23px;flex-shrink:0;margin-top:1px}
@@ -350,7 +355,7 @@ footer a{color:rgba(255,255,255,.55)}
 </section>
 
 <!-- INTRO / RÉCIT -->
-<section class="sec" style="padding-bottom:6px">
+<section class="sec" style="padding-top:68px;padding-bottom:6px">
   <div class="narrow">
     <p class="intro-p">Il est temps de sortir ton art.</p>
     <p class="intro-p">Sortir les œuvres de ton <span class="hl">atelier</span>.<br>Sortir les œuvres de ton <span class="hl">salon</span>.<br>Sortir les œuvres de ton <span class="hl">téléphone</span>…</p>
@@ -540,20 +545,24 @@ footer a{color:rgba(255,255,255,.55)}
       </ul>
       <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" style="margin-top:24px">Réserve ta place <i class="ti ti-arrow-right"></i></a>
     </div>
-    <p class="mtitle">Rien qu'une séance photos et vidéos pro coûterait bien plus cher en studio.</p>
+    <p class="mtitle">Et rien que le reportage photo et vidéo vaut déjà, à lui seul, <span class="em">plus que le prix de ta place</span>.</p>
     <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/expo-callao.jpg" alt="Œuvres d'artistes exposées sur le grand écran de Callao à Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, juin 2026</figcaption></figure>
     <p class="intro-p">Ici, tu obtiens tout ça : l'expo, les contenus, le réseau, la ligne sur ta bio, <span class="em">pour le prix d'un dîner au restaurant.</span></p>
     <p class="intro-p">Et pas besoin de préparation, de matériel, de montage d'un stand ou d'assurance comme pour une expo traditionnelle.</p>
-    <p class="intro-p" style="margin-bottom:4px">Ici, c'est ultra-simple :</p>
-    <div class="miniproc">
-      <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Tu réserves ta place en <b>2 minutes</b>.</span></div>
-      <div class="mp-step"><i class="ti ti-photo"></i><span>Tu enregistres l'image de ton œuvre.</span></div>
-      <div class="mp-step"><i class="ti ti-circle-check"></i><span>Et c'est tout&nbsp;! <b>Ton œuvre est prête à être exposée à Florence.</b></span></div>
+    <div class="procbox">
+      <h3>C'est ultra-simple</h3>
+      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
+      <div class="miniproc">
+        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Tu réserves ta place en <b>2 minutes</b>.</span></div>
+        <div class="mp-step"><i class="ti ti-photo"></i><span>Tu enregistres l'image de ton œuvre.</span></div>
+        <div class="mp-step"><i class="ti ti-circle-check"></i><span>Et c'est tout&nbsp;! <b>Ton œuvre est prête à être exposée à Florence.</b></span></div>
+      </div>
+      <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" style="margin-top:24px">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a>
     </div>
     <p class="mtitle">Ne manque pas cette <span class="em">opportunité unique</span> pour enfin rendre ton art visible au grand public.</p>
     <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/artiste-heureux.jpg" alt="Des artistes heureux à ExpoMetro Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, juin 2026</figcaption></figure>
     <p class="intro-p">Si tu hésites encore, ton art va rester enfermé dans ton téléphone, tu vas continuer à poster sur Instagram pour <span class="em">1,7 seconde</span> d'attention… pendant que d'autres artistes vont prendre leur place.</p>
-    <p class="intro-p">Ou tu peux, en 2 minutes, réserver ta place et enfin pouvoir exposer ton art aux yeux de tous. <span class="hl">Cette édition n'aura lieu qu'une fois.</span></p>
+    <p class="intro-p">Ou tu peux, en 2 minutes, réserver ta place et enfin pouvoir exposer ton art dans la ville. <span class="hl">Cette édition n'aura lieu qu'une fois.</span></p>
     <div class="cta-left" style="margin-top:30px"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
     </div>
   </div>
