@@ -234,21 +234,26 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 @media(max-width:640px){.tgrid{grid-template-columns:1fr}}
 
 /* founder */
-.founder-light{background:#fff;color:#141b31;padding:64px 0}
+.founder-light{background:#000;color:#fff;padding:64px 0}
 .founder-light .kicker{color:var(--accent);text-align:center}
 .founder-light .founder-row{align-items:flex-start;gap:36px}
 .founder-light .founder-row img{width:280px;height:auto;object-fit:contain;border-radius:14px}
 .founder-light .founder-row .ft{flex:1;min-width:250px}
-.founder-light .founder-row .ft p{color:#3c4456}
-.founder-light .founder-row .ft p b{color:#141b31}
-.founder-light .sign b{color:#141b31}
-.founder-light .sign span{color:#6b7280}
-@media(max-width:620px){.founder-light .founder-row img{width:100%;max-width:320px;margin:0 auto}}
+.founder-light .founder-row .ft p{color:#c7cedb}
+.founder-light .founder-row .ft p b{color:#fff}
+.founder-light .sign b{color:#fff}
+.founder-light .sign span{color:#9aa3b2}
+@media(max-width:620px){.founder-light .founder-row img{width:60%;max-width:230px;margin:0}}
 .vision-video{position:relative;line-height:0;margin:36px 0 0;border-radius:16px;overflow:hidden}
 .vision-video video{width:100%;height:auto;display:block}
 .vsound{position:absolute;right:16px;bottom:16px;z-index:3;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.45);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s}
 .vsound:hover{background:rgba(0,0,0,.7)}
 .vsound i{font-size:21px;line-height:1}
+.vwrap{position:relative;line-height:0;width:100%}
+.vplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;width:66px;height:66px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s}
+.vplay:hover{background:rgba(0,0,0,.8)}
+.vplay i{font-size:30px;line-height:1;margin-left:3px}
+.paused>.vplay{display:flex}
 .founder-row{display:flex;gap:30px;align-items:center;flex-wrap:wrap}
 .founder-row img{width:170px;height:170px;border-radius:16px;object-fit:cover;flex-shrink:0}
 .founder-row .ft p{font-family:var(--serif);font-size:1.2rem;line-height:1.55;color:#cdd4e0;margin:0 0 12px}
@@ -298,7 +303,7 @@ footer a{color:rgba(255,255,255,.55)}
 </header>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="top">
   <div class="hero-top">
     <img class="hero-photo" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art — Florence"/>
     <div class="hero-headline">
@@ -311,7 +316,7 @@ footer a{color:rgba(255,255,255,.55)}
     </div>
   </div>
   <div class="hero-inner">
-    <p class="hero-sub">Expose ton œuvre dans un tunnel de 25 mètres entièrement recouvert d'art — murs et plafond — au cœur de Florence.</p>
+    <p class="hero-sub">Expose ton œuvre sur les murs et le plafond d'un tunnel de 25 mètres, avec des artistes du monde entier, au cœur de Florence.</p>
     <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p>
   </div>
   <i class="ti ti-chevron-down scroll-hint"></i>
@@ -324,13 +329,13 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Sortir les œuvres de ton <span class="hl">atelier</span>.<br>Sortir les œuvres de ton <span class="hl">salon</span>.<br>Sortir les œuvres de ton <span class="hl">téléphone</span>…</p>
 
     <h2 class="narr-title">Et si tu exposais ton œuvre dans la ville, aux côtés des plus grands chefs-d'œuvre de l'histoire de l'art ?</h2>
-    <img class="plan-img" loading="lazy" src="/florence/img/plan-florence.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/>
+    <img class="plan-img" loading="lazy" src="/florence/img/plan-florence2.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/>
 
     <p class="intro-p">En 1504, Florence dressait le David de Michel-Ange aux yeux de tous. Cinq siècles plus tard, c'est <span class="hl">ton œuvre</span> qui sera visible au grand public.</p>
 
     <p class="intro-p">Entre la gare et la basilique Santa Maria Novella, il y a un tunnel emprunté chaque jour par <span class="hl">160 000 personnes</span>.</p>
     <p class="intro-p">Normalement, on y affiche des pubs sur des écrans LED.</p>
-    <p class="intro-p">Mais pendant une journée exceptionnelle, le tunnel sera <span class="hl">recouvert d'œuvres</span> — sur les murs et le plafond.</p>
+    <p class="intro-p">Mais pendant une journée exceptionnelle, le tunnel sera <span class="hl">recouvert d'œuvres</span> — sur les murs et le plafond. Et si tu le souhaites : <b class="em">ton œuvre en fera partie</b>.</p>
 
     <h2 class="narr-title">Bienvenue dans le Tunnel de l'Art.</h2>
     <figure class="video-fig">
@@ -341,14 +346,14 @@ footer a{color:rgba(255,255,255,.55)}
     </figure>
 
     <p class="intro-p" style="margin-top:26px">Le samedi <span class="hl">28 novembre</span>, ExpoMetro va transformer ce lieu en un <span class="hl">Tunnel de l'Art 100 % immersif</span> — avec des œuvres sur les murs et le plafond.</p>
-    <p class="intro-p">Les passants pourront littéralement plonger au milieu des œuvres d'artistes du monde entier et vivre une expérience artistique hors-norme.</p>
+    <p class="intro-p">Les passants pourront littéralement <span class="hl">plonger au milieu des œuvres</span> d'artistes du monde entier.</p>
+    <p class="intro-p"><i class="ti ti-music" style="color:var(--accent);margin-right:9px;vertical-align:-2px"></i>Les œuvres seront <span class="hl">accompagnées de musique</span>, pour une expérience visuelle et sonore hors norme.</p>
 
     <h2 class="narr-title"><span class="em">1,7 seconde</span> : c'est le temps moyen d'attention de ton œuvre sur Instagram.</h2>
     <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
     <p class="intro-p">Tu as travaillé pendant des heures, des jours ou des semaines… Tu postes ton œuvre sur Instagram et, le temps de cligner des yeux, elle est déjà remplacée par l'image suivante…</p>
 
-    <p class="intro-p"><span class="em">27 secondes</span> : c'est le même œil, devant un tableau au Metropolitan Museum de New York.</p>
-    <p class="intro-p" style="color:var(--accent);font-weight:700;margin:1.8rem 0 .3rem">À Florence ? C'est 800× plus.</p>
+    <p class="intro-p" style="color:var(--accent);font-weight:700;margin:1.4rem 0 .3rem">À Florence ? Jusqu'à 12 700× plus de temps d'exposition.</p>
     <p class="intro-p">Les œuvres sont exposées <span class="hl">non-stop 30 secondes par minute</span>, pendant une journée.</p>
 
     <p class="intro-p">Tu veux exposer ton œuvre dans Le Tunnel de l'Art ?</p>
@@ -384,7 +389,7 @@ footer a{color:rgba(255,255,255,.55)}
     <img class="exp-banner" loading="lazy" src="/florence/img/banner-newyork.jpg" alt="ExpoMetro à Times Square, New York"/>
     <p class="intro-p" style="margin-top:26px">C'est l'énergie incroyable que peut dégager l'art quand on réunit des artistes du monde entier.</p>
     <p class="intro-p">Il faut vraiment le vivre pour le croire.</p>
-    <p class="intro-p">L'art permet de se connecter aux autres et de faire des rencontres qui peuvent changer une vie.</p>
+    <p class="intro-p">Le concept d'Œuvres Collectives monumentales permet de se connecter aux autres artistes et de faire des rencontres qui peuvent changer la vie.</p>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-peter.jpg" alt="Peter Tirpák"/><div><p class="q"><!-- EN: Thank you for this remarkable celebration of art without borders, uniting talented artists and diverse cultures from across the globe. -->«&nbsp;Merci pour cette célébration remarquable de l'art sans frontières, qui réunit des artistes talentueux et des cultures du monde entier.&nbsp;»</p><p class="who">Peter Tirpák <span>· TIR.PAK.ART · Slovaquie 🇸🇰</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-dream.jpg" alt="DreamAnalysingArtist"/><div><p class="q"><!-- EN: Over the moon to be part of Expo Metro – love the idea of replacing advertising around the world with art! Participation is so simple and inclusive too. -->«&nbsp;Aux anges de faire partie d'ExpoMetro — j'adore l'idée de remplacer la publicité par de l'art partout dans le monde&nbsp;! Et participer est si simple et accessible.&nbsp;»</p><p class="who">DreamAnalysingArtist <span>· Royaume-Uni 🇬🇧</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-amela.jpg" alt="Amela Muranovic Alagic"/><div><p class="q"><!-- EN: I'm already 10th time to participate on your exhibitions everywhere and every time is amazing! Thank you a lot expo metro to make me happy I love you a lot ! -->«&nbsp;C'est déjà ma 10ᵉ participation à vos expositions partout dans le monde, et à chaque fois c'est incroyable&nbsp;! Merci ExpoMetro de me rendre si heureuse, je vous adore&nbsp;!&nbsp;»</p><p class="who">Amela Muranovic Alagic <span>· France 🇫🇷</span></p></div></div>
@@ -400,11 +405,11 @@ footer a{color:rgba(255,255,255,.55)}
       <figure><img loading="lazy" src="/florence/img/wt-madrid.jpg" alt="ExpoMetro Madrid 2026"/><figcaption>Madrid · 2026</figcaption></figure>
       <figure><img loading="lazy" src="/florence/img/wt-rome.jpg" alt="ExpoMetro Rome 2026"/><figcaption>Rome · 2026</figcaption></figure>
     </div>
-    <p class="intro-p" style="margin-top:24px"><b>Florence va être notre 19ᵉ édition.</b><br>Et ton œuvre peut en faire partie.</p>
+    <p class="intro-p" style="margin-top:24px"><b class="hl">Florence va être notre 19ᵉ édition.</b><br>Et ton œuvre peut en faire partie.</p>
     <div style="margin:22px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
 
     <h2 class="narr-title">Tu habites à l'autre bout du monde et tu te demandes si c'est fait pour toi ?</h2>
-    <img class="worldmap" loading="lazy" src="/florence/img/world-map.png" alt="Des artistes du monde entier"/>
+    <img class="worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="La créativité mondiale : la carte du monde composée d'œuvres d'artistes"/>
     <p class="intro-p">La réponse est <span class="em">OUI</span>.</p>
     <p class="intro-p">Chaque <span class="rotword" id="rotWord">artiste</span><br>mérite d'être vu et <b class="hl">représente son pays</b>.</p>
     <p class="intro-p">Par exemple, à Madrid en juin dernier, nous avions des artistes qui étaient seuls à représenter leur pays :</p>
@@ -437,6 +442,7 @@ footer a{color:rgba(255,255,255,.55)}
 
     <p class="maxmin"><i class="ti ti-sparkles"></i>Expérience maximum</p>
     <div class="cart"><img loading="lazy" src="/florence/img/monde.jpg" alt=""/><p>Tu participes à un événement hors-norme avec des artistes du monde entier.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><p>Tu deviens membre d'un mouvement mondial de l'art public qui a pour mission de rendre l'art accessible à tous dans la ville.</p></div>
 
     <p class="maxmin"><i class="ti ti-bolt"></i>Effort minimum</p>
     <div class="cart"><img loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/><p>Tu sélectionnes ta place, tu enregistres l'image de ton œuvre et c'est tout&nbsp;!</p></div>
@@ -501,7 +507,7 @@ footer a{color:rgba(255,255,255,.55)}
 <!-- QUI SUIS-JE (fond blanc, comme la LP leads) -->
 <section class="founder-light">
   <div class="narrow">
-    <p class="kicker">Qui suis-je ?</p>
+    <h2 class="narr-title">Qui suis-je ?</h2>
     <div class="founder-row">
       <img loading="lazy" src="/florence/img/rudolph.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
       <div class="ft">
@@ -533,7 +539,7 @@ footer a{color:rgba(255,255,255,.55)}
 <footer>
   <img class="foot-logo" src="/florence/img/logo-mark.png" alt="ExpoMetro"/>
   EXPOMETRO · THE ART TUNNEL — FLORENCE, 28 NOV. 2026<br>
-  <a href="/">Retour à l'accueil</a>
+  <a href="#top">Retour en haut ↑</a>
 </footer>
 
 <script>
@@ -631,6 +637,25 @@ footer a{color:rgba(255,255,255,.55)}
       });
     }
   }
+
+  // Bouton PLAY de secours si l'autoplay est bloqué (mode éco iOS, onglet en veille…)
+  function makePlay(v,box){
+    var btn=document.createElement('button');
+    btn.className='vplay';btn.type='button';btn.setAttribute('aria-label','Lire la vidéo');
+    btn.innerHTML='<i class="ti ti-player-play-filled"></i>';
+    box.appendChild(btn);
+    function upd(){box.classList.toggle('paused',v.paused);}
+    btn.addEventListener('click',function(e){e.stopPropagation();var p=v.play();if(p&&p.catch)p.catch(function(){});});
+    v.addEventListener('play',upd);v.addEventListener('pause',upd);v.addEventListener('playing',upd);
+    setTimeout(upd,900);setTimeout(upd,2600);
+  }
+  document.querySelectorAll('.tunnel-video').forEach(function(v){
+    var w=document.createElement('div');w.className='vwrap';
+    v.parentNode.insertBefore(w,v);w.appendChild(v);
+    makePlay(v,w);
+  });
+  var vfb=document.querySelector('.vfull');
+  if(vfb){makePlay(vfb, vfb.closest('.vision-video')||vfb.parentNode);}
 })();
 </script>
 
