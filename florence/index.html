@@ -364,7 +364,7 @@ footer a{color:rgba(255,255,255,.55)}
 
     <h2 class="narr-title">Bienvenue dans le Tunnel de l'Art.</h2>
     <figure class="video-fig">
-      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/florence/img/tunnel-hero.jpg">
+      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/tunnel-hero.jpg">
         <source src="/florence/img/art-tunnel.mp4" type="video/mp4"/>
       </video>
       <figcaption>Aperçu du tunnel à Florence où seront exposées les œuvres.</figcaption>
@@ -386,7 +386,7 @@ footer a{color:rgba(255,255,255,.55)}
 
     <h2 class="narr-title">À Barcelone, c'était déjà immense. Mais cette fois, nous voulons faire encore plus grand.</h2>
     <figure class="video-fig">
-      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/florence/img/monde.jpg">
+      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/monde2.jpg">
         <source src="/florence/img/barcelone.mp4" type="video/mp4"/>
       </video>
       <figcaption>ExpoMetro Barcelone — plus de 1 000 artistes réunis.</figcaption>
@@ -406,7 +406,7 @@ footer a{color:rgba(255,255,255,.55)}
     </div>
 
     <figure class="video-fig" style="max-width:330px;margin:34px auto 0;text-align:center">
-      <video class="watch-video" controls playsinline preload="metadata" src="/florence/img/temoignages-barcelone.mp4#t=0.1"></video>
+      <video class="watch-video" controls playsinline preload="metadata" src="/florence/img/temoignages-barcelone2.mp4#t=0.1"></video>
       <figcaption>Les artistes de Barcelone racontent leur expérience.</figcaption>
     </figure>
 
@@ -438,7 +438,7 @@ footer a{color:rgba(255,255,255,.55)}
     <img class="worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="La créativité mondiale : la carte du monde composée d'œuvres d'artistes"/>
     <p class="intro-p">La réponse est <span class="em">OUI</span>.</p>
     <p class="intro-p">Chaque <span class="rotword" id="rotWord">artiste</span><br>mérite d'être vu et <b class="hl">représente son pays</b>.</p>
-    <p class="intro-p">Par exemple, à Madrid en juin dernier, nous avions des artistes qui étaient seuls à représenter leur pays :</p>
+    <p class="intro-p">Par exemple, à Madrid en juin dernier, nous avions des artistes qui représentaient les pays suivants :</p>
     <div class="artrep-list">
       <div class="artrep"><img loading="lazy" src="/florence/img/art-giovanna.jpg" alt="Œuvre de Giovanna Gil Alves"/><div class="ar-t"><div class="n">Giovanna Gil Alves</div><div class="c">🇺🇾 Uruguay</div></div></div>
       <div class="artrep"><img loading="lazy" src="/florence/img/art-iris.jpg" alt="Œuvre d'Iris Leid"/><div class="ar-t"><div class="n">Iris Leid</div><div class="c">🇪🇪 Estonie</div></div></div>
@@ -449,6 +449,7 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="artrep"><img loading="lazy" src="/florence/img/art-saejoon.jpg" alt="Œuvre de Saejoon Oh"/><div class="ar-t"><div class="n">Saejoon Oh</div><div class="c">🇰🇷 Corée du Sud</div></div></div>
       <div class="artrep"><img loading="lazy" src="/florence/img/art-synne.jpg" alt="Œuvre de Synne Kristine"/><div class="ar-t"><div class="n">Synne Kristine</div><div class="c">🇳🇴 Norvège</div></div></div>
     </div>
+    <p class="intro-p" style="margin-top:16px">… et de <span class="hl">54 autres pays</span> de tous les continents.</p>
     <p class="intro-p" style="margin-top:30px">Lors des événements, certains artistes voyagent du Pérou, d'Argentine, des États-Unis, du Canada, du Japon, de Singapour, d'Australie, d'Europe…</p>
     <p class="intro-p">Mais, je te rassure&nbsp;: <b class="em">90&nbsp;% des artistes ne peuvent pas se déplacer.</b></p>
     <p class="intro-p">ExpoMetro est fait pour que tu puisses justement participer et suivre l'événement à distance.</p>
@@ -467,7 +468,7 @@ footer a{color:rgba(255,255,255,.55)}
     <div class="cart"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><p>Ton œuvre est mise en avant sur les réseaux sociaux.</p></div>
 
     <p class="maxmin"><i class="ti ti-sparkles"></i>Expérience maximum</p>
-    <div class="cart"><img loading="lazy" src="/florence/img/monde.jpg" alt=""/><p>Tu participes à un événement hors-norme avec des artistes du monde entier.</p></div>
+    <div class="cart"><img loading="lazy" src="/florence/img/monde2.jpg" alt=""/><p>Tu participes à un événement hors-norme avec des artistes du monde entier.</p></div>
     <div class="cart"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><p>Tu deviens membre d'un mouvement mondial qui a pour mission de rendre l'art accessible à tous dans la ville.</p></div>
 
     <p class="maxmin"><i class="ti ti-bolt"></i>Effort minimum</p>
@@ -664,10 +665,11 @@ footer a{color:rgba(255,255,255,.55)}
   document.querySelectorAll('.tunnel-video').forEach(function(v){
     v.muted=true;v.loop=true;v.setAttribute('playsinline','');
     var tryPlay=function(){var p=v.play();if(p&&p.catch)p.catch(function(){});};
-    tryPlay();
-    v.addEventListener('canplay',tryPlay);
     v.addEventListener('ended',function(){v.currentTime=0;tryPlay();});
-    document.addEventListener('visibilitychange',function(){if(!document.hidden)tryPlay();});
+    // ne se charge et ne joue que quand la vidéo entre à l'écran (libère la bande passante au chargement)
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?tryPlay():v.pause();});},{threshold:0.2}).observe(v);
+    }else{tryPlay();}
   });
 
   // Vidéo vision pleine largeur : lecture différée quand elle entre à l'écran
