@@ -74,6 +74,8 @@ a{color:inherit}
 .hero h1{font-weight:800;font-size:clamp(2.6rem,7vw,5.4rem);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 18px;text-shadow:0 3px 28px rgba(0,0,0,.55)}
 .hero h1 .em{color:var(--accent)}
 .hero-sub{font-family:var(--serif);font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.45;color:#fff;max-width:620px;margin:0 0 30px;text-shadow:0 1px 14px rgba(0,0,0,.5)}
+.hero-offer{margin:12px 0 0;display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:.95rem;font-weight:400;font-style:italic;color:#fff;line-height:1.35;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+.hero-offer i{color:var(--accent);font-size:18px;font-style:normal;flex-shrink:0}
 .hero-photo{display:none}
 .scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.6);font-size:22px;animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
@@ -195,6 +197,10 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .valuebox li:last-child{margin-bottom:0}
 .valuebox li i{color:var(--accent);font-size:20px;flex-shrink:0;margin-top:2px}
 .valuebox li b{color:var(--head)}
+.incl-list{list-style:none;margin:18px 0 0;padding:0}
+.incl-list li{display:flex;gap:12px;align-items:flex-start;margin:0 0 11px;font-family:var(--serif);font-size:1.1rem;line-height:1.45;color:#dfe4ee}
+.incl-list li i{color:var(--accent);font-size:20px;flex-shrink:0;margin-top:2px}
+.incl-list li b{color:var(--head)}
 .anchor-price,.opp-cost{font-family:var(--serif);font-size:1.25rem;line-height:1.6;color:#c7cedb;text-align:left;margin:24px 0 0}
 @media(max-width:560px){.valuebox{padding:22px}.valuebox li{font-size:1.04rem}}
 .valuewrap{max-width:720px;margin:0 auto;text-align:left}
@@ -254,6 +260,8 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .megaband>*{position:relative;z-index:2}
 .mega-title{font-family:var(--sans);font-weight:800;font-size:clamp(2rem,6vw,4rem);line-height:1.03;letter-spacing:-.01em;text-transform:uppercase;color:#fff;margin:0 auto 20px;max-width:920px;text-shadow:0 3px 24px rgba(0,0,0,.55)}
 .mega-title .em{color:var(--accent)}
+.scarcity{margin:0 auto 12px;max-width:600px;font-family:var(--sans);font-size:.98rem;font-weight:400;font-style:italic;letter-spacing:.01em;color:#fff;line-height:1.45}
+.scarcity i{color:var(--accent);font-style:normal;margin-right:7px}
 
 /* testimonials */
 .tgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:10px 0 0}
@@ -276,6 +284,28 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .founder-light .sign b{color:#fff}
 .founder-light .sign span{color:#9aa3b2}
 @media(max-width:620px){.founder-light .founder-row img{width:60%;max-width:230px;margin:0}}
+/* TICKER (façon Bloomberg) */
+.ticker{overflow:hidden;background:rgba(255,255,255,.04);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0 13px}
+.ticker-heading{margin:0;padding:0 26px 11px;text-align:left;font-family:var(--sans);font-weight:700;font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;color:var(--head);line-height:1.4}
+.ticker-track{display:inline-flex;align-items:center;white-space:nowrap;animation:tickerscroll 85s linear infinite;will-change:transform}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.tk{flex-shrink:0;font-family:var(--sans);font-size:.9rem;color:#c7cedb;padding:0 16px;position:relative}
+.tk::after{content:"◆";position:absolute;right:-4px;top:50%;transform:translateY(-50%);color:var(--accent);opacity:.55;font-size:.6em}
+@keyframes tickerscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+@media(max-width:560px){.tk{font-size:.84rem;padding:0 13px}.ticker-heading{font-size:.74rem;letter-spacing:.06em;padding:0 20px 10px}}
+/* FAQ */
+.faq{max-width:720px;margin:26px auto 0}
+.faq-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;padding:0 22px;transition:border-color .2s,background .2s}
+.faq-item.open{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.05)}
+.faq-q{width:100%;background:none;border:0;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 0;font-family:var(--sans);font-weight:700;font-size:1.08rem;color:var(--head);line-height:1.35}
+.faq-q .faq-ic{flex-shrink:0;color:var(--accent);font-size:22px;transition:transform .25s}
+.faq-item.open .faq-q .faq-ic{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-item.open .faq-a{max-height:680px}
+.faq-a-inner{padding:0 0 20px;font-family:var(--serif);font-size:1.08rem;line-height:1.55;color:#c7cedb}
+.faq-a-inner b{color:var(--head)}
+@media(max-width:560px){.faq-item{padding:0 18px}.faq-q{font-size:1rem}.faq-a-inner{font-size:1rem}}
 .vision-video{position:relative;line-height:0;margin:36px 0 0;border-radius:16px;overflow:hidden}
 .vision-video video{width:100%;height:auto;display:block}
 .vsound{position:absolute;right:16px;bottom:16px;z-index:3;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.45);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s}
@@ -304,7 +334,7 @@ footer a{color:rgba(255,255,255,.55)}
   .hero-top{padding:0}
   .hero-photo{display:block;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw)}
   .hero-headline{position:static;padding:22px 20px 0;background:none}
-  .hero-headline .hero-meta{display:none}
+  .hero-headline .hero-meta{display:flex;font-size:11px;gap:7px 14px;margin:0 0 12px}
   .hero h1{font-size:2.2rem;line-height:1.05;margin:0}
   .hero-inner{padding:14px 20px 0}
   .hero-sub{font-size:1.25rem;margin-bottom:22px}
@@ -342,17 +372,42 @@ footer a{color:rgba(255,255,255,.55)}
       <p class="hero-meta">
         <span><i class="ti ti-map-pin"></i>Florence, Italie</span>
         <span><i class="ti ti-calendar-event"></i>28 novembre 2026</span>
-        <span><i class="ti ti-sparkles"></i>Tunnel 100 % immersif</span>
+        <span><i class="ti ti-sparkles"></i>Tunnel immersif</span>
       </p>
-      <h1>Le Tunnel de l'Art<br><span class="em">100 % immersif</span></h1>
+      <h1>Le Tunnel de l'Art<br><span class="em">au cœur de Florence</span></h1>
     </div>
   </div>
   <div class="hero-inner">
-    <p class="hero-sub">Expose ton œuvre sur les murs et le plafond d'un tunnel de 25 mètres, avec des artistes du monde entier, au cœur de Florence.</p>
-    <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p>
+    <p class="hero-sub">Expose ton œuvre sur les murs et le plafond d'un tunnel de 25 mètres, visible par 160 000 passants, aux côtés d'artistes du monde entier.</p>
+    <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="hero-offer"><i class="ti ti-tag"></i>-10 % pour les 100 premières places</p><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p>
   </div>
   <i class="ti ti-chevron-down scroll-hint"></i>
 </section>
+
+<!-- MOUVEMENT : ticker -->
+<div class="ticker" aria-label="Ils font partie du mouvement">
+  <p class="ticker-heading">🌍 Le mouvement d'art public mondial · <span class="em">19ᵉ édition</span></p>
+  <div class="ticker-track">
+    <span class="tk">«&nbsp;C'est ma 10ᵉ participation, à chaque fois c'est incroyable&nbsp;!&nbsp;» — Amela 🇫🇷</span>
+    <span class="tk">«&nbsp;Aux anges de faire partie d'ExpoMetro&nbsp;!&nbsp;» — DreamAnalysing 🇬🇧</span>
+    <span class="tk">«&nbsp;Merci pour cette célébration de l'art sans frontières&nbsp;» — Peter 🇸🇰</span>
+    <span class="tk">«&nbsp;J'adore ton projet&nbsp;!&nbsp;» — Gabriela 🇲🇽</span>
+    <span class="tk">«&nbsp;Un vrai plaisir&nbsp;!&nbsp;» — Sara 🇪🇸</span>
+    <span class="tk">«&nbsp;Je suis partant&nbsp;!&nbsp;» — Uwe 🇩🇪</span>
+    <span class="tk">«&nbsp;Génial et inspirant&nbsp;!&nbsp;» — Kukumaria 🇧🇪</span>
+    <span class="tk">«&nbsp;J'ai lu et j'adhère&nbsp;» — Tom 🇮🇹</span>
+    <span class="tk">«&nbsp;Une belle façon de diffuser l'art&nbsp;» — Diego 🇦🇷</span>
+    <span class="tk" aria-hidden="true">«&nbsp;C'est ma 10ᵉ participation, à chaque fois c'est incroyable&nbsp;!&nbsp;» — Amela 🇫🇷</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Aux anges de faire partie d'ExpoMetro&nbsp;!&nbsp;» — DreamAnalysing 🇬🇧</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Merci pour cette célébration de l'art sans frontières&nbsp;» — Peter 🇸🇰</span>
+    <span class="tk" aria-hidden="true">«&nbsp;J'adore ton projet&nbsp;!&nbsp;» — Gabriela 🇲🇽</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Un vrai plaisir&nbsp;!&nbsp;» — Sara 🇪🇸</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Je suis partant&nbsp;!&nbsp;» — Uwe 🇩🇪</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Génial et inspirant&nbsp;!&nbsp;» — Kukumaria 🇧🇪</span>
+    <span class="tk" aria-hidden="true">«&nbsp;J'ai lu et j'adhère&nbsp;» — Tom 🇮🇹</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Une belle façon de diffuser l'art&nbsp;» — Diego 🇦🇷</span>
+  </div>
+</div>
 
 <!-- INTRO / RÉCIT -->
 <section class="sec" style="padding-top:68px;padding-bottom:6px">
@@ -377,9 +432,21 @@ footer a{color:rgba(255,255,255,.55)}
       <figcaption>Aperçu du tunnel à Florence où seront exposées les œuvres.</figcaption>
     </figure>
 
-    <p class="intro-p" style="margin-top:26px">Le samedi <span class="hl">28 novembre</span>, ExpoMetro va transformer ce lieu en un <span class="hl">Tunnel de l'Art 100 % immersif</span> — avec des œuvres sur les murs et le plafond.</p>
+    <p class="intro-p" style="margin-top:26px">Le samedi <span class="hl">28 novembre</span>, ExpoMetro va transformer ce lieu en un <span class="hl">Tunnel de l'Art immersif</span> — avec des œuvres sur les murs et le plafond.</p>
     <p class="intro-p">Les passants pourront littéralement <span class="hl">plonger au milieu des œuvres</span> d'artistes du monde entier.</p>
     <p class="intro-p"><i class="ti ti-music" style="color:var(--accent);margin-right:9px;vertical-align:-2px"></i>Les œuvres seront <span class="hl">accompagnées de musique</span>, pour une expérience visuelle et sonore hors norme.</p>
+
+    <h2 class="narr-title">Comment ça marche&nbsp;?</h2>
+    <div class="procbox">
+      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
+      <div class="miniproc">
+        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Tu réserves ta place en <b>2 minutes</b>.</span></div>
+        <div class="mp-step"><i class="ti ti-photo"></i><span>Tu enregistres l'image de ton œuvre.</span></div>
+        <div class="mp-step"><i class="ti ti-circle-check"></i><span>Et c'est tout&nbsp;! <b>Ton œuvre est prête à être exposée à Florence.</b></span></div>
+      </div>
+      <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" style="margin-top:24px">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a>
+    </div>
+    <p class="intro-p">Pas besoin de préparation, de matériel, de montage d'un stand ou d'assurance comme pour une expo traditionnelle.</p>
 
     <h2 class="narr-title"><span class="em">1,7 seconde</span> : c'est le temps moyen d'attention de ton œuvre sur Instagram.</h2>
     <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
@@ -388,7 +455,27 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="mtitle">À Florence&nbsp;? Jusqu'à <span class="em">12.700×</span> plus de temps d'exposition.</p>
     <p class="intro-p">Les œuvres sont exposées <span class="hl">non-stop 30 secondes par minute</span>, pendant une journée.</p>
 
-    <p class="intro-p">Tu veux exposer ton œuvre dans Le Tunnel de l'Art ?</p>
+    <h2 class="narr-title">Tu habites à l'autre bout du monde et tu te demandes si c'est fait pour toi ?</h2>
+    <img class="worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="La créativité mondiale : la carte du monde composée d'œuvres d'artistes"/>
+    <p class="intro-p">La réponse est <span class="em">OUI</span>.</p>
+    <p class="intro-p">Chaque <span class="rotword" id="rotWord">artiste</span><br>mérite d'être vu et <b class="hl">représente son pays</b>.</p>
+    <p class="intro-p">Par exemple, à Madrid en juin dernier, nous avions des artistes qui représentaient leurs pays :</p>
+    <div class="artrep-list">
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-giovanna.jpg" alt="Œuvre de Giovanna Gil Alves"/><div class="ar-t"><div class="n">Giovanna Gil Alves</div><div class="c">🇺🇾 Uruguay</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-iris.jpg" alt="Œuvre d'Iris Leid"/><div class="ar-t"><div class="n">Iris Leid</div><div class="c">🇪🇪 Estonie</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-ked.jpg" alt="Œuvre de KED"/><div class="ar-t"><div class="n">KED</div><div class="c">🇲🇶 Martinique</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-aom.jpg" alt="Œuvre d'AOM"/><div class="ar-t"><div class="n">AOM</div><div class="c">🇹🇭 Thaïlande</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-arsne.jpg" alt="Œuvre d'Arsnecopinata"/><div class="ar-t"><div class="n">Arsnecopinata</div><div class="c">🇦🇪 Émirats arabes unis</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-ryslein.jpg" alt="Œuvre de Ryslein Sakouni"/><div class="ar-t"><div class="n">Ryslein Sakouni</div><div class="c">🇲🇦 Maroc</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-saejoon.jpg" alt="Œuvre de Saejoon Oh"/><div class="ar-t"><div class="n">Saejoon Oh</div><div class="c">🇰🇷 Corée du Sud</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-synne.jpg" alt="Œuvre de Synne Kristine"/><div class="ar-t"><div class="n">Synne Kristine</div><div class="c">🇳🇴 Norvège</div></div></div>
+    </div>
+    <p class="intro-p" style="margin-top:16px">… et de <span class="hl">54 autres pays</span> de tous les continents.</p>
+    <p class="intro-p" style="margin-top:30px">Lors des événements, certains artistes voyagent du Pérou, d'Argentine, des États-Unis, du Canada, du Japon, de Singapour, d'Australie, d'Europe…</p>
+    <p class="intro-p">Mais, je te rassure&nbsp;: <b class="em">90&nbsp;% des artistes ne peuvent pas se déplacer.</b></p>
+    <p class="intro-p">ExpoMetro est fait pour que tu puisses justement participer et suivre l'événement à distance.</p>
+    <p class="maxmin"><i class="ti ti-world"></i>Où que tu sois dans le monde</p>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Tu peux suivre l'événement en direct sur <b>Instagram&nbsp;Live</b> et voir ton œuvre sur les photos et vidéos.</p></div>
     <div style="margin:22px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
 
     <h2 class="narr-title">À Barcelone, c'était déjà immense. Mais cette fois, nous voulons faire encore plus grand.</h2>
@@ -441,50 +528,26 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p" style="margin-top:24px"><b class="hl">Florence va être notre 19ᵉ édition.</b><br>Et ton œuvre peut en faire partie.</p>
     <div style="margin:22px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
 
-    <h2 class="narr-title">Tu habites à l'autre bout du monde et tu te demandes si c'est fait pour toi ?</h2>
-    <img class="worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="La créativité mondiale : la carte du monde composée d'œuvres d'artistes"/>
-    <p class="intro-p">La réponse est <span class="em">OUI</span>.</p>
-    <p class="intro-p">Chaque <span class="rotword" id="rotWord">artiste</span><br>mérite d'être vu et <b class="hl">représente son pays</b>.</p>
-    <p class="intro-p">Par exemple, à Madrid en juin dernier, nous avions des artistes qui représentaient leurs pays :</p>
-    <div class="artrep-list">
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-giovanna.jpg" alt="Œuvre de Giovanna Gil Alves"/><div class="ar-t"><div class="n">Giovanna Gil Alves</div><div class="c">🇺🇾 Uruguay</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-iris.jpg" alt="Œuvre d'Iris Leid"/><div class="ar-t"><div class="n">Iris Leid</div><div class="c">🇪🇪 Estonie</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-ked.jpg" alt="Œuvre de KED"/><div class="ar-t"><div class="n">KED</div><div class="c">🇲🇶 Martinique</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-aom.jpg" alt="Œuvre d'AOM"/><div class="ar-t"><div class="n">AOM</div><div class="c">🇹🇭 Thaïlande</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-arsne.jpg" alt="Œuvre d'Arsnecopinata"/><div class="ar-t"><div class="n">Arsnecopinata</div><div class="c">🇦🇪 Émirats arabes unis</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-ryslein.jpg" alt="Œuvre de Ryslein Sakouni"/><div class="ar-t"><div class="n">Ryslein Sakouni</div><div class="c">🇲🇦 Maroc</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-saejoon.jpg" alt="Œuvre de Saejoon Oh"/><div class="ar-t"><div class="n">Saejoon Oh</div><div class="c">🇰🇷 Corée du Sud</div></div></div>
-      <div class="artrep"><img loading="lazy" src="/florence/img/art-synne.jpg" alt="Œuvre de Synne Kristine"/><div class="ar-t"><div class="n">Synne Kristine</div><div class="c">🇳🇴 Norvège</div></div></div>
-    </div>
-    <p class="intro-p" style="margin-top:16px">… et de <span class="hl">54 autres pays</span> de tous les continents.</p>
-    <p class="intro-p" style="margin-top:30px">Lors des événements, certains artistes voyagent du Pérou, d'Argentine, des États-Unis, du Canada, du Japon, de Singapour, d'Australie, d'Europe…</p>
-    <p class="intro-p">Mais, je te rassure&nbsp;: <b class="em">90&nbsp;% des artistes ne peuvent pas se déplacer.</b></p>
-    <p class="intro-p">ExpoMetro est fait pour que tu puisses justement participer et suivre l'événement à distance.</p>
-    <p class="maxmin"><i class="ti ti-world"></i>Où que tu sois dans le monde</p>
-    <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Tu peux suivre l'événement en direct sur <b>Instagram&nbsp;Live</b> et voir ton œuvre sur les photos et vidéos.</p></div>
-    <div style="margin:22px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
+    <h2 class="narr-title">Ce que tu reçois concrètement.</h2>
 
-    <h2 class="narr-title">Notre objectif&nbsp;: offrir aux artistes le maximum pour le minimum.</h2>
-
-    <p class="maxmin"><i class="ti ti-eye"></i>Visibilité maximum</p>
+    <p class="maxmin"><i class="ti ti-eye"></i>Visibilité publique</p>
     <div class="cart"><img loading="lazy" src="/florence/img/benefit-3.jpg" alt=""/><p>Ton œuvre est exposée dans un espace public iconique, visible par 160 000 passants.</p></div>
     <div class="cart"><img loading="lazy" src="/florence/img/benefit-6.jpg" alt=""/><p>Ton œuvre est accessible en ligne à travers un QR code, avec un lien direct vers ton site et tes réseaux sociaux.</p></div>
 
-    <p class="maxmin"><i class="ti ti-speakerphone"></i>Promotion maximum</p>
+    <p class="maxmin"><i class="ti ti-speakerphone"></i>Promotion professionnelle</p>
     <div class="cart"><img loading="lazy" src="/florence/img/reportage-photos.jpg" alt="Reportage photos et vidéos professionnelles"/><p>Ton œuvre est mise en avant dans un grand reportage photos et vidéos professionnelles.</p></div>
     <div class="cart"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><p>Ton œuvre est mise en avant sur les réseaux sociaux.</p></div>
 
-    <p class="maxmin"><i class="ti ti-sparkles"></i>Expérience maximum</p>
+    <p class="maxmin"><i class="ti ti-sparkles"></i>Expérience mondiale</p>
     <div class="cart"><img loading="lazy" src="/florence/img/monde2.jpg" alt=""/><p>Tu participes à un événement hors-norme avec des artistes du monde entier.</p></div>
     <div class="cart"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><p>Tu deviens membre d'un mouvement mondial qui a pour mission de rendre l'art accessible à tous dans la ville.</p></div>
+    <ul class="incl-list">
+      <li><i class="ti ti-check"></i><span>L'accès au <b>meetup international</b> des artistes</span></li>
+      <li><i class="ti ti-check"></i><span>Une <b>expo internationale à ajouter à ta bio</b> d'artiste</span></li>
+      <li><i class="ti ti-check"></i><span>Un <b>certificat de participation personnalisé</b></span></li>
+    </ul>
 
-    <p class="maxmin"><i class="ti ti-bolt"></i>Effort minimum</p>
-    <div class="cart"><img loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/><p>Tu sélectionnes ta place, tu enregistres l'image de ton œuvre et c'est tout&nbsp;!</p></div>
-    <div class="effort-line"><i class="ti ti-camera"></i><span>Une photo prise avec ton téléphone est parfaite.</span></div>
-    <div class="effort-line"><i class="ti ti-crop"></i><span>Au moment de l'enregistrement, tu pourras rogner ton image au bon format.</span></div>
-    <div style="margin:24px 0 0"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a></div>
-
-    <p class="maxmin"><i class="ti ti-coin"></i>Budget minimum</p>
+    <p class="maxmin"><i class="ti ti-coin"></i>Un format pour chaque budget</p>
     <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
     <p class="intro-p" style="margin-top:26px">Tu as le choix entre plusieurs formats.</p>
     <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/>
@@ -530,38 +593,9 @@ footer a{color:rgba(255,255,255,.55)}
       <p class="merge-txt">Tu peux aussi <b>fusionner plusieurs emplacements</b> pour créer une œuvre encore plus grande.</p>
     </div>
     <div class="valuewrap">
-    <div class="valuebox">
-      <h3>Ce que tu reçois concrètement</h3>
-      <img class="vb-img" loading="lazy" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art à Florence"/>
-      <ul>
-        <li><i class="ti ti-check"></i><span>Ton œuvre exposée dans un tunnel iconique au cœur de Florence, vue par <b>160 000 personnes</b></span></li>
-        <li><i class="ti ti-check"></i><span>Un <b>reportage photos et vidéos professionnelles</b> de ton œuvre exposée — pour ton site, tes réseaux, ton book</span></li>
-        <li><i class="ti ti-check"></i><span>Un <b>QR code</b> avec lien direct vers ton site et tes réseaux</span></li>
-        <li><i class="ti ti-check"></i><span>Une <b>mise en avant</b> sur nos réseaux</span></li>
-        <li><i class="ti ti-check"></i><span>L'accès au <b>meetup international</b> des artistes</span></li>
-        <li><i class="ti ti-check"></i><span>Un <b>réseau mondial</b> d'artistes et de contacts</span></li>
-        <li><i class="ti ti-check"></i><span>Une <b>expo internationale à ajouter à ta bio</b> d'artiste</span></li>
-        <li><i class="ti ti-check"></i><span>Un <b>certificat de participation personnalisé</b></span></li>
-      </ul>
-      <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" style="margin-top:24px">Réserve ta place <i class="ti ti-arrow-right"></i></a>
-    </div>
-    <p class="mtitle">Et rien que le reportage photo et vidéo vaut déjà, à lui seul, <span class="em">plus que le prix de ta place</span>.</p>
-    <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/expo-callao.jpg" alt="Œuvres d'artistes exposées sur le grand écran de Callao à Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, juin 2026</figcaption></figure>
-    <p class="intro-p">Ici, tu obtiens tout ça : l'expo, les contenus, le réseau, la ligne sur ta bio, <span class="em">pour le prix d'un dîner au restaurant.</span></p>
-    <p class="intro-p">Et pas besoin de préparation, de matériel, de montage d'un stand ou d'assurance comme pour une expo traditionnelle.</p>
-    <div class="procbox">
-      <h3>C'est ultra-simple</h3>
-      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
-      <div class="miniproc">
-        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Tu réserves ta place en <b>2 minutes</b>.</span></div>
-        <div class="mp-step"><i class="ti ti-photo"></i><span>Tu enregistres l'image de ton œuvre.</span></div>
-        <div class="mp-step"><i class="ti ti-circle-check"></i><span>Et c'est tout&nbsp;! <b>Ton œuvre est prête à être exposée à Florence.</b></span></div>
-      </div>
-      <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" style="margin-top:24px">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a>
-    </div>
-    <p class="mtitle">Ne manque pas cette <span class="em">opportunité unique</span> pour enfin rendre ton art visible au grand public.</p>
+    <p class="mtitle">Si tu hésites encore…</p>
     <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/artiste-heureux.jpg" alt="Des artistes heureux à ExpoMetro Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, juin 2026</figcaption></figure>
-    <p class="intro-p">Si tu hésites encore, ton art va rester enfermé dans ton téléphone, tu vas continuer à poster sur Instagram pour <span class="em">1,7 seconde</span> d'attention… pendant que d'autres artistes vont prendre leur place.</p>
+    <p class="intro-p">Ton art va rester enfermé dans ton téléphone, tu vas continuer à poster sur Instagram pour <span class="em">1,7 seconde</span> d'attention… pendant que d'autres artistes vont prendre leur place.</p>
     <p class="intro-p">Ou tu peux, en 2 minutes, réserver ta place et enfin pouvoir exposer ton art dans la ville. <span class="hl">Cette édition n'aura lieu qu'une fois.</span></p>
     <div class="cta-left" style="margin-top:30px"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place en 2 minutes <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
     </div>
@@ -593,11 +627,45 @@ footer a{color:rgba(255,255,255,.55)}
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="sec faq-sec" style="padding-top:70px">
+  <div class="narrow">
+    <h2 class="narr-title" style="text-align:center;margin-top:0">Questions fréquentes</h2>
+    <div class="faq">
+      <div class="faq-item"><button class="faq-q" type="button">Qui peut participer&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Tous les artistes et photographes, débutants ou confirmés. Aucune sélection, aucun jury — si tu as une œuvre, tu as ta place.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Je n'ose pas exposer…<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">C'est justement pour toi. Pas de jury, pas de niveau requis, aucune pression. Des centaines d'artistes du monde entier ont franchi le pas — <b>ton œuvre mérite d'être vue</b>, pas de rester dans ton téléphone.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Je fais de la sculpture, de la céramique… est-ce possible&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui, ExpoMetro est ouvert à <b>tous les médiums et tous les styles</b> : peinture, photo, illustration, digital, sculpture, céramique… Tu exposes une <b>image</b> de ton œuvre, quelle qu'elle soit.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Y a-t-il des règles sur l'œuvre&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Une seule : comme il s'agit d'un <b>affichage public</b>, ton œuvre doit respecter les règles d'affichage public — pas d'alcool, de tabac, de violence, de contenu politique ni de nudité. À part ça, tu es libre.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Dois-je envoyer une œuvre physique&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Non. Tu <b>enregistres simplement une photo de ton œuvre</b> dans ton compte — c'est tout. On s'occupe de l'affichage dans le tunnel.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Quelle qualité d'image faut-il&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Une photo prise avec ton téléphone suffit. Au moment de l'enregistrement, tu pourras rogner ton image au bon format.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Puis-je réserver maintenant et enregistrer mon œuvre plus tard&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui. Tu réserves ta place en 2 minutes, et tu pourras ajouter l'image de ton œuvre plus tard, avant la clôture.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Combien ça coûte&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Plusieurs formats sont disponibles (S, M, L, XL) ; tu choisis ta place au moment de la réservation. Notre objectif est d'offrir une solution <b>abordable et accessible à tous les artistes</b>.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Où et quand exactement&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Dans le tunnel du <b>Sottopassaggio de la gare Santa Maria Novella</b>, au cœur de Florence <i>(Piazza dell'Unità Italiana, 25, 50123 Firenze)</i>, le <b>28 novembre 2026</b>.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Dois-je me déplacer à Florence&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">C'est évidemment super si tu peux venir — mais <b>tu n'es pas obligé</b> : 90 % des artistes ne se déplacent pas. Nous organiserons un <b>grand meetup</b> avec les artistes sur place, et rassure-toi : tu pourras suivre l'événement <b>en direct sur Instagram Live</b> et voir ton œuvre dans le tunnel.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Est-ce que je garde les droits sur mon œuvre&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui, tu gardes <b>100 % des droits</b> sur ton œuvre.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Est-ce vraiment sérieux&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui. Depuis <b>2018</b>, ExpoMetro a organisé des expositions dans les lieux les plus emblématiques des grandes villes : de Paris à New York, de Los Angeles à Rome, d'Amsterdam à Madrid et ailleurs, avec des artistes de plus de <b>100 pays</b>. Événements réels, reportages photo et vidéo à l'appui — tu peux en voir les résultats plus haut sur cette page.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Jusqu'à quand puis-je m'inscrire&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Les inscriptions sont ouvertes jusqu'à <b>fin octobre 2026</b>. Mais les prix augmentent au fur et à mesure que les places se remplissent. Réserve ta place maintenant et enregistre ton œuvre plus tard. Ne rate pas ta chance — <b>cette édition n'aura lieu qu'une fois</b>.</div></div></div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  document.querySelectorAll('.faq-q').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var item=btn.parentElement;
+      var isOpen=item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open')});
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+})();
+</script>
+
 <!-- FINAL : LA PLUS GRANDE EXPO DU MONDE -->
 <section class="megaband">
   <div class="narrow">
     <h2 class="mega-title">Rejoins la plus grande<br><span class="em">expo du monde.</span></h2>
-    <div class="cta-center"><a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
+    <div class="cta-center"><p class="scarcity"><i class="ti ti-tag"></i>-10 % pour les 100 premières places</p><a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters">Réserve ta place <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessible</span><span><i class="ti ti-check"></i>Abordable</span><span><i class="ti ti-check"></i>Ouvert à tous les artistes et photographes</span></p></div>
   </div>
 </section>
 
