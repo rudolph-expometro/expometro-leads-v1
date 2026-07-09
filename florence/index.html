@@ -292,15 +292,15 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .founder-light .sign span{color:#9aa3b2}
 @media(max-width:620px){.founder-light .founder-row img{width:60%;max-width:230px;margin:0}}
 /* TICKER (façon Bloomberg) */
-.ticker{overflow:hidden;background:rgba(255,255,255,.04);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0 13px}
-.ticker-heading{margin:0;padding:0 26px 11px;text-align:left;font-family:var(--sans);font-weight:700;font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;color:var(--head);line-height:1.4}
+.ticker{overflow:hidden;background:rgba(255,255,255,.04);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0 14px}
+.ticker-heading{margin:0;padding:0 26px 15px;text-align:left;font-family:var(--sans);font-weight:700;font-size:.92rem;letter-spacing:.08em;text-transform:uppercase;color:var(--head);line-height:1.4}
 .ticker-track{display:inline-flex;align-items:center;white-space:nowrap;animation:tickerscroll 85s linear infinite;will-change:transform}
 .ticker:hover .ticker-track{animation-play-state:paused}
 .tk{flex-shrink:0;font-family:var(--sans);font-size:.9rem;color:#c7cedb;padding:0 16px;position:relative}
 .tk::after{content:"◆";position:absolute;right:-4px;top:50%;transform:translateY(-50%);color:var(--accent);opacity:.55;font-size:.6em}
 @keyframes tickerscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.ticker-track{animation:none}}
-@media(max-width:560px){.tk{font-size:.84rem;padding:0 13px}.ticker-heading{font-size:.74rem;letter-spacing:.06em;padding:0 20px 10px}}
+@media(max-width:560px){.tk{font-size:.84rem;padding:0 13px}.ticker-heading{font-size:.84rem;letter-spacing:.06em;padding:0 20px 13px}}
 /* FAQ */
 .faq{max-width:720px;margin:26px auto 0}
 .faq-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;padding:0 22px;transition:border-color .2s,background .2s}
