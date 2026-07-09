@@ -296,11 +296,11 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .ticker-heading{margin:0;padding:0 26px 15px;text-align:left;font-family:var(--sans);font-weight:700;font-size:.92rem;letter-spacing:.08em;text-transform:uppercase;color:var(--head);line-height:1.4}
 .ticker-track{display:inline-flex;align-items:center;white-space:nowrap;animation:tickerscroll 65s linear infinite;will-change:transform}
 .ticker:hover .ticker-track{animation-play-state:paused}
-.tk{flex-shrink:0;font-family:var(--sans);font-size:.9rem;color:#c7cedb;padding:0 16px;position:relative}
-.tk::after{content:"◆";position:absolute;right:-4px;top:50%;transform:translateY(-50%);color:var(--accent);opacity:.55;font-size:.6em}
+.tk{flex-shrink:0;font-family:var(--sans);font-size:.9rem;color:#c7cedb;padding:0;position:relative}
+.tk::after{content:"…";color:#8b93a6;margin:0 9px}
 @keyframes tickerscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.ticker-track{animation:none}}
-@media(max-width:560px){.tk{font-size:.84rem;padding:0 13px}.ticker-heading{font-size:.84rem;letter-spacing:.06em;padding:0 20px 13px}}
+@media(max-width:560px){.tk{font-size:.84rem;padding:0}.ticker-heading{font-size:.84rem;letter-spacing:.06em;padding:0 20px 13px}}
 /* FAQ */
 .faq{max-width:720px;margin:26px auto 0}
 .faq-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;padding:0 22px;transition:border-color .2s,background .2s}
@@ -395,24 +395,24 @@ footer a{color:rgba(255,255,255,.55)}
 <div class="ticker" aria-label="Ils font partie du mouvement">
   <p class="ticker-heading">🌍 Le mouvement mondial d'art public</p>
   <div class="ticker-track">
-    <span class="tk">«&nbsp;C'est ma 10ᵉ participation, à chaque fois c'est incroyable&nbsp;!&nbsp;» — Amela 🇫🇷</span>
-    <span class="tk">«&nbsp;Aux anges de faire partie d'ExpoMetro&nbsp;!&nbsp;» — DreamAnalysing 🇬🇧</span>
-    <span class="tk">«&nbsp;Merci pour cette célébration de l'art sans frontières&nbsp;» — Peter 🇸🇰</span>
-    <span class="tk">«&nbsp;J'adore ton projet&nbsp;!&nbsp;» — Gabriela 🇲🇽</span>
-    <span class="tk">«&nbsp;Un vrai plaisir&nbsp;!&nbsp;» — Sara 🇪🇸</span>
-    <span class="tk">«&nbsp;Je suis partant&nbsp;!&nbsp;» — Uwe 🇩🇪</span>
-    <span class="tk">«&nbsp;Génial et inspirant&nbsp;!&nbsp;» — Kukumaria 🇧🇪</span>
-    <span class="tk">«&nbsp;J'ai lu et j'adhère&nbsp;» — Tom 🇮🇹</span>
-    <span class="tk">«&nbsp;Une belle façon de diffuser l'art&nbsp;» — Diego 🇦🇷</span>
-    <span class="tk" aria-hidden="true">«&nbsp;C'est ma 10ᵉ participation, à chaque fois c'est incroyable&nbsp;!&nbsp;» — Amela 🇫🇷</span>
-    <span class="tk" aria-hidden="true">«&nbsp;Aux anges de faire partie d'ExpoMetro&nbsp;!&nbsp;» — DreamAnalysing 🇬🇧</span>
-    <span class="tk" aria-hidden="true">«&nbsp;Merci pour cette célébration de l'art sans frontières&nbsp;» — Peter 🇸🇰</span>
-    <span class="tk" aria-hidden="true">«&nbsp;J'adore ton projet&nbsp;!&nbsp;» — Gabriela 🇲🇽</span>
-    <span class="tk" aria-hidden="true">«&nbsp;Un vrai plaisir&nbsp;!&nbsp;» — Sara 🇪🇸</span>
-    <span class="tk" aria-hidden="true">«&nbsp;Je suis partant&nbsp;!&nbsp;» — Uwe 🇩🇪</span>
-    <span class="tk" aria-hidden="true">«&nbsp;Génial et inspirant&nbsp;!&nbsp;» — Kukumaria 🇧🇪</span>
-    <span class="tk" aria-hidden="true">«&nbsp;J'ai lu et j'adhère&nbsp;» — Tom 🇮🇹</span>
-    <span class="tk" aria-hidden="true">«&nbsp;Une belle façon de diffuser l'art&nbsp;» — Diego 🇦🇷</span>
+    <span class="tk">«&nbsp;C'est déjà ma 10ᵉ participation&nbsp;!&nbsp;» — Amela 🇫🇷</span>
+    <span class="tk">«&nbsp;J'adore remplacer la publicité par de l'art&nbsp;!&nbsp;» — DreamAnalysing 🇬🇧</span>
+    <span class="tk">«&nbsp;Génial de remettre l'art dans la rue&nbsp;!&nbsp;» — Lau 🇫🇷</span>
+    <span class="tk">«&nbsp;L'art sans frontières, qui réunit le monde entier&nbsp;!&nbsp;» — Peter 🇸🇰</span>
+    <span class="tk">«&nbsp;Une communauté créative tellement inspirante&nbsp;!&nbsp;» — Ranjit 🇬🇧</span>
+    <span class="tk">«&nbsp;Exposer dans les plus grandes villes du monde&nbsp;!&nbsp;» — Paola 🇪🇸</span>
+    <span class="tk">«&nbsp;Fantastique et très inspirant&nbsp;!&nbsp;» — Kukumaria 🇧🇪</span>
+    <span class="tk">«&nbsp;Un projet innovant que je recommande&nbsp;!&nbsp;» — Gabriela 🇲🇽</span>
+    <span class="tk">«&nbsp;Une expérience vraiment enrichissante&nbsp;!&nbsp;» — Sara 🇪🇸</span>
+    <span class="tk" aria-hidden="true">«&nbsp;C'est déjà ma 10ᵉ participation&nbsp;!&nbsp;» — Amela 🇫🇷</span>
+    <span class="tk" aria-hidden="true">«&nbsp;J'adore remplacer la publicité par de l'art&nbsp;!&nbsp;» — DreamAnalysing 🇬🇧</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Génial de remettre l'art dans la rue&nbsp;!&nbsp;» — Lau 🇫🇷</span>
+    <span class="tk" aria-hidden="true">«&nbsp;L'art sans frontières, qui réunit le monde entier&nbsp;!&nbsp;» — Peter 🇸🇰</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Une communauté créative tellement inspirante&nbsp;!&nbsp;» — Ranjit 🇬🇧</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Exposer dans les plus grandes villes du monde&nbsp;!&nbsp;» — Paola 🇪🇸</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Fantastique et très inspirant&nbsp;!&nbsp;» — Kukumaria 🇧🇪</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Un projet innovant que je recommande&nbsp;!&nbsp;» — Gabriela 🇲🇽</span>
+    <span class="tk" aria-hidden="true">«&nbsp;Une expérience vraiment enrichissante&nbsp;!&nbsp;» — Sara 🇪🇸</span>
   </div>
 </div>
 
