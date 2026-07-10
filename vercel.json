@@ -1,0 +1,76 @@
+{
+  "rewrites": [
+    {
+      "source": "/florence",
+      "destination": "/florence/index.html"
+    },
+    {
+      "source": "/florence/",
+      "destination": "/florence/index.html"
+    },
+    {
+      "source": "/fr",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/fr/",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/es",
+      "destination": "/es/index.html"
+    },
+    {
+      "source": "/es/",
+      "destination": "/es/index.html"
+    },
+    {
+      "source": "/de",
+      "destination": "/de/index.html"
+    },
+    {
+      "source": "/de/",
+      "destination": "/de/index.html"
+    },
+    {
+      "source": "/it",
+      "destination": "/it/index.html"
+    },
+    {
+      "source": "/it/",
+      "destination": "/it/index.html"
+    },
+    {
+      "source": "/fr/florence",
+      "destination": "/fr/florence/index.html"
+    },
+    {
+      "source": "/fr/florence/",
+      "destination": "/fr/florence/index.html"
+    },
+    {
+      "source": "/es/florence",
+      "destination": "/es/florence/index.html"
+    },
+    {
+      "source": "/es/florence/",
+      "destination": "/es/florence/index.html"
+    },
+    {
+      "source": "/it/florence",
+      "destination": "/it/florence/index.html"
+    },
+    {
+      "source": "/it/florence/",
+      "destination": "/it/florence/index.html"
+    },
+    {
+      "source": "/de/florence",
+      "destination": "/de/florence/index.html"
+    },
+    {
+      "source": "/de/florence/",
+      "destination": "/de/florence/index.html"
+    }
+  ]
+}
