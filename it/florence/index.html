@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<!-- maj 2026-07-05 : CTA « et photographes » -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ExpoMetro Firenze — Il Tunnel dell'Arte</title>
+<meta name="description" content="Esponi la tua opera sulle pareti e sul soffitto di un tunnel lungo 25 metri, nel cuore di Firenze, insieme ad artisti provenienti da tutto il mondo. 28 novembre 2026."/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="ExpoMetro Firenze — Il Tunnel dell'Arte"/>
+<meta property="og:description" content="Esponi la tua opera in un tunnel di 25 metri trasformato in una spettacolare mostra d'arte pubblica nel cuore di Firenze. 28 novembre 2026."/>
+<meta property="og:image" content="https://artinthe.city/florence/img/tunnel-hero.jpg"/>
+<meta property="og:url" content="https://artinthe.city/it/florence"/>
+<link rel="alternate" hreflang="en" href="https://artinthe.city/florence"/>
+<link rel="alternate" hreflang="fr" href="https://artinthe.city/fr/florence"/>
+<link rel="alternate" hreflang="es" href="https://artinthe.city/es/florence"/>
+<link rel="alternate" hreflang="it" href="https://artinthe.city/it/florence"/>
+<link rel="alternate" hreflang="de" href="https://artinthe.city/de/florence"/>
+<link rel="alternate" hreflang="x-default" href="https://artinthe.city/florence"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt_sz,wght@0,18..72,400;0,18..72,500;0,18..72,600;1,18..72,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css"/>
+<style>
+:root{
+  --ink:#0b0f1a;--paper:#0e1431;--night:#070a17;--text:#aab2c4;--muted:#8b93a5;--head:#f4f6fa;
+  --line:rgba(255,255,255,.12);--accent:#FF5267;--accent-d:#e23950;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+.narrow{max-width:720px;margin:0 auto;padding:0 26px}
+
+/* buttons */
+.btn{font-family:var(--sans);font-weight:700;font-size:15px;border:none;border-radius:9px;background:var(--accent);color:#fff;padding:16px 28px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;text-decoration:none;line-height:1;box-shadow:0 8px 26px rgba(255,82,103,.32);transition:background .2s,transform .2s}
+.btn:hover{background:var(--accent-d);transform:translateY(-1px)}
+.btn i{font-size:18px}
+.btn-lg{padding:19px 34px;font-size:16px}
+.cta-center{text-align:center;margin:34px 0 0}
+.reassure{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:flex-start;margin:18px 0 0;font-family:var(--sans);font-size:14px;font-weight:500;color:#dfe4ee}
+.reassure span{display:inline-flex;align-items:center;gap:7px}
+.reassure i{color:var(--accent);font-size:16px}
+.cta-center .reassure{justify-content:center}
+
+/* topbar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .25s,border-color .25s;background:linear-gradient(180deg,rgba(7,10,23,.72),rgba(7,10,23,0))}
+.btn-ghost{background:transparent;border:1.5px solid rgba(255,255,255,.6);color:#fff;box-shadow:none}
+.btn-ghost:hover{background:rgba(255,255,255,.14)}
+.topbar-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 26px}
+.tb-brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:13px;color:#fff}
+.tb-brand img{height:30px;width:auto}
+.topbar.scrolled{background:rgba(7,10,23,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(9px)}
+.topbar .btn{padding:11px 18px;font-size:13px;box-shadow:none}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.lang{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:none;color:#fff;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.08em;cursor:pointer;padding:6px 4px}
+.lang-btn i{font-size:16px}
+.lang-menu{position:absolute;top:100%;right:0;margin-top:8px;background:rgba(9,11,26,.97);border:1px solid var(--line);border-radius:8px;padding:6px;min-width:150px;display:none;flex-direction:column;backdrop-filter:blur(8px);z-index:70}
+.lang-menu.open{display:flex}
+.lang-menu a{color:#fff;font-family:var(--sans);font-size:14px;text-decoration:none;padding:9px 12px;border-radius:6px;opacity:.85}
+.lang-menu a:hover{background:rgba(255,255,255,.08);opacity:1}
+.lang-menu a.active{color:var(--accent);opacity:1;font-weight:600}
+@media(max-width:620px){.tb-brand span{display:none}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;overflow:hidden;
+  background:linear-gradient(180deg,rgba(7,10,23,.5) 0%,rgba(7,10,23,.22) 30%,rgba(7,10,23,.72) 64%,rgba(7,10,23,.96) 100%),var(--night) url('/florence/img/tunnel-hero.jpg');
+  background-size:cover;background-position:center}
+.hero-top{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px}
+.hero-inner{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px 8vh}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px 22px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:13px;color:#fff;margin:0 0 22px}
+.hero-meta span{display:inline-flex;align-items:center;gap:7px}
+.hero-meta i{color:var(--accent);font-size:16px}
+.hero h1{font-weight:800;font-size:clamp(2.6rem,7vw,5.4rem);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 18px;text-shadow:0 3px 28px rgba(0,0,0,.55)}
+.hero h1 .em{color:var(--accent)}
+.hero-sub{font-family:var(--serif);font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.45;color:#fff;max-width:620px;margin:0 0 30px;text-shadow:0 1px 14px rgba(0,0,0,.5)}
+.hero-offer{margin:12px 0 0;display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:.95rem;font-weight:400;font-style:italic;color:#fff;line-height:1.35;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+.hero-offer i{color:var(--accent);font-size:18px;font-style:normal;flex-shrink:0}
+.hero-photo{display:none}
+.scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;color:rgba(255,255,255,.6);font-size:22px;animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* sections */
+section{position:relative}
+.sec{padding:96px 0}
+.sec-tight{padding:70px 0}
+.kicker{font-family:var(--sans);font-weight:700;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.08;letter-spacing:-.02em;color:var(--head);margin:0 0 20px}
+.lead{font-family:var(--serif);font-size:clamp(1.2rem,2.4vw,1.5rem);line-height:1.5;color:#c7cedb;max-width:640px;margin:0 0 8px}
+.big-statement{font-family:var(--sans);font-weight:800;font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:var(--head)}
+.big-statement .em{color:var(--accent)}
+.intro-p{font-family:var(--serif);font-size:1.25rem;line-height:1.7;color:#c7cedb;margin:0 0 1.4rem}
+.intro-p:last-child{margin-bottom:0}
+.hl{color:var(--head)}
+.em{color:var(--accent)}
+.david{width:100px;height:100px;border-radius:50%;float:left;margin:5px 20px 6px 0;border:1px solid var(--line);background:var(--night) url('/florence/img/david.jpg') center/cover no-repeat}
+.narr-title{font-family:var(--sans);font-weight:800;font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.16;letter-spacing:-.01em;color:var(--head);margin:52px 0 18px;max-width:660px}
+.narr-title .em{color:var(--accent)}
+.narr-q{font-family:var(--sans);font-weight:700;font-size:clamp(1.3rem,2.6vw,1.6rem);color:var(--head);margin:48px 0 0}
+.maxmin{display:flex;align-items:center;gap:11px;font-family:var(--sans);font-weight:700;font-size:1.35rem;color:var(--head);margin:42px 0 12px}
+.maxmin i{color:var(--accent);font-size:24px;flex-shrink:0}
+.recap-box{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:30px 28px;margin:12px 0 0}
+.recap-box .narr-title{margin:0}
+.recap-box .maxmin:first-of-type{margin-top:2px}
+.procbox .narr-title{margin:0 0 16px}
+@media(max-width:560px){.recap-box{padding:24px 16px}}
+.mtitle{font-family:var(--sans);font-weight:700;font-size:1.35rem;line-height:1.3;color:var(--head);margin:42px 0 12px;max-width:680px}
+.cart{display:flex;align-items:stretch;height:118px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 14px}
+.cart img{width:224px;height:100%;object-fit:cover;flex-shrink:0;background:#fff}
+.cart p{margin:0;font-family:var(--serif);font-size:1.2rem;line-height:1.4;color:#dfe4ee;padding:0 20px;align-self:center}
+.effort-line{display:flex;align-items:flex-start;gap:11px;margin:12px 0 0}
+.effort-line i{color:var(--head);font-size:20px;flex-shrink:0;margin-top:3px}
+.effort-line span{font-family:var(--serif);font-size:1.12rem;line-height:1.45;color:#c7cedb}
+@media(max-width:560px){.cart{height:140px}.cart img{width:128px}.cart p{font-size:1.06rem;padding:0 14px}}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0 0}
+.how-step{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:30px 22px;text-align:center}
+.how-step i{font-size:38px;color:var(--accent)}
+.how-step .n{font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+.how-step h3{font-size:1.05rem;color:var(--head);margin:0;font-weight:700;line-height:1.32}
+@media(max-width:620px){
+  .how{grid-template-columns:repeat(3,1fr);gap:8px}
+  .how-step{padding:16px 8px}
+  .how-step i{font-size:26px}
+  .how-step .n{font-size:10px;letter-spacing:.06em;margin:9px 0 5px}
+  .how-step h3{font-size:.78rem;line-height:1.25}
+}
+.plan-wrap{position:relative;display:block;container-type:inline-size;margin:8px 0 6px}
+.plan-img{width:100%;border-radius:14px;border:1px solid var(--line);display:block}
+.plan-tag{position:absolute;left:38%;top:44%;transform:translateX(-50%);text-align:center;margin:0;font-weight:800;color:#fff;line-height:.98;font-size:4.8cqw;letter-spacing:-.5px;text-shadow:0 2px 14px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.6);pointer-events:none;text-transform:uppercase}
+.video-fig{margin:14px 0 0}
+.tunnel-video{width:100%;border-radius:14px;display:block;border:1px solid var(--line);background:var(--night)}
+.video-fig figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--muted);margin-top:10px}
+.narr-img{display:block;width:100%;max-width:540px;border-radius:14px;border:1px solid var(--line);margin:14px 0}
+.oneliners{display:grid;grid-template-columns:1fr 1fr;gap:26px 32px;margin:28px 0 0}
+.oneliner{display:flex;gap:16px;align-items:center}
+.oneliner img{width:66px;height:66px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--accent)}
+.oneliner .q{font-family:var(--serif);font-size:1.18rem;line-height:1.36;color:var(--head);margin:0}
+.oneliner .n{font-family:var(--sans);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:5px 0 0}
+@media(max-width:640px){.oneliners{grid-template-columns:1fr;gap:22px}}
+.watch-video{width:100%;aspect-ratio:272/480;object-fit:cover;border-radius:14px;display:block;border:1px solid var(--line);background:var(--night)}
+
+/* full-bleed image band */
+.band{position:relative;min-height:70vh;display:flex;align-items:flex-end;color:#fff;overflow:hidden;background-size:cover;background-position:center}
+.band::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,23,.25),rgba(7,10,23,.9))}
+.band .band-in{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;padding:0 26px 64px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:14px 0 0}
+.step{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:30px 26px}
+.step .n{font-family:var(--sans);font-weight:800;font-size:2.4rem;color:var(--accent);line-height:1;margin:0 0 14px}
+.step h3{font-size:1.15rem;color:var(--head);margin:0 0 8px;font-weight:700}
+.step p{font-size:15px;line-height:1.55;color:var(--text);margin:0}
+.after-steps{text-align:center;margin:36px 0 0;font-family:var(--serif);font-size:clamp(1.4rem,3vw,2rem);color:var(--head);font-weight:500}
+.after-steps b{color:var(--accent)}
+.mini-list{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;margin:18px auto 0;max-width:640px}
+.chip{font-size:13px;color:#cdd4e0;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:7px 15px}
+
+/* formats */
+.formats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0 0}
+.fmt-card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:24px 18px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.fmt-visual{height:200px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:16px}
+.fmt-box{background:linear-gradient(160deg,rgba(255,82,103,.28),rgba(255,82,103,.08));border:1.5px solid var(--accent);border-radius:6px}
+.fmt-img{display:block;height:auto;max-width:100%}
+.fmt-name{font-weight:700;color:var(--head);font-size:1.1rem}
+.fmt-tag{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.fmt-dim{font-size:13px;color:var(--text);margin-top:10px}
+.fmt-price{font-family:var(--sans);font-weight:800;font-size:1.6rem;color:var(--head);margin-top:8px}
+.fmt-slots{font-size:12.5px;font-weight:600;color:var(--muted);margin-top:12px;background:rgba(255,255,255,.05);border-radius:20px;padding:6px 13px}
+.fmt-slots.low{color:#fff;background:rgba(255,82,103,.22);border:1px solid var(--accent)}
+.fmt-note{text-align:center;color:var(--muted);font-size:14.5px;margin:28px 0 0}
+@media(max-width:820px){.formats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:440px){.formats{grid-template-columns:1fr}}
+
+/* benefits */
+.benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:12px 0 0}
+.ben{display:flex;flex-direction:column;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.ben-thumb{width:100%;height:180px;object-fit:cover;background:#fff;display:block}
+.ben-ico{width:100%;height:180px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(255,82,103,.14),rgba(255,82,103,.05));color:var(--accent);font-size:46px}
+.ben span{font-size:15px;line-height:1.4;color:#dfe4ee;padding:16px 18px;font-weight:600}
+@media(max-width:820px){.steps{grid-template-columns:1fr}.benefits{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.benefits{grid-template-columns:1fr}}
+
+/* steps image */
+.step-img{width:100%;height:160px;object-fit:cover;border-radius:10px;margin:0 0 18px;background:#fff}
+/* merge — grille façon formats */
+.mergegrid{display:grid;grid-template-columns:repeat(4,46px);grid-auto-rows:46px;gap:9px;justify-content:center;margin:40px auto 22px}
+.mergegrid span{border:1.5px solid var(--line);border-radius:6px;background:rgba(255,255,255,.03)}
+.mergegrid .m{grid-column:span 2;grid-row:span 2;background:linear-gradient(160deg,rgba(255,82,103,.4),rgba(255,82,103,.12));border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center}
+.mergegrid .m i{color:#fff;font-size:26px}
+.merge-txt{text-align:center;font-family:var(--serif);font-size:1.25rem;line-height:1.5;color:#dfe4ee;max-width:560px;margin:0 auto}
+.merge-txt b{color:#fff}
+.mergebox{display:flex;align-items:center;gap:28px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:26px 30px;margin:32px 0 0;text-align:left}
+.mergebox .mergegrid{margin:0;flex-shrink:0}
+.merge-img{width:150px;flex-shrink:0;display:block}
+.mergebox .merge-txt{text-align:left;margin:0;max-width:none}
+.cta-left{text-align:left;margin:30px 0 0}
+.cta-left .reassure{justify-content:flex-start}
+@media(max-width:560px){.mergebox{flex-direction:column;gap:18px;padding:22px;text-align:center}.mergebox .merge-txt{text-align:center}}
+.valuebox{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin:34px 0 0;text-align:left}
+.valuebox h3{font-family:var(--sans);font-weight:800;font-size:1.35rem;color:var(--head);margin:0 0 18px;letter-spacing:-.01em}
+.valuebox .vb-img,.procbox .vb-img{width:100%;max-width:260px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;display:block;margin:0 0 20px;border:1px solid var(--line)}
+.valuebox ul{list-style:none;margin:0;padding:0}
+.valuebox li{display:flex;gap:12px;align-items:flex-start;margin:0 0 13px;font-family:var(--serif);font-size:1.12rem;line-height:1.45;color:#dfe4ee}
+.valuebox li:last-child{margin-bottom:0}
+.valuebox li i{color:var(--accent);font-size:20px;flex-shrink:0;margin-top:2px}
+.valuebox li b{color:var(--head)}
+.incl-list{list-style:none;margin:18px 0 0;padding:0}
+.incl-list li{display:flex;gap:12px;align-items:flex-start;margin:0 0 11px;font-family:var(--serif);font-size:1.1rem;line-height:1.45;color:#dfe4ee}
+.incl-list li i{color:var(--accent);font-size:20px;flex-shrink:0;margin-top:2px}
+.incl-list li b{color:var(--head)}
+.anchor-price,.opp-cost{font-family:var(--serif);font-size:1.25rem;line-height:1.6;color:#c7cedb;text-align:left;margin:24px 0 0}
+@media(max-width:560px){.valuebox{padding:22px}.valuebox li{font-size:1.04rem}}
+.valuewrap{max-width:720px;margin:0 auto;text-align:left}
+.procbox{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:28px 30px;margin:22px 0 0;text-align:left}
+.procbox h3{font-family:var(--sans);font-weight:800;font-size:1.35rem;color:var(--head);margin:0 0 18px;letter-spacing:-.01em}
+.procbox .miniproc{margin:0}
+.procbox .mp-step:last-child{margin-bottom:0}
+@media(max-width:560px){.procbox{padding:22px}.procbox h3{font-size:1.2rem}}
+.miniproc{margin:18px 0 0}
+.mp-step{display:flex;align-items:flex-start;gap:13px;margin:0 0 13px}
+.mp-step i{color:var(--accent);font-size:23px;flex-shrink:0;margin-top:1px}
+.mp-step span{font-family:var(--serif);font-size:1.18rem;line-height:1.45;color:#dfe4ee}
+.mp-step b{color:var(--head)}
+.imgcap{font-family:var(--serif);font-style:italic;font-size:.92rem;color:var(--muted);margin:8px 0 0;text-align:left}
+/* comparison image */
+.cmp-img{width:100%;height:130px;object-fit:cover;border-radius:10px;margin:0 0 18px}
+/* world map (PNG transparent, sur le fond nuit) */
+.worldmap{width:100%;max-width:900px;margin:24px auto 0;display:block}
+.rotword{color:var(--accent)}
+.rotword::after{content:"";display:inline-block;width:2px;height:1.05em;background:var(--accent);margin-left:3px;vertical-align:-0.14em;animation:caret .85s step-end infinite}
+@keyframes caret{0%,100%{opacity:1}50%{opacity:0}}
+.artrep-list{display:grid;grid-template-columns:1fr 1fr;gap:22px 16px;margin:24px 0 12px}
+.artrep{text-align:center}
+.artrep img{width:100%;max-width:132px;margin:0 auto;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;background:#fff}
+.artrep .ar-t{display:flex;flex-direction:column;margin-top:11px}
+.artrep .c{order:1;font-family:var(--sans);font-weight:700;font-size:1.05rem;color:var(--head);line-height:1.25}
+.artrep .n{order:2;font-family:var(--sans);font-weight:500;font-size:13.5px;color:var(--muted);margin-top:3px}
+.exp-banner{width:100%;border-radius:14px;margin:22px 0 6px;display:block;border:1px solid var(--line)}
+.pullq{margin:28px 0;padding:6px 0 6px 22px;border-left:3px solid var(--accent);font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.45;color:var(--head)}
+.pullq cite{display:block;margin-top:12px;font-family:var(--sans);font-style:normal;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.tmoign{display:flex;gap:15px;align-items:flex-start;margin:0 0 16px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.tmoign img{width:54px;height:54px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--accent)}
+.tmoign .q{font-family:var(--serif);font-style:italic;font-size:1.08rem;line-height:1.5;color:#e8ecf3;margin:0 0 9px}
+.tmoign .who{font-family:var(--sans);font-weight:600;font-size:13.5px;color:var(--head);margin:0}
+.tmoign .who span{color:var(--muted);font-weight:500}
+@media(max-width:560px){.tmoign{padding:16px}.tmoign img{width:46px;height:46px}}
+.expogrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 8px}
+.expogrid figure{margin:0}
+.expogrid img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;display:block;border:1px solid var(--line)}
+.expogrid figcaption{font-family:var(--sans);font-weight:600;font-size:13.5px;letter-spacing:.03em;color:#c7cedb;margin-top:8px;text-align:center}
+
+/* comparison */
+.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:14px 0 0}
+.cmp{border:1px solid var(--line);border-radius:16px;padding:30px 22px;text-align:center;background:rgba(255,255,255,.03)}
+.cmp.win{border-color:var(--accent);background:linear-gradient(160deg,rgba(255,82,103,.16),rgba(255,82,103,.04))}
+.cmp .num{font-family:var(--sans);font-weight:800;font-size:clamp(2.2rem,5vw,3.2rem);color:var(--head);line-height:1}
+.cmp.win .num{color:var(--accent)}
+.cmp .u{font-size:14px;color:var(--muted);margin-top:6px}
+.cmp .who{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#cdd4e0;margin-top:16px}
+@media(max-width:620px){.compare{grid-template-columns:1fr}}
+
+.tunnel-specs{width:100%;border-radius:14px;border:1px solid var(--line);margin:32px 0 0}
+
+/* ambition — full image band, CAPS */
+.megaband{position:relative;padding:140px 0;text-align:center;color:#fff;overflow:hidden;background:var(--night) url('/florence/img/tunnel-hero.jpg') center/cover no-repeat}
+.megaband::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(7,10,23,.5),rgba(7,10,23,.72))}
+.megaband>*{position:relative;z-index:2}
+.mega-title{font-family:var(--sans);font-weight:800;font-size:clamp(2rem,6vw,4rem);line-height:1.03;letter-spacing:-.01em;text-transform:uppercase;color:#fff;margin:0 auto 20px;max-width:920px;text-shadow:0 3px 24px rgba(0,0,0,.55)}
+.mega-title .em{color:var(--accent)}
+.scarcity{margin:0 auto 12px;max-width:600px;font-family:var(--sans);font-size:.98rem;font-weight:400;font-style:italic;letter-spacing:.01em;color:#fff;line-height:1.45}
+.scarcity i{color:var(--accent);font-style:normal;margin-right:7px}
+
+/* testimonials */
+.tgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:10px 0 0}
+.tcard{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.03)}
+.tcard img{width:100%;height:230px;object-fit:cover}
+.tcard .tc{padding:22px 24px}
+.tcard .q{font-family:var(--serif);font-size:1.25rem;line-height:1.35;color:var(--head);margin:0 0 10px}
+.tcard .n{font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+@media(max-width:640px){.tgrid{grid-template-columns:1fr}}
+
+/* founder */
+.founder-light{background:#000;color:#fff;padding:44px 0 64px}
+.founder-light .narr-title{margin-top:0}
+.founder-light .kicker{color:var(--accent);text-align:center}
+.founder-light .founder-row{align-items:flex-start;gap:36px}
+.founder-light .founder-row img{width:280px;height:auto;object-fit:contain;border-radius:14px}
+.founder-light .founder-row .ft{flex:1;min-width:250px}
+.founder-light .founder-row .ft p{color:#c7cedb}
+.founder-light .founder-row .ft p b{color:#fff}
+.founder-light .sign b{color:#fff}
+.founder-light .sign span{color:#9aa3b2}
+@media(max-width:620px){.founder-light .founder-row img{width:60%;max-width:230px;margin:0}}
+/* TICKER (façon Bloomberg) */
+.ticker{overflow:hidden;background:rgba(255,255,255,.04);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0 14px}
+.ticker-heading{margin:0;padding:0 26px 15px;text-align:left;font-family:var(--sans);font-weight:700;font-size:.92rem;letter-spacing:.08em;text-transform:uppercase;color:var(--head);line-height:1.4}
+.ticker-track{display:inline-flex;align-items:center;white-space:nowrap;animation:tickerscroll 65s linear infinite;will-change:transform}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.tk{flex-shrink:0;font-family:var(--sans);font-size:.9rem;color:#c7cedb;padding:0;position:relative}
+.tk::after{content:"…";color:#8b93a6;margin:0 9px}
+@keyframes tickerscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+@media(max-width:560px){.tk{font-size:.84rem;padding:0}.ticker-heading{font-size:.84rem;letter-spacing:.06em;padding:0 20px 13px}}
+/* FAQ */
+.faq{max-width:720px;margin:26px auto 0}
+.faq-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;padding:0 22px;transition:border-color .2s,background .2s}
+.faq-item.open{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.05)}
+.faq-q{width:100%;background:none;border:0;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 0;font-family:var(--sans);font-weight:700;font-size:1.08rem;color:var(--head);line-height:1.35}
+.faq-q .faq-ic{flex-shrink:0;color:var(--accent);font-size:22px;transition:transform .25s}
+.faq-item.open .faq-q .faq-ic{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-item.open .faq-a{max-height:680px}
+.faq-a-inner{padding:0 0 20px;font-family:var(--serif);font-size:1.08rem;line-height:1.55;color:#c7cedb}
+.faq-a-inner b{color:var(--head)}
+@media(max-width:560px){.faq-item{padding:0 18px}.faq-q{font-size:1rem}.faq-a-inner{font-size:1rem}}
+.vision-video{position:relative;line-height:0;margin:36px 0 0;border-radius:16px;overflow:hidden}
+.vision-video video{width:100%;height:auto;display:block}
+.vsound{position:absolute;right:16px;bottom:16px;z-index:3;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.45);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s}
+.vsound:hover{background:rgba(0,0,0,.7)}
+.vsound i{font-size:21px;line-height:1}
+.vwrap{position:relative;line-height:0;width:100%}
+.vplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;width:66px;height:66px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s}
+.vplay:hover{background:rgba(0,0,0,.8)}
+.vplay i{font-size:30px;line-height:1;margin-left:3px}
+.paused>.vplay{display:flex}
+.founder-row{display:flex;gap:30px;align-items:center;flex-wrap:wrap}
+.founder-row img{width:170px;height:170px;border-radius:16px;object-fit:cover;flex-shrink:0}
+.founder-row .ft p{font-family:var(--serif);font-size:1.2rem;line-height:1.55;color:#cdd4e0;margin:0 0 12px}
+.sign b{display:block;color:var(--head);font-size:1rem}
+.sign span{font-size:13px;color:var(--muted)}
+
+/* bande d'infos statut (Hero -> intro) */
+.infoband{background:rgba(255,255,255,.045);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.infoband-inner{max-width:940px;margin:0 auto;display:flex;align-items:stretch;justify-content:center;flex-wrap:wrap;padding:0 20px}
+.ib-item{display:flex;align-items:center;gap:11px;padding:15px 24px;font-family:var(--sans);font-size:.95rem;color:var(--head);line-height:1.3}
+.ib-item i{font-size:22px;flex-shrink:0}
+.ib-item b{font-weight:700}
+.ib-confirmed i{color:#33c26b}
+.ib-unlock i{color:var(--accent)}
+.ib-sep{width:1px;background:var(--line);margin:12px 0}
+@media(max-width:620px){.infoband-inner{flex-direction:column;padding:0}.ib-item{padding:13px 22px;width:100%;font-size:.92rem}.ib-sep{width:100%;height:1px;margin:0}}
+footer{background:var(--night);color:rgba(255,255,255,.45);text-align:center;font-size:12px;letter-spacing:.05em;padding:40px 26px;border-top:1px solid var(--line)}
+.foot-logo{width:50px;margin:0 auto 14px;display:block}
+footer a{color:rgba(255,255,255,.55)}
+
+@media(max-width:620px){
+  .sec{padding:70px 0}
+  .founder-row img{width:120px;height:120px}
+  /* HERO mobile : image collée en haut + bord à bord, header & titre PAR-DESSUS, sous-titre + CTA dessous */
+  .hero{min-height:auto;justify-content:flex-start;background:var(--night);padding:0 0 38px}
+  .hero-top{padding:0}
+  .hero-photo{display:block;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw)}
+  .hero-headline{position:static;padding:22px 20px 0;background:none}
+  .hero-headline .hero-meta{display:flex;font-size:11px;gap:7px 14px;margin:0 0 12px}
+  .hero h1{font-size:2.2rem;line-height:1.05;margin:0}
+  .hero-inner{padding:14px 20px 0}
+  .hero-sub{font-size:1.25rem;margin-bottom:22px}
+  .scroll-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <div class="tb-brand"><img src="/florence/img/logo-color.png" alt="ExpoMetro"/></div>
+    <div class="topbar-right">
+      <div class="lang">
+        <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> IT <i class="ti ti-chevron-down"></i></button>
+        <div class="lang-menu" id="langMenu">
+          <a href="/florence">English</a>
+          <a href="/fr/florence">Français</a>
+          <a href="/es/florence">Español</a>
+          <a href="/it/florence" class="active">Italiano</a>
+          <a href="/de/florence">Deutsch</a>
+        </div>
+      </div>
+      <a class="btn btn-ghost" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-top">
+    <img class="hero-photo" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art — Florence"/>
+    <div class="hero-headline">
+      <p class="hero-meta">
+        <span><i class="ti ti-map-pin"></i>Firenze, Italia</span>
+        <span><i class="ti ti-calendar-event"></i>28 novembre 2026</span>
+        <span><i class="ti ti-sparkles"></i>Tunnel d'Arte Immersivo</span>
+      </p>
+      <h1>Il Tunnel dell'Arte<br><span class="em">nel cuore di Firenze</span></h1>
+    </div>
+  </div>
+  <div class="hero-inner">
+    <p class="hero-sub">Esponi la tua opera sulle pareti e sul soffitto di un tunnel lungo 25 metri, insieme ad artisti provenienti da tutto il mondo. Più di 50.000 persone vedranno la tua opera.</p>
+    <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto <i class="ti ti-arrow-right"></i></a><p class="hero-offer"><i class="ti ti-tag"></i>10% di sconto sui primi 100 posti</p><p class="reassure"><span><i class="ti ti-check"></i>Accessibile</span><span><i class="ti ti-check"></i>Conveniente</span><span><i class="ti ti-check"></i>Aperto a tutti gli artisti e fotografi</span></p>
+  </div>
+  <i class="ti ti-chevron-down scroll-hint"></i>
+</section>
+
+<!-- BANDE INFOS : statut des journées -->
+<div class="infoband">
+  <div class="infoband-inner">
+    <div class="ib-item ib-confirmed"><i class="ti ti-circle-check"></i><span><b>28 NOV</b> · Confermato</span></div>
+    <div class="ib-sep"></div>
+    <div class="ib-item ib-unlock"><i class="ti ti-lock-open"></i><span><b>29 NOV</b> · Verrà aggiunto un secondo giorno di esposizione se raggiungeremo <b>500 artisti</b> entro il <b>10 settembre</b>.</span></div>
+  </div>
+</div>
+
+<!-- INTRO / RÉCIT -->
+<section class="sec" style="padding-top:36px;padding-bottom:6px">
+  <div class="narrow">
+    <p class="intro-p">È il momento di portare la tua arte nel mondo.</p>
+    <p class="intro-p">Fuori dal tuo studio.<br>Fuori dal tuo salotto.<br>Fuori dal tuo telefono...</p>
+
+    <h2 class="narr-title">E se la tua opera fosse esposta <span class="em">nel cuore della città</span>, accanto ad alcuni dei più grandi capolavori della storia dell'arte?</h2>
+    <div class="plan-wrap"><img class="plan-img" loading="lazy" src="/florence/img/plan-florence4.jpg" alt="Florence : Santa Maria Novella, ExpoMetro, le Duomo et le David"/><span class="plan-tag">La<br>tua opera qui</span></div>
+
+    <p class="intro-p">Nel 1504 Firenze presentò al mondo il David di Michelangelo. Più di cinque secoli dopo, potrebbe essere <span class="hl">la tua opera</span> ad attirare gli sguardi del pubblico.</p>
+
+    <p class="intro-p">Tra la stazione di Santa Maria Novella e la basilica si trova un passaggio pedonale attraversato ogni giorno da <span class="em">oltre 50.000 persone</span>.</p>
+    <p class="intro-p">Normalmente, sugli schermi LED vengono trasmessi messaggi pubblicitari.</p>
+    <p class="intro-p">Ma per un giorno speciale, il tunnel sarà <span class="hl">interamente ricoperto d'arte</span>: pareti e soffitto si trasformeranno in una grande galleria. E se deciderai di partecipare, <b class="em">anche la tua opera ne farà parte.</b></p>
+
+    <h2 class="narr-title">Benvenuto nel Tunnel dell'Arte.</h2>
+    <figure class="video-fig">
+      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/tunnel-hero.jpg">
+        <source src="/florence/img/art-tunnel.mp4" type="video/mp4"/>
+      </video>
+      <figcaption>Anteprima del tunnel di Firenze dove saranno esposte le opere.</figcaption>
+    </figure>
+
+    <p class="intro-p" style="margin-top:26px">Sabato <span class="hl">28 novembre</span>, ExpoMetro trasformerà questo luogo in un <span class="em">Tunnel dell'Arte immersivo</span>, con opere che ricopriranno pareti e soffitto.</p>
+    <p class="intro-p">I visitatori potranno <span class="hl">camminare immersi nell'arte</span>, circondati dalle opere di artisti provenienti da tutto il mondo.</p>
+    <p class="intro-p"><i class="ti ti-music" style="color:var(--accent);margin-right:9px;vertical-align:-2px"></i>Le opere saranno accompagnate dalla <span class="em">musica</span>, creando un'esperienza immersiva davvero unica.</p>
+
+    <div class="procbox">
+      <h2 class="narr-title">Come funziona?</h2>
+      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
+      <div class="miniproc">
+        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Prenota il tuo posto in <b>2 minuti</b>.</span></div>
+        <div class="mp-step"><i class="ti ti-photo"></i><span>Carica l'immagine della tua opera.</span></div>
+        <div class="mp-step"><i class="ti ti-circle-check"></i><span>Fatto! <b>La tua opera è pronta per essere esposta a Firenze.</b></span></div>
+      </div>
+      <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="margin-top:24px">Prenota il tuo posto in 2 minuti <i class="ti ti-arrow-right"></i></a>
+    </div>
+    <h2 class="narr-title"><span class="em">1,7 secondi.</span> È il tempo medio che un'opera riesce a catturare l'attenzione su Instagram.</h2>
+    <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
+    <p class="intro-p">Hai dedicato ore, giorni o persino settimane alla tua opera... La pubblichi su Instagram e, in un attimo, è già stata sostituita dal post successivo.</p>
+
+    <p class="mtitle">A Firenze? La tua opera potrà essere vista <span class="em">fino a 12.700 volte più a lungo.</span></p>
+    <p class="intro-p">Sarà esposta <span class="hl">30 secondi ogni minuto</span>, senza interruzioni, per tutta la giornata.</p>
+
+    <h2 class="narr-title">Barcellona era già straordinaria. Ma questa volta vogliamo <span class="em">fare ancora di più.</span></h2>
+    <figure class="video-fig">
+      <video class="tunnel-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/monde2.jpg">
+        <source src="/florence/img/barcelone.mp4" type="video/mp4"/>
+      </video>
+      <figcaption>ExpoMetro Barcellona — oltre 1.000 artisti riuniti.</figcaption>
+    </figure>
+
+    <p class="intro-p" style="margin-top:26px">Nel giugno 2025 abbiamo inaugurato il primo Tunnel dell'Arte nella metropolitana di Barcellona. Una mostra monumentale che ha riunito <span class="em">oltre 1.000 artisti provenienti da 88 Paesi</span>.</p>
+    <p class="intro-p">Ecco cosa raccontano gli artisti della loro esperienza:</p>
+
+    <div class="oneliners">
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-1.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: It's just amazing to replace advertising to art. -->«&nbsp;È incredibile sostituire la pubblicità con l'arte.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-2.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I love ExpoMetro because I can showcase my art, meet all the artists and see all the artworks. -->«&nbsp;Adoro ExpoMetro: posso esporre la mia arte, incontrare tutti gli artisti e vedere tutte le opere.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-3.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: This is a significant opportunity for all emerging artists. -->«&nbsp;È una vera opportunità per tutti gli artisti emergenti.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-4.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: This is a symbol of connection. -->«&nbsp;È un simbolo di connessione.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-5.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: People can enjoy different types of art like paintings, drawings and photography. -->«&nbsp;Qui puoi scoprire tutte le forme d'arte: pittura, disegno, fotografia.&nbsp;»</p></div>
+      <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-6.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I meant to inspire, but in return I got really inspired by all these free souls and people who are fighting for art. -->«&nbsp;Sono venuta per ispirare e, in cambio, sono stata ispirata da tutte queste anime libere che lottano per l'arte.&nbsp;»</p></div>
+    </div>
+
+    <figure class="video-fig" style="max-width:330px;margin:34px auto 0;text-align:center">
+      <video class="watch-video" controls playsinline preload="metadata" src="/florence/img/temoignages-barcelone2.mp4#t=0.1"></video>
+      <figcaption>Gli artisti di Barcellona raccontano la loro esperienza.</figcaption>
+    </figure>
+
+    <h2 class="narr-title">Tutto è nato da un'idea semplice: <span class="em">sostituire la pubblicità con l'arte.</span></h2>
+    <figure style="margin:20px 0 0"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/expo-paris.jpg" alt="La première édition ExpoMetro dans le métro à Paris, 2018"/><figcaption class="imgcap">La prima edizione — Parigi, 2018</figcaption></figure>
+    <p class="intro-p" style="margin-top:26px">Nel dicembre 2018 ho invitato alcuni artisti a esporre le proprie opere sugli spazi pubblicitari della metropolitana di Parigi.</p>
+    <p class="intro-p">Quella è stata la nostra prima mostra. Così è nata <span class="em">ExpoMetro</span>.</p>
+    <p class="intro-p">Da allora, oltre <span class="em">6.000 artisti provenienti da più di 100 Paesi</span> hanno aderito al movimento, esponendo in alcuni dei luoghi più iconici del mondo.</p>
+    <div class="expogrid">
+      <figure><img loading="lazy" src="/florence/img/wt-newyork.jpg" alt="ExpoMetro New York 2023"/><figcaption>New York · 2023</figcaption></figure>
+      <figure><img loading="lazy" src="/florence/img/wt-amsterdam.jpg" alt="ExpoMetro Amsterdam 2023"/><figcaption>Amsterdam · 2023</figcaption></figure>
+      <figure><img loading="lazy" src="/florence/img/wt-milan.jpg" alt="ExpoMetro Milan 2024"/><figcaption>Milano · 2024</figcaption></figure>
+      <figure><img loading="lazy" src="/florence/img/wt-barcelone.jpg" alt="ExpoMetro Barcelone 2025"/><figcaption>Barcellona · 2025</figcaption></figure>
+      <figure><img loading="lazy" src="/florence/img/wt-madrid.jpg" alt="ExpoMetro Madrid 2026"/><figcaption>Madrid · 2026</figcaption></figure>
+      <figure><img loading="lazy" src="/florence/img/wt-rome.jpg" alt="ExpoMetro Rome 2026"/><figcaption>Roma · 2026</figcaption></figure>
+    </div>
+    <p class="intro-p" style="margin-top:26px">La cosa che mi colpisce di più è l'energia incredibile che nasce quando artisti provenienti da tutto il mondo si incontrano.</p>
+    <p class="intro-p">È qualcosa che bisogna vivere per capirlo davvero.</p>
+    <p class="intro-p">Il nostro concetto di <span class="em">Opere Collettive Monumentali</span> crea connessioni autentiche tra artisti e dà vita a incontri che possono cambiare una vita.</p>
+    <div class="tmoign"><img loading="lazy" src="/florence/img/tm-peter.jpg" alt="Peter Tirpák"/><div><p class="q"><!-- EN: Thank you for this remarkable celebration of art without borders, uniting talented artists and diverse cultures from across the globe. -->«&nbsp;Grazie per questa straordinaria celebrazione dell'arte senza confini, che unisce artisti di talento e culture da tutto il mondo.&nbsp;»</p><p class="who">Peter Tirpák <span>· TIR.PAK.ART · Slovaquie 🇸🇰</span></p></div></div>
+    <div class="tmoign"><img loading="lazy" src="/florence/img/tm-dream.jpg" alt="DreamAnalysingArtist"/><div><p class="q"><!-- EN: Over the moon to be part of Expo Metro – love the idea of replacing advertising around the world with art! Participation is so simple and inclusive too. -->«&nbsp;Felicissima di far parte di ExpoMetro — adoro l'idea di sostituire la pubblicità con l'arte in tutto il mondo! E partecipare è così semplice e accessibile.&nbsp;»</p><p class="who">DreamAnalysingArtist <span>· Royaume-Uni 🇬🇧</span></p></div></div>
+    <div class="tmoign"><img loading="lazy" src="/florence/img/tm-amela.jpg" alt="Amela Muranovic Alagic"/><div><p class="q"><!-- EN: I'm already 10th time to participate on your exhibitions everywhere and every time is amazing! Thank you a lot expo metro to make me happy I love you a lot ! -->«&nbsp;È già la mia decima partecipazione alle vostre mostre in tutto il mondo, e ogni volta è incredibile! Grazie ExpoMetro per rendermi così felice, vi adoro!&nbsp;»</p><p class="who">Amela Muranovic Alagic <span>· France 🇫🇷</span></p></div></div>
+    <div class="tmoign"><img loading="lazy" src="/florence/img/tm-ranjit.jpg" alt="Ranjit Sihat"/><div><p class="q"><!-- EN: This is my 8th Expo Metro and every time is such a treat. I just love being part of this creative community… it's so inspiring and up-lifting. Love it! -->«&nbsp;È il mio ottavo ExpoMetro e ogni volta è una vera gioia. Adoro far parte di questa comunità creativa… è così stimolante e coinvolgente. La adoro!&nbsp;»</p><p class="who">Ranjit Sihat <span>· Royaume-Uni 🇬🇧 · Hong Kong 2025</span></p></div></div>
+    <div class="tmoign"><img loading="lazy" src="/florence/img/tm-kukumaria.jpg" alt="Kukumaria"/><div><p class="q"><!-- EN: It's just fantastic and very inspiring what ExpoMetro is doing! These colourful beautiful art shows of hundreds of artists from different countries, the amazing locations, the warm atmosphere! In Milano it will already be my third participation!! -->«&nbsp;È semplicemente fantastico e molto stimolante ciò che fa ExpoMetro! Queste mostre bellissime e piene di colore, con centinaia di artisti di Paesi diversi, quei luoghi incredibili, quell'atmosfera così calorosa! A Milano sarà già la mia terza partecipazione!&nbsp;»</p><p class="who">Kukumaria <span>· Belgique 🇧🇪</span></p></div></div>
+    <h2 class="narr-title">Vivi dall'altra parte del mondo e <span class="em">ti stai chiedendo se questa esperienza fa per te?</span></h2>
+    <img class="worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="La créativité mondiale : la carte du monde composée d'œuvres d'artistes"/>
+    <p class="intro-p">La risposta è <span class="em">SÌ</span>.</p>
+    <p class="intro-p">Ogni <span class="rotword" id="rotWord">artista</span><br>merita di essere visto e <b class="hl">può rappresentare il proprio Paese.</b></p>
+    <p class="intro-p">All'ultima edizione di Madrid, lo scorso giugno, erano presenti artisti che rappresentavano Paesi come:</p>
+    <div class="artrep-list">
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-giovanna.jpg" alt="Œuvre de Giovanna Gil Alves"/><div class="ar-t"><div class="n">Giovanna Gil Alves</div><div class="c">🇺🇾 Uruguay</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-iris.jpg" alt="Œuvre d'Iris Leid"/><div class="ar-t"><div class="n">Iris Leid</div><div class="c">🇪🇪 Estonia</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-ked.jpg" alt="Œuvre de KED"/><div class="ar-t"><div class="n">KED</div><div class="c">🇲🇶 Martinica</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-aom.jpg" alt="Œuvre d'AOM"/><div class="ar-t"><div class="n">AOM</div><div class="c">🇹🇭 Thailandia</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-arsne.jpg" alt="Œuvre d'Arsnecopinata"/><div class="ar-t"><div class="n">Arsnecopinata</div><div class="c">🇦🇪 Emirati Arabi Uniti</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-ryslein.jpg" alt="Œuvre de Ryslein Sakouni"/><div class="ar-t"><div class="n">Ryslein Sakouni</div><div class="c">🇲🇦 Marocco</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-saejoon.jpg" alt="Œuvre de Saejoon Oh"/><div class="ar-t"><div class="n">Saejoon Oh</div><div class="c">🇰🇷 Corea del Sud</div></div></div>
+      <div class="artrep"><img loading="lazy" src="/florence/img/art-synne.jpg" alt="Œuvre de Synne Kristine"/><div class="ar-t"><div class="n">Synne Kristine</div><div class="c">🇳🇴 Norvegia</div></div></div>
+    </div>
+    <p class="intro-p" style="margin-top:16px">...insieme ad artisti provenienti da <span class="hl">altri 54 Paesi</span> di tutti i continenti.</p>
+    <p class="intro-p" style="margin-top:30px">Alcuni arrivano da Perù, Argentina, Stati Uniti, Canada, Giappone, Singapore, Australia e da molti Paesi europei.</p>
+    <p class="intro-p">Ma non preoccuparti: <b class="em">il 90% dei nostri artisti partecipa da remoto.</b></p>
+    <p class="intro-p">ExpoMetro è pensato proprio per permetterti di partecipare e vivere l'evento ovunque tu sia.</p>
+    <h2 class="narr-title"><span class="em">Firenze sarà la nostra 19ª edizione.</span> Ecco cosa riceverai.</h2>
+    <p class="maxmin"><i class="ti ti-world"></i>Ovunque tu sia</p>
+    <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Segui l'evento in diretta su <b>Instagram Live</b> e scopri la tua opera nelle nostre foto e nei nostri video.</p></div>
+    <p class="maxmin"><i class="ti ti-eye"></i>Visibilità Pubblica</p>
+      <div class="cart"><img loading="lazy" src="/florence/img/benefit-3.jpg" alt=""/><p>La tua opera sarà esposta in uno spazio pubblico iconico, vista da oltre 50.000 persone.</p></div>
+      <div class="cart"><img loading="lazy" src="/florence/img/benefit-6.jpg" alt=""/><p>La tua opera sarà accessibile anche online tramite un QR code con collegamento diretto al tuo sito web e ai tuoi social.</p></div>
+
+      <p class="maxmin"><i class="ti ti-speakerphone"></i>Promozione Professionale</p>
+      <div class="cart"><img loading="lazy" src="/florence/img/reportage-photos.jpg" alt="Reportage photos et vidéos professionnelles"/><p>La tua opera sarà protagonista di un grande reportage fotografico e video professionale.</p></div>
+      <div class="cart"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><p>La tua opera verrà promossa anche sui canali social di ExpoMetro.</p></div>
+
+      <p class="maxmin"><i class="ti ti-sparkles"></i>Un'Esperienza Internazionale</p>
+      <div class="cart"><img loading="lazy" src="/florence/img/monde2.jpg" alt=""/><p>Parteciperai a un evento fuori dal comune e a un meetup internazionale insieme ad artisti provenienti da tutto il mondo.</p></div>
+      <div class="cart"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><p>Entrerai a far parte di un movimento artistico mondiale e potrai aggiungere una mostra internazionale al tuo curriculum artistico.</p></div>
+      <div class="cart"><img loading="lazy" src="/florence/img/certificat.jpg" alt="Certificat de participation ExpoMetro personnalisé" style="object-position:left"/><p>Riceverai un certificato personalizzato con il tuo nome d'artista e la tua opera.</p></div>
+
+    <div class="cta-left" style="margin-top:26px"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessibile</span><span><i class="ti ti-check"></i>Conveniente</span><span><i class="ti ti-check"></i>Aperto a tutti gli artisti e fotografi</span></p></div>
+
+    <h2 class="narr-title">Hai diversi formati tra cui scegliere.</h2>
+    <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
+    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/>
+  </div>
+</section>
+
+<!-- FORMATS -->
+<section class="sec" style="padding-top:6px;padding-bottom:40px">
+  <div class="wrap" style="text-align:center">
+    <div class="formats">
+      <div class="fmt-card">
+        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/S.png" alt="Format Small" style="width:120px"/></div>
+        <div class="fmt-name">Small</div><div class="fmt-tag">Parete</div>
+        <div class="fmt-dim">25 × 25 cm</div>
+        <div class="fmt-slots">120 posti</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/M.png" alt="Format Medium" style="width:144px"/></div>
+        <div class="fmt-name">Medium</div><div class="fmt-tag">Parete</div>
+        <div class="fmt-dim">50 × 50 cm</div>
+        <div class="fmt-slots">30 posti</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/L.png" alt="Format Large" style="width:192px"/></div>
+        <div class="fmt-name">Large</div><div class="fmt-tag">Parete</div>
+        <div class="fmt-dim">100 × 150 cm</div>
+        <div class="fmt-slots low">Solo 5 posti</div>
+      </div>
+      <div class="fmt-card">
+        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/XL.png" alt="Format Extra Large" style="width:240px"/></div>
+        <div class="fmt-name">Extra Large</div><div class="fmt-tag">Soffitto</div>
+        <div class="fmt-dim">2,5 × 1,88 m</div>
+        <div class="fmt-slots low">Solo 4 posti</div>
+      </div>
+    </div>
+    <div class="mergebox">
+      <img class="merge-img" loading="lazy" src="/florence/img/merge_slots.png" alt="Fusionner plusieurs emplacements pour créer une œuvre plus grande"/>
+      <p class="merge-txt">Puoi anche <b>unire più spazi</b> per creare un'opera <span class="em">ancora più grande.</span></p>
+    </div>
+    <div class="valuewrap">
+    <p class="mtitle">Hai ancora qualche dubbio?</p>
+    <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/artiste-heureux.jpg" alt="Des artistes heureux à ExpoMetro Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, giugno 2026</figcaption></figure>
+    <p class="intro-p">La scelta è tua.</p>
+    <p class="intro-p">Puoi prenotare il tuo posto in appena 2 minuti. Nessuna preparazione complicata, nessuna attrezzatura, nessuno stand da allestire e nessuna assicurazione, come avviene nelle mostre tradizionali.</p>
+    <p class="intro-p">Oppure puoi aspettare. La tua arte resterà nel tuo telefono. Continuerai a pubblicarla su Instagram per appena 1,7 secondi di attenzione... mentre altri artisti prenderanno il tuo posto.</p>
+    <p class="mtitle"><span class="em">Abbi il coraggio di provarci.</span><br><span class="hl">Si sta aprendo una nuova porta. Vuoi attraversarla insieme a noi?</span></p>
+    <div class="cta-left" style="margin-top:30px"><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto in 2 minuti <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessibile</span><span><i class="ti ti-check"></i>Conveniente</span><span><i class="ti ti-check"></i>Aperto a tutti gli artisti e fotografi</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUI SUIS-JE (fond blanc, comme la LP leads) -->
+<section class="founder-light">
+  <div class="narrow">
+    <h2 class="narr-title">Chi sono?</h2>
+    <div class="founder-row">
+      <img loading="lazy" src="/florence/img/rudolph.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
+      <div class="ft">
+        <p>Mi chiamo Rudolph.</p>
+        <p>Dopo un percorso tradizionale nelle principali case d'asta e in prestigiose gallerie d'arte, ho deciso di mettere in discussione le regole del mercato dell'arte. Ero stanco di vedere così tanti artisti di talento perdersi online o non avere alcuna possibilità di esporre fuori dalle proprie mura.</p>
+        <p>Oggi la mia missione è semplice: <b class="em">portare la tua arte fuori dal tuo telefono e davanti agli occhi del pubblico.</b></p>
+        <p>Se anche tu credi che l'arte possa cambiare il mondo, <b>unisciti al nostro movimento per rendere l'arte accessibile a tutti, nel cuore della città.</b></p>
+        <p>Non vedo l'ora di scoprire la tua opera e, magari, incontrarti alla nostra prossima mostra.</p>
+      </div>
+    </div>
+    <div class="vision-video">
+      <video class="vfull" muted loop playsinline webkit-playsinline preload="metadata" poster="/florence/img/vision-poster.jpg">
+        <source src="/florence/img/expometro-vision.mp4" type="video/mp4"/>
+      </video>
+      <button class="vsound" id="vSound" aria-label="Attiva l'audio"><i class="ti ti-volume-off"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec faq-sec" style="padding-top:70px">
+  <div class="narrow">
+    <h2 class="narr-title" style="text-align:center;margin-top:0">Domande frequenti</h2>
+    <div class="faq">
+      <div class="faq-item"><button class="faq-q" type="button">Chi può partecipare?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Tutti gli artisti e i fotografi, principianti o professionisti. Nessuna selezione e nessuna giuria. Se hai un'opera, hai già il tuo posto.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Non me la sento ancora di esporre...<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Allora ExpoMetro è proprio quello che fa per te. Nessuna giuria, nessun livello minimo e nessuna pressione. Migliaia di artisti hanno già fatto il primo passo. <b>La tua opera merita di essere vista</b>, non di restare nel tuo telefono.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Realizzo sculture o ceramiche. Posso partecipare?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Certamente. ExpoMetro è aperto a <b>tutte le tecniche e a tutti gli stili artistici</b>: pittura, fotografia, illustrazione, arte digitale, scultura, ceramica e molto altro. Verrà esposta <b>l'immagine della tua opera.</b></div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Esistono regole per le opere?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Solo una. Trattandosi di una <b>mostra pubblica</b>, la tua opera deve rispettare le regole previste per la comunicazione negli spazi pubblici: niente alcol, tabacco, violenza, contenuti politici o nudità. Per il resto, hai la massima libertà creativa.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Devo inviare l'opera originale?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">No. Ti basta <b>caricare una foto della tua opera</b> nel tuo account. Al resto penseremo noi.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Che qualità deve avere l'immagine?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">È sufficiente una foto scattata con il tuo telefono. Durante il caricamento potrai ritagliarla facilmente nel formato corretto.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Posso prenotare adesso e caricare l'opera più tardi?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Sì. Prenota ora il tuo posto e potrai caricare l'immagine della tua opera in un secondo momento, prima della chiusura delle iscrizioni.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Quanto costa?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Sono disponibili diversi formati (S, M, L e XL). Ti basta scegliere quello che preferisci al momento della prenotazione. Il nostro obiettivo è rendere ExpoMetro <b>accessibile e conveniente per tutti gli artisti.</b></div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Dove e quando si svolgerà?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Nel <b>Sottopassaggio della stazione Santa Maria Novella</b>, nel cuore di Firenze <i>(Piazza dell'Unità Italiana, 25, 50123 Firenze)</i>, il <b>28 novembre 2026</b>.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">La mostra dura uno o due giorni?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Il <b>28 novembre</b> è già confermato. Inoltre abbiamo un <b>obiettivo comune</b>: se raggiungeremo <b>500 artisti entro il 10 settembre</b>, apriremo una <b>seconda giornata di mostra</b> il <b>29 novembre</b>. Più artisti parteciperanno, più grande diventerà l'evento. <b>Ogni iscrizione conta.</b></div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Devo venire a Firenze?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Saremo felici di incontrarti se potrai essere presente, ma <b>non è obbligatorio</b>. Circa il <b>90% dei nostri artisti partecipa da remoto.</b> Organizzeremo un grande meetup internazionale a Firenze e potrai comunque seguire l'evento <b>in diretta su Instagram Live</b> e vedere la tua opera esposta nel tunnel.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Mantengo i diritti sulla mia opera?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Sì. Conservi il <b>100% dei diritti</b> sulla tua opera.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">ExpoMetro è un progetto serio?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Assolutamente sì. Dal <b>2018</b>, ExpoMetro organizza mostre in alcuni dei luoghi più iconici del mondo: da Parigi a New York, da Los Angeles a Roma, da Amsterdam a Madrid e in molte altre città, riunendo artisti provenienti da oltre <b>100 Paesi</b>. Eventi reali, documentati da fotografie e video professionali che puoi scoprire in questa pagina.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">Fino a quando posso iscrivermi?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Le iscrizioni resteranno aperte fino <b>alla fine di ottobre 2026</b>. Tuttavia, i prezzi aumentano man mano che i posti si esauriscono. Prenota il tuo posto oggi e carica la tua opera più tardi. <b>Non perdere questa opportunità: questa edizione si svolgerà una sola volta.</b></div></div></div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  document.querySelectorAll('.faq-q').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var item=btn.parentElement;
+      var isOpen=item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open')});
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+})();
+</script>
+
+<!-- FINAL : LA PLUS GRANDE EXPO DU MONDE -->
+<section class="megaband">
+  <div class="narrow">
+    <h2 class="mega-title">Unisciti alla più grande<br><span class="em">mostra d'arte pubblica del mondo.</span></h2>
+    <div class="cta-center"><p class="scarcity"><i class="ti ti-tag"></i>10% di sconto sui primi 100 posti</p><a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accessibile</span><span><i class="ti ti-check"></i>Conveniente</span><span><i class="ti ti-check"></i>Aperto a tutti gli artisti e fotografi</span></p></div>
+  </div>
+</section>
+
+<footer>
+  <img class="foot-logo" src="/florence/img/logo-mark.png" alt="ExpoMetro"/>
+  EXPOMETRO · THE ART TUNNEL — FIRENZE · 28 NOVEMBRE 2026<br>
+  <a href="#top">Torna all'inizio ↑</a>
+</footer>
+
+<script>
+// Effet machine à écrire : artiste <-> photographe (frappe / efface au clavier)
+(function(){
+  var el=document.getElementById('rotWord');
+  if(!el)return;
+  var words=['artista','fotografo'];
+  var wi=0,ci=0,deleting=false;
+  var TYPE=95,ERASE=55,HOLD_FULL=1600,HOLD_EMPTY=350;
+  function tick(){
+    var w=words[wi];
+    if(!deleting){
+      ci++;el.textContent=w.slice(0,ci);
+      if(ci===w.length){deleting=true;return setTimeout(tick,HOLD_FULL);}
+      return setTimeout(tick,TYPE);
+    }
+    ci--;el.textContent=w.slice(0,ci);
+    if(ci===0){deleting=false;wi=(wi+1)%words.length;return setTimeout(tick,HOLD_EMPTY);}
+    return setTimeout(tick,ERASE);
+  }
+  el.textContent='';
+  setTimeout(tick,700);
+})();
+(function(){
+  var t=document.getElementById('topbar');
+  function s(){t.classList.toggle('scrolled',window.scrollY>40);}
+  window.addEventListener('scroll',s,{passive:true});s();
+
+  // Sélecteur de langue (comme la LP leads)
+  var lb=document.getElementById('langBtn'),lm=document.getElementById('langMenu');
+  if(lb&&lm){
+    lb.addEventListener('click',function(e){e.stopPropagation();var o=lm.classList.toggle('open');lb.setAttribute('aria-expanded',o);});
+    document.addEventListener('click',function(){lm.classList.remove('open');lb.setAttribute('aria-expanded',false);});
+  }
+
+  // ---- Prix multi-devises selon la localisation (grille fixe ExpoMetro) ----
+  var PRICES={
+    '49' :{EUR:'49 €',  USD:'US$ 49',  GBP:'£49',  AUD:'AU$ 89',  CAD:'CA$ 79',  HKD:'HK$ 449'},
+    '99' :{EUR:'99 €',  USD:'US$ 99',  GBP:'£99',  AUD:'AU$ 159', CAD:'CA$ 159', HKD:'HK$ 899'},
+    '329':{EUR:'329 €', USD:'US$ 329', GBP:'£299', AUD:'AU$ 579', CAD:'CA$ 529', HKD:'HK$ 2 999'},
+    '599':{EUR:'599 €', USD:'US$ 599', GBP:'£599', AUD:'AU$ 999', CAD:'CA$ 999', HKD:'HK$ 5 399'}
+  };
+  function currFor(cc){
+    cc=(cc||'').toUpperCase();
+    if(cc==='GB')return 'GBP';
+    if(cc==='HK')return 'HKD';
+    if(cc==='CA')return 'CAD';
+    if(cc==='AU')return 'AUD';
+    var EU=' AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE NO CH IS LI MC AD SM VA GI GG JE IM AL BA ME MK RS XK UA MD ';
+    if(EU.indexOf(' '+cc+' ')>=0)return 'EUR';
+    return 'USD';
+  }
+  function applyCurrency(curr){
+    document.querySelectorAll('.fmt-price[data-price]').forEach(function(el){
+      var p=PRICES[el.getAttribute('data-price')];
+      if(p&&p[curr])el.textContent=p[curr];
+    });
+  }
+  // 1) Vercel geo (fiable, sur le domaine) → 2) GeoJS (secours) → 3) défaut EUR
+  function detectCountry(){
+    return fetch('/api/geo').then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){if(d&&d.country)return d.country;throw 0;})
+      .catch(function(){
+        return fetch('https://get.geojs.io/v1/ip/country.json')
+          .then(function(r){return r.json();}).then(function(d){return d&&d.country;});
+      });
+  }
+  detectCountry().then(function(cc){applyCurrency(currFor(cc));}).catch(function(){});
+  // vidéos : boucle non-stop garantie (toutes)
+  document.querySelectorAll('.tunnel-video').forEach(function(v){
+    v.muted=true;v.loop=true;v.setAttribute('playsinline','');
+    var tryPlay=function(){var p=v.play();if(p&&p.catch)p.catch(function(){});};
+    v.addEventListener('ended',function(){v.currentTime=0;tryPlay();});
+    // ne se charge et ne joue que quand la vidéo entre à l'écran (libère la bande passante au chargement)
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?tryPlay():v.pause();});},{threshold:0.2}).observe(v);
+    }else{tryPlay();}
+  });
+
+  // Vidéo vision pleine largeur : lecture différée quand elle entre à l'écran
+  var vf=document.querySelector('.vfull');
+  if(vf){
+    vf.muted=true;
+    var playVf=function(){var p=vf.play();if(p&&p.catch)p.catch(function(){});};
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?playVf():vf.pause();});},{threshold:0.25}).observe(vf);
+    }else{playVf();}
+    var snd=document.getElementById('vSound');
+    if(snd){
+      snd.addEventListener('click',function(){
+        vf.muted=!vf.muted;
+        if(!vf.muted)playVf();
+        snd.querySelector('i').className='ti '+(vf.muted?'ti-volume-off':'ti-volume');
+        snd.setAttribute('aria-label',vf.muted?'Activer le son':'Couper le son');
+      });
+    }
+  }
+
+  // Bouton PLAY de secours si l'autoplay est bloqué (mode éco iOS, onglet en veille…)
+  function makePlay(v,box){
+    var btn=document.createElement('button');
+    btn.className='vplay';btn.type='button';btn.setAttribute('aria-label','Lire la vidéo');
+    btn.innerHTML='<i class="ti ti-player-play-filled"></i>';
+    box.appendChild(btn);
+    function upd(){box.classList.toggle('paused',v.paused);}
+    btn.addEventListener('click',function(e){e.stopPropagation();var p=v.play();if(p&&p.catch)p.catch(function(){});});
+    v.addEventListener('play',upd);v.addEventListener('pause',upd);v.addEventListener('playing',upd);
+    setTimeout(upd,900);setTimeout(upd,2600);
+  }
+  document.querySelectorAll('.tunnel-video').forEach(function(v){
+    var w=document.createElement('div');w.className='vwrap';
+    v.parentNode.insertBefore(w,v);w.appendChild(v);
+    makePlay(v,w);
+  });
+  var vfb=document.querySelector('.vfull');
+  if(vfb){makePlay(vfb, vfb.closest('.vision-video')||vfb.parentNode);}
+})();
+</script>
+
+</body>
+</html>
