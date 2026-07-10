@@ -329,6 +329,16 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .sign b{display:block;color:var(--head);font-size:1rem}
 .sign span{font-size:13px;color:var(--muted)}
 
+/* bande d'infos statut (Hero -> intro) */
+.infoband{background:rgba(255,255,255,.045);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.infoband-inner{max-width:940px;margin:0 auto;display:flex;align-items:stretch;justify-content:center;flex-wrap:wrap;padding:0 20px}
+.ib-item{display:flex;align-items:center;gap:11px;padding:15px 24px;font-family:var(--sans);font-size:.95rem;color:var(--head);line-height:1.3}
+.ib-item i{font-size:22px;flex-shrink:0}
+.ib-item b{font-weight:700}
+.ib-confirmed i{color:#33c26b}
+.ib-unlock i{color:var(--accent)}
+.ib-sep{width:1px;background:var(--line);margin:12px 0}
+@media(max-width:620px){.infoband-inner{flex-direction:column;padding:0}.ib-item{padding:13px 22px;width:100%;font-size:.92rem}.ib-sep{width:100%;height:1px;margin:0}}
 footer{background:var(--night);color:rgba(255,255,255,.45);text-align:center;font-size:12px;letter-spacing:.05em;padding:40px 26px;border-top:1px solid var(--line)}
 .foot-logo{width:50px;margin:0 auto 14px;display:block}
 footer a{color:rgba(255,255,255,.55)}
@@ -390,6 +400,15 @@ footer a{color:rgba(255,255,255,.55)}
   </div>
   <i class="ti ti-chevron-down scroll-hint"></i>
 </section>
+
+<!-- BANDE INFOS : statut des journées -->
+<div class="infoband">
+  <div class="infoband-inner">
+    <div class="ib-item ib-confirmed"><i class="ti ti-circle-check"></i><span><b>28 NOV</b> · Confirmé</span></div>
+    <div class="ib-sep"></div>
+    <div class="ib-item ib-unlock"><i class="ti ti-lock-open"></i><span><b>29 NOV</b> · Une 2ᵉ journée d'expo si nous atteignons <b>500 artistes</b> avant le <b>10 septembre</b>.</span></div>
+  </div>
+</div>
 
 <!-- INTRO / RÉCIT -->
 <section class="sec" style="padding-top:36px;padding-bottom:6px">
@@ -606,6 +625,7 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="faq-item"><button class="faq-q" type="button">Puis-je réserver maintenant et enregistrer mon œuvre plus tard&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui. Tu réserves ta place en 2 minutes, et tu pourras ajouter l'image de ton œuvre plus tard, avant la clôture.</div></div></div>
       <div class="faq-item"><button class="faq-q" type="button">Combien ça coûte&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Plusieurs formats sont disponibles (S, M, L, XL) ; tu choisis ta place au moment de la réservation. Notre objectif est d'offrir une solution <b>abordable et accessible à tous les artistes</b>.</div></div></div>
       <div class="faq-item"><button class="faq-q" type="button">Où et quand exactement&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Dans le tunnel du <b>Sottopassaggio de la gare Santa Maria Novella</b>, au cœur de Florence <i>(Piazza dell'Unità Italiana, 25, 50123 Firenze)</i>, le <b>28 novembre 2026</b>.</div></div></div>
+      <div class="faq-item"><button class="faq-q" type="button">C'est un jour ou deux&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">L'exposition est confirmée le <b>28 novembre</b>. Et on a un <b>objectif collectif</b> : si on atteint <b>500 artistes avant le 10 septembre</b>, on ouvre une <b>seconde journée</b> le <b>29 novembre</b>. Plus on est nombreux, plus l'événement grandit — <b>chaque inscription compte</b>.</div></div></div>
       <div class="faq-item"><button class="faq-q" type="button">Dois-je me déplacer à Florence&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">C'est évidemment super si tu peux venir — mais <b>tu n'es pas obligé</b> : 90 % des artistes ne se déplacent pas. Nous organiserons un <b>grand meetup</b> avec les artistes sur place, et rassure-toi : tu pourras suivre l'événement <b>en direct sur Instagram Live</b> et voir ton œuvre dans le tunnel.</div></div></div>
       <div class="faq-item"><button class="faq-q" type="button">Est-ce que je garde les droits sur mon œuvre&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui, tu gardes <b>100 % des droits</b> sur ton œuvre.</div></div></div>
       <div class="faq-item"><button class="faq-q" type="button">Est-ce vraiment sérieux&nbsp;?<i class="ti ti-chevron-down faq-ic"></i></button><div class="faq-a"><div class="faq-a-inner">Oui. Depuis <b>2018</b>, ExpoMetro a organisé des expositions dans les lieux les plus emblématiques des grandes villes : de Paris à New York, de Los Angeles à Rome, d'Amsterdam à Madrid et ailleurs, avec des artistes de plus de <b>100 pays</b>. Événements réels, reportages photo et vidéo à l'appui — tu peux en voir les résultats plus haut sur cette page.</div></div></div>
