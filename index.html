@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ExpoMetro — Expose ton art dans la ville</title>
-<meta name="description" content="Rejoins ExpoMetro, le mouvement mondial d'art public. Expose ton art dans les lieux les plus emblématiques des grandes villes, aux yeux de milliers de personnes."/>
+<title>ExpoMetro — Showcase Your Art in the City</title>
+<meta name="description" content="Join ExpoMetro, the global public art movement. Showcase your art in iconic public spaces and put it in front of thousands of people."/>
 <meta property="og:type" content="website"/>
-<meta property="og:title" content="ExpoMetro — Expose ton art dans la ville"/>
-<meta property="og:description" content="Rejoins le mouvement mondial d'art public. Expose ton art dans la ville, aux yeux de milliers de personnes."/>
+<meta property="og:title" content="ExpoMetro — Showcase Your Art in the City"/>
+<meta property="og:description" content="Join the global public art movement. Showcase your art in the city."/>
 <meta property="og:image" content="https://artinthe.city/img/hero.jpg"/>
 <meta property="og:url" content="https://artinthe.city"/>
+<link rel="alternate" hreflang="en" href="https://artinthe.city/"/>
+<link rel="alternate" hreflang="fr" href="https://artinthe.city/fr/"/>
+<link rel="alternate" hreflang="es" href="https://artinthe.city/es/"/>
+<link rel="alternate" hreflang="it" href="https://artinthe.city/it/"/>
+<link rel="alternate" hreflang="de" href="https://artinthe.city/de/"/>
+<link rel="alternate" hreflang="x-default" href="https://artinthe.city/"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt_sz,wght@0,18..72,400;0,18..72,500;0,18..72,600;1,18..72,400;1,18..72,500&display=swap" rel="stylesheet"/>
@@ -38,7 +44,7 @@ img{max-width:100%;display:block}
 input::placeholder{color:rgba(255,255,255,.65)}
 
 /* ---------- HERO ---------- */
-.hero{position:relative;min-height:60vh;padding-top:84px;display:flex;flex-direction:column;color:#fff;overflow:hidden;background-image:linear-gradient(180deg,rgba(14,20,49,.85) 0%,rgba(14,20,49,.55) 32%,rgba(14,20,49,.28) 58%,rgba(14,20,49,.35) 100%),url('img/hero.jpg');background-size:cover;background-position:center}
+.hero{position:relative;min-height:60vh;padding-top:84px;display:flex;flex-direction:column;color:#fff;overflow:hidden;background-image:linear-gradient(180deg,rgba(14,20,49,.85) 0%,rgba(14,20,49,.55) 32%,rgba(14,20,49,.28) 58%,rgba(14,20,49,.35) 100%),url('/img/hero.jpg');background-size:cover;background-position:center}
 .hero .photo-note{position:absolute;right:14px;bottom:12px;font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);border:1px dashed rgba(255,255,255,.25);padding:5px 10px;border-radius:20px}
 .topbar{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .25s ease,border-color .25s ease}
 .topbar-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:20px 40px}
@@ -148,7 +154,7 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .more-voices a{color:var(--accent)}
 
 /* full-bleed feature */
-.feature{position:relative;color:#fff;min-height:62vh;display:flex;align-items:flex-end;margin:56px 0;overflow:hidden;background-image:linear-gradient(rgba(14,20,49,.45),rgba(14,20,49,.86)),url('img/milan2024.jpg');background-size:cover;background-position:center}
+.feature{position:relative;color:#fff;min-height:62vh;display:flex;align-items:flex-end;margin:56px 0;overflow:hidden;background-image:linear-gradient(rgba(14,20,49,.45),rgba(14,20,49,.86)),url('/img/milan2024.jpg');background-size:cover;background-position:center}
 .feature .photo-note{position:absolute;right:14px;top:12px;font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);border:1px dashed rgba(255,255,255,.28);padding:5px 10px;border-radius:20px}
 .feature-inner{max-width:1120px;margin:0 auto;width:100%;padding:54px 40px}
 .feature .eyebrow{margin-bottom:14px}
@@ -168,7 +174,7 @@ figcaption{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var
 .closing .lead{color:#fff;font-weight:700}
 /* Florence image teaser (blurred) with centered eye anchor */
 .closing-cta{position:relative;overflow:hidden;margin:32px 0 28px;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:300px}
-.closing-cta::before{content:"";position:absolute;inset:0;background-image:url('img/new_project.jpg');background-size:cover;background-position:center;filter:blur(3px);transform:scale(1.06)}
+.closing-cta::before{content:"";position:absolute;inset:0;background-image:url('/img/new_project.jpg');background-size:cover;background-position:center;filter:blur(3px);transform:scale(1.06)}
 .closing-cta::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(8,10,24,.42),rgba(8,10,24,.6))}
 .reveal{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;text-decoration:none;cursor:pointer}
 .reveal-eye{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;transition:transform .2s ease,background .2s ease}
@@ -245,7 +251,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 .modal-close:hover{background:#e2e5ec}
 /* confirmation */
 .modal-box.confirm-box{text-align:center;max-width:480px;padding:0;overflow:hidden}
-.confirm-hero{height:170px;background-image:url('img/monde.jpg');background-size:cover;background-position:center}
+.confirm-hero{height:170px;background-image:url('/img/monde.jpg');background-size:cover;background-position:center}
 .confirm-body{padding:0 32px 36px}
 .confirm-icon{width:74px;height:74px;border-radius:50%;background:var(--accent);box-shadow:0 10px 26px rgba(255,82,103,.45),0 0 0 5px #fff;display:flex;align-items:center;justify-content:center;margin:-37px auto 16px}
 .confirm-icon i{font-size:38px;color:#fff}
@@ -267,16 +273,16 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 
 <header class="topbar" id="topbar">
   <div class="topbar-inner">
-    <span class="topbar-title">Ton art dans la ville</span>
+    <span class="topbar-title">YOUR ART IN THE CITY</span>
     <div class="topbar-right">
       <div class="lang">
-        <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> FR <i class="ti ti-chevron-down"></i></button>
+        <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> EN <i class="ti ti-chevron-down"></i></button>
         <div class="lang-menu" id="langMenu">
-          <a href="expometro-landing-mockup.html" class="active">Français</a>
-          <a href="expometro-landing-en.html">English</a>
-          <a href="#">Español</a>
-          <a href="#">Italiano</a>
-          <a href="#">Deutsch</a>
+          <a href="/" class="active">English</a>
+          <a href="/fr/">Français</a>
+          <a href="/es/">Español</a>
+          <a href="/it/">Italiano</a>
+          <a href="/de/">Deutsch</a>
         </div>
       </div>
     </div>
@@ -288,9 +294,9 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   <div class="hero-body">
     <div class="hero-inner">
       <div class="hero-col">
-        <p class="eyebrow">Artistes et photographes indépendants</p>
-        <h1 class="hero-title">Tes <span class="rotword" id="rotWord">œuvres</span><br>méritent d'être vues</h1>
-        <p class="hero-promise">Je te dévoile comment exposer ton art dans la ville.</p>
+        <p class="eyebrow">Independent Artists & Photographers</p>
+        <h1 class="hero-title">Your <span class="rotword" id="rotWord">artworks</span><br>deserve to be seen</h1>
+        <p class="hero-promise">Discover how to exhibit your art in the city.</p>
       </div>
     </div>
   </div>
@@ -299,16 +305,16 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 <!-- email band sous le hero -->
 <section class="hero-signup">
   <div class="wrap">
-    <p class="signup-q">Tu veux savoir comment rendre ton art visible à des milliers de personnes ?</p>
+    <p class="signup-q">Want to know how to get your art seen by thousands of people?</p>
     <form class="hero-form" onsubmit="return false">
-      <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
-      <button class="btn">Oui je veux savoir <i class="ti ti-arrow-right"></i></button>
+      <input class="input" type="email" placeholder="Your email address" aria-label="Your email address"/>
+      <button class="btn">Yes, Show Me How <i class="ti ti-arrow-right"></i></button>
     </form>
     <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes et photographes</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Affordable</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Open to all artists &amp; photographers</span>
     </p>
-    <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#" data-modal="privacy">Politique de confidentialité</a></p>
+    <p class="consent">By entering your email, you agree to receive updates from us.<br><a href="#" data-modal="privacy">Privacy Policy</a></p>
   </div>
 </section>
 
@@ -316,110 +322,110 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 <div class="wrap">
   <article>
 
-    <p>Depuis toujours, l’art est resté à l’intérieur.</p>
+    <p>For centuries, art has stayed indoors.</p>
     <div class="stanza">
-      <p>À l’intérieur des <span class="hl">maisons</span>.</p>
-      <p>À l’intérieur des <span class="hl">galeries</span>.</p>
-      <p>À l’intérieur des <span class="hl">musées</span>.</p>
-      <p>À l’intérieur de ton <span class="hl">téléphone</span>…</p>
+      <p>Inside <span class="hl">homes</span>.</p>
+      <p>Inside <span class="hl">galleries</span>.</p>
+      <p>Inside <span class="hl">museums</span>.</p>
+      <p>Inside your <span class="hl">phone</span>…</p>
     </div>
 
-    <h2>Et si on sortait ton art pour enfin l'exposer au grand jour ?</h2>
+    <h2>What if your art became part of the city?</h2>
 
     <figure>
-      <img loading="lazy" decoding="async" class="fig-img" src="img/grandjour.jpg" alt="Un artiste devant son œuvre affichée en grand dans la ville"/>
-      <figcaption>Baldo Cicero, peintre &amp; illustrateur, Belgique — ExpoMetro Rome, janvier 2026</figcaption>
+      <img loading="lazy" decoding="async" class="fig-img" src="/img/grandjour.jpg" alt="Un artiste devant son œuvre affichée en grand dans la ville"/>
+      <figcaption>Baldo Cicero, Painter &amp; Illustrator, Belgium — ExpoMetro Rome, January 2026</figcaption>
     </figure>
 
-    <p>Imagine ton œuvre affichée sur une place publique.</p>
-    <p>Des milliers de personnes passent devant. Certaines ralentissent. D’autres s’arrêtent. Elles la regardent. La photographient. La partagent.</p>
-    <p>Ton oeuvre n’est plus enfermée entre quatre murs. Elle fait désormais partie de la ville.</p>
+    <p>Imagine your artwork displayed in a public square.</p>
+    <p>Thousands of people walk by. Some slow down. Others stop. They look. They take photos. They share it.</p>
+    <p>Your artwork is no longer hidden between four walls. It's now part of the city.</p>
 
-    <p class="signup-q">Tu veux sortir l’art de chez toi ?</p>
+    <p class="signup-q">Ready to bring your art into the city?</p>
     <form class="hero-form" onsubmit="return false">
-      <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
-      <button class="btn">Oui je veux <i class="ti ti-arrow-right"></i></button>
+      <input class="input" type="email" placeholder="Your email address" aria-label="Your email address"/>
+      <button class="btn">Yes, I Am <i class="ti ti-arrow-right"></i></button>
     </form>
     <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes et photographes</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Affordable</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Open to all artists &amp; photographers</span>
     </p>
 
 
     <div class="voices">
       <figure class="voice">
-        <img loading="lazy" decoding="async" class="v-media" src="img/temoignage1.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
+        <img loading="lazy" decoding="async" class="v-media" src="/img/temoignage1.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
         <div class="v-text">
-          <p class="vquote">«&nbsp;Un rêve devenu réalité&nbsp;»</p>
+          <p class="vquote">“A dream come true”</p>
           <p class="vname">Heike Kolles — Austria 🇦🇹</p>
-          <p class="vrole">Artiste peintre — ExpoMetro Rome, janvier 2026</p>
+          <p class="vrole">Painter — ExpoMetro Rome, January 2026</p>
         </div>
       </figure>
       <figure class="voice rev">
-        <img loading="lazy" decoding="async" class="v-media" src="img/temoignage2.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
+        <img loading="lazy" decoding="async" class="v-media" src="/img/temoignage2.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
         <div class="v-text">
-          <p class="vquote">«&nbsp;C’est la première fois que je ressens ça&nbsp;»</p>
+          <p class="vquote">“I have never felt anything like this”</p>
           <p class="vname">Poupée Caussin Belon — France 🇫🇷</p>
-          <p class="vrole">Artiste peintre — ExpoMetro Times Square, 2023</p>
+          <p class="vrole">Painter — ExpoMetro Times Square, 2023</p>
         </div>
       </figure>
       <figure class="voice">
-        <img loading="lazy" decoding="async" class="v-media" src="img/temoignage3.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
+        <img loading="lazy" decoding="async" class="v-media" src="/img/temoignage3.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
         <div class="v-text">
-          <p class="vquote">«&nbsp;Quelle fierté et quel bonheur&nbsp;»</p>
+          <p class="vquote">“Such pride and such joy”</p>
           <p class="vname">James William Moore — United States 🇺🇸</p>
-          <p class="vrole">Photographe — ExpoMetro Rome, janvier 2026</p>
+          <p class="vrole">Photographer — ExpoMetro Rome, January 2026</p>
         </div>
       </figure>
       <figure class="voice rev">
-        <img loading="lazy" decoding="async" class="v-media" src="img/temoignage5.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
+        <img loading="lazy" decoding="async" class="v-media" src="/img/temoignage5.jpg" alt="Artiste ExpoMetro devant son œuvre"/>
         <div class="v-text">
-          <p class="vquote">«&nbsp;Je ne pensais pas que cela pouvait m’arriver un jour&nbsp;»</p>
+          <p class="vquote">“I never thought this could happen to me”</p>
           <p class="vname">Mayte Prusiazul — Spain 🇪🇸</p>
-          <p class="vrole">Illustratrice — ExpoMetro Times Square, 2023</p>
+          <p class="vrole">Illustrator — ExpoMetro Times Square, 2023</p>
         </div>
       </figure>
     </div>
 
-    <p>Il y a quelque chose de magique qui se produit lorsque des centaines d’artistes venus des quatre coins du monde exposent ensemble.</p>
+    <p>Something incredible happens when hundreds of artists from around the world exhibit together.</p>
     <div class="stanza">
-      <p>Des cultures différentes.</p>
-      <p>Des histoires différentes.</p>
-      <p>Des styles artistiques différents.</p>
+      <p>Different cultures.</p>
+      <p>Different stories.</p>
+      <p>Different artistic styles.</p>
     </div>
-    <p>Tous unis dans des œuvres collectives monumentales.</p>
+    <p>United in monumental collective artworks.</p>
     <div class="tvoices">
-      <p class="claim">Des artistes qui n’avaient jamais exposé auparavant.</p>
+      <p class="claim">Artists who had never exhibited before.</p>
       <blockquote class="tquote">
-        <img loading="lazy" decoding="async" class="tart" src="img/art-sheila.jpg" alt="Œuvre de Sheila-Dee Domingo"/>
-        <div class="tbody"><p>«&nbsp;C’est la première fois que je montre mon art. Merci de donner enfin une scène aux artistes.&nbsp;»</p><cite>Sheila-Dee Domingo 🇨🇦</cite></div>
+        <img loading="lazy" decoding="async" class="tart" src="/img/art-sheila.jpg" alt="Œuvre de Sheila-Dee Domingo"/>
+        <div class="tbody"><p>“It’s the first time I’ve shown my art. Thank you for finally giving artists a stage.”</p><cite>Sheila-Dee Domingo 🇨🇦</cite></div>
       </blockquote>
 
-      <p class="claim">Des artistes qui avaient perdu confiance.</p>
+      <p class="claim">Artists who had lost confidence.</p>
       <blockquote class="tquote">
-        <img loading="lazy" decoding="async" class="tart" src="img/art-lilie.jpg" alt="Œuvre de Lilie Perline"/>
-        <div class="tbody"><p>«&nbsp;Chaque exposition est une nouvelle rencontre avec le public et les artistes. Je suis reconnaissante de partager mon travail et mes émotions à travers mon art.&nbsp;»</p><cite>Lilie Perline 🇫🇷</cite></div>
+        <img loading="lazy" decoding="async" class="tart" src="/img/art-lilie.jpg" alt="Œuvre de Lilie Perline"/>
+        <div class="tbody"><p>“Every exhibition is a new encounter with the public and with other artists. I’m grateful to share my work and my emotions through my art.”</p><cite>Lilie Perline 🇫🇷</cite></div>
       </blockquote>
 
-      <p class="claim">Des artistes qui ont enfin osé rendre leur art visible.</p>
+      <p class="claim">Artists who finally found the courage to share their art.</p>
       <blockquote class="tquote">
-        <img loading="lazy" decoding="async" class="tart" src="img/art-jeanpierre.jpg" alt="Œuvre de Jean-Pierre Mignan"/>
-        <div class="tbody"><p>«&nbsp;C’est un grand honneur d’exposer dans une ville, c’est une expérience à la fois enrichissante et inspirante.&nbsp;»</p><cite>Jean-Pierre Mignan 🇫🇷</cite></div>
+        <img loading="lazy" decoding="async" class="tart" src="/img/art-jeanpierre.jpg" alt="Œuvre de Jean-Pierre Mignan"/>
+        <div class="tbody"><p>“It’s a great honour to exhibit in a city — an experience that’s both enriching and inspiring.”</p><cite>Jean-Pierre Mignan 🇫🇷</cite></div>
       </blockquote>
     </div>
 
     <blockquote class="mquote">
-      <p>C’est cette énergie, cette fierté et cette émotion qui créent des moments mémorables et qui font réellement vivre ton art.</p>
+      <p>That's where the magic happens. The pride. The emotion. The shared energy. The moments that truly bring your art to life.</p>
     </blockquote>
 
-    <p class="signup-q">Toi aussi tu veux vivre une expérience avec des artistes du monde entier ?</p>
+    <p class="signup-q">Want to experience it alongside artists from all over the world?</p>
     <form class="hero-form" onsubmit="return false">
-      <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
-      <button class="btn">Rejoindre le mouvement <i class="ti ti-arrow-right"></i></button>
+      <input class="input" type="email" placeholder="Your email address" aria-label="Your email address"/>
+      <button class="btn">Join the Movement <i class="ti ti-arrow-right"></i></button>
     </form>
     <p class="reassure" style="color:#fff;font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
-      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes et photographes</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Affordable</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Open to all artists &amp; photographers</span>
     </p>
 
   </article>
@@ -428,73 +434,73 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 <!-- founder (white) -->
 <section class="founder">
   <div class="wrap">
-    <h2>Qui suis-je ?</h2>
-    <img loading="lazy" decoding="async" class="bio-img" src="img/rudolph.jpg" alt="Rudolph, fondateur du mouvement"/>
-    <p>Je m’appelle Rudolph. En 2018, j’ai lancé ce mouvement mondial d’art public, baptisé <b>ExpoMetro</b>, pour rendre les artistes visibles là où la vie se passe vraiment : au cœur de la ville.</p>
-    <p>Depuis, plus de <b>6 000 artistes</b> venus de plus de <b>100 pays</b> ont exposé dans certains des lieux publics les plus iconiques du monde : Paris, Londres, Madrid, Rome…</p>
-    <p>Je crois profondément que les villes peuvent devenir les plus grandes galeries d’art du monde. Et ce n’est que le début.</p>
-    <p class="sign"><b>Rudolph van Valkenburg</b><span>Fondateur d’ExpoMetro</span></p>
+    <h2>Who am I?</h2>
+    <img loading="lazy" decoding="async" class="bio-img" src="/img/rudolph.jpg" alt="Rudolph, fondateur du mouvement"/>
+    <p>My name is Rudolph. In 2018, I launched <b>ExpoMetro</b>, a global public art movement created to make artists visible where life really happens: in the heart of the city.</p>
+    <p>Since then, more than <b>6,000 artists</b> from over <b>100 countries</b> have exhibited in some of the world’s most iconic public spaces, including Paris, London, Madrid and Rome.</p>
+    <p>I truly believe our cities can become the world’s greatest art galleries. And we’re only getting started.</p>
+    <p class="sign"><b>Rudolph van Valkenburg</b><span>Founder of ExpoMetro</span></p>
   </div>
 </section>
 
 <!-- dark closing -->
 <section class="closing" id="projet">
   <div class="wrap">
-    <h2>Si tu lis encore ces quelques lignes…</h2>
-    <p>… alors j’ai une bonne nouvelle pour toi.</p>
-    <p>Nous préparons un nouveau projet hors-norme dans un lieu iconique avec des artistes du monde entier.</p>
+    <h2>Still reading?</h2>
+    <p>Then I have good news.</p>
+    <p>We’re preparing an extraordinary new project in an iconic location with artists from around the world.</p>
     <div class="closing-cta">
-      <a class="reveal" href="#closing-form" aria-label="Laisser mon email pour découvrir le lieu">
+      <a class="reveal" href="#closing-form" aria-label="Leave my email to discover the location">
         <span class="reveal-eye"><i class="ti ti-eye"></i></span>
-        <span class="reveal-cap">Laisse ton email et je te dévoile le lieu…</span>
+        <span class="reveal-cap">Leave your email and I’ll reveal the location.</span>
       </a>
     </div>
     <div class="closing-form" id="closing-form">
-      <p class="signup-q">Tu veux faire partie du prochain événement mondial d’art public ?</p>
+      <p class="signup-q">Want to be part of our next global public art event?</p>
       <form class="hero-form" onsubmit="return false">
-        <input class="input" type="email" placeholder="Ton adresse email" aria-label="Ton adresse email"/>
-        <button class="btn">Découvrir l’expo publique <i class="ti ti-arrow-right"></i></button>
+        <input class="input" type="email" placeholder="Your email address" aria-label="Your email address"/>
+        <button class="btn">Discover the Project <i class="ti ti-arrow-right"></i></button>
       </form>
       <p class="reassure" style="font-weight:500;font-size:15px;display:flex;gap:18px;flex-wrap:wrap">
-        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Abordable</span>
-        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Ouvert à tous les artistes et photographes</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Affordable</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Accessible</span><span style="display:inline-flex;align-items:center;gap:6px"><i class="ti ti-check" style="color:var(--accent)"></i>Open to all artists &amp; photographers</span>
       </p>
-      <p class="consent">En laissant ton email, tu acceptes de recevoir nos informations.<br><a href="#" data-modal="privacy">Politique de confidentialité</a></p>
+      <p class="consent">By entering your email, you agree to receive updates from us.<br><a href="#" data-modal="privacy">Privacy Policy</a></p>
     </div>
   </div>
 </section>
 
 <footer>
-  <img loading="lazy" decoding="async" class="foot-logo" src="img/logo-mark.png" alt="ExpoMetro"/>
-  TON ART DANS LA VILLE
-  <span class="foot-links"><a href="#" data-modal="privacy">Politique de confidentialité</a> · <a href="#" data-modal="legal">Mentions légales</a></span>
+  <img loading="lazy" decoding="async" class="foot-logo" src="/img/logo-mark.png" alt="ExpoMetro"/>
+  YOUR ART IN THE CITY
+  <span class="foot-links"><a href="#" data-modal="privacy">Privacy Policy</a> · <a href="#" data-modal="legal">Legal Notice</a></span>
 </footer>
 
-<!-- Politique de confidentialité -->
+<!-- Privacy Policy -->
 <div class="modal" id="privacy" role="dialog" aria-modal="true" aria-labelledby="privacy-t">
   <div class="modal-box">
     <button class="modal-close" data-close aria-label="Fermer">&times;</button>
-    <h3 id="privacy-t">Politique de confidentialité</h3>
-    <p><strong>Responsable du traitement.</strong> VISIONART (SAS), éditeur d’ExpoMetro, 231 rue Saint-Honoré, 75001 Paris, collecte ton adresse email via ce formulaire.</p>
-    <p><strong>Pourquoi&nbsp;?</strong> Uniquement pour t’envoyer des informations sur notre projet et nos prochaines expositions. Pas de revente, pas de partage à des tiers à des fins commerciales.</p>
-    <p><strong>Base légale.</strong> Ton consentement, donné en laissant ton email. Tu peux le retirer à tout moment.</p>
-    <p><strong>Durée de conservation.</strong> Ton email est conservé tant que tu es inscrit, et supprimé sur simple demande ou à ta désinscription.</p>
-    <p><strong>Tes droits.</strong> Tu disposes d’un droit d’accès, de rectification, d’effacement, de limitation et d’opposition. Pour les exercer&nbsp;: <a href="mailto:hello@expometro.co">hello@expometro.co</a>.</p>
-    <p><strong>Désinscription.</strong> Chaque email contient un lien de désinscription en un clic.</p>
-    <p style="font-size:12px;color:#9aa1ad">Dernière mise à jour&nbsp;: 2026.</p>
+    <h3 id="privacy-t">Privacy Policy</h3>
+    <p><strong>Data controller.</strong> VISIONART (SAS), the company behind ExpoMetro, 231 rue Saint-Honoré, 75001 Paris, France, collects your email address through this form.</p>
+    <p><strong>Why?</strong> Solely to send you information about our project and upcoming exhibitions. We never sell or share your data with third parties for commercial purposes.</p>
+    <p><strong>Legal basis.</strong> Your consent, given when you enter your email. You can withdraw it at any time.</p>
+    <p><strong>Retention.</strong> Your email is kept for as long as you are subscribed, and deleted upon request or when you unsubscribe.</p>
+    <p><strong>Your rights.</strong> You have the right to access, rectify, erase, restrict and object to the processing of your data. To exercise them: <a href="mailto:hello@expometro.co">hello@expometro.co</a>.</p>
+    <p><strong>Unsubscribe.</strong> Every email includes a one-click unsubscribe link.</p>
+    <p style="font-size:12px;color:#9aa1ad">Last updated: 2026.</p>
   </div>
 </div>
 
-<!-- Mentions légales -->
+<!-- Legal Notice -->
 <div class="modal" id="legal" role="dialog" aria-modal="true" aria-labelledby="legal-t">
   <div class="modal-box">
     <button class="modal-close" data-close aria-label="Fermer">&times;</button>
-    <h3 id="legal-t">Mentions légales</h3>
-    <p><strong>Éditeur du site.</strong> ExpoMetro est un service édité par <strong>VISIONART</strong>, société par actions simplifiée (SAS) au capital de 1&nbsp;000&nbsp;€, immatriculée au RCS de Paris sous le n°&nbsp;897&nbsp;581&nbsp;682, dont le siège social est situé 231 rue Saint-Honoré, 75001 Paris. Code APE&nbsp;: 8230Z.</p>
+    <h3 id="legal-t">Legal Notice</h3>
+    <p><strong>Publisher.</strong> ExpoMetro is a service published by <strong>VISIONART</strong>, a French simplified joint-stock company (SAS) with share capital of €1,000, registered with the Paris Trade &amp; Companies Register under no.&nbsp;897&nbsp;581&nbsp;682, with its registered office at 231 rue Saint-Honoré, 75001 Paris, France. APE code: 8230Z.</p>
     <p><strong>Contact.</strong> <a href="mailto:hello@expometro.co">hello@expometro.co</a></p>
-    <p><strong>Directeur de la publication.</strong> Rudolph Van Valkenburg, président.</p>
-    <p><strong>Hébergement.</strong> Ce site est hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA.</p>
-    <p><strong>Propriété intellectuelle.</strong> L’ensemble des contenus (textes, images, logos) est la propriété de VISIONART, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+    <p><strong>Publication director.</strong> Rudolph Van Valkenburg, President.</p>
+    <p><strong>Hosting.</strong> This site is hosted by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA.</p>
+    <p><strong>Intellectual property.</strong> All content (text, images, logos) is the property of VISIONART unless otherwise stated. Any reproduction without permission is prohibited.</p>
   </div>
 </div>
 
@@ -505,10 +511,10 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
     <div class="confirm-hero"></div>
     <div class="confirm-body">
       <div class="confirm-icon"><i class="ti ti-mail-check"></i></div>
-      <h3 id="confirm-t">Félicitations&nbsp;! 🎉</h3>
-      <p>Tu vas recevoir un email sur <span class="c-email">ton@email.com</span> de la part de <strong>hello@expometro.co</strong>.</p>
-      <p class="c-spam">Tu ne le vois pas&nbsp;? Pense à vérifier dans tes <strong>spams</strong>.</p>
-      <p>Une erreur dans ton email&nbsp;?<br><button class="c-resend" data-close>Renvoyer mon email</button></p>
+      <h3 id="confirm-t">Congratulations! 🎉</h3>
+      <p>We’ve just sent an email to <span class="c-email">your@email.com</span> from <strong>hello@expometro.co</strong>.</p>
+      <p class="c-spam">Can’t find it? Check your <strong>spam</strong> or junk folder.</p>
+      <p>Wrong email address?<br><button class="c-resend" data-close>Send it again</button></p>
     </div>
   </div>
 </div>
@@ -518,7 +524,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
 (function(){
   var el=document.getElementById('rotWord');
   if(!el)return;
-  var words=['œuvres','photos'];
+  var words=['artworks','photos'];
   var wi=0,ci=0,deleting=false;
   var TYPE=95,ERASE=55,HOLD_FULL=1600,HOLD_EMPTY=350;
   function tick(){
@@ -590,7 +596,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
   /* ---------- Capture email (Brevo) + confirmation ---------- */
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var confirmModal=document.getElementById('confirm');
-  var DEMO=true;  /* ⚠️ MODE DÉMO : la popup s'affiche sans enregistrer l'email. Passer à false pour activer Brevo. */
+  var DEMO=false;  /* ⚠️ MODE DÉMO : la popup s'affiche sans enregistrer l'email. Passer à false pour activer Brevo. */
   var isPreview=(location.protocol==='file:'||DEMO);  /* aperçu / démo : pas d'API, on montre juste la popup */
 
   function showConfirm(email){
@@ -619,7 +625,7 @@ footer{background:var(--paper);color:rgba(255,255,255,.5);text-align:center;font
         showConfirm(email);
         f.reset();
       }).catch(function(){
-        alert('Oups, une erreur est survenue. Réessaie dans un instant.');
+        alert('Oops! Something went wrong. Please try again in a moment.');
       }).then(function(){
         btn.disabled=false;btn.innerHTML=label;
       });
