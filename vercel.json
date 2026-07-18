@@ -1,6 +1,46 @@
 {
   "rewrites": [
     {
+      "source": "/join-florence/",
+      "destination": "/join-florence/index.html"
+    },
+    {
+      "source": "/join-florence",
+      "destination": "/join-florence/index.html"
+    },
+    {
+      "source": "/fr/join-florence",
+      "destination": "/fr/join-florence/index.html"
+    },
+    {
+      "source": "/fr/join-florence/",
+      "destination": "/fr/join-florence/index.html"
+    },
+    {
+      "source": "/es/join-florence",
+      "destination": "/es/join-florence/index.html"
+    },
+    {
+      "source": "/es/join-florence/",
+      "destination": "/es/join-florence/index.html"
+    },
+    {
+      "source": "/it/join-florence",
+      "destination": "/it/join-florence/index.html"
+    },
+    {
+      "source": "/it/join-florence/",
+      "destination": "/it/join-florence/index.html"
+    },
+    {
+      "source": "/de/join-florence",
+      "destination": "/de/join-florence/index.html"
+    },
+    {
+      "source": "/de/join-florence/",
+      "destination": "/de/join-florence/index.html"
+    },
+    {
       "source": "/florence",
       "destination": "/florence/index.html"
     },
@@ -77,13 +117,19 @@
     {
       "source": "/img/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/florence/img/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ]
