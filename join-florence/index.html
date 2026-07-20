@@ -303,6 +303,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 
 /* founder */
 .founder-light{background:#000;color:#fff;padding:44px 0 64px}
+.founder-banner{width:100%;height:auto;display:block;border-radius:16px;margin:4px 0 30px}
 .founder-light .narr-title{margin-top:0}
 .founder-light .kicker{color:var(--accent);text-align:center}
 .founder-light .founder-row{align-items:flex-start;gap:36px}
@@ -453,13 +454,17 @@ footer a{color:rgba(255,255,255,.55)}
 @media(max-width:560px){.br-oui{display:inline}}
 
 /* video testimonials */
-.vtesti{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 26px}
-.vtesti-card{position:relative;aspect-ratio:16/9;width:100%;max-width:300px;flex:1 1 220px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0b0f1e;cursor:pointer;padding:0}
-.vtesti-card img{width:100%;height:100%;object-fit:cover;display:block}
+.vtesti{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 28px;margin:14px 0 30px}
+.vfig{margin:0;display:flex;flex-direction:column;gap:16px}
+.vquote{font-family:var(--serif);font-size:22px;line-height:1.32;color:var(--head);font-style:italic;margin:0;letter-spacing:-.01em}
+.vq-city{display:block;margin-top:10px;font-family:var(--sans);font-size:12.5px;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+@media(max-width:640px){.vtesti{grid-template-columns:1fr;gap:30px}.vquote{font-size:23px;line-height:1.3}}
+.vtesti-card{position:relative;aspect-ratio:3/4;width:100%;display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0b0f1e;cursor:pointer;padding:0}
+.vtesti-card img{width:100%;height:100%;object-fit:cover;display:block;object-position:center 30%}
 .vtesti-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.4))}
-.vplay{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
-.vplay svg{width:64px;height:64px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.6));transition:transform .15s}
-.vtesti-card:hover .vplay svg{transform:scale(1.08)}
+.vt-play{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
+.vt-play svg{width:64px;height:64px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.6));transition:transform .15s}
+.vtesti-card:hover .vt-play svg{transform:scale(1.08)}
 .vmodal-box{background:#000;max-width:min(880px,94vw);padding:0;overflow:hidden}
 .vmodal-box .modal-close{background:rgba(0,0,0,.5);color:#fff;z-index:3}
 .vframe{position:relative;width:100%;aspect-ratio:16/9;max-height:85vh}
@@ -548,20 +553,36 @@ footer a{color:rgba(255,255,255,.55)}
 <!-- TÉMOIGNAGES -->
 <section class="sec" style="padding-top:20px;padding-bottom:20px">
   <div class="narrow">
-    <h2 class="narr-title">Artists exhibit their work in the city and join a global public art movement.</h2>
+    <h2 class="narr-title">Artists exhibit their work in the city and join <span class="em">a global public art movement</span>.</h2>
     <div class="vtesti">
-      <button class="vtesti-card" type="button" data-video="NjaPwHy0yk0" data-ratio="9:16" aria-label="Watch — The Art Tunnel Barcelona">
-        <img loading="lazy" src="https://i.ytimg.com/vi/NjaPwHy0yk0/hqdefault.jpg" alt="Watch — The Art Tunnel Barcelona"/>
-        <span class="vplay" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
-      </button>
-      <button class="vtesti-card" type="button" data-video="rKB-ERj3Gn8" data-ratio="16:9" aria-label="Watch — ExpoMetro Amsterdam">
-        <img loading="lazy" src="https://i.ytimg.com/vi/rKB-ERj3Gn8/hqdefault.jpg" alt="Watch — ExpoMetro Amsterdam"/>
-        <span class="vplay" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
-      </button>
-      <button class="vtesti-card" type="button" data-video="78EvHBxSrGk" data-ratio="9:16" aria-label="Watch — ExpoMetro Milan">
-        <img loading="lazy" src="https://i.ytimg.com/vi/78EvHBxSrGk/hqdefault.jpg" alt="Watch — ExpoMetro Milan"/>
-        <span class="vplay" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
-      </button>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="NjaPwHy0yk0" data-ratio="9:16" aria-label="Watch : Barcelona 2025">
+          <img loading="lazy" src="/florence/img/vthumb-barcelone.jpg" alt="Barcelona 2025"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I find the idea just amazing to replace advertising with Art”<span class="vq-city">Barcelona 2025</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="rKB-ERj3Gn8" data-ratio="16:9" aria-label="Watch : Amsterdam 2024">
+          <img loading="lazy" src="/florence/img/vthumb-amsterdam.jpg" alt="Amsterdam 2024"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I love this co-creation art movement”<span class="vq-city">Amsterdam 2024</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="78EvHBxSrGk" data-ratio="9:16" aria-label="Watch : Milan 2024">
+          <img loading="lazy" src="/florence/img/vthumb-milan.jpg" alt="Milan 2024"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I find this ExpoMetro initiative fantastic, especially happy to have this experience in my city”<span class="vq-city">Milan 2024</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="1BR-_1rEGl0" data-ratio="9:16" aria-label="Watch : Rome 2026">
+          <img loading="lazy" src="/florence/img/vthumb-rome.jpg" alt="Rome 2026"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I think this great idea will run into the future and will become bigger and bigger”<span class="vq-city">Rome 2026</span></figcaption>
+      </figure>
     </div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-peter.jpg" alt="Peter Tirpák"/><div><p class="q"><!-- EN: Thank you for this remarkable celebration of art without borders, uniting talented artists and diverse cultures from across the globe. -->«&nbsp;Thank you for this remarkable celebration of art without borders, uniting talented artists and diverse cultures from across the globe.&nbsp;»</p><p class="who">Peter Tirpák <span>· TIR.PAK.ART · Slovaquie 🇸🇰</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-dream.jpg" alt="DreamAnalysingArtist"/><div><p class="q"><!-- EN: Over the moon to be part of Expo Metro – love the idea of replacing advertising around the world with art! Participation is so simple and inclusive too. -->«&nbsp;Over the moon to be part of ExpoMetro — I love the idea of replacing advertising around the world with art! Participation is so simple and inclusive too.&nbsp;»</p><p class="who">DreamAnalysingArtist <span>· Royaume-Uni 🇬🇧</span></p></div></div>
@@ -625,8 +646,8 @@ footer a{color:rgba(255,255,255,.55)}
 <section class="founder-light">
   <div class="narrow">
     <h2 class="narr-title">About Me</h2>
+    <img class="founder-banner" loading="lazy" src="/florence/img/rudolph-expo.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
     <div class="founder-row">
-      <img loading="lazy" src="/florence/img/rudolph.jpg" alt="Rudolph, fondateur d'ExpoMetro"/>
       <div class="ft">
         <p>My name is Rudolph.</p>
         <p>After a traditional career in leading auction houses and prestigious art galleries, I decided to challenge the rules of the art world. I was tired of seeing so many talented artists lost online or unable to exhibit beyond their own homes.</p>
