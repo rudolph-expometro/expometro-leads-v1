@@ -412,12 +412,30 @@ footer a{color:rgba(255,255,255,.55)}
   </div>
   <div class="hero-inner">
     <p class="hero-sub">Expón tu obra en las paredes y el techo de un túnel de 25 metros, junto a artistas de todo el mundo. Más de 50.000 personas verán tu obra.</p>
-    <a class="btn btn-lg" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accesible</span><span><i class="ti ti-check"></i>Asequible</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p>
+    <a class="btn btn-lg" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Desde 49€</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p>
   </div>
   <i class="ti ti-chevron-down scroll-hint"></i>
 </section>
 
 <!-- BANDE INFOS : statut des journées -->
+<!-- ARTIST TICKER -->
+<style>
+.artix{display:flex;align-items:stretch;background:#070a17;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;font-family:var(--sans)}
+.artix-tag{flex-shrink:0;display:flex;align-items:center;gap:9px;padding:0 16px;background:#070a17;color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.13em;white-space:nowrap;z-index:2;box-shadow:16px 0 20px -6px #070a17}
+.artix-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:artixpulse 1.5s infinite}
+@keyframes artixpulse{0%{box-shadow:0 0 0 0 rgba(255,82,103,.6)}70%{box-shadow:0 0 0 8px rgba(255,82,103,0)}100%{box-shadow:0 0 0 0 rgba(255,82,103,0)}}
+.artix-view{flex:1;overflow:hidden;display:flex}
+.artix-track{display:inline-flex;align-items:center;white-space:nowrap;will-change:transform;animation:artixscroll linear infinite}
+.artix:hover .artix-track{animation-play-state:paused}
+@keyframes artixscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.artix-item{display:inline-flex;align-items:center;gap:7px;padding:11px 15px;color:#e7ebf3;font-size:13.5px}
+.artix-item .fl{font-size:16px;line-height:1}
+.artix-sep{color:var(--accent);opacity:.45;font-weight:700}
+@media(max-width:560px){.artix{flex-direction:column}.artix-tag{justify-content:center;padding:7px 12px;border-bottom:1px solid var(--line);box-shadow:none;font-size:10.5px;letter-spacing:.07em}.artix-view{display:block;width:100%}.artix-item{font-size:12.5px;padding:9px 13px}}
+</style>
+<div class="artix" aria-label="EN VIVO 98 ARTISTAS"><div class="artix-tag"><span class="artix-dot"></span>EN VIVO&nbsp;·&nbsp;<span class="artix-count">98 ARTISTAS · 23 PAÍSES</span></div><div class="artix-view"><div class="artix-track" id="artixTrack"></div></div></div>
+<script>(function(){var FB=[["A.R.Grachenfels", "DE"], ["Chantal Burkhardt", "DE"], ["Farbzauber Mom", "DE"], ["Heike Maria Glöckner", "DE"], ["Ilona Grumann", "DE"], ["Ines Scheithauer", "DE"], ["Juergen Moers", "DE"], ["Katrin Meie", "DE"], ["Kerstin Wolf", "DE"], ["Kristallkunst", "DE"], ["Martin Buntrock", "DE"], ["mel_arte (Melanie)", "DE"], ["Monsieur Franck", "DE"], ["Ravynne Wood", "DE"], ["Sandra Jungklaus", "DE"], ["__natalie.art__", "DE"], ["Adrianna Bieżyńska", "PL"], ["ciszaifarba", "PL"], ["Alain Galet", "FR"], ["Jérôme Besnoist", "FR"], ["laurence van baren", "FR"], ["Le Cerne Noir", "FR"], ["Lilie PERLINE", "FR"], ["Linda Chatel", "FR"], ["MAORI Overstreet", "FR"], ["Matteoni Lydie", "FR"], ["Mohammed Moudjou", "FR"], ["Niki", "FR"], ["Ostaladon", "FR"], ["Poupée Caussin-Bellon", "FR"], ["Sabine Wirt", "FR"], ["Sanz Dutheil", "FR"], ["Sophie Queuniez", "FR"], ["Véronique Romance", "FR"], ["Alberto Bonells", "SE"], ["Marias Art - Maria Bunyemen", "SE"], ["My_one_painting_by_andersson", "SE"], ["Amy Lynn Freeman", "US"], ["Art Imagined - Steven Weisz", "US"], ["Brandon B Shim", "US"], ["Caitlin Sheedy", "US"], ["CelesteR", "US"], ["Eddie Bruckner", "US"], ["Garry B. Stew\"ART\"", "US"], ["Irene Turner", "US"], ["jack mindin", "US"], ["James William Moore", "US"], ["Karen Pierce Gonzalez", "US"], ["Kimberley Cleland", "US"], ["Michael Gore", "US"], ["Mlswanson", "US"], ["Paige Pieper", "US"], ["Rhonda Lee", "US"], ["Ritzie Muckle", "US"], ["Ron Logan", "US"], ["Sondra Bernstein", "US"], ["Anna De Jesús Lugo", "PR"], ["AO.UWPHOTOGRAPHY", "PR"], ["arsnecopinata", "AE"], ["Arturo Solorio Godinez", "MX"], ["Barbara Stenz", "MX"], ["Carlos Abraham", "MX"], ["DOMARTT", "MX"], ["Gabriela Bonilla", "MX"], ["CeciliAmor", "CO"], ["CICERO BALDO CBDesign", "BE"], ["DaVynci", "BE"], ["Dominique Van Eeckhoudt", "BE"], ["Kukumaria", "BE"], ["Philippe Pellering", "BE"], ["Claudia Maria Albiero", "IT"], ["Meggie", "IT"], ["Patrizia Angiolina Belvedere", "IT"], ["Dagmar Strunakova", "SK"], ["Daniel Nieco", "AR"], ["Diego Axel Lazcano", "AR"], ["Estefanía @holazazpi", "ES"], ["Janice B", "ES"], ["LUCWIKK", "ES"], ["MARÍA CRISTINA VIÑAS PAZ", "ES"], ["Sara Silene Art", "ES"], ["Sophie Duart", "ES"], ["Francesca Pinoni", "CY"], ["Frilly Bumstead", "AU"], ["Nicholas D. Todd", "AU"], ["Gloria Carnevale", "CA"], ["lucied", "CA"], ["Mélanie Stéphanie Massé Artiste thevu.ca", "CA"], ["Hédia Carron", "CH"], ["Torsten Skoetz", "CH"], ["Jessica Siddique", "GB"], ["juniperloony", "GB"], ["Ranjit Sihat", "GB"], ["Yewbowart", "GB"], ["Laura S. Naudi", "AD"], ["Rares Kerekes", "RO"], ["Saejoon Oh", "KR"], ["Winnie Liu", "HK"]];var AW="ARTISTAS",CW="PA\u00cdSES";function fl(c){c=(c||"").toUpperCase();var o="";for(var i=0;i<c.length;i++){var d=c.charCodeAt(i)-65;if(d>=0&&d<26)o+=String.fromCodePoint(0x1F1E6+d);}return o;}function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}function render(L){var t=document.getElementById("artixTrack");if(!t||!L||!L.length)return;L=shuf(L);var it=L.map(function(a){return '<span class="artix-item"><span class="nm">'+esc(a[0])+'</span><span class="fl">'+fl(a[1])+'</span></span><span class="artix-sep">·</span>';}).join("");t.innerHTML=it+it;var w=t.scrollWidth/2;t.style.animationDuration=Math.max(30,Math.round(w/70))+"s";var cc={};L.forEach(function(a){cc[a[1]]=1;});var e=document.querySelector(".artix-count");if(e)e.textContent=L.length+" "+AW+" · "+Object.keys(cc).length+" "+CW;}render(FB);fetch("/api/florence-artists").then(function(r){return r.ok?r.json():null;}).then(function(d){if(d&&d.artists&&d.artists.length)render(d.artists);}).catch(function(){});})();</script>
+
 <div class="infoband">
   <div class="infoband-inner">
     <div class="ib-item ib-confirmed"><i class="ti ti-circle-check"></i><span><b>28 NOV</b> · Confirmado</span></div>
@@ -427,6 +445,24 @@ footer a{color:rgba(255,255,255,.55)}
 </div>
 
 <!-- INTRO / RÉCIT -->
+
+
+<!-- COMMENT ÇA MARCHE (remonté) -->
+<section class="sec" style="padding-top:30px;padding-bottom:18px">
+  <div class="narrow">
+    <div class="procbox">
+      <h2 class="narr-title">¿Cómo funciona?</h2>
+      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
+      <div class="miniproc">
+        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Reserva tu plaza en <b>2 minutos</b>.</span></div>
+        <div class="mp-step"><i class="ti ti-photo"></i><span>Sube la imagen de tu obra.</span></div>
+        <div class="mp-step"><i class="ti ti-circle-check"></i><span>¡Eso es todo! <b>Tu obra ya está lista para exponerse en Florencia.</b></span></div>
+      </div>
+      <a class="btn" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="margin-top:24px">Reserva tu plaza en 2 minutos <i class="ti ti-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
 <section class="sec" style="padding-top:36px;padding-bottom:6px">
   <div class="narrow">
     <p class="intro-p">Ha llegado el momento de sacar tu arte al mundo.</p>
@@ -453,22 +489,16 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Los visitantes podrán <span class="hl">caminar rodeados de arte</span>, inmersos entre obras de artistas llegados de todo el mundo.</p>
     <p class="intro-p"><i class="ti ti-music" style="color:var(--accent);margin-right:9px;vertical-align:-2px"></i>La exposición estará acompañada de <span class="em">música</span>, creando una experiencia inmersiva realmente única.</p>
 
-    <div class="procbox">
-      <h2 class="narr-title">¿Cómo funciona?</h2>
-      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
-      <div class="miniproc">
-        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Reserva tu plaza en <b>2 minutos</b>.</span></div>
-        <div class="mp-step"><i class="ti ti-photo"></i><span>Sube la imagen de tu obra.</span></div>
-        <div class="mp-step"><i class="ti ti-circle-check"></i><span>¡Eso es todo! <b>Tu obra ya está lista para exponerse en Florencia.</b></span></div>
-      </div>
-      <a class="btn" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="margin-top:24px">Reserva tu plaza en 2 minutos <i class="ti ti-arrow-right"></i></a>
-    </div>
+    
     <h2 class="narr-title"><span class="em">1,7 segundos.</span> Ese es el tiempo medio que una obra recibe de atención en Instagram.</h2>
     <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
     <p class="intro-p">Has dedicado horas, días o incluso semanas a crear tu obra... La publicas en Instagram y, en un abrir y cerrar de ojos, ya ha desaparecido entre las siguientes publicaciones.</p>
 
     <p class="mtitle">¿En Florencia? Tu obra puede disfrutar de <span class="em">hasta 12.700 veces más tiempo de exposición.</span></p>
     <p class="intro-p">Se mostrará <span class="hl">30 segundos de cada minuto</span>, de forma continua durante todo el día.</p>
+    <!-- CTA après format d'expo -->
+    <div class="cta-left"><a class="btn btn-lg" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Desde 49€</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
+
 
     <h2 class="narr-title">Barcelona ya fue impresionante. Pero esta vez queremos <span class="em">ir todavía más lejos.</span></h2>
     <figure class="video-fig">
@@ -551,7 +581,7 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="cart"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><p>Pasarás a formar parte de un movimiento artístico mundial y podrás añadir una exposición internacional a tu biografía como artista.</p></div>
       <div class="cart"><img loading="lazy" src="/florence/img/certificat.jpg" alt="Certificat de participation ExpoMetro personnalisé" style="object-position:left"/><p>Recibirás un certificado personalizado con tu nombre artístico y tu obra.</p></div>
 
-    <div class="cta-left" style="margin-top:26px"><a class="btn" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accesible</span><span><i class="ti ti-check"></i>Asequible</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
+    <div class="cta-left" style="margin-top:26px"><a class="btn" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Desde 49€</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
 
     <h2 class="narr-title">Tienes varios formatos para elegir.</h2>
     <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
@@ -599,7 +629,7 @@ footer a{color:rgba(255,255,255,.55)}
     <p class="intro-p">Puedes reservar tu plaza en solo 2 minutos. Sin preparativos complicados, sin material, sin montar un stand y sin contratar un seguro, como ocurre en una exposición tradicional.</p>
     <p class="intro-p">O puedes esperar. Tu obra seguirá guardada en tu teléfono. Seguirás publicando en Instagram para conseguir apenas 1,7 segundos de atención... mientras otros artistas ocupan su lugar.</p>
     <p class="mtitle"><span class="em">Atrévete.</span><br><span class="hl">Se abre una nueva puerta ante ti. ¿La cruzas con nosotros?</span></p>
-    <div class="cta-left" style="margin-top:30px"><a class="btn" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza en 2 minutos <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accesible</span><span><i class="ti ti-check"></i>Asequible</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
+    <div class="cta-left" style="margin-top:30px"><a class="btn" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza en 2 minutos <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Desde 49€</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
     </div>
   </div>
 </section>
@@ -666,7 +696,7 @@ footer a{color:rgba(255,255,255,.55)}
 <section class="megaband">
   <div class="narrow">
     <h2 class="mega-title">Únete a la mayor<br><span class="em">exposición de arte público del mundo.</span></h2>
-    <div class="cta-center"><a class="btn btn-lg" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Accesible</span><span><i class="ti ti-check"></i>Asequible</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
+    <div class="cta-center"><a class="btn btn-lg" href="https://expometro.co/es/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Reserva tu plaza <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Desde 49€</span><span><i class="ti ti-check"></i>Abierto a todos los artistas y fotógrafos</span></p></div>
   </div>
 </section>
 
