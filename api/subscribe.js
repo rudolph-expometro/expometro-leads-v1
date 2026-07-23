@@ -7,9 +7,14 @@
 //   BREVO_DOI_TEMPLATE_ID  (optionnel)   — ID du template "double opt-in" = l'email de confirmation
 //   BREVO_REDIRECT_URL     (optionnel)   — page d'arrivée après que la personne ait cliqué dans l'email
 //
-// Routage langue : la page envoie { email, lang }. Si BREVO_LISTS contient cette langue,
+// Routage langue : la page envoie { email, lang, src }. Si BREVO_LISTS contient cette langue,
 // le contact va dans la liste correspondante ; sinon il va dans BREVO_LIST_ID.
-// La langue est aussi tentée comme attribut LANGUE (ignorée proprement si l'attribut n'existe pas côté Brevo).
+//
+// Attribution : la page envoie aussi src = { s, c, m, ct } (utm_source/campaign/medium/content).
+// On tente de les stocker en attributs Brevo UTM_SOURCE / UTM_CAMPAIGN / UTM_MEDIUM / UTM_CONTENT
+// (+ LANGUE). Fallback PROGRESSIF : si un attribut n'existe pas encore côté Brevo, on réessaie
+// avec moins d'attributs, jusqu'à sans attribut du tout — la capture du contact est TOUJOURS garantie.
+// (Pour que les UTM soient réellement stockés, créer ces attributs TEXTE dans Brevo → Contacts → Paramètres.)
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -54,7 +59,19 @@ export default async function handler(req, res) {
   const doiTemplate = process.env.BREVO_DOI_TEMPLATE_ID;
   const redirectUrl = process.env.BREVO_REDIRECT_URL;
 
-  function buildPayload(withAttrs) {
+  // Attributs : LANGUE + UTM (si fournis). Chaque valeur est bornée en longueur.
+  const src = (body && body.src) || {};
+  const clip = (v) => String(v == null ? '' : v).slice(0, 150);
+  const attrsFull = { LANGUE: lang };
+  if (src.s)  attrsFull.UTM_SOURCE   = clip(src.s);
+  if (src.c)  attrsFull.UTM_CAMPAIGN = clip(src.c);
+  if (src.m)  attrsFull.UTM_MEDIUM   = clip(src.m);
+  if (src.ct) attrsFull.UTM_CONTENT  = clip(src.ct);
+
+  // Niveaux d'attributs, du plus riche au plus sûr (dernier = sans attribut).
+  const levels = [attrsFull, { LANGUE: lang }, null];
+
+  function buildPayload(attrs) {
     if (doiTemplate) {
       const p = {
         email,
@@ -62,38 +79,31 @@ export default async function handler(req, res) {
         templateId: parseInt(doiTemplate, 10),
         redirectionUrl: redirectUrl || 'https://expometro.co'
       };
-      if (withAttrs) p.attributes = { LANGUE: lang };
+      if (attrs) p.attributes = attrs;
       return { url: 'https://api.brevo.com/v3/contacts/doubleOptinConfirmation', payload: p };
     }
     const p = { email, listIds: [listId], updateEnabled: true };
-    if (withAttrs) p.attributes = { LANGUE: lang };
+    if (attrs) p.attributes = attrs;
     return { url: 'https://api.brevo.com/v3/contacts', payload: p };
   }
 
   try {
-    // 1er essai AVEC l'attribut LANGUE
-    let { url, payload } = buildPayload(true);
-    let r = await callBrevo(url, apiKey, payload);
+    let lastData = {};
+    for (let i = 0; i < levels.length; i++) {
+      const { url, payload } = buildPayload(levels[i]);
+      const r = await callBrevo(url, apiKey, payload);
 
-    // Si l'attribut LANGUE n'existe pas encore côté Brevo → on réessaie sans attribut
-    if (r.status === 400) {
-      const data = await r.json().catch(() => ({}));
-      if (data && data.code === 'duplicate_parameter') {
+      if (r.ok || r.status === 201 || r.status === 204) {
+        return res.status(200).json({ ok: true });
+      }
+      lastData = await r.json().catch(() => ({}));
+      // Contact déjà présent → succès (idempotent), pas besoin de réessayer.
+      if (lastData && (lastData.code === 'duplicate_parameter' || lastData.code === 'duplicate_contact')) {
         return res.status(200).json({ ok: true, duplicate: true });
       }
-      const retry = buildPayload(false);
-      r = await callBrevo(retry.url, apiKey, retry.payload);
+      // Sinon (souvent : attribut inconnu côté Brevo) → on retente au niveau suivant, plus léger.
     }
-
-    if (r.ok || r.status === 201 || r.status === 204) {
-      return res.status(200).json({ ok: true });
-    }
-
-    const data = await r.json().catch(() => ({}));
-    if (data && (data.code === 'duplicate_parameter' || data.code === 'duplicate_contact')) {
-      return res.status(200).json({ ok: true, duplicate: true });
-    }
-    return res.status(502).json({ error: 'Brevo a refusé la requête', detail: data });
+    return res.status(502).json({ error: 'Brevo a refusé la requête', detail: lastData });
   } catch (e) {
     return res.status(502).json({ error: 'Erreur réseau vers Brevo' });
   }

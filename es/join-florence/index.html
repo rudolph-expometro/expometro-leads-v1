@@ -837,7 +837,7 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="cf-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></svg></div>
       <h3 id="confirm-t">¡Gracias, tu email ya está registrado!</h3>
       <p class="cf-body">Acabo de enviarte todos los detalles por email.<br>Pero ¿por qué esperar? <b>Descubre ahora mismo cómo tu obra puede exponerse en el Túnel de Arte.</b></p>
-      <a class="cf-cta" href="https://artinthe.city/es/florence" target="_blank" rel="noopener">Descubre cómo participar <span class="cf-arrow">→</span></a>
+      <a class="cf-cta" href="https://artinthe.city/es/florence?utm_source=popup&utm_medium=confirmation" onclick="if(window.fbq)fbq('trackCustom','PopupCTAClick');" target="_blank" rel="noopener">Descubre cómo participar <span class="cf-arrow">→</span></a>
       <p class="cf-spam">Revisa tu carpeta de spam si no ves el email.</p>
       <p class="cf-from">Has recibido un email de <b>hello@expometro.co</b></p>
     </div>
@@ -847,6 +847,7 @@ footer a{color:rgba(255,255,255,.55)}
 <script>
 (function(){
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var _SRC=(function(){try{var q=new URLSearchParams(location.search);return{s:q.get('utm_source')||'',c:q.get('utm_campaign')||'',m:q.get('utm_medium')||'',ct:q.get('utm_content')||''};}catch(e){return{};}})();
   var confirmModal=document.getElementById('confirm');
   function openModal(id){var m=document.getElementById(id);if(m)m.classList.add('open');}
   function closeModal(m){m.classList.remove('open');var f=m.querySelector('iframe[data-yt]');if(f)f.src='';}
@@ -872,7 +873,7 @@ footer a{color:rgba(255,255,255,.55)}
       if(!EMAIL_RE.test(email)){input.focus();input.reportValidity&&input.reportValidity();return;}
       var lang=(document.documentElement.lang||'en').slice(0,2);
       var label=btn.innerHTML;btn.disabled=true;btn.innerHTML='...';
-      fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:lang})})
+      fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,lang:lang,src:_SRC})})
         .then(function(r){if(!r.ok)throw new Error('subscribe failed');
           showConfirm(email);
           if(window.fbq)fbq('track','Lead');
