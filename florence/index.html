@@ -93,6 +93,12 @@ a{color:inherit}
 .hero-meta span{display:inline-flex;align-items:center;gap:7px}
 .hero-meta i{color:var(--accent);font-size:16px}
 .hero h1{font-weight:800;font-size:clamp(2.6rem,7vw,5.4rem);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 18px;text-shadow:0 3px 28px rgba(0,0,0,.55)}
+.hero-img{position:relative;min-height:44vh;background:linear-gradient(180deg,rgba(7,10,23,.10),rgba(7,10,23,.45)),var(--night) url('/florence/img/tunnel-hero.jpg');background-size:cover;background-position:center}
+.hero-text{background:var(--night);color:#fff;padding:34px 0 30px}
+.hero-text-inner{max-width:1080px;margin:0 auto;padding:0 26px}
+.hero-text h1{font-weight:800;font-size:clamp(2.3rem,6.2vw,4.6rem);line-height:1.04;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 18px;color:#fff}
+.hero-text h1 .em{color:var(--accent)}
+@media(max-width:560px){.hero-img{min-height:32vh}.hero-text{padding:26px 0 22px}}
 .hero h1 .em{color:var(--accent)}
 .hero-sub{font-family:var(--serif);font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.45;color:#fff;max-width:620px;margin:0 0 30px;text-shadow:0 1px 14px rgba(0,0,0,.5)}
 .hero-offer{margin:12px 0 0;display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:.95rem;font-weight:400;font-style:italic;color:#fff;line-height:1.35;text-shadow:0 1px 8px rgba(0,0,0,.55)}
@@ -403,19 +409,7 @@ footer a{color:rgba(255,255,255,.55)}
 </header>
 
 <!-- HERO -->
-<section class="hero" id="top">
-  <div class="hero-top">
-    <img class="hero-photo" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art — Florence"/>
-    <div class="hero-headline">
-      <h1>The Immersive Art Tunnel <span class="em">in the Heart of Florence</span></h1>
-    </div>
-  </div>
-  <div class="hero-inner">
-    <p class="hero-sub">Showcase your artwork on the walls and ceiling of a 25-metre tunnel, alongside artists from around the world. More than 50,000 people will see your work.</p>
-    <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>From $49</span><span><i class="ti ti-check"></i>Open to All Artists & Photographers</span></p>
-  </div>
-  <i class="ti ti-chevron-down scroll-hint"></i>
-</section>
+<section class="hero-img" id="top"></section>
 
 <!-- BANDE INFOS : statut des journées -->
 <!-- ARTIST TICKER -->
@@ -435,6 +429,12 @@ footer a{color:rgba(255,255,255,.55)}
 </style>
 <div class="artix" aria-label="LIVE 98 ARTISTS"><div class="artix-tag"><span class="artix-dot"></span>LIVE&nbsp;·&nbsp;<span class="artix-count">98 ARTISTS · 23 COUNTRIES</span></div><div class="artix-view"><div class="artix-track" id="artixTrack"></div></div></div>
 <script>(function(){var FB=[["A.R.Grachenfels", "DE"], ["Chantal Burkhardt", "DE"], ["Farbzauber Mom", "DE"], ["Heike Maria Glöckner", "DE"], ["Ilona Grumann", "DE"], ["Ines Scheithauer", "DE"], ["Juergen Moers", "DE"], ["Katrin Meie", "DE"], ["Kerstin Wolf", "DE"], ["Kristallkunst", "DE"], ["Martin Buntrock", "DE"], ["mel_arte (Melanie)", "DE"], ["Monsieur Franck", "DE"], ["Ravynne Wood", "DE"], ["Sandra Jungklaus", "DE"], ["__natalie.art__", "DE"], ["Adrianna Bieżyńska", "PL"], ["ciszaifarba", "PL"], ["Alain Galet", "FR"], ["Jérôme Besnoist", "FR"], ["laurence van baren", "FR"], ["Le Cerne Noir", "FR"], ["Lilie PERLINE", "FR"], ["Linda Chatel", "FR"], ["MAORI Overstreet", "FR"], ["Matteoni Lydie", "FR"], ["Mohammed Moudjou", "FR"], ["Niki", "FR"], ["Ostaladon", "FR"], ["Poupée Caussin-Bellon", "FR"], ["Sabine Wirt", "FR"], ["Sanz Dutheil", "FR"], ["Sophie Queuniez", "FR"], ["Véronique Romance", "FR"], ["Alberto Bonells", "SE"], ["Marias Art - Maria Bunyemen", "SE"], ["My_one_painting_by_andersson", "SE"], ["Amy Lynn Freeman", "US"], ["Art Imagined - Steven Weisz", "US"], ["Brandon B Shim", "US"], ["Caitlin Sheedy", "US"], ["CelesteR", "US"], ["Eddie Bruckner", "US"], ["Garry B. Stew\"ART\"", "US"], ["Irene Turner", "US"], ["jack mindin", "US"], ["James William Moore", "US"], ["Karen Pierce Gonzalez", "US"], ["Kimberley Cleland", "US"], ["Michael Gore", "US"], ["Mlswanson", "US"], ["Paige Pieper", "US"], ["Rhonda Lee", "US"], ["Ritzie Muckle", "US"], ["Ron Logan", "US"], ["Sondra Bernstein", "US"], ["Anna De Jesús Lugo", "PR"], ["AO.UWPHOTOGRAPHY", "PR"], ["arsnecopinata", "AE"], ["Arturo Solorio Godinez", "MX"], ["Barbara Stenz", "MX"], ["Carlos Abraham", "MX"], ["DOMARTT", "MX"], ["Gabriela Bonilla", "MX"], ["CeciliAmor", "CO"], ["CICERO BALDO CBDesign", "BE"], ["DaVynci", "BE"], ["Dominique Van Eeckhoudt", "BE"], ["Kukumaria", "BE"], ["Philippe Pellering", "BE"], ["Claudia Maria Albiero", "IT"], ["Meggie", "IT"], ["Patrizia Angiolina Belvedere", "IT"], ["Dagmar Strunakova", "SK"], ["Daniel Nieco", "AR"], ["Diego Axel Lazcano", "AR"], ["Estefanía @holazazpi", "ES"], ["Janice B", "ES"], ["LUCWIKK", "ES"], ["MARÍA CRISTINA VIÑAS PAZ", "ES"], ["Sara Silene Art", "ES"], ["Sophie Duart", "ES"], ["Francesca Pinoni", "CY"], ["Frilly Bumstead", "AU"], ["Nicholas D. Todd", "AU"], ["Gloria Carnevale", "CA"], ["lucied", "CA"], ["Mélanie Stéphanie Massé Artiste thevu.ca", "CA"], ["Hédia Carron", "CH"], ["Torsten Skoetz", "CH"], ["Jessica Siddique", "GB"], ["juniperloony", "GB"], ["Ranjit Sihat", "GB"], ["Yewbowart", "GB"], ["Laura S. Naudi", "AD"], ["Rares Kerekes", "RO"], ["Saejoon Oh", "KR"], ["Winnie Liu", "HK"]];var AW="ARTISTS",CW="COUNTRIES";function fl(c){c=(c||"").toUpperCase();var o="";for(var i=0;i<c.length;i++){var d=c.charCodeAt(i)-65;if(d>=0&&d<26)o+=String.fromCodePoint(0x1F1E6+d);}return o;}function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}function render(L){var t=document.getElementById("artixTrack");if(!t||!L||!L.length)return;L=shuf(L);var it=L.map(function(a){return '<span class="artix-item"><span class="nm">'+esc(a[0])+'</span><span class="fl">'+fl(a[1])+'</span></span><span class="artix-sep">·</span>';}).join("");t.innerHTML=it+it;var w=t.scrollWidth/2;t.style.animationDuration=Math.max(30,Math.round(w/70))+"s";var cc={};L.forEach(function(a){cc[a[1]]=1;});var e=document.querySelector(".artix-count");if(e)e.textContent=L.length+" "+AW+" · "+Object.keys(cc).length+" "+CW;}render(FB);fetch("/api/florence-artists").then(function(r){return r.ok?r.json():null;}).then(function(d){if(d&&d.artists&&d.artists.length)render(d.artists);}).catch(function(){});})();</script>
+
+<!-- HERO TEXT (remonte sous le ticker) -->
+<section class="hero-text"><div class="hero-text-inner"><h1>The Immersive Art Tunnel <span class="em">in the Heart of Florence</span></h1>
+    <p class="hero-sub">Showcase your artwork on the walls and ceiling of a 25-metre tunnel, alongside artists from around the world. More than 50,000 people will see your work.</p>
+    <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>From $49</span><span><i class="ti ti-check"></i>Open to All Artists & Photographers</span></p>
+  </div></section>
 
 <div class="infoband">
   <div class="infoband-inner">
