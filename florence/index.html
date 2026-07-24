@@ -98,6 +98,10 @@ a{color:inherit}
 .hero-text-inner{max-width:1080px;margin:0 auto;padding:0 26px}
 .hero-text h1{font-weight:800;font-size:clamp(2.3rem,6.2vw,4.6rem);line-height:1.04;letter-spacing:-.02em;text-transform:uppercase;margin:0 0 18px;color:#fff}
 .hero-text h1 .em{color:var(--accent)}
+.hero-grid{display:block;width:100%;max-width:260px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;margin:6px 0 24px;border:1px solid rgba(255,255,255,.14)}
+.hero-steps{list-style:none;margin:0 0 28px;padding:0;display:flex;flex-direction:column;gap:14px;max-width:540px}
+.hero-steps li{display:flex;align-items:center;gap:13px;font-family:var(--sans);font-size:1.08rem;font-weight:600;color:#fff}
+.hs-n{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:.98rem;display:flex;align-items:center;justify-content:center}
 @media(max-width:560px){.hero-img{min-height:32vh}.hero-text{padding:26px 0 22px}}
 .hero h1 .em{color:var(--accent)}
 .hero-sub{font-family:var(--serif);font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.45;color:#fff;max-width:620px;margin:0 0 30px;text-shadow:0 1px 14px rgba(0,0,0,.5)}
@@ -432,7 +436,7 @@ footer a{color:rgba(255,255,255,.55)}
 
 <!-- HERO TEXT (remonte sous le ticker) -->
 <section class="hero-text"><div class="hero-text-inner"><h1>The Immersive Art Tunnel <span class="em">in the Heart of Florence</span></h1>
-    <p class="hero-sub">Showcase your artwork on the walls and ceiling of a 25-metre tunnel, alongside artists from around the world. More than 50,000 people will see your work.</p>
+    <p class="hero-sub">Showcase your artwork on the walls and ceiling of a 25-metre tunnel, alongside artists from around the world. More than 50,000 people will see your work.</p><img class="hero-grid" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choose your spot in the artwork grid"/><ol class="hero-steps"><li><span class="hs-n">1</span><span>Choose your spot</span></li><li><span class="hs-n">2</span><span>Upload your artwork's image</span></li><li><span class="hs-n">3</span><span>That's it!</span></li></ol>
     <a class="btn btn-lg" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>From $49</span><span><i class="ti ti-check"></i>Open to All Artists & Photographers</span></p>
   </div></section>
 
@@ -467,22 +471,6 @@ footer a{color:rgba(255,255,255,.55)}
 </section>
 
 <script>(function(){var RVW=[{"c": "I'm proud to take part in a group exhibition, and in Florence no less – Thank you!", "n": "pierretteprophete", "cc": "FR"}, {"c": "I'm delighted to take part in this wonderful project for the third time.", "n": "Birgit Schmidmeier", "cc": "DE"}, {"c": "My second time participating, and I still love being part of such a diverse community!", "n": "Caitlin Sheedy", "cc": "US"}, {"c": "So filled with gratitude.", "n": "Anna De Jesús Lugo", "cc": "PR"}, {"c": "My third time participating in ExpoMetro, this time at the Art Tunnel in Florence. Always a pleasure to be part of such an inspiring project. So proud to be involved!", "n": "Artinella – Antonella Vella", "cc": "MT"}, {"c": "The communication is exceptional, and so are the artworks shown. Whenever ExpoMetro offers another exhibition somewhere, I'll be right there again!", "n": "Juergen Moers", "cc": "DE"}, {"c": "Thank you, ExpoMetro, for another wonderful experience. An inspiring opportunity to connect with an international audience. See you in Florence!", "n": "Ilona Grumann", "cc": "DE"}, {"c": "So excited to have two pieces in the Art Tunnel (what a creative concept!). I plan to be there in person to meet all the other stellar artists!", "n": "Karen Pierce Gonzalez", "cc": "US"}, {"c": "I'm so proud and grateful to be a part of this. It means a lot to share it with other artists around the world. Thank you Rudolf and your team!", "n": "My_one_painting_by_andersson", "cc": "SE"}, {"c": "ExpoMetro offers artists a unique opportunity to present their work in public spaces, where art replaces advertising. Proud to have taken part in Rome, Madrid, and now Florence.", "n": "ciszaifarba", "cc": "PL"}, {"c": "ExpoMetro creates a beautiful interruption to ordinary life — a moment when advertising gives way to art. Excited to be part of the immersive art tunnel in Florence!", "n": "Ravynne Wood", "cc": "DE"}, {"c": "It's brilliant to be taking part for the fourth time, after Barcelona, Rome and Madrid — now showing my artwork in Florence. Thanks ExpoMetro.", "n": "Heike Maria Glöckner", "cc": "DE"}, {"c": "Thank you so much for giving me the opportunity to share my angel paintings with the world.", "n": "Katrin Meie", "cc": "DE"}, {"c": "Happy and grateful to be part of this incredible journey! Bringing my art to an event that unites different cities and cultures is a unique feeling. See you in the street!", "n": "Patrizia Angiolina Belvedere", "cc": "IT"}, {"c": "I am incredibly grateful to ExpoMetro for the opportunity to present my work in Florence — a city celebrated worldwide for its art. Proud to be part of a global artistic movement.", "n": "Steven Weisz", "cc": "US"}, {"c": "Already ready to take part again!! Thank you ExpoMetro!!", "n": "Gabriela Bonilla", "cc": "MX"}];function fl(c){c=(c||"").toUpperCase();var o="";for(var i=0;i<c.length;i++){var d=c.charCodeAt(i)-65;if(d>=0&&d<26)o+=String.fromCodePoint(0x1F1E6+d);}return o;}function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}var t=document.getElementById("rvxTrack");if(t)t.innerHTML=RVW.map(function(r){return '<div class="rvx-card"><p class="rvx-c">\u201c'+esc(r.c)+'\u201d</p><div class="rvx-a"><span class="rvx-fl">'+fl(r.cc)+'</span>'+esc(r.n)+'</div></div>';}).join("");})();</script>
-
-<!-- COMMENT ÇA MARCHE (remonté) -->
-<section class="sec" style="padding-top:30px;padding-bottom:18px">
-  <div class="narrow">
-    <div class="procbox">
-      <h2 class="narr-title">How It Works</h2>
-      <img class="vb-img" loading="lazy" src="/florence/img/step1-grid.jpg" alt="Choisir sa place dans la grille des œuvres"/>
-      <div class="miniproc">
-        <div class="mp-step"><i class="ti ti-clock-hour-3"></i><span>Book your spot in <b>2 minutes</b>.</span></div>
-        <div class="mp-step"><i class="ti ti-photo"></i><span>Upload your artwork.</span></div>
-        <div class="mp-step"><i class="ti ti-circle-check"></i><span>That's it! <b>Your artwork is ready to be exhibited in Florence.</b></span></div>
-      </div>
-      <a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="margin-top:24px">Book Your Spot in 2 Minutes <i class="ti ti-arrow-right"></i></a>
-    </div>
-  </div>
-</section>
 
 <section class="sec" style="padding-top:36px;padding-bottom:6px">
   <div class="narrow">
