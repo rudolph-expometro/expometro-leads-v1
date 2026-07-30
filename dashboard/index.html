@@ -140,8 +140,8 @@
     <div class="section">
       <h2>Communauté &amp; ambassadeurs</h2>
       <div class="grid2">
-        <div class="box"><h3>Communauté existante</h3><div class="bkts" id="commu"></div>
-          <p class="hint">Part de ta base d'avant Florence qui a (re)pris une place.</p></div>
+        <div class="box"><h3>Communauté ExpoMetro</h3><div class="bkts" id="commu"></div>
+          <p class="hint">Sur toute ta base : part qui a déjà payé au moins une fois (lifetime).</p></div>
         <div class="box"><h3>Top artistes (par nb d'expos)</h3>
           <div style="overflow-x:auto"><table id="toptbl">
             <thead><tr><th>#</th><th>Artiste</th><th class="num">Expos</th><th class="num">Payé</th></tr></thead>
@@ -179,6 +179,8 @@ var KEY='';
 function enter(){ KEY=document.getElementById('pw').value||''; sessionStorage.setItem('dk',KEY); load(); }
 document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
 function fr(n){ return (n||0).toLocaleString('fr-FR'); }
+var MOIS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+function frDate(iso){ if(!iso) return ''; var p=String(iso).slice(0,10).split('-'); return parseInt(p[2],10)+' '+(MOIS[parseInt(p[1],10)-1]||''); }
 function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!=='PWETH'&&o[c]>0;}); }
 function bkt(cls,n,l){ return '<div class="bkt '+cls+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
 
@@ -196,7 +198,7 @@ function chartBarsLine(days,bars,line){
   s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+bmax+'</text>';
   s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--accent)">'+lmax+'</text>';
   var step=Math.ceil(n/9);
-  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+days[i].slice(5)+'</text>';} }
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
   return s+'</svg>';
 }
 /* ---- Graphique aire cumulée (artistes) ---- */
@@ -213,7 +215,7 @@ function chartArea(days,vals){
   s+='<text x="'+pts[n-1][0].toFixed(1)+'" y="'+(pts[n-1][1]-7).toFixed(1)+'" text-anchor="end" style="fill:var(--green);font-weight:700">'+vals[n-1]+'</text>';
   s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+mx+'</text>';
   var step=Math.ceil(n/9);
-  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+pts[i][0].toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+days[i].slice(5)+'</text>';} }
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+pts[i][0].toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
   return s+'</svg>';
 }
 
@@ -227,11 +229,13 @@ function load(){
       document.getElementById('dash').style.display='block';
       document.getElementById('dashErr').textContent='';
       var f=d.florence, c=f.conv.TOTAL, cm=d.communaute;
-      document.getElementById('sub').textContent='Communauté existante : '+fr(cm.size)+' clients · depuis le '+d.since;
+      document.getElementById('sub').textContent='Base : '+fr(cm.inscrits)+' inscrits · '+fr(cm.exposants)+' exposants · depuis le '+frDate(d.since);
 
       // KPIs
+      var panier=f.payments?Math.round(f.revenueEUR/f.payments):0;
       document.getElementById('kpis').innerHTML=[
         ['hi','≈ '+fr(f.revenueEUR)+' €','CA Florence (converti)'],
+        ['','≈ '+fr(panier)+' €','Panier moyen'],
         ['',fr(f.payments),'Paiements'],
         ['',fr(f.artistsTotal),'Artistes participants'],
         ['hi',c.rate+' %','Taux lead → inscrit']
@@ -264,9 +268,9 @@ function load(){
       var ar=f.artistsSplit||{first:0,recurring:0};
       document.getElementById('artists').innerHTML=bkt('first',ar.first,'1ʳᵉ expo')+bkt('recur',ar.recurring,'Artistes récurrents');
 
-      // Communauté
+      // Communauté (base totale)
       document.getElementById('commu').innerHTML=
-        bkt('existant',fr(cm.inscrits),'Inscrits Florence')+bkt('recur',cm.rate+' %','Taux de conversion');
+        bkt('lead',fr(cm.inscrits),'Inscrits (total)')+bkt('existant',fr(cm.exposants),'Exposants payants')+bkt('nouveau',cm.rate+' %','Taux de conversion');
 
       // Top artistes
       var med=['🥇','🥈','🥉'];
@@ -283,7 +287,7 @@ function load(){
       document.querySelector('#tbl tbody').innerHTML=(d.recent||[]).map(function(r){
         var lbl={lead:'Lead '+(r.lang||''),existant:'Existant',nouveau:'Nouveau'}[r.bucket];
         var ex=r.expos?('<span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span>'):'—';
-        return '<tr><td>'+r.date+'</td><td>'+(r.email||'—')+'</td><td class="num">'+fr(Math.round(r.amount))+' '+r.currency+'</td><td class="num">'+ex+'</td><td><span class="tag '+r.bucket+'">'+lbl+'</span></td></tr>';
+        return '<tr><td>'+frDate(r.date)+'</td><td>'+(r.email||'—')+'</td><td class="num">'+fr(Math.round(r.amount))+' '+r.currency+'</td><td class="num">'+ex+'</td><td><span class="tag '+r.bucket+'">'+lbl+'</span></td></tr>';
       }).join('')||'<tr><td colspan="5" style="color:var(--muted)">Aucun paiement depuis J1.</td></tr>';
 
       document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');

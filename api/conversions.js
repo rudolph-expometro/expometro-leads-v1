@@ -14,6 +14,11 @@ const LANGS = ['FR', 'EN', 'ES', 'IT', 'DE'];
 const COMMUNITY = new Set(COMMUNITY_HASHES);
 const PART = PARTICIPATION; // hash email -> nb d'expos lifetime (clients)
 
+// Snapshot de la base ExpoMetro (fichier Users 2026-07-30). Total inscrits & total exposants
+// (clients ayant paye au moins une fois). A mettre a jour si nouvel export users.
+const BASE_INSCRITS = 8806;
+const BASE_EXPOSANTS = 4505;
+
 // Taux de change approximatifs vers EUR (statiques, pour un TOTAL indicatif). Crypto exclu.
 const EUR_RATES = { EUR: 1, USD: 0.92, GBP: 1.17, CHF: 1.05, CAD: 0.67, AUD: 0.60,
   CNY: 0.127, HKD: 0.118, JPY: 0.0061, SEK: 0.088, NOK: 0.086, DKK: 0.134, SGD: 0.68, NZD: 0.56 };
@@ -161,10 +166,12 @@ export default async function handler(req, res) {
       currency: artistAgg[e].currency, bucket: artistAgg[e].bucket
     })).sort((a, b) => (b.expos - a.expos) || (b.amount - a.amount)).slice(0, 12);
 
-    // Communaute existante
+    // Communaute ExpoMetro : total inscrits vs total exposants payants (snapshot)
     const communaute = {
-      size: COMMUNITY.size, inscrits: communityBuyers.size,
-      rate: COMMUNITY.size ? +(100 * communityBuyers.size / COMMUNITY.size).toFixed(2) : 0
+      inscrits: BASE_INSCRITS,
+      exposants: BASE_EXPOSANTS,
+      rate: BASE_INSCRITS ? +(100 * BASE_EXPOSANTS / BASE_INSCRITS).toFixed(1) : 0,
+      florenceBuyers: communityBuyers.size  // clients existants ayant repris une place pour Florence
     };
 
     res.setHeader('Cache-Control', 'no-store');
