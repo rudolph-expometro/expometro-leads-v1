@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Suivi conversions — ExpoMetro</title>
+<style>
+  :root{--bg:#070a17;--card:#0e1431;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--txt:#eef1f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:24px 18px 60px}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+  /* login */
+  #login{max-width:360px;margin:14vh auto;text-align:center}
+  #login input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:#fff;font-size:15px;margin:12px 0}
+  button{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
+  button:hover{filter:brightness(1.05)}
+  .err{color:#ff8a8a;font-size:13px;min-height:18px}
+  /* dashboard */
+  #dash{display:none}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .kpi .n{font-size:26px;font-weight:800;letter-spacing:-.01em}
+  .kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+  .kpi.hi .n{color:var(--green)}
+  .grid2{display:grid;grid-template-columns:1fr 2fr;gap:16px;align-items:start}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .box h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px}
+  .seg{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .seg:last-child{border:none}
+  .seg b{font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.04em}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+  .tag.lead{background:rgba(34,224,107,.15);color:#7cf3ac}
+  .tag.other{background:rgba(255,255,255,.08);color:var(--muted)}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .updated{color:var(--muted);font-size:12px}
+  .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- LOGIN -->
+  <div id="login">
+    <h1>Suivi conversions</h1>
+    <p class="sub">Accès protégé</p>
+    <input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password"/>
+    <button onclick="enter()">Entrer</button>
+    <p class="err" id="loginErr"></p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dash">
+    <div class="top">
+      <div><h1>Suivi conversions — ExpoMetro</h1><p class="sub">Paiements Stripe croisés avec les leads Brevo · live</p></div>
+      <div style="text-align:right"><button class="refresh" onclick="load()">↻ Rafraîchir</button><br><span class="updated" id="upd"></span></div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid2">
+      <div class="box">
+        <h2>Par segment</h2>
+        <div id="segs"></div>
+      </div>
+      <div class="box">
+        <h2>Derniers paiements</h2>
+        <div style="overflow-x:auto"><table id="tbl"><thead><tr><th>Date</th><th>Email</th><th>Montant</th><th>Segment</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+    <p class="err" id="dashErr"></p>
+  </div>
+</div>
+
+<script>
+var KEY='';
+function enter(){ KEY=document.getElementById('pw').value||''; sessionStorage.setItem('dk',KEY); load(true); }
+document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
+
+function money(o){ return Object.keys(o||{}).map(function(c){ return Math.round(o[c]).toLocaleString('fr-FR')+' '+c; }).join(' · ')||'—'; }
+
+function load(fromLogin){
+  KEY=KEY||sessionStorage.getItem('dk')||'';
+  if(!KEY){ return; }
+  fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
+    .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
+    .then(function(d){
+      if(d.error) throw new Error(d.error);
+      document.getElementById('login').style.display='none';
+      document.getElementById('dash').style.display='block';
+      document.getElementById('dashErr').textContent='';
+      // KPIs
+      var kpis=[
+        ['payments',d.payments,'Paiements'],
+        ['rev',money(d.revenueByCurrency),'CA (récent)'],
+        ['leads',d.leadsTotal,'Leads Florence'],
+        ['conv',d.convertersFromLeads,'Convertis (leads)'],
+        ['rate',(d.conversionRate||0).toFixed(1)+' %','Taux lead → achat']
+      ];
+      document.getElementById('kpis').innerHTML=kpis.map(function(k,i){
+        return '<div class="kpi'+(k[0]==='rate'?' hi':'')+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';
+      }).join('');
+      // segments
+      var segs=d.bySegment||{};
+      document.getElementById('segs').innerHTML=Object.keys(segs).map(function(s){
+        return '<div class="seg"><span>'+s+'</span><b>'+segs[s]+'</b></div>';
+      }).join('');
+      // table
+      var rows=(d.recent||[]).map(function(r){
+        var isLead=r.segment&&r.segment.indexOf('Lead')===0;
+        return '<tr><td>'+r.date+'</td><td>'+(r.email||'—')+'</td><td>'+Math.round(r.amount).toLocaleString('fr-FR')+' '+r.currency+'</td><td><span class="tag '+(isLead?'lead':'other')+'">'+r.segment+'</span></td></tr>';
+      }).join('');
+      document.querySelector('#tbl tbody').innerHTML=rows||'<tr><td colspan="4" style="color:var(--muted)">Aucun paiement récent.</td></tr>';
+      document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
+    })
+    .catch(function(e){
+      if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; sessionStorage.removeItem('dk'); KEY=''; }
+      else { document.getElementById('dashErr').textContent='Erreur : '+e.message; }
+    });
+}
+// auto-login si mdp déjà en session + auto-refresh 60s
+if(sessionStorage.getItem('dk')){ KEY=sessionStorage.getItem('dk'); load(); }
+setInterval(function(){ if(KEY) load(); }, 60000);
+</script>
+</body>
+</html>
