@@ -111,10 +111,19 @@
   .chart .bar{fill:var(--blue);opacity:.72}
   .chart .lineC{fill:none;stroke:var(--accent);stroke-width:2.2}
   .chart .dotC{fill:var(--accent)}
+  .chart .lineT{fill:none;stroke:var(--gold);stroke-width:2.2}
+  .chart .dotT{fill:var(--gold)}
   .chart .area{fill:rgba(34,224,107,.14)}
   .chart .lineA{fill:none;stroke:var(--green);stroke-width:2.4}
   .chart .dotA{fill:var(--green)}
   .chart text{fill:var(--muted);font-size:9.5px;font-family:inherit}
+  .pierow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .plegs{flex:1;min-width:150px}
+  .pleg{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .pleg:last-child{border-bottom:none}
+  .pdot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+  .pleg .plab{color:var(--muted)}
+  .pleg .pval{margin-left:auto;font-weight:700}
 </style>
 </head>
 <body>
@@ -159,7 +168,7 @@
     <div class="section">
       <h2>Leads &amp; conversions par jour</h2>
       <div class="box">
-        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Conversions (inscriptions)</span></div>
+        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Conversions ads</span><span><i style="background:var(--gold)"></i>Ventes totales</span></div>
         <div id="chartLeads"></div>
       </div>
     </div>
@@ -199,7 +208,7 @@
       <h2>Aujourd'hui — détail par langue</h2>
       <div class="box">
         <div style="overflow-x:auto"><table id="todaytbl">
-          <thead><tr><th>Langue</th><th class="num">Nouveaux leads</th><th class="num">Inscrits</th></tr></thead>
+          <thead><tr><th>Langue</th><th class="num">Nouveaux leads</th><th class="num">Inscrits</th><th class="num">Taux</th></tr></thead>
           <tbody></tbody>
         </table></div>
       </div>
@@ -227,18 +236,21 @@ function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!==
 function bkt(cls,n,l){ return '<div class="bkt '+cls+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
 
 /* ---- Graphique barres (leads) + ligne (conversions), double échelle ---- */
-function chartBarsLine(days,bars,line){
+function chartBarsLine(days,bars,line,line2){
+  line2=line2||[];
   var W=740,H=210,pl=30,pr=30,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
-  var bmax=Math.max.apply(null,bars.concat(1)),lmax=Math.max.apply(null,line.concat(1)),slot=iw/n;
+  var bmax=Math.max.apply(null,bars.concat(1));
+  var lmax=Math.max.apply(null,line.concat(line2).concat(1)),slot=iw/n;   // échelle partagée des 2 lignes
   var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
   for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
   for(var i=0;i<n;i++){var bh=ih*bars[i]/bmax,x=pl+slot*i+slot*0.22,w=slot*0.56,y=pt+ih-bh;
     s+='<rect class="bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2"/>';}
-  var pts=line.map(function(v,i){return [pl+slot*i+slot*0.5, pt+ih-ih*v/lmax];});
-  s+='<path class="lineC" d="'+pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ')+'"/>';
-  pts.forEach(function(p,i){ if(line[i]>0) s+='<circle class="dotC" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6"/>'; });
+  function poly(a){return a.map(function(v,i){return [pl+slot*i+slot*0.5, pt+ih-ih*v/lmax];});}
+  function path(cls,a){return '<path class="'+cls+'" d="'+poly(a).map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ')+'"/>';}
+  if(line2.length){ s+=path('lineT',line2); poly(line2).forEach(function(p,i){ if(line2[i]>0) s+='<circle class="dotT" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4"/>'; }); }
+  s+=path('lineC',line); poly(line).forEach(function(p,i){ if(line[i]>0) s+='<circle class="dotC" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6"/>'; });
   s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+bmax+'</text>';
-  s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--accent)">'+lmax+'</text>';
+  s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--gold)">'+lmax+'</text>';
   var step=Math.ceil(n/9);
   for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
   return s+'</svg>';
@@ -258,6 +270,26 @@ function chartArea(days,vals){
   s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+mx+'</text>';
   var step=Math.ceil(n/9);
   for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+pts[i][0].toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+
+/* ---- Camembert (donut) ---- */
+function pie(segs,cNum,cLab){
+  var total=segs.reduce(function(a,x){return a+x.value;},0)||1;
+  var cx=62,cy=62,r=54,ri=32,ang=-Math.PI/2;
+  var s='<svg viewBox="0 0 124 124" width="124" height="124" class="pie">';
+  segs.forEach(function(sg){
+    var frac=sg.value/total; if(frac<=0) return;
+    if(frac>=0.9999){ s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+((r+ri)/2)+'" fill="none" stroke="'+sg.color+'" stroke-width="'+(r-ri)+'"/>'; return; }
+    var a2=ang+frac*2*Math.PI, large=frac>0.5?1:0;
+    var x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    var xi2=cx+ri*Math.cos(a2),yi2=cy+ri*Math.sin(a2),xi1=cx+ri*Math.cos(ang),yi1=cy+ri*Math.sin(ang);
+    s+='<path d="M'+x1.toFixed(2)+' '+y1.toFixed(2)+' A'+r+' '+r+' 0 '+large+' 1 '+x2.toFixed(2)+' '+y2.toFixed(2)
+      +' L'+xi2.toFixed(2)+' '+yi2.toFixed(2)+' A'+ri+' '+ri+' 0 '+large+' 0 '+xi1.toFixed(2)+' '+yi1.toFixed(2)+' Z" fill="'+sg.color+'"/>';
+    ang=a2;
+  });
+  s+='<text x="62" y="60" text-anchor="middle" style="fill:var(--txt);font-size:21px;font-weight:800">'+cNum+'</text>';
+  s+='<text x="62" y="74" text-anchor="middle" style="fill:var(--muted);font-size:9px">'+cLab+'</text>';
   return s+'</svg>';
 }
 
@@ -347,13 +379,16 @@ function load(){
 
       // Graphiques
       var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
-      document.getElementById('chartLeads').innerHTML=chartBarsLine(dsl, dd.map(function(x){return x.leads;}), dd.map(function(x){return x.conv;}));
+      document.getElementById('chartLeads').innerHTML=chartBarsLine(dsl, dd.map(function(x){return x.leads;}), dd.map(function(x){return x.conv;}), dd.map(function(x){return x.sales;}));
       var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
       document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
 
-      // Type d'artiste
+      // Type d'artiste (camembert)
       var ar=f.artistsSplit||{first:0,recurring:0};
-      document.getElementById('artists').innerHTML=bkt('first',ar.first,'1ʳᵉ expo')+bkt('recur',ar.recurring,'Artistes récurrents');
+      var atot=(ar.first+ar.recurring)||1;
+      var asegs=[{label:'1ʳᵉ expo',value:ar.first,color:'#ffc04d'},{label:'Artistes récurrents',value:ar.recurring,color:'#5b8cff'}];
+      var aleg=asegs.map(function(sg){return '<div class="pleg"><span class="pdot" style="background:'+sg.color+'"></span><span class="plab">'+sg.label+'</span><span class="pval">'+fr(sg.value)+' · '+Math.round(100*sg.value/atot)+'%</span></div>';}).join('');
+      document.getElementById('artists').innerHTML='<div class="pierow">'+pie(asegs,fr(ar.first+ar.recurring),'artistes')+'<div class="plegs">'+aleg+'</div></div>';
 
       // Communauté (base totale)
       document.getElementById('commu').innerHTML=
@@ -366,7 +401,7 @@ function load(){
       }).join('')||'<tr><td colspan="4" style="color:var(--muted)">—</td></tr>';
 
       // Aujourd'hui — détail par langue (t déjà défini plus haut)
-      document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){return '<tr><td>'+L+'</td><td class="num">'+(t.newLeadsByLang[L]||0)+'</td><td class="num">'+(t.inscritsByLang[L]||0)+'</td></tr>';}).join('');
+      document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){var nl=t.newLeadsByLang[L]||0,ins=t.inscritsByLang[L]||0;var rt=nl>0?Math.round(100*ins/nl)+' %':'—';return '<tr><td>'+L+'</td><td class="num">'+nl+'</td><td class="num">'+ins+'</td><td class="num rate">'+rt+'</td></tr>';}).join('');
 
       // Derniers paiements
       document.querySelector('#tbl tbody').innerHTML=(d.recent||[]).map(function(r){

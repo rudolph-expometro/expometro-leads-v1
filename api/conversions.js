@@ -150,6 +150,7 @@ export default async function handler(req, res) {
     const bucketsToday = { lead: 0, existant: 0, nouveau: 0 };
     const inscritsByLang = zeroLang(), inscritsTodayByLang = zeroLang();
     const convByDay = {};                 // conversions (leads qui paient) par jour
+    const salesByDay = {};                // TOTAL des ventes par jour (tous buckets)
     const firstDate = {};                 // email -> date du 1er paiement (pour cumul artistes)
     const artistAgg = {};                 // email -> { expos, amount, currency, bucket }
     const artists = { first: 0, recurring: 0 };
@@ -178,6 +179,7 @@ export default async function handler(req, res) {
       const amtEUR = amt * (EUR_RATES[cur] || 0);
       buckets[bucket]++;
       revEURtotByBucket[bucket] += amtEUR;
+      salesByDay[date] = (salesByDay[date] || 0) + 1;
       if (date === today) { bucketsToday[bucket]++; todayRevEUR[bucket] += amtEUR; todayRevEURtot += amtEUR; }
 
       if (lead) {
@@ -205,7 +207,7 @@ export default async function handler(req, res) {
     for (const e in firstDate) { const d = firstDate[e]; artByDay[d] = (artByDay[d] || 0) + 1; }
 
     // Serie quotidienne depuis J1
-    const daily = days.map(d => ({ date: d, leads: leadsByDay[d] || 0, conv: convByDay[d] || 0, artists: artByDay[d] || 0 }));
+    const daily = days.map(d => ({ date: d, leads: leadsByDay[d] || 0, conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0 }));
 
     // CA converti en EUR (indicatif ; devises inconnues/crypto ignorees)
     let revenueEUR = 0; const revIgnored = [];
