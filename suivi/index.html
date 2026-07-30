@@ -6,72 +6,98 @@
 <meta name="robots" content="noindex,nofollow"/>
 <title>Suivi conversions — ExpoMetro</title>
 <style>
-  :root{--bg:#070a17;--card:#0e1431;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--txt:#eef1f7}
+  :root{--bg:#070a17;--card:#0e1431;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--blue:#5b8cff;--gold:#ffc04d;--txt:#eef1f7}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--txt);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-  .wrap{max-width:1040px;margin:0 auto;padding:24px 18px 60px}
-  h1{font-size:20px;margin:0 0 2px}
-  .sub{color:var(--muted);font-size:13px;margin:0 0 22px}
-  /* login */
-  #login{max-width:360px;margin:14vh auto;text-align:center}
+  .wrap{max-width:1060px;margin:0 auto;padding:22px 16px 70px}
+  h1{font-size:19px;margin:0}
+  .sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
+  #login{max-width:340px;margin:15vh auto;text-align:center}
   #login input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:#fff;font-size:15px;margin:12px 0}
   button{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
   button:hover{filter:brightness(1.05)}
-  .err{color:#ff8a8a;font-size:13px;min-height:18px}
-  /* dashboard */
+  .err{color:#ff8a8a;font-size:13px;min-height:16px}
   #dash{display:none}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
-  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-  .kpi .n{font-size:26px;font-weight:800;letter-spacing:-.01em}
-  .kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
+  .updated{color:var(--muted);font-size:11.5px;display:block;margin-top:4px;text-align:right}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-bottom:20px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+  .kpi .n{font-size:24px;font-weight:800;letter-spacing:-.01em}
+  .kpi .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
   .kpi.hi .n{color:var(--green)}
-  .grid2{display:grid;grid-template-columns:1fr 2fr;gap:16px;align-items:start}
-  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
-  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-  .box h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px}
-  .seg{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
-  .seg:last-child{border:none}
-  .seg b{font-weight:700}
+  .section{margin-bottom:22px}
+  .section>h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 11px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+  .bkts{display:flex;gap:10px;flex-wrap:wrap}
+  .bkt{flex:1;min-width:120px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+  .bkt .n{font-size:22px;font-weight:800}
+  .bkt .l{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .bkt.lead{border-color:rgba(91,140,255,.4)} .bkt.lead .n{color:var(--blue)}
+  .bkt.existant{border-color:rgba(34,224,107,.4)} .bkt.existant .n{color:var(--green)}
+  .bkt.nouveau{border-color:rgba(255,192,77,.4)} .bkt.nouveau .n{color:var(--gold)}
+  .bkt.first{border-color:rgba(255,192,77,.4)} .bkt.first .n{color:var(--gold)}
+  .bkt.recur{border-color:rgba(91,140,255,.4)} .bkt.recur .n{color:var(--blue)}
+  .hint{color:var(--muted);font-size:11px;margin:10px 0 0}
+  .exp{display:inline-block;min-width:20px;text-align:center;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.07);color:var(--muted)}
+  .exp.rec{background:rgba(91,140,255,.16);color:#9bbcff}
   table{width:100%;border-collapse:collapse;font-size:13px}
   th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
-  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.04em}
-  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
-  .tag.lead{background:rgba(34,224,107,.15);color:#7cf3ac}
-  .tag.other{background:rgba(255,255,255,.08);color:var(--muted)}
-  .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .updated{color:var(--muted);font-size:12px}
-  .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em}
+  td.num,th.num{text-align:right}
+  tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
+  .rate{font-weight:800;color:var(--green)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
+  .tag.lead{background:rgba(91,140,255,.16);color:#9bbcff}
+  .tag.existant{background:rgba(34,224,107,.15);color:#7cf3ac}
+  .tag.nouveau{background:rgba(255,192,77,.16);color:#ffd98a}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <!-- LOGIN -->
   <div id="login">
-    <h1>Suivi conversions</h1>
-    <p class="sub">Accès protégé</p>
+    <h1>Suivi conversions</h1><p class="sub">Accès protégé</p>
     <input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password"/>
     <button onclick="enter()">Entrer</button>
     <p class="err" id="loginErr"></p>
   </div>
 
-  <!-- DASHBOARD -->
   <div id="dash">
     <div class="top">
-      <div><h1>Suivi conversions — ExpoMetro</h1><p class="sub">Paiements Stripe croisés avec les leads Brevo · live</p></div>
-      <div style="text-align:right"><button class="refresh" onclick="load()">↻ Rafraîchir</button><br><span class="updated" id="upd"></span></div>
+      <div><h1>Suivi conversions — Florence</h1><p class="sub" id="sub"></p></div>
+      <div><button class="refresh" onclick="load()">↻ Rafraîchir</button><span class="updated" id="upd"></span></div>
     </div>
-
     <div class="kpis" id="kpis"></div>
 
-    <div class="grid2">
+    <div class="section">
+      <h2>Depuis le 15 juillet (J1)</h2>
+      <div class="box"><div class="bkts" id="bkts"></div></div>
+      <div class="box"><div class="bkts" id="artists"></div>
+        <p class="hint">« Récurrent » = artiste ayant déjà participé à une expo avant celle-ci.</p></div>
       <div class="box">
-        <h2>Par segment</h2>
-        <div id="segs"></div>
+        <div style="overflow-x:auto"><table id="convtbl">
+          <thead><tr><th>Langue</th><th class="num">Leads</th><th class="num">Inscrits</th><th class="num">Taux conv.</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
       </div>
+    </div>
+
+    <div class="section">
+      <h2>Aujourd'hui (live)</h2>
       <div class="box">
-        <h2>Derniers paiements</h2>
-        <div style="overflow-x:auto"><table id="tbl"><thead><tr><th>Date</th><th>Email</th><th>Montant</th><th>Segment</th></tr></thead><tbody></tbody></table></div>
+        <div class="bkts" id="bktsToday" style="margin-bottom:14px"></div>
+        <div style="overflow-x:auto"><table id="todaytbl">
+          <thead><tr><th>Langue</th><th class="num">Nouveaux leads</th><th class="num">Inscrits</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
       </div>
+    </div>
+
+    <div class="section">
+      <h2>Derniers paiements</h2>
+      <div class="box"><div style="overflow-x:auto"><table id="tbl">
+        <thead><tr><th>Date</th><th>Email</th><th class="num">Montant</th><th class="num">Expos</th><th>Source</th></tr></thead><tbody></tbody>
+      </table></div></div>
     </div>
     <p class="err" id="dashErr"></p>
   </div>
@@ -79,14 +105,13 @@
 
 <script>
 var KEY='';
-function enter(){ KEY=document.getElementById('pw').value||''; sessionStorage.setItem('dk',KEY); load(true); }
+function enter(){ KEY=document.getElementById('pw').value||''; sessionStorage.setItem('dk',KEY); load(); }
 document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
+function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!=='PWETH'&&o[c]>0;}).map(function(c){return Math.round(o[c]).toLocaleString('fr-FR')+' '+c;}).join(' · ')||'—'; }
+function bkt(cls,n,l){ return '<div class="bkt '+cls+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
 
-function money(o){ return Object.keys(o||{}).map(function(c){ return Math.round(o[c]).toLocaleString('fr-FR')+' '+c; }).join(' · ')||'—'; }
-
-function load(fromLogin){
-  KEY=KEY||sessionStorage.getItem('dk')||'';
-  if(!KEY){ return; }
+function load(){
+  KEY=KEY||sessionStorage.getItem('dk')||''; if(!KEY) return;
   fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
     .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
     .then(function(d){
@@ -94,36 +119,41 @@ function load(fromLogin){
       document.getElementById('login').style.display='none';
       document.getElementById('dash').style.display='block';
       document.getElementById('dashErr').textContent='';
+      document.getElementById('sub').textContent='Communauté existante : '+d.community.toLocaleString('fr-FR')+' clients · depuis le '+d.since;
+      var f=d.florence, c=f.conv.TOTAL;
       // KPIs
-      var kpis=[
-        ['payments',d.payments,'Paiements'],
-        ['rev',money(d.revenueByCurrency),'CA (récent)'],
-        ['leads',d.leadsTotal,'Leads Florence'],
-        ['conv',d.convertersFromLeads,'Convertis (leads)'],
-        ['rate',(d.conversionRate||0).toFixed(1)+' %','Taux lead → achat']
-      ];
-      document.getElementById('kpis').innerHTML=kpis.map(function(k,i){
-        return '<div class="kpi'+(k[0]==='rate'?' hi':'')+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';
-      }).join('');
-      // segments
-      var segs=d.bySegment||{};
-      document.getElementById('segs').innerHTML=Object.keys(segs).map(function(s){
-        return '<div class="seg"><span>'+s+'</span><b>'+segs[s]+'</b></div>';
-      }).join('');
-      // table
-      var rows=(d.recent||[]).map(function(r){
-        var isLead=r.segment&&r.segment.indexOf('Lead')===0;
-        return '<tr><td>'+r.date+'</td><td>'+(r.email||'—')+'</td><td>'+Math.round(r.amount).toLocaleString('fr-FR')+' '+r.currency+'</td><td><span class="tag '+(isLead?'lead':'other')+'">'+r.segment+'</span></td></tr>';
-      }).join('');
-      document.querySelector('#tbl tbody').innerHTML=rows||'<tr><td colspan="4" style="color:var(--muted)">Aucun paiement récent.</td></tr>';
+      document.getElementById('kpis').innerHTML=[
+        ['',money(f.revenueByCurrency),'CA Florence (depuis J1)'],
+        ['',f.payments,'Paiements'],
+        ['hi',c.rate+' %','Taux lead → inscrit'],
+        ['',c.inscrits+' / '+c.leads,'Leads convertis / total']
+      ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';}).join('');
+      // buckets depuis J1
+      document.getElementById('bkts').innerHTML=bkt('lead',f.buckets.lead,'Via leads (ads)')+bkt('existant',f.buckets.existant,'Communauté existante')+bkt('nouveau',f.buckets.nouveau,'Nouveaux directs');
+      var ar=f.artists||{first:0,recurring:0};
+      document.getElementById('artists').innerHTML=bkt('first',ar.first,'1ʳᵉ expo')+bkt('recur',ar.recurring,'Artistes récurrents');
+      // table conversion par langue
+      var langs=['FR','EN','ES','IT','DE'];
+      var body=langs.map(function(L){var x=f.conv[L];return '<tr><td>'+L+'</td><td class="num">'+x.leads+'</td><td class="num">'+x.inscrits+'</td><td class="num rate">'+x.rate+' %</td></tr>';}).join('');
+      body+='<tr class="tot"><td>TOTAL</td><td class="num">'+c.leads+'</td><td class="num">'+c.inscrits+'</td><td class="num rate">'+c.rate+' %</td></tr>';
+      document.querySelector('#convtbl tbody').innerHTML=body;
+      // aujourd'hui
+      var t=d.todayStats;
+      document.getElementById('bktsToday').innerHTML=bkt('lead',t.buckets.lead,'Via leads')+bkt('existant',t.buckets.existant,'Existants')+bkt('nouveau',t.buckets.nouveau,'Nouveaux');
+      document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){return '<tr><td>'+L+'</td><td class="num">'+(t.newLeadsByLang[L]||0)+'</td><td class="num">'+(t.inscritsByLang[L]||0)+'</td></tr>';}).join('');
+      // derniers paiements
+      document.querySelector('#tbl tbody').innerHTML=(d.recent||[]).map(function(r){
+        var lbl={lead:'Lead '+(r.lang||''),existant:'Existant',nouveau:'Nouveau'}[r.bucket];
+        var ex=r.expos?('<span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span>'):'—';
+        return '<tr><td>'+r.date+'</td><td>'+(r.email||'—')+'</td><td class="num">'+Math.round(r.amount).toLocaleString('fr-FR')+' '+r.currency+'</td><td class="num">'+ex+'</td><td><span class="tag '+r.bucket+'">'+lbl+'</span></td></tr>';
+      }).join('')||'<tr><td colspan="5" style="color:var(--muted)">Aucun paiement depuis J1.</td></tr>';
       document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
     })
     .catch(function(e){
       if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; sessionStorage.removeItem('dk'); KEY=''; }
-      else { document.getElementById('dashErr').textContent='Erreur : '+e.message; }
+      else document.getElementById('dashErr').textContent='Erreur : '+e.message;
     });
 }
-// auto-login si mdp déjà en session + auto-refresh 60s
 if(sessionStorage.getItem('dk')){ KEY=sessionStorage.getItem('dk'); load(); }
 setInterval(function(){ if(KEY) load(); }, 60000);
 </script>
