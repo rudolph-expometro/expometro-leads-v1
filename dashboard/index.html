@@ -56,6 +56,17 @@
   .roasbig{font-size:22px;font-weight:800;color:var(--green)}
   .manual{display:flex;gap:10px;align-items:center;margin:8px 0}
   .manual input{flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:#fff;font-size:14px;min-width:0}
+  .adstbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+  .adstbl th,.adstbl td{padding:6px 4px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)}
+  .adstbl th:first-child,.adstbl td:first-child{text-align:left;color:var(--muted);font-weight:400}
+  .adstbl th{color:var(--muted);font-size:10.5px;text-transform:uppercase;font-weight:600}
+  .adstbl tr.sub td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px 6px}
+  .adstbl tr.sub td:first-child{padding-left:12px}
+  .adstbl tr.roas td{font-weight:800;border-bottom:none}
+  .adstbl tr.roas td:not(:first-child){color:var(--green);font-size:16px}
+  .adstbl tr.roas td:first-child{color:var(--txt)}
+  .adstbl tr.roas.dim td:not(:first-child){color:var(--muted);font-size:13px;font-weight:700}
+  .adstbl tr.roas.dim td:first-child{color:var(--muted);font-weight:600}
   /* buckets */
   .bkts{display:flex;gap:10px;flex-wrap:wrap}
   .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -274,7 +285,20 @@ function load(){
       var a=d.ads||{available:false}, adsEl=document.getElementById('adsBox');
       function roasRow(label,spendEur,roas){ return '<div class="roasrow"><div class="rl">'+label+'</div><div class="rr"><span class="sp">'+fr(spendEur)+' € dépensés</span><span class="roasbig">'+(roas!=null?roas+'×':'—')+'</span></div></div>'; }
       if(a.available){
-        adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'+roasRow("Aujourd'hui",a.spendToday,a.roasToday)+roasRow('Depuis le 15/07',a.spendTotal,a.roasTotal);
+        var fb=f.revEURByBucket||{lead:0}, tb=t.revEURByBucket||{lead:0};
+        function eur(v){return fr(Math.round(v||0))+' €';}
+        function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
+        var roasPubT=a.spendToday>0?tb.lead/a.spendToday:null;
+        var roasPubC=a.spendTotal>0?fb.lead/a.spendTotal:null;
+        adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
+          +'<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
+          +'<tr><td>Dépensé</td><td>'+eur(a.spendToday)+'</td><td>'+eur(a.spendTotal)+'</td></tr>'
+          +'<tr><td>CA total</td><td>'+eur(t.revenueEUR)+'</td><td>'+eur(f.revenueEUR)+'</td></tr>'
+          +'<tr class="sub"><td>dont via pubs</td><td>'+eur(tb.lead)+'</td><td>'+eur(fb.lead)+'</td></tr>'
+          +'<tr class="roas"><td>ROAS pub</td><td>'+rx(roasPubT)+'</td><td>'+rx(roasPubC)+'</td></tr>'
+          +'<tr class="roas dim"><td>ROAS global</td><td>'+rx(a.roasToday)+'</td><td>'+rx(a.roasTotal)+'</td></tr>'
+          +'</tbody></table>'
+          +'<p class="hint">« ROAS pub » = CA via leads ÷ dépense (le <b>vrai</b> apport des ads). « ROAS global » = tout le CA ÷ dépense (inclut ta communauté). La vérité est entre les deux.</p>';
       } else {
         var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
         adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'

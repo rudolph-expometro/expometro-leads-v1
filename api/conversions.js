@@ -127,6 +127,7 @@ export default async function handler(req, res) {
     const seenLeadEmail = new Set(), seenArtist = new Set();
     const todayRevEUR = { lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
     let todayRevEURtot = 0;
+    const revEURtotByBucket = { lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
     const rows = [];
 
     for (const c of paid) {
@@ -144,8 +145,10 @@ export default async function handler(req, res) {
       else if (h && COMMUNITY.has(h)) bucket = 'existant';
       else bucket = 'nouveau';
 
+      const amtEUR = amt * (EUR_RATES[cur] || 0);
       buckets[bucket]++;
-      if (date === today) { bucketsToday[bucket]++; const e = amt * (EUR_RATES[cur] || 0); todayRevEUR[bucket] += e; todayRevEURtot += e; }
+      revEURtotByBucket[bucket] += amtEUR;
+      if (date === today) { bucketsToday[bucket]++; todayRevEUR[bucket] += amtEUR; todayRevEURtot += amtEUR; }
 
       if (lead) {
         if (!seenLeadEmail.has(email)) { inscritsByLang[lead.lang]++; seenLeadEmail.add(email); }
@@ -221,6 +224,7 @@ export default async function handler(req, res) {
         artistsTotal: seenArtist.size,
         revenueByCurrency: revByCur,
         revenueEUR: Math.round(revenueEUR),
+        revEURByBucket: { lead: Math.round(revEURtotByBucket.lead), existant: Math.round(revEURtotByBucket.existant), nouveau: Math.round(revEURtotByBucket.nouveau) },
         revenueIgnored: revIgnored,
         buckets,
         artistsSplit: artists,
