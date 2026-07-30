@@ -43,6 +43,19 @@
   .lead-hero .arw{color:var(--muted);font-size:22px}
   .lead-hero .rate{margin-left:auto;font-size:26px;font-weight:800;color:var(--green)}
   .lead-hero .rlab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .sech{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 11px}
+  .split .srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);font-size:13.5px}
+  .split .sl{color:var(--muted);display:flex;align-items:center;gap:8px}
+  .split .sv{font-weight:700}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.blue{background:var(--blue)} .dot.green{background:var(--green)} .dot.gold{background:var(--gold)}
+  .roasrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid rgba(255,255,255,.06)}
+  .roasrow:first-of-type{border-top:none}
+  .roasrow .rl{color:var(--muted);font-size:12.5px}
+  .roasrow .sp{color:var(--muted);font-size:12px;margin-right:12px}
+  .roasbig{font-size:22px;font-weight:800;color:var(--green)}
+  .manual{display:flex;gap:10px;align-items:center;margin:8px 0}
+  .manual input{flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:#fff;font-size:14px;min-width:0}
   /* buckets */
   .bkts{display:flex;gap:10px;flex-wrap:wrap}
   .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -97,7 +110,15 @@
       <div><button class="refresh" onclick="load()">↻ Rafraîchir</button><span class="updated" id="upd"></span></div>
     </div>
 
-    <!-- KPIs -->
+    <!-- CHIFFRES DU JOUR -->
+    <h2 class="sech" style="margin-top:0">Aujourd'hui — en direct</h2>
+    <div class="grid2">
+      <div class="box today-hero" id="todayHero"></div>
+      <div class="box" id="adsBox"></div>
+    </div>
+
+    <!-- CUMUL -->
+    <h2 class="sech">Cumul depuis le 15 juillet</h2>
     <div class="kpis" id="kpis"></div>
 
     <!-- CA + LEADS -->
@@ -153,9 +174,8 @@
 
     <!-- Aujourd'hui -->
     <div class="section">
-      <h2>Aujourd'hui (live)</h2>
+      <h2>Aujourd'hui — détail par langue</h2>
       <div class="box">
-        <div class="bkts" id="bktsToday" style="margin-bottom:14px"></div>
         <div style="overflow-x:auto"><table id="todaytbl">
           <thead><tr><th>Langue</th><th class="num">Nouveaux leads</th><th class="num">Inscrits</th></tr></thead>
           <tbody></tbody>
@@ -241,6 +261,30 @@ function load(){
         ['hi',c.rate+' %','Taux lead → inscrit']
       ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';}).join('');
 
+      // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
+      var t=d.todayStats, trb=t.revEURByBucket||{lead:0,existant:0,nouveau:0};
+      function srow(dot,label,n,eur){ return '<div class="srow"><span class="sl"><i class="dot '+dot+'"></i>'+label+'</span><span class="sv">'+fr(n)+' vente'+(n>1?'s':'')+' · '+fr(eur)+' €</span></div>'; }
+      document.getElementById('todayHero').innerHTML=
+        '<h3>Chiffres du jour</h3>'
+        +'<div class="lead-hero"><span class="big">≈ '+fr(t.revenueEUR)+' €</span><span class="rate"><span class="rlab">ventes</span> '+fr(t.payments)+'</span></div>'
+        +'<div class="split">'+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
+        +(t.buckets.nouveau>0?srow('gold','Nouveaux',t.buckets.nouveau,trb.nouveau):'')+'</div>';
+
+      // ---- Meta Ads -> ROAS ----
+      var a=d.ads||{available:false}, adsEl=document.getElementById('adsBox');
+      function roasRow(label,spendEur,roas){ return '<div class="roasrow"><div class="rl">'+label+'</div><div class="rr"><span class="sp">'+fr(spendEur)+' € dépensés</span><span class="roasbig">'+(roas!=null?roas+'×':'—')+'</span></div></div>'; }
+      if(a.available){
+        adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'+roasRow("Aujourd'hui",a.spendToday,a.roasToday)+roasRow('Depuis le 15/07',a.spendTotal,a.roasTotal);
+      } else {
+        var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
+        adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
+          +'<p class="hint" style="margin:0 0 4px">Dépenses pub non connectées — entre ta dépense totale depuis le 15/07 :</p>'
+          +'<div class="manual"><input id="adSpend" type="number" inputmode="decimal" placeholder="€ dépensés" value="'+saved+'"/><span id="roasOut" class="roasbig">—</span></div>'
+          +'<p class="hint" style="margin:2px 0 0">ROAS = CA converti ('+fr(f.revenueEUR)+' €) ÷ dépense.</p>';
+        var inp=document.getElementById('adSpend');
+        if(inp){ var calc=function(){ var v=parseFloat(inp.value)||0; try{localStorage.setItem('adspend',inp.value||'');}catch(e){} document.getElementById('roasOut').textContent=(v>0?(f.revenueEUR/v).toFixed(2)+'×':'—'); }; inp.addEventListener('input',calc); calc(); }
+      }
+
       // CA par devise + total EUR
       var cur=f.revenueByCurrency||{};
       var caHtml=money(cur).sort(function(a,b){return cur[b]-cur[a];}).map(function(k){
@@ -278,9 +322,7 @@ function load(){
         return '<tr><td class="medal">'+(med[i]||(i+1))+'</td><td>'+(r.email||'—')+'</td><td class="num"><span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span></td><td class="num">'+fr(r.amount)+' '+r.currency+'</td></tr>';
       }).join('')||'<tr><td colspan="4" style="color:var(--muted)">—</td></tr>';
 
-      // Aujourd'hui
-      var t=d.todayStats;
-      document.getElementById('bktsToday').innerHTML=bkt('lead',t.buckets.lead,'Via leads')+bkt('existant',t.buckets.existant,'Existants')+bkt('nouveau',t.buckets.nouveau,'Nouveaux');
+      // Aujourd'hui — détail par langue (t déjà défini plus haut)
       document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){return '<tr><td>'+L+'</td><td class="num">'+(t.newLeadsByLang[L]||0)+'</td><td class="num">'+(t.inscritsByLang[L]||0)+'</td></tr>';}).join('');
 
       // Derniers paiements

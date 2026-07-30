@@ -64,6 +64,30 @@ async function brevoLeads() {
   return map;
 }
 
+// Depenses Meta Ads via la Marketing API. Optionnel : si META_AD_ACCOUNT_ID absent ou token
+// sans permission ads_read -> renvoie null (le front bascule sur saisie manuelle). Ne throw jamais.
+// Env : META_AD_ACCOUNT_ID (act_xxx ou xxx) + META_ADS_TOKEN (sinon on tente META_CAPI_TOKEN).
+async function metaSpend() {
+  const acct = process.env.META_AD_ACCOUNT_ID;
+  const token = process.env.META_ADS_TOKEN || process.env.META_CAPI_TOKEN;
+  if (!acct || !token) return null;
+  const ver = process.env.META_GRAPH_VERSION || 'v21.0';
+  const id = String(acct).startsWith('act_') ? acct : 'act_' + acct;
+  const base = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}&fields=spend`;
+  async function get(qs) {
+    try {
+      const r = await fetch(base + qs);
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d && d.data && d.data[0] ? +(d.data[0].spend || 0) : 0;
+    } catch (e) { return null; }
+  }
+  const today = await get('&date_preset=today');
+  const total = await get('&time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
+  if (today === null && total === null) return null; // pas d'acces -> feature off
+  return { today: today || 0, total: total || 0, currency: 'EUR' }; // compte suppose en EUR
+}
+
 export default async function handler(req, res) {
   if (!process.env.DASHBOARD_PASSWORD || (req.headers['x-dash-key'] || '') !== process.env.DASHBOARD_PASSWORD) {
     return res.status(401).json({ error: 'unauthorized' });
@@ -74,7 +98,7 @@ export default async function handler(req, res) {
   try {
     const today = todayISO();
     const nowTs = Math.floor(Date.now() / 1000);
-    const [charges, leads] = await Promise.all([stripeCharges(), brevoLeads()]);
+    const [charges, leads, spend] = await Promise.all([stripeCharges(), brevoLeads(), metaSpend()]);
 
     // Axe des jours J1 -> aujourd'hui (UTC)
     const days = [];
@@ -101,6 +125,8 @@ export default async function handler(req, res) {
     const artists = { first: 0, recurring: 0 };
     const communityBuyers = new Set();    // emails de la communaute existante qui ont paye
     const seenLeadEmail = new Set(), seenArtist = new Set();
+    const todayRevEUR = { lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
+    let todayRevEURtot = 0;
     const rows = [];
 
     for (const c of paid) {
@@ -119,7 +145,7 @@ export default async function handler(req, res) {
       else bucket = 'nouveau';
 
       buckets[bucket]++;
-      if (date === today) bucketsToday[bucket]++;
+      if (date === today) { bucketsToday[bucket]++; const e = amt * (EUR_RATES[cur] || 0); todayRevEUR[bucket] += e; todayRevEURtot += e; }
 
       if (lead) {
         if (!seenLeadEmail.has(email)) { inscritsByLang[lead.lang]++; seenLeadEmail.add(email); }
@@ -151,6 +177,17 @@ export default async function handler(req, res) {
     // CA converti en EUR (indicatif ; devises inconnues/crypto ignorees)
     let revenueEUR = 0; const revIgnored = [];
     for (const cur in revByCur) { const r = EUR_RATES[cur]; if (r) revenueEUR += revByCur[cur] * r; else if (revByCur[cur] > 0) revIgnored.push(cur); }
+
+    // Meta Ads -> ROAS (si dispo)
+    let ads = { available: false };
+    if (spend) {
+      ads = {
+        available: true, currency: spend.currency,
+        spendToday: Math.round(spend.today), spendTotal: Math.round(spend.total),
+        roasToday: spend.today > 0 ? +(todayRevEURtot / spend.today).toFixed(2) : null,
+        roasTotal: spend.total > 0 ? +(revenueEUR / spend.total).toFixed(2) : null
+      };
+    }
 
     // Taux de conversion par langue (depuis J1)
     const conv = {}; let leadsTot = 0, inscritsTot = 0;
@@ -191,8 +228,11 @@ export default async function handler(req, res) {
       },
       daily,
       topArtists,
+      ads,
       todayStats: {
         payments: paid.filter(c => new Date(c.created * 1000).toISOString().slice(0, 10) === today).length,
+        revenueEUR: Math.round(todayRevEURtot),
+        revEURByBucket: { lead: Math.round(todayRevEUR.lead), existant: Math.round(todayRevEUR.existant), nouveau: Math.round(todayRevEUR.nouveau) },
         buckets: bucketsToday,
         newLeadsByLang: newLeadsToday,
         inscritsByLang: inscritsTodayByLang
