@@ -23,6 +23,13 @@ const BASE_EXPOSANTS = 4505;
 const EUR_RATES = { EUR: 1, USD: 0.92, GBP: 1.17, CHF: 1.05, CAD: 0.67, AUD: 0.60,
   CNY: 0.127, HKD: 0.118, JPY: 0.0061, SEK: 0.088, NOK: 0.086, DKK: 0.134, SGD: 0.68, NZD: 0.56 };
 
+// Objectifs de campagne qui comptent dans le ROAS (acquisition). Le reste (Traffic, Engagement,
+// Follow, Notoriete, App...) est EXCLU automatiquement du denominateur du ROAS.
+const ACQ_OBJECTIVES = new Set([
+  'OUTCOME_LEADS', 'LEAD_GENERATION',
+  'OUTCOME_SALES', 'CONVERSIONS', 'PRODUCT_CATALOG_SALES'
+]);
+
 function sha256(v) { return createHash('sha256').update(String(v || '').trim().toLowerCase()).digest('hex'); }
 function todayISO() { return new Date().toISOString().slice(0, 10); }
 const zeroLang = () => ({ FR: 0, EN: 0, ES: 0, IT: 0, DE: 0 });
@@ -73,19 +80,42 @@ async function metaSpend() {
   if (!acct || !token) return null;
   const ver = process.env.META_GRAPH_VERSION || 'v21.0';
   const id = String(acct).startsWith('act_') ? acct : 'act_' + acct;
-  const base = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}&fields=spend`;
-  async function get(qs) {
-    try {
-      const r = await fetch(base + qs);
+  // On lit la depense PAR CAMPAGNE (avec objectif) pour ne compter que l'acquisition dans le ROAS.
+  async function campaigns(dateQs) {
+    let url = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}`
+      + `&level=campaign&fields=campaign_name,objective,spend&limit=300&${dateQs}`;
+    let out = [];
+    for (let i = 0; i < 10; i++) {
+      let r;
+      try { r = await fetch(url); } catch (e) { return null; }
       if (!r.ok) return null;
       const d = await r.json();
-      return d && d.data && d.data[0] ? +(d.data[0].spend || 0) : 0;
-    } catch (e) { return null; }
+      out = out.concat(d.data || []);
+      if (d.paging && d.paging.next) url = d.paging.next; else break;
+    }
+    return out;
   }
-  const today = await get('&date_preset=today');
-  const total = await get('&time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
-  if (today === null && total === null) return null; // pas d'acces -> feature off
-  return { today: today || 0, total: total || 0, currency: 'EUR' }; // compte suppose en EUR
+  function summarize(rows) {
+    let total = 0, acq = 0; const breakdown = [];
+    for (const c of (rows || [])) {
+      const s = +(c.spend || 0); total += s;
+      const counted = ACQ_OBJECTIVES.has(c.objective);
+      if (counted) acq += s;
+      if (s > 0) breakdown.push({ name: c.campaign_name || '(sans nom)', objective: c.objective || '', spend: Math.round(s), counted });
+    }
+    breakdown.sort((a, b) => b.spend - a.spend);
+    return { total, acq, breakdown };
+  }
+  const todayRows = await campaigns('date_preset=today');
+  const totalRows = await campaigns('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
+  if (todayRows === null && totalRows === null) return null; // pas d'acces -> feature off
+  const t = summarize(todayRows), g = summarize(totalRows);
+  return {
+    currency: 'EUR',
+    today: t.total, todayAcq: t.acq,
+    total: g.total, totalAcq: g.acq,
+    breakdown: g.breakdown  // detail cumul par campagne (transparence)
+  };
 }
 
 export default async function handler(req, res) {
@@ -187,8 +217,11 @@ export default async function handler(req, res) {
       ads = {
         available: true, currency: spend.currency,
         spendToday: Math.round(spend.today), spendTotal: Math.round(spend.total),
-        roasToday: spend.today > 0 ? +(todayRevEURtot / spend.today).toFixed(2) : null,
-        roasTotal: spend.total > 0 ? +(revenueEUR / spend.total).toFixed(2) : null
+        spendTodayAcq: Math.round(spend.todayAcq), spendTotalAcq: Math.round(spend.totalAcq),
+        // ROAS sur la depense ACQUISITION (Leads + Conversions) ; Traffic/Follow exclus
+        roasToday: spend.todayAcq > 0 ? +(todayRevEURtot / spend.todayAcq).toFixed(2) : null,
+        roasTotal: spend.totalAcq > 0 ? +(revenueEUR / spend.totalAcq).toFixed(2) : null,
+        breakdown: spend.breakdown
       };
     }
 

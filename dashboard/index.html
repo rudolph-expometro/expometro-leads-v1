@@ -67,6 +67,17 @@
   .adstbl tr.roas td:first-child{color:var(--txt)}
   .adstbl tr.roas.dim td:not(:first-child){color:var(--muted);font-size:13px;font-weight:700}
   .adstbl tr.roas.dim td:first-child{color:var(--muted);font-weight:600}
+  .camps{margin-top:10px}
+  .camps summary{cursor:pointer;color:var(--blue);font-size:12px;list-style:none;user-select:none}
+  .camps summary::-webkit-details-marker{display:none}
+  .camps summary::before{content:'▸ ';font-size:10px}
+  .camps[open] summary::before{content:'▾ '}
+  .camptbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  .camptbl td{padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .camptbl td.num{text-align:right}
+  .camptbl td:last-child{text-align:right;font-size:10.5px;font-weight:700;color:var(--green)}
+  .camptbl tr.ex td{color:var(--muted)}
+  .camptbl tr.ex td:last-child{color:var(--muted);font-weight:400}
   /* buckets */
   .bkts{display:flex;gap:10px;flex-wrap:wrap}
   .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -288,17 +299,25 @@ function load(){
         var fb=f.revEURByBucket||{lead:0}, tb=t.revEURByBucket||{lead:0};
         function eur(v){return fr(Math.round(v||0))+' €';}
         function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
-        var roasPubT=a.spendToday>0?tb.lead/a.spendToday:null;
-        var roasPubC=a.spendTotal>0?fb.lead/a.spendTotal:null;
+        function objLabel(o){o=o||'';
+          if(/LEAD/.test(o))return'Leads'; if(/SALE|CONVERSION|CATALOG/.test(o))return'Conversions';
+          if(/TRAFFIC|LINK_CLICKS/.test(o))return'Trafic'; if(/ENGAGEMENT|LIKE/.test(o))return'Engagement/Follow';
+          if(/AWARENESS|REACH/.test(o))return'Notoriété'; if(/VIDEO/.test(o))return'Vidéo';
+          if(/APP/.test(o))return'App'; if(/MESSAGE/.test(o))return'Messages'; return o||'—'; }
+        var roasPubT=a.spendTodayAcq>0?tb.lead/a.spendTodayAcq:null;
+        var roasPubC=a.spendTotalAcq>0?fb.lead/a.spendTotalAcq:null;
+        var camps=(a.breakdown||[]).map(function(c){
+          return '<tr class="'+(c.counted?'':'ex')+'"><td>'+c.name+'</td><td>'+objLabel(c.objective)+'</td><td class="num">'+eur(c.spend)+'</td><td>'+(c.counted?'compté':'exclu')+'</td></tr>';
+        }).join('');
         adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
           +'<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
-          +'<tr><td>Dépensé</td><td>'+eur(a.spendToday)+'</td><td>'+eur(a.spendTotal)+'</td></tr>'
-          +'<tr><td>CA total</td><td>'+eur(t.revenueEUR)+'</td><td>'+eur(f.revenueEUR)+'</td></tr>'
-          +'<tr class="sub"><td>dont via pubs</td><td>'+eur(tb.lead)+'</td><td>'+eur(fb.lead)+'</td></tr>'
-          +'<tr class="roas"><td>ROAS pub</td><td>'+rx(roasPubT)+'</td><td>'+rx(roasPubC)+'</td></tr>'
-          +'<tr class="roas dim"><td>ROAS global</td><td>'+rx(a.roasToday)+'</td><td>'+rx(a.roasTotal)+'</td></tr>'
+          +'<tr><td>Dépensé (acquisition)</td><td>'+eur(a.spendTodayAcq)+'</td><td>'+eur(a.spendTotalAcq)+'</td></tr>'
+          +'<tr class="sub"><td>total pub (tous objectifs)</td><td>'+eur(a.spendToday)+'</td><td>'+eur(a.spendTotal)+'</td></tr>'
+          +'<tr><td>CA via pubs</td><td>'+eur(tb.lead)+'</td><td>'+eur(fb.lead)+'</td></tr>'
+          +'<tr class="roas"><td>ROAS</td><td>'+rx(roasPubT)+'</td><td>'+rx(roasPubC)+'</td></tr>'
           +'</tbody></table>'
-          +'<p class="hint">« ROAS pub » = CA via leads ÷ dépense (le <b>vrai</b> apport des ads). « ROAS global » = tout le CA ÷ dépense (inclut ta communauté). La vérité est entre les deux.</p>';
+          +'<p class="hint">Dépense = campagnes <b>acquisition</b> (Leads + Conversions) ; Traffic/Follow <b>exclus</b>. ROAS = CA via pubs ÷ dépense.</p>'
+          +(camps?'<details class="camps"><summary>Détail par campagne (cumul)</summary><table class="camptbl"><tbody>'+camps+'</tbody></table></details>':'');
       } else {
         var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
         adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
