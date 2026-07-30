@@ -1,21 +1,26 @@
-// Vercel Serverless Function — Dashboard conversions LIVE (V2, focalisé FLORENCE).
-// Croise les PAIEMENTS Stripe (depuis J1) avec les LEADS Brevo + la communauté existante.
+// Vercel Serverless Function — Dashboard conversions LIVE (V3, centre de controle FLORENCE).
+// Croise les PAIEMENTS Stripe (depuis J1) avec les LEADS Brevo + la communaute existante.
 //
-// Env : STRIPE_API_KEY (Charges: Read + Events: Read) · BREVO_API_KEY · DASHBOARD_PASSWORD
-// Auth : en-tête "x-dash-key" == DASHBOARD_PASSWORD. Sinon 401.
+// Env : STRIPE_API_KEY (Charges: Read) · BREVO_API_KEY · DASHBOARD_PASSWORD
+// Auth : en-tete "x-dash-key" == DASHBOARD_PASSWORD. Sinon 401.
 
 import { createHash } from 'node:crypto';
 import { COMMUNITY_HASHES, PARTICIPATION } from '../lib/community.js';
 
-const J1 = '2026-07-15';                       // début des inscriptions Florence
+const J1 = '2026-07-15';                       // debut des inscriptions Florence
 const J1_TS = Math.floor(new Date(J1 + 'T00:00:00Z').getTime() / 1000);
 const LEAD_LISTS = { 152: 'FR', 153: 'EN', 154: 'ES', 155: 'IT', 156: 'DE' };
 const LANGS = ['FR', 'EN', 'ES', 'IT', 'DE'];
 const COMMUNITY = new Set(COMMUNITY_HASHES);
 const PART = PARTICIPATION; // hash email -> nb d'expos lifetime (clients)
 
+// Taux de change approximatifs vers EUR (statiques, pour un TOTAL indicatif). Crypto exclu.
+const EUR_RATES = { EUR: 1, USD: 0.92, GBP: 1.17, CHF: 1.05, CAD: 0.67, AUD: 0.60,
+  CNY: 0.127, HKD: 0.118, JPY: 0.0061, SEK: 0.088, NOK: 0.086, DKK: 0.134, SGD: 0.68, NZD: 0.56 };
+
 function sha256(v) { return createHash('sha256').update(String(v || '').trim().toLowerCase()).digest('hex'); }
 function todayISO() { return new Date().toISOString().slice(0, 10); }
+const zeroLang = () => ({ FR: 0, EN: 0, ES: 0, IT: 0, DE: 0 });
 
 async function stripeCharges() {
   const key = process.env.STRIPE_API_KEY;
@@ -54,8 +59,6 @@ async function brevoLeads() {
   return map;
 }
 
-const zeroLang = () => ({ FR: 0, EN: 0, ES: 0, IT: 0, DE: 0 });
-
 export default async function handler(req, res) {
   if (!process.env.DASHBOARD_PASSWORD || (req.headers['x-dash-key'] || '') !== process.env.DASHBOARD_PASSWORD) {
     return res.status(401).json({ error: 'unauthorized' });
@@ -65,25 +68,34 @@ export default async function handler(req, res) {
   }
   try {
     const today = todayISO();
+    const nowTs = Math.floor(Date.now() / 1000);
     const [charges, leads] = await Promise.all([stripeCharges(), brevoLeads()]);
 
-    // Leads Brevo : total par langue + nouveaux aujourd'hui
-    const leadsByLang = zeroLang(), newLeadsToday = zeroLang();
+    // Axe des jours J1 -> aujourd'hui (UTC)
+    const days = [];
+    for (let t = J1_TS; t <= nowTs; t += 86400) days.push(new Date(t * 1000).toISOString().slice(0, 10));
+    if (days[days.length - 1] !== today) days.push(today);
+
+    // Leads Brevo : total par langue + nouveaux aujourd'hui + par jour (depuis J1)
+    const leadsByLang = zeroLang(), newLeadsToday = zeroLang(), leadsByDay = {};
     for (const e in leads) {
-      const l = leads[e]; leadsByLang[l.lang] = (leadsByLang[l.lang] || 0) + 1;
+      const l = leads[e];
+      leadsByLang[l.lang] = (leadsByLang[l.lang] || 0) + 1;
       if (l.created === today) newLeadsToday[l.lang] = (newLeadsToday[l.lang] || 0) + 1;
+      if (l.created >= J1) leadsByDay[l.created] = (leadsByDay[l.created] || 0) + 1;
     }
 
     const paid = charges.filter(c => c.paid && !c.refunded && c.status === 'succeeded');
-    // agrégats
     const revByCur = {};
     const buckets = { lead: 0, existant: 0, nouveau: 0 };
     const bucketsToday = { lead: 0, existant: 0, nouveau: 0 };
-    const inscritsByLang = zeroLang();          // leads convertis (depuis J1) par langue
-    const inscritsTodayByLang = zeroLang();     // leads convertis aujourd'hui
-    const seenLeadEmail = new Set();
-    const seenArtist = new Set();               // artistes uniques (par email) depuis J1
-    const artists = { first: 0, recurring: 0 };  // 1ere expo vs artiste recurrent
+    const inscritsByLang = zeroLang(), inscritsTodayByLang = zeroLang();
+    const convByDay = {};                 // conversions (leads qui paient) par jour
+    const firstDate = {};                 // email -> date du 1er paiement (pour cumul artistes)
+    const artistAgg = {};                 // email -> { expos, amount, currency, bucket }
+    const artists = { first: 0, recurring: 0 };
+    const communityBuyers = new Set();    // emails de la communaute existante qui ont paye
+    const seenLeadEmail = new Set(), seenArtist = new Set();
     const rows = [];
 
     for (const c of paid) {
@@ -94,7 +106,7 @@ export default async function handler(req, res) {
       revByCur[cur] = (revByCur[cur] || 0) + amt;
 
       const h = email ? sha256(email) : '';
-      const expos = (h && PART[h]) || 0;          // nb d'expos lifetime (inclut Florence)
+      const expos = (h && PART[h]) || 0;
       const lead = email && leads[email];
       let bucket;
       if (lead) bucket = 'lead';
@@ -105,40 +117,73 @@ export default async function handler(req, res) {
       if (date === today) bucketsToday[bucket]++;
 
       if (lead) {
-        // inscrit unique par email (evite de compter 2x un lead qui paie 2 fois)
         if (!seenLeadEmail.has(email)) { inscritsByLang[lead.lang]++; seenLeadEmail.add(email); }
         if (date === today) inscritsTodayByLang[lead.lang]++;
+        convByDay[date] = (convByDay[date] || 0) + 1;
       }
-      // 1ere expo (<=1) vs artiste recurrent (>=2), une fois par artiste
-      if (email && !seenArtist.has(email)) {
-        seenArtist.add(email);
-        if (expos >= 2) artists.recurring++; else artists.first++;
+      if (h && COMMUNITY.has(h) && email) communityBuyers.add(email);
+
+      if (email) {
+        if (!firstDate[email] || date < firstDate[email]) firstDate[email] = date;
+        if (!seenArtist.has(email)) {
+          seenArtist.add(email);
+          if (expos >= 2) artists.recurring++; else artists.first++;
+        }
+        const a = artistAgg[email] || (artistAgg[email] = { expos, amount: 0, currency: cur, bucket });
+        a.amount += amt; a.expos = Math.max(a.expos, expos);
       }
       rows.push({ date, email, amount: amt, currency: cur, bucket, lang: lead ? lead.lang : '', expos });
     }
     rows.sort((a, b) => (a.date < b.date ? 1 : -1));
 
-    // taux de conversion par langue (depuis J1)
-    const conv = {};
-    let leadsTot = 0, inscritsTot = 0;
+    // Artistes uniques par jour (1er paiement) -> le front fera le cumul
+    const artByDay = {};
+    for (const e in firstDate) { const d = firstDate[e]; artByDay[d] = (artByDay[d] || 0) + 1; }
+
+    // Serie quotidienne depuis J1
+    const daily = days.map(d => ({ date: d, leads: leadsByDay[d] || 0, conv: convByDay[d] || 0, artists: artByDay[d] || 0 }));
+
+    // CA converti en EUR (indicatif ; devises inconnues/crypto ignorees)
+    let revenueEUR = 0; const revIgnored = [];
+    for (const cur in revByCur) { const r = EUR_RATES[cur]; if (r) revenueEUR += revByCur[cur] * r; else if (revByCur[cur] > 0) revIgnored.push(cur); }
+
+    // Taux de conversion par langue (depuis J1)
+    const conv = {}; let leadsTot = 0, inscritsTot = 0;
     for (const L of LANGS) {
       conv[L] = { leads: leadsByLang[L], inscrits: inscritsByLang[L], rate: leadsByLang[L] ? +(100 * inscritsByLang[L] / leadsByLang[L]).toFixed(1) : 0 };
       leadsTot += leadsByLang[L]; inscritsTot += inscritsByLang[L];
     }
     conv.TOTAL = { leads: leadsTot, inscrits: inscritsTot, rate: leadsTot ? +(100 * inscritsTot / leadsTot).toFixed(1) : 0 };
 
+    // Top artistes par nb d'expos
+    const topArtists = Object.keys(artistAgg).map(e => ({
+      email: e, expos: artistAgg[e].expos, amount: Math.round(artistAgg[e].amount),
+      currency: artistAgg[e].currency, bucket: artistAgg[e].bucket
+    })).sort((a, b) => (b.expos - a.expos) || (b.amount - a.amount)).slice(0, 12);
+
+    // Communaute existante
+    const communaute = {
+      size: COMMUNITY.size, inscrits: communityBuyers.size,
+      rate: COMMUNITY.size ? +(100 * communityBuyers.size / COMMUNITY.size).toFixed(2) : 0
+    };
+
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
       updated: new Date().toISOString(),
       since: J1, today,
-      community: COMMUNITY.size,
+      communaute,
       florence: {
         payments: paid.length,
+        artistsTotal: seenArtist.size,
         revenueByCurrency: revByCur,
-        buckets,          // lead / existant / nouveau (depuis J1)
-        artists,          // { first: 1ere expo, recurring: artiste recurrent }
-        conv              // par langue + TOTAL
+        revenueEUR: Math.round(revenueEUR),
+        revenueIgnored: revIgnored,
+        buckets,
+        artistsSplit: artists,
+        conv
       },
+      daily,
+      topArtists,
       todayStats: {
         payments: paid.filter(c => new Date(c.created * 1000).toISOString().slice(0, 10) === today).length,
         buckets: bucketsToday,

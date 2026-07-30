@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Suivi conversions — ExpoMetro</title>
+<style>
+  :root{--bg:#070a17;--card:#0e1431;--card2:#131a3d;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--blue:#5b8cff;--gold:#ffc04d;--txt:#eef1f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 80px}
+  h1{font-size:19px;margin:0}
+  .sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
+  #login{max-width:340px;margin:15vh auto;text-align:center}
+  #login input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:#fff;font-size:15px;margin:12px 0}
+  button{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
+  button:hover{filter:brightness(1.05)}
+  .err{color:#ff8a8a;font-size:13px;min-height:16px}
+  #dash{display:none}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
+  .updated{color:var(--muted);font-size:11.5px;display:block;margin-top:4px;text-align:right}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:14px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+  .kpi .n{font-size:23px;font-weight:800;letter-spacing:-.01em}
+  .kpi .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+  .kpi.hi .n{color:var(--green)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .section{margin-top:22px}
+  .section>h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 11px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:13px}
+  .box h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px;font-weight:600}
+  /* CA */
+  .ca .row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .ca .row.tot{border-bottom:none;border-top:2px solid var(--line);margin-top:5px;padding-top:9px;font-weight:800;font-size:17px}
+  .ca .row.tot .v{color:var(--green)}
+  .ca .cur{color:var(--muted)}
+  /* Leads combiné */
+  .lead-hero{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .lead-hero .big{font-size:30px;font-weight:800}
+  .lead-hero .arw{color:var(--muted);font-size:22px}
+  .lead-hero .rate{margin-left:auto;font-size:26px;font-weight:800;color:var(--green)}
+  .lead-hero .rlab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  /* buckets */
+  .bkts{display:flex;gap:10px;flex-wrap:wrap}
+  .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+  .bkt .n{font-size:22px;font-weight:800}
+  .bkt .l{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .bkt.lead{border-color:rgba(91,140,255,.4)} .bkt.lead .n{color:var(--blue)}
+  .bkt.existant{border-color:rgba(34,224,107,.4)} .bkt.existant .n{color:var(--green)}
+  .bkt.nouveau{border-color:rgba(255,192,77,.4)} .bkt.nouveau .n{color:var(--gold)}
+  .bkt.first{border-color:rgba(255,192,77,.4)} .bkt.first .n{color:var(--gold)}
+  .bkt.recur{border-color:rgba(91,140,255,.4)} .bkt.recur .n{color:var(--blue)}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em}
+  td.num,th.num{text-align:right}
+  tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
+  .rate{font-weight:800;color:var(--green)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
+  .tag.lead{background:rgba(91,140,255,.16);color:#9bbcff}
+  .tag.existant{background:rgba(34,224,107,.15);color:#7cf3ac}
+  .tag.nouveau{background:rgba(255,192,77,.16);color:#ffd98a}
+  .exp{display:inline-block;min-width:20px;text-align:center;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.07);color:var(--muted)}
+  .exp.rec{background:rgba(91,140,255,.16);color:#9bbcff}
+  .medal{font-size:13px}
+  .hint{color:var(--muted);font-size:11px;margin:10px 0 0}
+  /* charts */
+  .legend{display:flex;gap:16px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .chart{width:100%;height:auto;display:block}
+  .chart .grid{stroke:rgba(255,255,255,.07);stroke-width:1}
+  .chart .bar{fill:var(--blue);opacity:.72}
+  .chart .lineC{fill:none;stroke:var(--accent);stroke-width:2.2}
+  .chart .dotC{fill:var(--accent)}
+  .chart .area{fill:rgba(34,224,107,.14)}
+  .chart .lineA{fill:none;stroke:var(--green);stroke-width:2.4}
+  .chart .dotA{fill:var(--green)}
+  .chart text{fill:var(--muted);font-size:9.5px;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login">
+    <h1>Suivi conversions</h1><p class="sub">Accès protégé</p>
+    <input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password"/>
+    <button onclick="enter()">Entrer</button>
+    <p class="err" id="loginErr"></p>
+  </div>
+
+  <div id="dash">
+    <div class="top">
+      <div><h1>Contrôle Florence</h1><p class="sub" id="sub"></p></div>
+      <div><button class="refresh" onclick="load()">↻ Rafraîchir</button><span class="updated" id="upd"></span></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis" id="kpis"></div>
+
+    <!-- CA + LEADS -->
+    <div class="grid2">
+      <div class="box ca"><h3>Chiffre d'affaires (depuis le 15/07)</h3><div id="ca"></div></div>
+      <div class="box"><h3>Leads → Inscrits</h3>
+        <div class="lead-hero" id="leadHero"></div>
+        <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
+          <thead><tr><th>Langue</th><th class="num">Leads</th><th class="num">Inscrits</th><th class="num">Taux</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- Graphique leads / jour -->
+    <div class="section">
+      <h2>Leads &amp; conversions par jour</h2>
+      <div class="box">
+        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Conversions (inscriptions)</span></div>
+        <div id="chartLeads"></div>
+      </div>
+    </div>
+
+    <!-- Artistes participants -->
+    <div class="section">
+      <h2>Artistes participants à Florence</h2>
+      <div class="grid2">
+        <div class="box">
+          <div class="legend"><span><i style="background:var(--green)"></i>Total cumulé d'artistes</span></div>
+          <div id="chartArtists"></div>
+        </div>
+        <div class="box"><h3>Type d'artiste</h3>
+          <div class="bkts" id="artists"></div>
+          <p class="hint">« Récurrent » = a déjà participé à une expo avant celle-ci. « 1ʳᵉ expo » = Florence est sa première.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Communauté + Top artistes -->
+    <div class="section">
+      <h2>Communauté &amp; ambassadeurs</h2>
+      <div class="grid2">
+        <div class="box"><h3>Communauté existante</h3><div class="bkts" id="commu"></div>
+          <p class="hint">Part de ta base d'avant Florence qui a (re)pris une place.</p></div>
+        <div class="box"><h3>Top artistes (par nb d'expos)</h3>
+          <div style="overflow-x:auto"><table id="toptbl">
+            <thead><tr><th>#</th><th>Artiste</th><th class="num">Expos</th><th class="num">Payé</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aujourd'hui -->
+    <div class="section">
+      <h2>Aujourd'hui (live)</h2>
+      <div class="box">
+        <div class="bkts" id="bktsToday" style="margin-bottom:14px"></div>
+        <div style="overflow-x:auto"><table id="todaytbl">
+          <thead><tr><th>Langue</th><th class="num">Nouveaux leads</th><th class="num">Inscrits</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- Derniers paiements -->
+    <div class="section">
+      <h2>Derniers paiements</h2>
+      <div class="box"><div style="overflow-x:auto"><table id="tbl">
+        <thead><tr><th>Date</th><th>Email</th><th class="num">Montant</th><th class="num">Expos</th><th>Source</th></tr></thead><tbody></tbody>
+      </table></div></div>
+    </div>
+    <p class="err" id="dashErr"></p>
+  </div>
+</div>
+
+<script>
+var KEY='';
+function enter(){ KEY=document.getElementById('pw').value||''; sessionStorage.setItem('dk',KEY); load(); }
+document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
+function fr(n){ return (n||0).toLocaleString('fr-FR'); }
+function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!=='PWETH'&&o[c]>0;}); }
+function bkt(cls,n,l){ return '<div class="bkt '+cls+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
+
+/* ---- Graphique barres (leads) + ligne (conversions), double échelle ---- */
+function chartBarsLine(days,bars,line){
+  var W=740,H=210,pl=30,pr=30,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var bmax=Math.max.apply(null,bars.concat(1)),lmax=Math.max.apply(null,line.concat(1)),slot=iw/n;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  for(var i=0;i<n;i++){var bh=ih*bars[i]/bmax,x=pl+slot*i+slot*0.22,w=slot*0.56,y=pt+ih-bh;
+    s+='<rect class="bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2"/>';}
+  var pts=line.map(function(v,i){return [pl+slot*i+slot*0.5, pt+ih-ih*v/lmax];});
+  s+='<path class="lineC" d="'+pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ')+'"/>';
+  pts.forEach(function(p,i){ if(line[i]>0) s+='<circle class="dotC" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6"/>'; });
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+bmax+'</text>';
+  s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--accent)">'+lmax+'</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+days[i].slice(5)+'</text>';} }
+  return s+'</svg>';
+}
+/* ---- Graphique aire cumulée (artistes) ---- */
+function chartArea(days,vals){
+  var W=740,H=210,pl=30,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var mx=Math.max.apply(null,vals.concat(1)),slot=n>1?iw/(n-1):iw;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  var pts=vals.map(function(v,i){return [pl+slot*i, pt+ih-ih*v/mx];});
+  var d=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+  s+='<path class="area" d="'+d+' L'+pts[n-1][0].toFixed(1)+' '+(pt+ih)+' L'+pts[0][0].toFixed(1)+' '+(pt+ih)+' Z"/>';
+  s+='<path class="lineA" d="'+d+'"/>';
+  s+='<circle class="dotA" cx="'+pts[n-1][0].toFixed(1)+'" cy="'+pts[n-1][1].toFixed(1)+'" r="3.2"/>';
+  s+='<text x="'+pts[n-1][0].toFixed(1)+'" y="'+(pts[n-1][1]-7).toFixed(1)+'" text-anchor="end" style="fill:var(--green);font-weight:700">'+vals[n-1]+'</text>';
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+mx+'</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+pts[i][0].toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+days[i].slice(5)+'</text>';} }
+  return s+'</svg>';
+}
+
+function load(){
+  KEY=KEY||sessionStorage.getItem('dk')||''; if(!KEY) return;
+  fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
+    .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
+    .then(function(d){
+      if(d.error) throw new Error(d.error);
+      document.getElementById('login').style.display='none';
+      document.getElementById('dash').style.display='block';
+      document.getElementById('dashErr').textContent='';
+      var f=d.florence, c=f.conv.TOTAL, cm=d.communaute;
+      document.getElementById('sub').textContent='Communauté existante : '+fr(cm.size)+' clients · depuis le '+d.since;
+
+      // KPIs
+      document.getElementById('kpis').innerHTML=[
+        ['hi','≈ '+fr(f.revenueEUR)+' €','CA Florence (converti)'],
+        ['',fr(f.payments),'Paiements'],
+        ['',fr(f.artistsTotal),'Artistes participants'],
+        ['hi',c.rate+' %','Taux lead → inscrit']
+      ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';}).join('');
+
+      // CA par devise + total EUR
+      var cur=f.revenueByCurrency||{};
+      var caHtml=money(cur).sort(function(a,b){return cur[b]-cur[a];}).map(function(k){
+        return '<div class="row"><span class="cur">'+k+'</span><span class="v">'+fr(Math.round(cur[k]))+'</span></div>';
+      }).join('')||'<div class="row"><span class="cur">—</span><span class="v">0</span></div>';
+      caHtml+='<div class="row tot"><span>TOTAL ≈ EUR</span><span class="v">'+fr(f.revenueEUR)+' €</span></div>';
+      document.getElementById('ca').innerHTML=caHtml;
+
+      // Leads combiné
+      document.getElementById('leadHero').innerHTML=
+        '<span class="big">'+fr(c.leads)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(c.inscrits)+'</span>'
+        +'<span class="rate"><span class="rlab">taux</span> '+c.rate+' %</span>';
+      var langs=['FR','EN','ES','IT','DE'];
+      var body=langs.map(function(L){var x=f.conv[L];return '<tr><td>'+L+'</td><td class="num">'+x.leads+'</td><td class="num">'+x.inscrits+'</td><td class="num rate">'+x.rate+' %</td></tr>';}).join('');
+      body+='<tr class="tot"><td>TOTAL</td><td class="num">'+c.leads+'</td><td class="num">'+c.inscrits+'</td><td class="num rate">'+c.rate+' %</td></tr>';
+      document.querySelector('#convtbl tbody').innerHTML=body;
+
+      // Graphiques
+      var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
+      document.getElementById('chartLeads').innerHTML=chartBarsLine(dsl, dd.map(function(x){return x.leads;}), dd.map(function(x){return x.conv;}));
+      var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
+      document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
+
+      // Type d'artiste
+      var ar=f.artistsSplit||{first:0,recurring:0};
+      document.getElementById('artists').innerHTML=bkt('first',ar.first,'1ʳᵉ expo')+bkt('recur',ar.recurring,'Artistes récurrents');
+
+      // Communauté
+      document.getElementById('commu').innerHTML=
+        bkt('existant',fr(cm.inscrits),'Inscrits Florence')+bkt('recur',cm.rate+' %','Taux de conversion');
+
+      // Top artistes
+      var med=['🥇','🥈','🥉'];
+      document.querySelector('#toptbl tbody').innerHTML=(d.topArtists||[]).map(function(r,i){
+        return '<tr><td class="medal">'+(med[i]||(i+1))+'</td><td>'+(r.email||'—')+'</td><td class="num"><span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span></td><td class="num">'+fr(r.amount)+' '+r.currency+'</td></tr>';
+      }).join('')||'<tr><td colspan="4" style="color:var(--muted)">—</td></tr>';
+
+      // Aujourd'hui
+      var t=d.todayStats;
+      document.getElementById('bktsToday').innerHTML=bkt('lead',t.buckets.lead,'Via leads')+bkt('existant',t.buckets.existant,'Existants')+bkt('nouveau',t.buckets.nouveau,'Nouveaux');
+      document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){return '<tr><td>'+L+'</td><td class="num">'+(t.newLeadsByLang[L]||0)+'</td><td class="num">'+(t.inscritsByLang[L]||0)+'</td></tr>';}).join('');
+
+      // Derniers paiements
+      document.querySelector('#tbl tbody').innerHTML=(d.recent||[]).map(function(r){
+        var lbl={lead:'Lead '+(r.lang||''),existant:'Existant',nouveau:'Nouveau'}[r.bucket];
+        var ex=r.expos?('<span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span>'):'—';
+        return '<tr><td>'+r.date+'</td><td>'+(r.email||'—')+'</td><td class="num">'+fr(Math.round(r.amount))+' '+r.currency+'</td><td class="num">'+ex+'</td><td><span class="tag '+r.bucket+'">'+lbl+'</span></td></tr>';
+      }).join('')||'<tr><td colspan="5" style="color:var(--muted)">Aucun paiement depuis J1.</td></tr>';
+
+      document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
+    })
+    .catch(function(e){
+      if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; sessionStorage.removeItem('dk'); KEY=''; }
+      else document.getElementById('dashErr').textContent='Erreur : '+e.message;
+    });
+}
+if(sessionStorage.getItem('dk')){ KEY=sessionStorage.getItem('dk'); load(); }
+setInterval(function(){ if(KEY) load(); }, 60000);
+</script>
+</body>
+</html>
