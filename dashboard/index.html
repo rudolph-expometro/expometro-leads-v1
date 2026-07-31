@@ -348,7 +348,6 @@ function load(){
           +'<tr><td>CA via pubs</td><td>'+eur(tb.lead)+'</td><td>'+eur(fb.lead)+'</td></tr>'
           +'<tr class="roas"><td>ROAS</td><td>'+rx(roasPubT)+'</td><td>'+rx(roasPubC)+'</td></tr>'
           +'</tbody></table>'
-          +'<p class="hint">Dépense = campagnes <b>acquisition</b> (Leads + Conversions) ; Traffic/Follow <b>exclus</b>. ROAS = CA via pubs ÷ dépense.</p>'
           +(camps?'<details class="camps"><summary>Détail par campagne (cumul)</summary><table class="camptbl"><tbody>'+camps+'</tbody></table></details>':'');
       } else {
         var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
