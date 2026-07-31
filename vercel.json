@@ -1,46 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/florence/howitworks",
-      "destination": "/florence/howitworks/index.html"
-    },
-    {
-      "source": "/florence/howitworks/",
-      "destination": "/florence/howitworks/index.html"
-    },
-    {
-      "source": "/fr/florence/howitworks",
-      "destination": "/fr/florence/howitworks/index.html"
-    },
-    {
-      "source": "/fr/florence/howitworks/",
-      "destination": "/fr/florence/howitworks/index.html"
-    },
-    {
-      "source": "/es/florence/howitworks",
-      "destination": "/es/florence/howitworks/index.html"
-    },
-    {
-      "source": "/es/florence/howitworks/",
-      "destination": "/es/florence/howitworks/index.html"
-    },
-    {
-      "source": "/it/florence/howitworks",
-      "destination": "/it/florence/howitworks/index.html"
-    },
-    {
-      "source": "/it/florence/howitworks/",
-      "destination": "/it/florence/howitworks/index.html"
-    },
-    {
-      "source": "/de/florence/howitworks",
-      "destination": "/de/florence/howitworks/index.html"
-    },
-    {
-      "source": "/de/florence/howitworks/",
-      "destination": "/de/florence/howitworks/index.html"
-    },
-    {
       "source": "/join-florence/",
       "destination": "/join-florence/index.html"
     },
