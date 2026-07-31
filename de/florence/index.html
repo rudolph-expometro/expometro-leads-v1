@@ -413,7 +413,7 @@ footer a{color:rgba(255,255,255,.55)}
 .hero-grid-wrap .hero-grid{margin:0;width:100%;max-width:100%}
 .hg-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:rgba(255,82,103,.94);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .15s}
 .hero-grid-wrap:hover .hg-play,.hero-grid-wrap:active .hg-play{transform:translate(-50%,-50%) scale(1.07)}
-.hg-play svg{width:24px;height:24px;fill:#fff;margin-left:3px}
+.hg-play svg{width:30px;height:30px;fill:#fff;margin-left:2px}
 .hg-cta{position:absolute;left:0;right:0;bottom:10px;text-align:center;color:#fff;font-size:13px;font-weight:800;text-shadow:0 1px 8px rgba(0,0,0,.75);line-height:1.2;padding:0 8px}
 @media(max-width:560px){.hero-grid-wrap{max-width:260px}}
 .vid-modal{position:fixed;inset:0;background:rgba(7,10,23,.92);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
@@ -421,6 +421,121 @@ footer a{color:rgba(255,255,255,.55)}
 .vid-box{position:relative;width:min(92vw,360px)}
 .vid-box video{width:100%;max-height:86vh;border-radius:16px;display:block;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .vid-close{position:absolute;top:-44px;right:-2px;width:38px;height:38px;background:rgba(255,255,255,.16);border:0;border-radius:50%;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+</style>
+
+<style>
+.cart-val{display:inline-block;margin-top:10px;background:rgba(34,224,107,.13);color:#22E06B;font-family:var(--sans);font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:20px}
+.fmt-price{font-family:var(--sans);font-size:1.55rem;font-weight:800;color:#fff;margin:10px 0 2px;letter-spacing:-.01em}
+.fmt-slots{min-height:1.2em}
+.fmt-slots.low{color:var(--accent);font-weight:800}
+.fmt-cta{display:inline-block;margin-top:14px;background:var(--accent);color:#fff;font-family:var(--sans);font-weight:800;font-size:.95rem;padding:11px 18px;border-radius:12px;text-decoration:none;transition:filter .15s;line-height:1.1}
+.fmt-cta:hover{filter:brightness(1.07)}
+.valuesum{max-width:620px;margin:30px 0 0;background:linear-gradient(180deg,rgba(34,224,107,.14),rgba(34,224,107,.05));border:1px solid rgba(34,224,107,.45);border-radius:16px;padding:22px 24px;text-align:left}
+.valuesum .vs-lbl{color:#cfe9d8;font-size:1.04rem;margin-bottom:5px}
+.valuesum .vs-price{font-family:var(--head);font-size:clamp(1.35rem,4.6vw,1.9rem);color:#fff;font-weight:800;line-height:1.15}
+.valuesum .vs-price .startprice{color:#22E06B;white-space:nowrap}
+</style>
+
+<style>
+.cart-txt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:12px 16px;gap:8px}
+.cart-txt p{padding:0!important;margin:0!important;align-self:auto!important}
+.cart.has-val{height:auto!important;min-height:140px}
+.cart.has-val .cart-val{align-self:flex-start;margin-top:0}
+.recap{max-width:620px;margin:28px 0 0;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:22px 24px;text-align:left}
+.recap-h{font-family:var(--sans);font-weight:800;color:#fff;font-size:1.15rem;margin:0 0 14px}
+.recap-list{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:10px}
+.recap-list li{display:flex;align-items:flex-start;gap:10px;font-family:var(--sans);font-size:1rem;line-height:1.4;color:#dfe4ee}
+.recap-list li i{color:#22E06B;font-size:19px;flex-shrink:0;margin-top:1px}
+.recap-val{border-top:1px solid var(--line);padding-top:14px}
+.recap-val-lbl{color:var(--accent);font-size:1.02rem;font-weight:800;line-height:1.25;margin-bottom:5px}
+.recap-val-price{font-family:var(--head);font-size:clamp(1rem,3vw,1.2rem);color:#fff;font-weight:800;line-height:1.15}
+.recap-val-price .startprice{color:#fff;white-space:nowrap}
+</style>
+
+
+
+<style>
+.recap-list li{justify-content:space-between;gap:12px!important;flex-wrap:wrap}
+.rc-left{display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0}
+.rc-tag{flex:0 0 auto;background:rgba(34,224,107,.14);color:#22E06B;font-family:var(--sans);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:20px;white-space:nowrap}
+@media(max-width:560px){.recap-list li{flex-direction:column;align-items:flex-start;gap:7px}.rc-tag{margin-left:30px}}
+</style>
+
+<style>
+.recap-list li{display:flex!important;align-items:flex-start!important;gap:9px!important;flex-direction:row!important;flex-wrap:nowrap!important;justify-content:flex-start!important;font-size:.95rem;line-height:1.55}
+.recap-list li>i{color:#22E06B;font-size:18px;flex-shrink:0;margin-top:4px}
+.rc-body{flex:1;min-width:0;color:#dfe4ee}
+.rc-tag{display:inline-block;background:rgba(34,224,107,.14);color:#22E06B;font-family:var(--sans);font-weight:800;font-size:.68rem;padding:2px 9px;border-radius:20px;margin-left:6px;white-space:nowrap;vertical-align:middle}
+@media(max-width:560px){.recap-list li{flex-direction:row!important}.rc-tag{margin-left:6px!important}}
+</style>
+
+<style>
+.mission{display:flex;align-items:center;gap:16px;max-width:620px;margin:36px auto 0;text-align:left}
+.mission-ph{width:84px;height:84px;border-radius:50%;flex-shrink:0;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.mission-q{margin:0;font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,3.2vw,1.55rem);line-height:1.5;color:#fff}
+.mission-sign{display:block;margin-top:7px;font-family:var(--serif);font-style:italic;color:#fff;font-size:15px}
+.mission-role{color:#fff;font-style:normal;font-family:var(--sans)}
+@media(max-width:560px){.mission{gap:13px}.mission-ph{width:70px;height:70px}}
+</style>
+
+<style>
+.fmt-card.featured{position:relative;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 12px 30px rgba(255,82,103,.12)}
+.fmt-badge{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);background:var(--accent);color:#fff;font-family:var(--sans);font-weight:800;font-size:.72rem;letter-spacing:.02em;padding:5px 14px;border-radius:20px;white-space:nowrap;box-shadow:0 6px 16px rgba(255,82,103,.4)}
+</style>
+
+<style>
+.recap-down{margin-top:12px;color:var(--accent);line-height:0;animation:recapbounce 1.5s ease-in-out infinite}
+@keyframes recapbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+</style>
+
+<style>
+/* bandeau artistes en direct : sticky sous le topbar */
+.artix{position:sticky;top:var(--tbh,74px);z-index:50}
+.hs-link{color:var(--accent);font-weight:800;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;margin-left:7px}
+.hs-link:hover{filter:brightness(1.12)}
+.jump-a{display:block}
+#formats{scroll-margin-top:calc(var(--tbh,74px) + 82px)}
+</style>
+
+<style>
+/* bouton play : triangle plus grand + centrage optique */
+.hg-play i{font-size:32px;line-height:1;margin-left:3px;color:#fff}
+/* recap : tags a droite + points de suite + total a droite + CTA centre */
+.recap-list{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:14px}
+.recap-list li{display:flex!important;align-items:center!important;flex-direction:row!important;flex-wrap:nowrap!important;gap:0!important;justify-content:flex-start!important;font-size:.95rem;line-height:1.35}
+.recap-list li>i{color:#22E06B;font-size:17px;flex:0 0 auto;margin-right:9px}
+.rc-txt{flex:0 1 auto;color:#dfe4ee;min-width:0}
+.rc-dots{flex:1 1 auto;min-width:14px;border-bottom:2px dotted rgba(255,255,255,.30);margin:0 9px;transform:translateY(-3px)}
+.rc-tag{flex:0 0 auto;background:rgba(34,224,107,.14);color:#22E06B;font-family:var(--sans);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.recap-val{border-top:1px solid var(--line);padding-top:16px}
+.recap-sum{color:var(--accent);font-weight:800;font-size:1.05rem;text-align:right;line-height:1.3;margin-bottom:18px}
+.recap-cta{text-align:center}
+.recap-val-price{font-family:var(--head);font-size:clamp(1.05rem,3.2vw,1.35rem);color:#fff;font-weight:800;line-height:1.2}
+.recap-val-price .startprice{color:#fff;white-space:nowrap}
+.recap-down{margin-top:10px;color:var(--accent);line-height:0;animation:recapbounce 1.5s ease-in-out infinite}
+.recap-down svg{display:inline-block}
+@media(max-width:560px){.rc-dots{min-width:10px;margin:0 7px}}
+</style>
+
+<style>
+/* recap sans points de suite : texte 1 ligne + tag a droite */
+.recap-list li{gap:12px!important;font-size:.9rem}
+.rc-txt{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-tag{flex:0 0 auto}
+.recap-sum{text-align:center!important}
+.mission-sign,.mission-role{color:#aab2c4!important}
+@media(max-width:560px){.recap{padding-left:15px;padding-right:15px}.recap-list li{font-size:.8rem;gap:8px!important}.rc-tag{font-size:.62rem;padding:2px 8px}}
+</style>
+
+<style>
+/* mobile : tag sous le texte (texte pleine largeur = 1 ligne) */
+@media(max-width:490px){
+  .recap{padding-left:16px!important;padding-right:16px!important}
+  .recap-list li{display:block!important;position:relative;padding-left:27px}
+  .recap-list li>i{position:absolute!important;left:0;top:1px}
+  .rc-txt{display:block;font-size:.82rem;overflow:visible;text-overflow:clip}
+  .rc-tag{display:table;margin:6px 0 0 auto!important;font-size:.66rem}
+}
 </style>
 </head>
 <body>
@@ -469,8 +584,8 @@ footer a{color:rgba(255,255,255,.55)}
 
 <!-- HERO TEXT (remonte sous le ticker) -->
 <section class="hero-text"><div class="hero-text-inner"><h1>Der immersive Kunsttunnel <span class="em">im Herzen von Florenz</span></h1>
-    <p class="hero-sub">Zeige dein Werk an den Wänden und der Decke eines 25 Meter langen Tunnels – gemeinsam mit Künstlerinnen und Künstlern aus aller Welt. Mehr als 50.000 Menschen werden dein Werk sehen.</p><button type="button" class="hero-grid-wrap" onclick="openVid()" aria-label="So funktioniert's"><img class="hero-grid" loading="lazy" src="/florence/img/step1-grid-v2.jpg" alt="Wähle deinen Platz im Werk-Raster"/><span class="hg-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="hg-cta">So funktioniert's →</span></button><ol class="hero-steps"><li><span class="hs-n">1</span><span>Wähle deinen Platz</span></li><li><span class="hs-n">2</span><span>Lade dein Werk hoch<span class="hs-sub"><i class="ti ti-palette"></i>Malerei, Fotografie, Zeichnung, digitale Kunst, Skulptur</span><span class="hs-sub"><i class="ti ti-device-mobile"></i>Ein Foto mit deinem Handy genügt.</span></span></li><li><span class="hs-n">3</span><span>Das war's!</span></li></ol>
-    <a class="btn btn-lg" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Wähle deinen Platz <i class="ti ti-arrow-right"></i></a><p class="cta-sub">Entdecke alle Formate und Preise</p><p class="reassure"><span><i class="ti ti-check"></i>Ab 49€</span><span><i class="ti ti-check"></i>Offen für alle Künstlerinnen, Künstler und Fotografen</span></p>
+    <p class="hero-sub">Zeige dein Werk an den Wänden und der Decke eines 25 Meter langen Tunnels – gemeinsam mit Künstlerinnen und Künstlern aus aller Welt. Mehr als 50.000 Menschen werden dein Werk sehen.</p><button type="button" class="hero-grid-wrap" onclick="openVid()" aria-label="So funktioniert's"><img class="hero-grid" loading="lazy" src="/florence/img/step1-grid-v2.jpg" alt="Wähle deinen Platz im Werk-Raster"/><span class="hg-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="hg-cta">So funktioniert's →</span></button><ol class="hero-steps"><li><span class="hs-n">1</span><span>Wähle deinen Platz <a class="hs-link" href="#formats">Formate &amp; Preise</a></span></li><li><span class="hs-n">2</span><span>Lade dein Werk hoch<span class="hs-sub"><i class="ti ti-palette"></i>Malerei, Fotografie, Zeichnung, digitale Kunst, Skulptur</span><span class="hs-sub"><i class="ti ti-device-mobile"></i>Ein Foto mit deinem Handy genügt.</span></span></li><li><span class="hs-n">3</span><span>Das war's!</span></li></ol>
+    <a class="btn btn-lg" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Wähle deinen Platz <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Ab 49€</span><span><i class="ti ti-check"></i>Offen für alle Künstlerinnen, Künstler und Fotografen</span></p>
   </div></section>
 
 <!-- INTRO / RÉCIT -->
@@ -654,11 +769,11 @@ section.rvx-sec{background:var(--night)}
     <p class="maxmin"><i class="ti ti-world"></i>Egal, wo du auf der Welt bist</p>
     <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Verfolge das Event live auf <b>Instagram Live</b> und entdecke dein Werk auf unseren Fotos und Videos.</p></div>
     <p class="maxmin"><i class="ti ti-eye"></i>Öffentliche Sichtbarkeit</p>
-      <div class="cart"><img loading="lazy" src="/florence/img/benefit-3.jpg" alt=""/><p>Dein Werk wird an einem ikonischen öffentlichen Ort ausgestellt und von mehr als 50.000 Menschen gesehen.</p></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/benefit-3.jpg" alt=""/><div class="cart-txt"><p>Dein Werk wird an einem ikonischen öffentlichen Ort ausgestellt und von mehr als 50.000 Menschen gesehen.</p><span class="cart-val">Wert: 10.000+ €</span></div></div>
       <div class="cart"><img loading="lazy" src="/florence/img/benefit-6.jpg" alt=""/><p>Über einen QR-Code gelangen Besucher direkt zu deiner Website und deinen Social-Media-Kanälen.</p></div>
 
       <p class="maxmin"><i class="ti ti-speakerphone"></i>Professionelle Präsentation</p>
-      <div class="cart"><img loading="lazy" src="/florence/img/reportage-photos.jpg" alt="Reportage photos et vidéos professionnelles"/><p>Dein Werk wird in einer professionellen Foto- und Videoreportage festgehalten.</p></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/reportage-sq.jpg" alt="Reportage photos et vidéos professionnelles"/><div class="cart-txt"><p>Dein Werk wird in einer professionellen Foto- und Videoreportage festgehalten.</p><span class="cart-val">Wert: 3.000+ €</span></div></div>
       <div class="cart"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><p>Außerdem präsentieren wir dein Werk auf den Social-Media-Kanälen von ExpoMetro.</p></div>
 
       <p class="maxmin"><i class="ti ti-sparkles"></i>Ein internationales Erlebnis</p>
@@ -668,48 +783,25 @@ section.rvx-sec{background:var(--night)}
 
     <div class="cta-left" style="margin-top:26px"><a class="btn" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Jetzt Platz sichern <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Ab 49€</span><span><i class="ti ti-check"></i>Offen für alle Künstlerinnen, Künstler und Fotografen</span></p></div>
 
-    <h2 class="narr-title">Du hast die Wahl zwischen verschiedenen Formaten.</h2>
+    <h2 class="narr-title" id="formats">Du hast die Wahl zwischen verschiedenen Formaten.</h2>
     <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
-    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/>
+    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/><div class="recap"><h3 class="recap-h">Was du bekommst:</h3><ul class="recap-list"><li><i class="ti ti-check"></i><span class="rc-txt">Öffentliche Ausstellung: 50.000 Menschen</span><span class="rc-tag">Wert: 10.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Online-Ausstellung + interaktiver QR-Code</span><span class="rc-tag">365 Tage/Jahr</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Professionelle Fotos und Videos</span><span class="rc-tag">Wert: 3.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Personalisiertes Zertifikat</span><span class="rc-tag">Mit deinem Werk</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Promotion in den sozialen Medien</span><span class="rc-tag">Wert: 1.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Internationales Künstlernetzwerk</span><span class="rc-tag">Offizielles Mitglied</span></li></ul><div class="recap-val"><div class="recap-sum">Wert: mehrere Tausend Euro.</div><div class="recap-cta"><div class="recap-val-price">All das, ab <span class="startprice" data-size="S">49 €</span></div><div class="recap-down"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div></div></div></div>
   </div>
 </section>
 
 <!-- FORMATS -->
 <section class="sec" style="padding-top:6px;padding-bottom:40px">
   <div class="wrap" style="text-align:center">
-    <div class="formats">
-      <div class="fmt-card">
-        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/S.png" alt="Format Small" style="width:120px"/></div>
-        <div class="fmt-name">Small</div><div class="fmt-tag">Wand</div>
-        <div class="fmt-dim">25 × 25 cm</div>
-        <div class="fmt-slots"><a href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">120 Plätze</a></div>
-      </div>
-      <div class="fmt-card">
-        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/M.png" alt="Format Medium" style="width:144px"/></div>
-        <div class="fmt-name">Medium</div><div class="fmt-tag">Wand</div>
-        <div class="fmt-dim">50 × 50 cm</div>
-        <div class="fmt-slots"><a href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">30 Plätze</a></div>
-      </div>
-      <div class="fmt-card">
-        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/L.png" alt="Format Large" style="width:192px"/></div>
-        <div class="fmt-name">Large</div><div class="fmt-tag">Wand</div>
-        <div class="fmt-dim">100 × 150 cm</div>
-        <div class="fmt-slots low"><a href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Nur 5 Plätze</a></div>
-      </div>
-      <div class="fmt-card">
-        <div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/XL.png" alt="Format Extra Large" style="width:240px"/></div>
-        <div class="fmt-name">Extra Large</div><div class="fmt-tag">Decke</div>
-        <div class="fmt-dim">2,5 × 1,88 m</div>
-        <div class="fmt-slots low"><a href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Nur 4 Plätze</a></div>
-      </div>
-    </div>
+    <h2 class="narr-title fmt-h" style="text-align:left;margin:8px 0 22px">Wähle deinen Platz</h2>
+    <div class="formats"><div class="fmt-card"><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/S.png" alt="Format Small" style="width:120px"/></div><div class="fmt-name">Small</div><div class="fmt-tag">Wand</div><div class="fmt-dim">25 × 25 cm</div><div class="fmt-price" data-size="S">49 €</div><div class="fmt-slots" data-size="S">Begrenzte Plätze</div><a class="fmt-cta" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Deinen Platz wählen →</a></div><div class="fmt-card featured"><div class="fmt-badge">Am beliebtesten</div><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/M.png" alt="Format Medium" style="width:144px"/></div><div class="fmt-name">Medium</div><div class="fmt-tag">Wand</div><div class="fmt-dim">50 × 50 cm</div><div class="fmt-price" data-size="M">99 €</div><div class="fmt-slots" data-size="M">Begrenzte Plätze</div><a class="fmt-cta" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Deinen Platz wählen →</a></div><div class="fmt-card"><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/L.png" alt="Format Large" style="width:192px"/></div><div class="fmt-name">Large</div><div class="fmt-tag">Wand</div><div class="fmt-dim">100 × 150 cm</div><div class="fmt-price" data-size="L">329 €</div><div class="fmt-slots" data-size="L">Begrenzte Plätze</div><a class="fmt-cta" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Deinen Platz wählen →</a></div><div class="fmt-card"><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/XL.png" alt="Format Extra Large" style="width:240px"/></div><div class="fmt-name">Extra Large</div><div class="fmt-tag">Decke</div><div class="fmt-dim">2,5 × 1,88 m</div><div class="fmt-price" data-size="XL">529 €</div><div class="fmt-slots" data-size="XL">Begrenzte Plätze</div><a class="fmt-cta" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Deinen Platz wählen →</a></div></div>
+    <div class="mission"><img class="mission-ph" loading="lazy" src="/florence/img/rudolph-round.png" alt="Rudolph, Gründer von ExpoMetro" width="84" height="84"/><p class="mission-q">„Mein Ziel: Künstlern maximale Sichtbarkeit und ein unvergessliches Erlebnis zu einem erschwinglichen Preis zu bieten.“<span class="mission-sign">— Rudolph<span class="mission-role">, Gründer</span></span></p></div>
     <div class="mergebox">
       <img class="merge-img" loading="lazy" src="/florence/img/merge_slots.png" alt="Fusionner plusieurs emplacements pour créer une œuvre plus grande"/>
       <p class="merge-txt">Du kannst auch <b>mehrere Flächen kombinieren</b>, um ein <span class="em">noch größeres Kunstwerk</span> zu gestalten.</p>
     </div>
     <div class="valuewrap">
     <p class="mtitle">Du bist noch unsicher?</p>
-    <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/artiste-heureux.jpg" alt="Des artistes heureux à ExpoMetro Madrid"/><figcaption class="imgcap">ExpoMetro Madrid, Juni 2026</figcaption></figure>
+    <figure style="margin:16px 0 24px"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/artiste-heureux_v2.jpg" alt="Des artistes heureux à ExpoMetro Amsterdam"/><figcaption class="imgcap">ExpoMetro Amsterdam, Juni 2024</figcaption></figure>
     <p class="intro-p">Die Entscheidung liegt bei dir.</p>
     <p class="intro-p">Sichere dir deinen Platz in nur zwei Minuten. Kein aufwendiger Aufbau, keine Ausrüstung, kein Messestand und keine Versicherung wie bei einer klassischen Kunstausstellung.</p>
     <p class="intro-p">Oder du wartest. Deine Kunst bleibt auf deinem Smartphone. Du veröffentlichst weiter auf Instagram – für durchschnittlich 1,7 Sekunden Aufmerksamkeit ... während andere Künstlerinnen und Künstler ihren Platz einnehmen.</p>
@@ -920,5 +1012,15 @@ function openVid(){var m=document.getElementById('vidModal'),v=document.getEleme
 function closeVid(){var m=document.getElementById('vidModal'),v=document.getElementById('vidEl');m.classList.remove('open');document.documentElement.style.overflow='';try{v.pause();}catch(e){}}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeVid();});
 </script>
-</body>
+
+<script>
+(function(){
+var P={S:{EUR:49,USD:49,GBP:49,AUD:89,CAD:79,HKD:449,CNY:389},M:{EUR:99,USD:99,GBP:99,AUD:159,CAD:159,HKD:899,CNY:799},L:{EUR:329,USD:329,GBP:299,AUD:579,CAD:529,HKD:2999,CNY:2699},XL:{EUR:529,USD:529,GBP:499,AUD:849,CAD:849,HKD:4699,CNY:4099}};
+var SY={EUR:['',' €'],USD:['$',''],GBP:['£',''],AUD:['A$',''],CAD:['C$',''],HKD:['HK$',''],CNY:['CN¥','']};
+function cur(){try{var t=Intl.DateTimeFormat().resolvedOptions().timeZone||'';if(t==='Europe/London')return'GBP';if(t.indexOf('Europe/')===0)return'EUR';if(t.indexOf('Australia/')===0)return'AUD';if(t==='Asia/Hong_Kong')return'HKD';if(t==='Asia/Shanghai'||t==='Asia/Urumqi'||t==='PRC')return'CNY';var CA=['America/Toronto','America/Vancouver','America/Edmonton','America/Winnipeg','America/Halifax','America/St_Johns','America/Regina','America/Montreal','America/Moncton','America/Whitehorse','America/Dawson','America/Glace_Bay','America/Goose_Bay','America/Iqaluit','America/Yellowknife','America/Blanc-Sablon','America/Rankin_Inlet','America/Resolute','America/Atikokan','America/Cambridge_Bay','America/Creston','America/Fort_Nelson','America/Swift_Current','America/Thunder_Bay'];if(CA.indexOf(t)>=0)return'CAD';}catch(e){}return'USD';}
+function fmt(sz,c){var v=(P[sz]&&P[sz][c])||P[sz].USD,s=SY[c]||SY.USD;return s[0]+v.toLocaleString('en-US')+s[1];}
+var c=cur(),els=document.querySelectorAll('.fmt-price,.startprice');for(var i=0;i<els.length;i++){var sz=els[i].getAttribute('data-size');els[i].textContent=fmt(sz,c);}
+})();
+</script>
+<script>(function(){var T={limited:"Begrenzte Plätze",avail1:"1 Platz verfügbar",availN:"{n} Plätze verfügbar",sold:"Ausverkauft"};fetch("/api/florence-slots").then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d||!d.ok||!d.slots)return;var els=document.querySelectorAll(".fmt-slots[data-size]");for(var i=0;i<els.length;i++){var el=els[i],k=el.getAttribute("data-size"),n=d.slots[k];if(n==null)continue;if(n<=0){el.textContent=T.sold;el.classList.add("low");}else{el.textContent=(n===1?T.avail1:T.availN.replace("{n}",n));el.classList.toggle("low",n<=5);}}}).catch(function(){});})();</script><script>(function(){function s(){var t=document.querySelector(".topbar");if(t)document.documentElement.style.setProperty("--tbh",t.offsetHeight+"px");}function j(){if(location.hash==="#formats"){var el=document.getElementById("formats");if(el)el.scrollIntoView();}}s();addEventListener("load",function(){s();j();});addEventListener("resize",s);addEventListener("orientationchange",s);})();</script></body>
 </html>
