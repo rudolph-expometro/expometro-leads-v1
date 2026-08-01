@@ -190,7 +190,7 @@ h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.9rem,4.4vw,3rem);li
 .chip{font-size:13px;color:#cdd4e0;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:7px 15px}
 
 /* formats */
-.formats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0 0}
+.formats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:8px 0 0}
 .fmt-card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:24px 18px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .fmt-visual{height:200px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:16px}
 .fmt-box{background:linear-gradient(160deg,rgba(255,82,103,.28),rgba(255,82,103,.08));border:1.5px solid var(--accent);border-radius:6px}
@@ -549,6 +549,32 @@ footer a{color:rgba(255,255,255,.55)}
 .vc-price .startprice{white-space:nowrap}
 .valuecard .btn{display:inline-flex;align-items:center;gap:8px}
 </style>
+
+<style>
+/* --- modale video (temoignages) --- */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(6,8,20,.72);backdrop-filter:blur(3px)}
+.modal.open{display:flex}
+.modal-box{position:relative;background:#fff;color:#1d2433;border-radius:14px;max-width:620px;width:100%;max-height:85vh;overflow-y:auto;padding:40px 38px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;border:none;background:#eef0f4;color:#3c4456;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;z-index:2}
+.vmodal-box{background:#000;max-width:min(880px,94vw);padding:0;overflow:hidden}
+.vmodal-box .modal-close{background:rgba(0,0,0,.5);color:#fff;z-index:3}
+.vframe{position:relative;width:100%;aspect-ratio:16/9;max-height:85vh}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* --- grille temoignages video --- */
+.vtesti{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 28px;margin:14px 0 30px}
+.vfig{margin:0;display:flex;flex-direction:column;gap:16px}
+.vtesti-card{position:relative;aspect-ratio:3/4;width:100%;display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0b0f1e;cursor:pointer;padding:0}
+.vtesti-card img{width:100%;height:100%;object-fit:cover;display:block;object-position:center 30%}
+.vtesti-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.4))}
+.vt-play{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
+.vt-play svg{width:64px;height:64px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.6));transition:transform .15s}
+.vtesti-card:hover .vt-play svg{transform:scale(1.08)}
+.vquote{font-family:var(--serif);font-size:22px;line-height:1.32;color:var(--head);font-style:italic;margin:0;letter-spacing:-.01em}
+.vq-city{display:block;margin-top:10px;font-family:var(--sans);font-size:12.5px;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+@media(max-width:640px){.vtesti{grid-template-columns:1fr;gap:30px}.vquote{font-size:23px;line-height:1.3}}
+</style>
+
+<style>.vc-arrow{color:var(--accent);line-height:0;margin:0 0 10px;animation:recapbounce 1.5s ease-in-out infinite}.vc-arrow svg{display:inline-block}</style>
 </head>
 <body>
 
@@ -671,11 +697,47 @@ section.rvx-sec{background:var(--night)}
           <p class="rcard-text">More than an exhibition, you join a large public art movement bringing together artists from all over the world. On the day of the show, we host an official meetup with the artists in front of the artworks, interviews and a drink — a real moment of connection and sharing.</p>
         </div>
       </div>
-    </div><div class="valuecard"><div class="vc-lbl">A global exhibition, accessible to every artist.</div><div class="vc-price">All this, from <span class="startprice" data-size="S">$49</span></div><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a></div>
+    </div><div class="valuecard"><div class="vc-arrow"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div><div class="vc-price">All this, from <span class="startprice" data-size="S">$49</span></div><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a></div>
   </div>
-</section>
+</section><section class="sec" style="padding-top:24px;padding-bottom:8px"><div class="narrow"><h2 class="narr-title">Since 2018, 6,000+ artists from 100+ countries have showcased their work in the city, all around the world: <span class="em">"a dream come true."</span></h2><div class="vtesti">
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="NjaPwHy0yk0" data-ratio="9:16" aria-label="Watch : Barcelona 2025">
+          <img loading="lazy" src="/florence/img/vthumb-barcelone.jpg" alt="Barcelona 2025"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I find the idea just amazing to replace advertising with Art”<span class="vq-city">Barcelona 2025</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="rKB-ERj3Gn8" data-ratio="16:9" aria-label="Watch : Amsterdam 2024">
+          <img loading="lazy" src="/florence/img/vthumb-amsterdam.jpg" alt="Amsterdam 2024"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I love this co-creation art movement”<span class="vq-city">Amsterdam 2024</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="78EvHBxSrGk" data-ratio="9:16" aria-label="Watch : Milan 2024">
+          <img loading="lazy" src="/florence/img/vthumb-milan.jpg" alt="Milan 2024"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I find this ExpoMetro initiative fantastic, especially happy to have this experience in my city”<span class="vq-city">Milan 2024</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="1BR-_1rEGl0" data-ratio="9:16" aria-label="Watch : Rome 2026">
+          <img loading="lazy" src="/florence/img/vthumb-rome.jpg" alt="Rome 2026"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I think this great idea will run into the future and will become bigger and bigger”<span class="vq-city">Rome 2026</span></figcaption>
+      </figure>
+      <figure class="vfig">
+        <button class="vtesti-card" type="button" data-video="fkIqaFJwNGQ" data-ratio="9:16" aria-label="Watch : Madrid 2026">
+          <img loading="lazy" src="/florence/img/vthumb-madrid.jpg" alt="Madrid 2026"/>
+          <span class="vt-play" aria-hidden="true"><svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="34" r="33" fill="rgba(0,0,0,.55)"/><path d="M26 20 L50 34 L26 48 Z" fill="#fff"/></svg></span>
+        </button>
+        <figcaption class="vquote">“I could never imagine that one day I would be here among so many artists”<span class="vq-city">Madrid 2026</span></figcaption>
+      </figure>
+    </div></div></section>
 
-<section class="sec" style="padding-top:36px;padding-bottom:6px">
+<section class="sec" style="padding-top:36px;padding-bottom:30px;background:var(--night)">
   <div class="narrow">
     <p class="intro-p">It's time to get your art out into the world.</p>
     <p class="intro-p">Out of your studio.<br>Out of your living room.<br>Out of your phone...</p>
@@ -699,10 +761,10 @@ section.rvx-sec{background:var(--night)}
 
     <p class="intro-p" style="margin-top:26px">On <span class="hl">Saturday, November 28</span>, ExpoMetro will transform this space into an <span class="em">immersive Art Tunnel</span>, with artworks covering the walls and ceiling.</p>
     <p class="intro-p">Visitors will literally <span class="hl">walk through a world of art</span>, surrounded by artworks from artists across the globe.</p>
-    <p class="intro-p"><i class="ti ti-music" style="color:var(--accent);margin-right:9px;vertical-align:-2px"></i>The exhibition will be accompanied by <span class="em">music</span>, creating an unforgettable immersive experience.</p>
+    <p class="intro-p"><i class="ti ti-music" style="color:var(--accent);margin-right:9px;vertical-align:-2px"></i>The exhibition will be accompanied by <span class="em">music</span>, creating an unforgettable immersive experience.</p></div></section><section class="sec" style="padding-top:24px;padding-bottom:30px"><div class="narrow">
 
     
-    <h2 class="narr-title"><span class="em">1.7 seconds.</span> That's the average time your artwork gets on Instagram.</h2>
+    <h2 class="narr-title" style="margin-top:0"><span class="em">1.7 seconds.</span> That's the average time your artwork gets on Instagram.</h2>
     <img class="narr-img" loading="lazy" src="/florence/img/phone.jpg" alt="Une œuvre qui défile dans un feed Instagram"/>
     <p class="intro-p">You spent hours, days or even weeks creating it... Then you post it on Instagram and, in the blink of an eye, it's gone — replaced by the next image.</p>
 
@@ -732,12 +794,9 @@ section.rvx-sec{background:var(--night)}
       <div class="oneliner"><img loading="lazy" src="/florence/img/temoin-6.jpg" alt="Artiste ExpoMetro"/><p class="q"><!-- EN: I meant to inspire, but in return I got really inspired by all these free souls and people who are fighting for art. -->«&nbsp;I came to inspire, and in return I was inspired by all these free souls fighting for art.&nbsp;»</p></div>
     </div>
 
-    <figure class="video-fig" style="max-width:330px;margin:34px auto 0;text-align:center">
-      <video class="watch-video" controls playsinline preload="metadata" src="/florence/img/temoignages-barcelone2.mp4#t=0.1"></video>
-      <figcaption>Barcelona artists share their experience.</figcaption>
-    </figure>
+    
 
-    <h2 class="narr-title">It all started with one simple idea: <span class="em">replace advertising with art.</span></h2>
+    </div></section><section class="sec" style="padding-top:26px;padding-bottom:30px;background:var(--night)"><div class="narrow"><h2 class="narr-title" style="margin-top:0">It all started with one simple idea: <span class="em">replace advertising with art.</span></h2>
     <figure style="margin:20px 0 0"><img class="exp-banner" style="margin:0" loading="lazy" src="/florence/img/expo-paris.jpg" alt="La première édition ExpoMetro dans le métro à Paris, 2018"/><figcaption class="imgcap">The first edition — Paris, 2018</figcaption></figure>
     <p class="intro-p" style="margin-top:26px">In December 2018, I invited artists to exhibit their work on poster displays throughout the Paris metro.</p>
     <p class="intro-p">It was our very first exhibition. That's how <span class="em">ExpoMetro</span> was born.</p>
@@ -758,7 +817,7 @@ section.rvx-sec{background:var(--night)}
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-amela.jpg" alt="Amela Muranovic Alagic"/><div><p class="q"><!-- EN: I'm already 10th time to participate on your exhibitions everywhere and every time is amazing! Thank you a lot expo metro to make me happy I love you a lot ! -->«&nbsp;This is already my 10th time taking part in your exhibitions around the world, and every time is amazing! Thank you ExpoMetro for making me so happy, I love you all!&nbsp;»</p><p class="who">Amela Muranovic Alagic <span>· France 🇫🇷</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-ranjit.jpg" alt="Ranjit Sihat"/><div><p class="q"><!-- EN: This is my 8th Expo Metro and every time is such a treat. I just love being part of this creative community… it's so inspiring and up-lifting. Love it! -->«&nbsp;This is my 8th ExpoMetro and every time is such a treat. I just love being part of this creative community… it's so inspiring and uplifting. Love it!&nbsp;»</p><p class="who">Ranjit Sihat <span>· Royaume-Uni 🇬🇧 · Hong Kong 2025</span></p></div></div>
     <div class="tmoign"><img loading="lazy" src="/florence/img/tm-kukumaria.jpg" alt="Kukumaria"/><div><p class="q"><!-- EN: It's just fantastic and very inspiring what ExpoMetro is doing! These colourful beautiful art shows of hundreds of artists from different countries, the amazing locations, the warm atmosphere! In Milano it will already be my third participation!! -->«&nbsp;It's just fantastic and very inspiring what ExpoMetro is doing! These beautiful, colourful shows with hundreds of artists from different countries, the amazing locations, the warm atmosphere! In Milan it will already be my third participation!!&nbsp;»</p><p class="who">Kukumaria <span>· Belgique 🇧🇪</span></p></div></div>
-    <h2 class="narr-title">You live on the other side of the world and <span class="em">wonder if this is for you?</span></h2>
+    </div></section><section class="sec" style="padding-top:26px;padding-bottom:30px;background:var(--paper)"><div class="narrow"><h2 class="narr-title" style="margin-top:0">You live on the other side of the world and <span class="em">wonder if this is for you?</span></h2>
     <img class="worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="La créativité mondiale : la carte du monde composée d'œuvres d'artistes"/>
     <p class="intro-p">The answer is <span class="em">YES</span>.</p>
     <p class="intro-p">Every <span class="rotword" id="rotWord">artist</span><br>deserves to be seen and <b class="hl">has the chance to represent their country.</b></p>
@@ -777,7 +836,7 @@ section.rvx-sec{background:var(--night)}
     <p class="intro-p" style="margin-top:30px">Some artists travel from Peru, Argentina, the United States, Canada, Japan, Singapore, Australia and across Europe to join us.</p>
     <p class="intro-p">But here's the good news: <b class="em">90% of our artists participate remotely.</b></p>
     <p class="intro-p">ExpoMetro is designed so you can take part and experience the event from anywhere in the world.</p>
-    <h2 class="narr-title"><span class="em">Florence will be our 19th edition.</span> Here's exactly what you'll receive.</h2>
+    </div></section><section class="sec" style="padding-top:26px;padding-bottom:30px;background:var(--night)"><div class="narrow"><h2 class="narr-title" style="margin-top:0"><span class="em">Florence will be our 19th edition.</span> Here's exactly what you'll receive.</h2>
     <p class="maxmin"><i class="ti ti-world"></i>Wherever You Are in the World</p>
     <div class="cart has-val"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><div class="cart-txt"><p>Follow the event live on <b>Instagram Live</b> and see your artwork featured in our photos and videos.</p><span class="cart-val">Live</span></div></div>
     <p class="maxmin"><i class="ti ti-eye"></i>Public Visibility</p>
@@ -793,18 +852,18 @@ section.rvx-sec{background:var(--night)}
       <div class="cart has-val"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><div class="cart-txt"><p>Become part of a global movement and add an international exhibition to your artist biography.</p><span class="cart-val">Official member</span></div></div>
       <div class="cart has-val"><img loading="lazy" src="/florence/img/certificat.jpg" alt="Certificat de participation ExpoMetro personnalisé" style="object-position:left"/><div class="cart-txt"><p>Receive a personalized certificate featuring your artist name and artwork.</p><span class="cart-val">Official certificate</span></div></div>
 
-    <div class="valuecard"><div class="vc-lbl">A global exhibition, accessible to every artist.</div><div class="vc-price">All this, from <span class="startprice" data-size="S">$49</span></div><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a></div>
+    <div class="valuecard"><div class="vc-arrow"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div><div class="vc-price">All this, from <span class="startprice" data-size="S">$49</span></div><a class="btn" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Book Your Spot <i class="ti ti-arrow-right"></i></a></div>
 
-    <h2 class="narr-title" id="formats">You have a choice of formats.</h2>
+    </div></section><section class="sec" style="padding-top:26px;padding-bottom:6px;background:var(--paper)"><div class="narrow"><h2 class="narr-title" id="formats" style="margin-top:0">You have a choice of formats.</h2>
     <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
-    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/><div class="recap"><h3 class="recap-h">What you get:</h3><ul class="recap-list"><li><i class="ti ti-check"></i><span class="rc-txt">Public exhibition: 50,000 people</span><span class="rc-tag">Value: €10,000+</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Online exhibition + interactive QR code</span><span class="rc-tag">365 days/yr</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Professional photos and videos</span><span class="rc-tag">Value: €3,000+</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Personalised certificate</span><span class="rc-tag">With your artwork</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Social media promotion</span><span class="rc-tag">Value: €1,000+</span></li><li><i class="ti ti-check"></i><span class="rc-txt">International network of artists</span><span class="rc-tag">Official member</span></li></ul><div class="recap-val"><div class="recap-sum">A global exhibition, accessible to every artist.</div><div class="recap-cta"><div class="recap-val-price">All this, from <span class="startprice" data-size="S">$49</span></div><div class="recap-down"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div></div></div></div>
+    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/><div class="recap"><h3 class="recap-h">What you get:</h3><ul class="recap-list"><li><i class="ti ti-check"></i><span class="rc-txt">Public exhibition: 50,000 people</span><span class="rc-tag">Value: €10,000+</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Online exhibition + interactive QR code</span><span class="rc-tag">365 days/yr</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Professional photos and videos</span><span class="rc-tag">Value: €3,000+</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Personalised certificate</span><span class="rc-tag">With your artwork</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Social media promotion</span><span class="rc-tag">Value: €1,000+</span></li><li><i class="ti ti-check"></i><span class="rc-txt">International network of artists</span><span class="rc-tag">Official member</span></li></ul><div class="recap-val"><div class="recap-cta"><div class="recap-val-price">Choose your spot</div><div class="recap-down"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div></div></div></div>
   </div>
 </section>
 
 <!-- FORMATS -->
 <section class="sec" style="padding-top:6px;padding-bottom:40px">
   <div class="wrap" style="text-align:center">
-    <h2 class="narr-title fmt-h" style="text-align:left;margin:8px 0 22px">Choose your spot</h2>
+    
     <div class="formats"><div class="fmt-card"><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/S.png" alt="Format Small" style="width:120px"/></div><div class="fmt-name">Small</div><div class="fmt-tag">Wall</div><div class="fmt-dim">25 × 25 cm</div><div class="fmt-price" data-size="S">$49</div><div class="fmt-slots" data-size="S">Limited spots</div><a class="fmt-cta" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Choose your spot →</a></div><div class="fmt-card featured"><div class="fmt-badge">Most popular</div><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/M.png" alt="Format Medium" style="width:144px"/></div><div class="fmt-name">Medium</div><div class="fmt-tag">Wall</div><div class="fmt-dim">50 × 50 cm</div><div class="fmt-price" data-size="M">$99</div><div class="fmt-slots" data-size="M">Limited spots</div><a class="fmt-cta" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Choose your spot →</a></div><div class="fmt-card"><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/L.png" alt="Format Large" style="width:192px"/></div><div class="fmt-name">Large</div><div class="fmt-tag">Wall</div><div class="fmt-dim">100 × 150 cm</div><div class="fmt-price" data-size="L">$329</div><div class="fmt-slots" data-size="L">Limited spots</div><a class="fmt-cta" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Choose your spot →</a></div><div class="fmt-card"><div class="fmt-visual"><img class="fmt-img" loading="lazy" src="/florence/img/XL.png" alt="Format Extra Large" style="width:240px"/></div><div class="fmt-name">Extra Large</div><div class="fmt-tag">Ceiling</div><div class="fmt-dim">2.5 × 1.88 m</div><div class="fmt-price" data-size="XL">$529</div><div class="fmt-slots" data-size="XL">Limited spots</div><a class="fmt-cta" href="https://expometro.co/en/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Choose your spot →</a></div></div>
     <div class="mission"><img class="mission-ph" loading="lazy" src="/florence/img/rudolph-round.png" alt="Rudolph, ExpoMetro founder" width="84" height="84"/><p class="mission-q">“My goal: to give artists maximum visibility and an unforgettable experience at an affordable price.”<span class="mission-sign">— Rudolph<span class="mission-role">, Founder</span></span></p></div>
     <div class="mergebox">
@@ -1034,5 +1093,10 @@ function fmt(sz,c){var v=(P[sz]&&P[sz][c])||P[sz].USD,s=SY[c]||SY.USD;return s[0
 var c=cur(),els=document.querySelectorAll('.fmt-price,.startprice');for(var i=0;i<els.length;i++){var sz=els[i].getAttribute('data-size');els[i].textContent=fmt(sz,c);}
 })();
 </script>
-<script>(function(){var T={limited:"Limited spots",avail1:"1 spot left",availN:"{n} spots left",sold:"Sold out"};fetch("/api/florence-slots").then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d||!d.ok||!d.slots)return;var els=document.querySelectorAll(".fmt-slots[data-size]");for(var i=0;i<els.length;i++){var el=els[i],k=el.getAttribute("data-size"),n=d.slots[k];if(n==null)continue;if(n<=0){el.textContent=T.sold;el.classList.add("low");}else{el.textContent=(n===1?T.avail1:T.availN.replace("{n}",n));el.classList.toggle("low",n<=5);}}}).catch(function(){});})();</script><script>(function(){function s(){var t=document.querySelector(".topbar");if(t)document.documentElement.style.setProperty("--tbh",t.offsetHeight+"px");}function fin(el){el.scrollIntoView();setTimeout(function(){el.scrollIntoView();},220);}function jump(){var el=document.getElementById("formats");if(!el)return;s();var pending=[],imgs=document.querySelectorAll('img[loading="lazy"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];if(im.compareDocumentPosition(el)&4){im.loading="eager";if(!im.complete)pending.push(im);}}el.scrollIntoView();var done=false;function go(){if(done)return;done=true;fin(el);}if(pending.length){var left=pending.length,cb=function(){if(--left<=0)go();};for(var k=0;k<pending.length;k++){pending[k].addEventListener("load",cb,{once:true});pending[k].addEventListener("error",cb,{once:true});}setTimeout(go,1500);}else{requestAnimationFrame(go);}}function j(){if(location.hash==="#formats")jump();}s();addEventListener("load",function(){s();if(location.hash==="#formats")setTimeout(jump,50);});addEventListener("resize",s);addEventListener("orientationchange",s);document.addEventListener("click",function(e){var a=e.target.closest?e.target.closest('a[href="#formats"]'):null;if(a){e.preventDefault();if(location.hash!=="#formats"){try{history.pushState(null,"","#formats");}catch(x){}}jump();}});addEventListener("hashchange",j);})();</script></body>
+<script>(function(){var T={limited:"Limited spots",avail1:"1 spot left",availN:"{n} spots left",sold:"Sold out"};fetch("/api/florence-slots").then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d||!d.ok||!d.slots)return;var els=document.querySelectorAll(".fmt-slots[data-size]");for(var i=0;i<els.length;i++){var el=els[i],k=el.getAttribute("data-size"),n=d.slots[k];if(n==null)continue;if(n<=0){el.textContent=T.sold;el.classList.add("low");}else{el.textContent=(n===1?T.avail1:T.availN.replace("{n}",n));el.classList.toggle("low",n<=5);}}}).catch(function(){});})();</script><script>(function(){function s(){var t=document.querySelector(".topbar");if(t)document.documentElement.style.setProperty("--tbh",t.offsetHeight+"px");}function fin(el){el.scrollIntoView();setTimeout(function(){el.scrollIntoView();},220);}function jump(){var el=document.getElementById("formats");if(!el)return;s();var pending=[],imgs=document.querySelectorAll('img[loading="lazy"]');for(var i=0;i<imgs.length;i++){var im=imgs[i];if(im.compareDocumentPosition(el)&4){im.loading="eager";if(!im.complete)pending.push(im);}}el.scrollIntoView();var done=false;function go(){if(done)return;done=true;fin(el);}if(pending.length){var left=pending.length,cb=function(){if(--left<=0)go();};for(var k=0;k<pending.length;k++){pending[k].addEventListener("load",cb,{once:true});pending[k].addEventListener("error",cb,{once:true});}setTimeout(go,1500);}else{requestAnimationFrame(go);}}function j(){if(location.hash==="#formats")jump();}s();addEventListener("load",function(){s();if(location.hash==="#formats")setTimeout(jump,50);});addEventListener("resize",s);addEventListener("orientationchange",s);document.addEventListener("click",function(e){var a=e.target.closest?e.target.closest('a[href="#formats"]'):null;if(a){e.preventDefault();if(location.hash!=="#formats"){try{history.pushState(null,"","#formats");}catch(x){}}jump();}});addEventListener("hashchange",j);})();</script><div class="modal" id="videomodal" role="dialog" aria-modal="true" aria-label="Artist testimonial video">
+  <div class="modal-box vmodal-box">
+    <button class="modal-close" data-close aria-label="Close">&times;</button>
+    <div class="vframe"><iframe id="vplayer" data-yt src="" title="Artist testimonial video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+  </div>
+</div><script>(function(){function openM(id){var m=document.getElementById(id);if(m){m.classList.add("open");document.documentElement.style.overflow="hidden";}}function closeM(m){m.classList.remove("open");document.documentElement.style.overflow="";var f=m.querySelector("iframe[data-yt]");if(f)f.src="";}document.querySelectorAll("[data-video]").forEach(function(b){b.addEventListener("click",function(){var f=document.getElementById("vplayer"),box=document.querySelector(".vmodal-box"),fr=document.querySelector(".vframe");if(b.getAttribute("data-ratio")==="9:16"){box.style.maxWidth="min(400px,92vw)";fr.style.aspectRatio="9/16";}else{box.style.maxWidth="min(880px,94vw)";fr.style.aspectRatio="16/9";}if(f)f.src="https://www.youtube-nocookie.com/embed/"+b.getAttribute("data-video")+"?autoplay=1&rel=0&playsinline=1";openM("videomodal");});});var vm=document.getElementById("videomodal");if(vm){vm.addEventListener("click",function(e){if(e.target===vm||(e.target.closest&&e.target.closest("[data-close]")))closeM(vm);});}document.addEventListener("keydown",function(e){if(e.key==="Escape"){var o=document.getElementById("videomodal");if(o&&o.classList.contains("open"))closeM(o);}});})();</script></body>
 </html>
