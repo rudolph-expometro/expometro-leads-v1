@@ -537,6 +537,18 @@ footer a{color:rgba(255,255,255,.55)}
   .rc-tag{display:table;margin:6px 0 0 auto!important;font-size:.66rem}
 }
 </style>
+
+<style>
+/* tags overlay sur les rcards (section remotebox) */
+.rcard{position:relative}
+.rcard-tag{display:inline-block;margin:0 0 10px;background:rgba(34,224,107,.14);color:#22E06B;font-family:var(--sans);font-weight:800;font-size:.72rem;padding:4px 11px;border-radius:20px;white-space:nowrap}
+/* carte valeur + CTA */
+.valuecard{max-width:620px;margin:34px auto 4px;background:linear-gradient(180deg,rgba(255,82,103,.12),rgba(255,82,103,.04));border:1px solid rgba(255,82,103,.4);border-radius:16px;padding:26px 26px 24px;text-align:center}
+.vc-lbl{color:var(--accent);font-weight:800;font-size:clamp(1.1rem,3.6vw,1.45rem);line-height:1.25;margin:0 0 6px}
+.vc-price{font-family:var(--head);color:#fff;font-weight:800;font-size:clamp(1.05rem,3vw,1.3rem);line-height:1.2;margin:0 0 18px}
+.vc-price .startprice{white-space:nowrap}
+.valuecard .btn{display:inline-flex;align-items:center;gap:8px}
+</style>
 </head>
 <body>
 
@@ -631,7 +643,7 @@ section.rvx-sec{background:var(--night)}
       <div class="remote2">
       <div class="rcard">
         <img class="rcard-img" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="Artisti da tutto il mondo"/>
-        <div class="rcard-body">
+        <div class="rcard-body"><span class="rcard-tag">Internazionale</span>
           <p class="maxmin"><i class="ti ti-world"></i>Partecipa da ovunque tu sia</p>
           <ul class="rcard-list">
             <li>Il 90% dei nostri artisti espone a distanza, da oltre 100 paesi</li>
@@ -641,7 +653,7 @@ section.rvx-sec{background:var(--night)}
       </div>
       <div class="rcard">
         <img class="rcard-img" loading="lazy" src="/florence/img/reportage-photos.jpg" alt="Reportage professionale"/>
-        <div class="rcard-body">
+        <div class="rcard-body"><span class="rcard-tag">Valore: migliaia di euro</span>
           <p class="maxmin"><i class="ti ti-gift"></i>Cosa ricevi</p>
           <ul class="rcard-list">
             <li>Visibilità pubblica: 50.000 persone / giorno</li>
@@ -654,12 +666,12 @@ section.rvx-sec{background:var(--night)}
       </div>
       <div class="rcard">
         <img class="rcard-img" loading="lazy" src="/florence/img/monde.jpg" alt="Inaugurazione ExpoMetro"/>
-        <div class="rcard-body">
+        <div class="rcard-body"><span class="rcard-tag">Membro ufficiale</span>
           <p class="maxmin"><i class="ti ti-users"></i>Unisciti a una rete mondiale di artisti</p>
           <p class="rcard-text">Più di una mostra, entri in un grande movimento di arte pubblica che riunisce artisti da tutto il mondo. Il giorno dell'evento organizziamo un meetup ufficiale con gli artisti davanti alle opere, interviste e un drink — un momento di incontro e condivisione.</p>
         </div>
       </div>
-    </div>
+    </div><div class="valuecard"><div class="vc-lbl">Una mostra mondiale, accessibile a ogni artista.</div><div class="vc-price">Tutto questo, da <span class="startprice" data-size="S">49 €</span></div><a class="btn" href="https://expometro.co/it/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto <i class="ti ti-arrow-right"></i></a></div>
   </div>
 </section>
 
@@ -767,25 +779,25 @@ section.rvx-sec{background:var(--night)}
     <p class="intro-p">ExpoMetro è pensato proprio per permetterti di partecipare e vivere l'evento ovunque tu sia.</p>
     <h2 class="narr-title"><span class="em">Firenze sarà la nostra 19ª edizione.</span> Ecco cosa riceverai.</h2>
     <p class="maxmin"><i class="ti ti-world"></i>Ovunque tu sia</p>
-    <div class="cart"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><p>Segui l'evento in diretta su <b>Instagram Live</b> e scopri la tua opera nelle nostre foto e nei nostri video.</p></div>
+    <div class="cart has-val"><img loading="lazy" src="/florence/img/benefit-11.jpg" alt="Instagram Live pendant l'événement"/><div class="cart-txt"><p>Segui l'evento in diretta su <b>Instagram Live</b> e scopri la tua opera nelle nostre foto e nei nostri video.</p><span class="cart-val">In diretta</span></div></div>
     <p class="maxmin"><i class="ti ti-eye"></i>Visibilità Pubblica</p>
       <div class="cart has-val"><img loading="lazy" src="/florence/img/benefit-3.jpg" alt=""/><div class="cart-txt"><p>La tua opera sarà esposta in uno spazio pubblico iconico, vista da oltre 50.000 persone.</p><span class="cart-val">Valore: 10.000+ €</span></div></div>
-      <div class="cart"><img loading="lazy" src="/florence/img/benefit-6.jpg" alt=""/><p>La tua opera sarà accessibile anche online tramite un QR code con collegamento diretto al tuo sito web e ai tuoi social.</p></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/benefit-6.jpg" alt=""/><div class="cart-txt"><p>La tua opera sarà accessibile anche online tramite un QR code con collegamento diretto al tuo sito web e ai tuoi social.</p><span class="cart-val">Interattivo</span></div></div>
 
       <p class="maxmin"><i class="ti ti-speakerphone"></i>Promozione Professionale</p>
       <div class="cart has-val"><img loading="lazy" src="/florence/img/reportage-sq.jpg" alt="Reportage photos et vidéos professionnelles"/><div class="cart-txt"><p>La tua opera sarà protagonista di un grande reportage fotografico e video professionale.</p><span class="cart-val">Valore: 3.000+ €</span></div></div>
-      <div class="cart"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><p>La tua opera verrà promossa anche sui canali social di ExpoMetro.</p></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/benefit-7.jpg" alt=""/><div class="cart-txt"><p>La tua opera verrà promossa anche sui canali social di ExpoMetro.</p><span class="cart-val">Valore: 3.000 €</span></div></div>
 
       <p class="maxmin"><i class="ti ti-sparkles"></i>Un'Esperienza Internazionale</p>
-      <div class="cart"><img loading="lazy" src="/florence/img/monde2.jpg" alt=""/><p>Parteciperai a un evento fuori dal comune e a un meetup internazionale insieme ad artisti provenienti da tutto il mondo.</p></div>
-      <div class="cart"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><p>Entrerai a far parte di un movimento artistico mondiale e potrai aggiungere una mostra internazionale al tuo curriculum artistico.</p></div>
-      <div class="cart"><img loading="lazy" src="/florence/img/certificat.jpg" alt="Certificat de participation ExpoMetro personnalisé" style="object-position:left"/><p>Riceverai un certificato personalizzato con il tuo nome d'artista e la tua opera.</p></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/monde2.jpg" alt=""/><div class="cart-txt"><p>Parteciperai a un evento fuori dal comune e a un meetup internazionale insieme ad artisti provenienti da tutto il mondo.</p><span class="cart-val">Rete internazionale</span></div></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/membre-mouvement.jpg" alt="Membre du mouvement ExpoMetro"/><div class="cart-txt"><p>Entrerai a far parte di un movimento artistico mondiale e potrai aggiungere una mostra internazionale al tuo curriculum artistico.</p><span class="cart-val">Membro ufficiale</span></div></div>
+      <div class="cart has-val"><img loading="lazy" src="/florence/img/certificat.jpg" alt="Certificat de participation ExpoMetro personnalisé" style="object-position:left"/><div class="cart-txt"><p>Riceverai un certificato personalizzato con il tuo nome d'artista e la tua opera.</p><span class="cart-val">Certificato ufficiale</span></div></div>
 
-    <div class="cta-left" style="margin-top:26px"><a class="btn" href="https://expometro.co/it/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto <i class="ti ti-arrow-right"></i></a><p class="reassure"><span><i class="ti ti-check"></i>Da 49€</span><span><i class="ti ti-check"></i>Aperto a tutti gli artisti e fotografi</span></p></div>
+    <div class="valuecard"><div class="vc-lbl">Una mostra mondiale, accessibile a ogni artista.</div><div class="vc-price">Tutto questo, da <span class="startprice" data-size="S">49 €</span></div><a class="btn" href="https://expometro.co/it/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Prenota il tuo posto <i class="ti ti-arrow-right"></i></a></div>
 
     <h2 class="narr-title" id="formats">Hai diversi formati tra cui scegliere.</h2>
     <img class="tunnel-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="Tunnel de 25 m de long, murs de 1,5 m, œuvres de 50×50 cm" style="margin:16px 0 0"/>
-    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/><div class="recap"><h3 class="recap-h">Quello che ricevi:</h3><ul class="recap-list"><li><i class="ti ti-check"></i><span class="rc-txt">Esposizione pubblica: 50.000 persone</span><span class="rc-tag">Valore: 10.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Esposizione online + QR code interattivo</span><span class="rc-tag">365 giorni/anno</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Foto e video professionali</span><span class="rc-tag">Valore: 3.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Certificato personalizzato</span><span class="rc-tag">Con la tua opera</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Promozione sui social</span><span class="rc-tag">Valore: 1.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Rete internazionale di artisti</span><span class="rc-tag">Membro ufficiale</span></li></ul><div class="recap-val"><div class="recap-sum">Valore: diverse migliaia di euro.</div><div class="recap-cta"><div class="recap-val-price">Tutto questo, da <span class="startprice" data-size="S">49 €</span></div><div class="recap-down"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div></div></div></div>
+    <img loading="lazy" src="/florence/img/formats-scale3.jpg" alt="Comparaison des formats à l'échelle avec une silhouette humaine : Small, Medium, Large, Extra Large" style="display:block;width:100%;max-width:760px;margin:16px auto 0"/><div class="recap"><h3 class="recap-h">Quello che ricevi:</h3><ul class="recap-list"><li><i class="ti ti-check"></i><span class="rc-txt">Esposizione pubblica: 50.000 persone</span><span class="rc-tag">Valore: 10.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Esposizione online + QR code interattivo</span><span class="rc-tag">365 giorni/anno</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Foto e video professionali</span><span class="rc-tag">Valore: 3.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Certificato personalizzato</span><span class="rc-tag">Con la tua opera</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Promozione sui social</span><span class="rc-tag">Valore: 1.000€ +</span></li><li><i class="ti ti-check"></i><span class="rc-txt">Rete internazionale di artisti</span><span class="rc-tag">Membro ufficiale</span></li></ul><div class="recap-val"><div class="recap-sum">Una mostra mondiale, accessibile a ogni artista.</div><div class="recap-cta"><div class="recap-val-price">Tutto questo, da <span class="startprice" data-size="S">49 €</span></div><div class="recap-down"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div></div></div></div>
   </div>
 </section>
 
