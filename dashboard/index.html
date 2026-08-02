@@ -92,6 +92,7 @@
   .creco.hold{background:rgba(91,140,255,.16);color:#9bbcff}
   .creco.fix{background:rgba(255,192,77,.16);color:#ffd98a}
   .creco.wait{background:rgba(255,255,255,.07);color:var(--muted)}
+  .creco.cool{background:rgba(91,140,255,.18);color:#9bbcff}
   .ctry-mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:8px;margin-top:12px}
   .cm{background:var(--bg);border-radius:9px;padding:8px 10px}
   .cm-n{font-size:15px;font-weight:800;display:block;letter-spacing:-.01em}
@@ -181,9 +182,10 @@
       <div class="box"><h3>Leads → Inscrits</h3>
         <div class="lead-hero" id="leadHero"></div>
         <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
-          <thead><tr><th>Langue</th><th class="num">Leads</th><th class="num">Inscrits</th><th class="num">Taux</th></tr></thead>
+          <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Inscrits</th><th class="num">Taux</th></tr></thead>
           <tbody></tbody>
         </table></div>
+        <p class="hint" style="margin-top:8px">Trié par taux lead→inscrit (le plus performant en haut). <span style="color:var(--green)">● ≥3%</span> · <span style="color:var(--gold)">● 1–3%</span> · <span style="color:#ff5c5c">● &lt;1%</span> · <span style="color:var(--muted)">● trop peu de data</span></p>
       </div>
     </div>
 
@@ -335,12 +337,37 @@ function eurC(v){ return fr(Math.round(v||0))+' €'; }
 var CUR_SYM='€';   // devise du compte pub (souvent $), fixee dans renderCountries
 function curSym(c){ return {EUR:'€',USD:'$',GBP:'£',CHF:' CHF',CAD:'C$',AUD:'A$'}[c]||(c||'€'); }
 function curC(v){ return fr(Math.round(v||0))+' '+CUR_SYM; }
+/* Suivi des budgets par ad set (localStorage) pour imposer un "cooldown" apres une hausse. */
+var BUDGET_COOLDOWN_DAYS=3;
+function daysBetween(a,b){ var d=(Date.parse(b)-Date.parse(a))/86400000; return isNaN(d)?null:Math.floor(d); }
+function trackBudgets(bc,today){
+  var store={}; try{ store=JSON.parse(localStorage.getItem('budgets_v1')||'{}'); }catch(e){}
+  bc.forEach(function(co){
+    if(co.dailyBudget==null){ co._daysSinceBudget=null; return; }
+    var prev=store[co.key];
+    if(!prev){                                                    // 1re observation : on ne sait pas depuis quand -> pas de cooldown
+      store[co.key]={budget:co.dailyBudget,since:today,raised:false}; co._daysSinceBudget=null;
+    } else if(prev.budget!==co.dailyBudget){                      // budget change
+      var up=co.dailyBudget>prev.budget;                          // cooldown seulement si HAUSSE
+      store[co.key]={budget:co.dailyBudget,since:today,raised:up}; co._daysSinceBudget=up?0:null; co._budgetPrev=prev.budget;
+    } else {                                                      // budget inchange
+      co._daysSinceBudget = prev.raised ? daysBetween(prev.since,today) : null;   // compte les jours seulement si le 'since' vient d'une hausse
+    }
+  });
+  try{ localStorage.setItem('budgets_v1',JSON.stringify(store)); }catch(e){}
+}
 function recoCountry(co){
   var sp=co.spendTotal||0, leads=co.leads||0, roas=co.roas, cpl=co.cpl, cr=co.convRate||0, bud=co.dailyBudget;
   if(leads<15 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Données encore trop faibles pour trancher — laisse mûrir avant de bouger le budget.'};
   var scale=(roas!=null&&roas>=2)||cr>=2.5;
   var bad=(cpl!=null&&cpl>1.5)||(roas!=null&&roas<1&&sp>=40);
   var ok=(roas!=null&&roas>=1)||cr>=1;
+  // COOLDOWN : budget monté récemment -> on laisse Meta se re-stabiliser avant le prochain palier
+  var ds=co._daysSinceBudget;
+  if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
+    var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
+    return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse Meta se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste bonne ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
+  }
   if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Monte le budget de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (palier de +40%).'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
   if(bad) return {cls:'fix',label:'Optimiser',det:'CPL élevé / ROAS faible — refresh la créa ou resserre le ciblage avant de scaler.'};
   if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
@@ -375,6 +402,7 @@ function renderCountries(d){
   secC.style.display='block';
   CUR_SYM=curSym(a.currency);
   var bc=a.byCountry||[];
+  trackBudgets(bc, d.today||'');   // detecte les hausses de budget -> cooldown dans la reco
   var regions=[['Europe','Leads Europe'],['North America','Leads North America']];
   document.getElementById('countries').innerHTML=regions.map(function(rg){
     var list=bc.filter(function(x){return x.region===rg[0];});
@@ -485,9 +513,14 @@ function load(){
       document.getElementById('leadHero').innerHTML=
         '<span class="big">'+fr(c.leads)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(c.inscrits)+'</span>'
         +'<span class="rate"><span class="rlab">taux</span> '+c.rate+' %</span>';
-      var langs=['FR','EN','ES','IT','DE'];
-      var body=langs.map(function(L){var x=f.conv[L];return '<tr><td>'+L+'</td><td class="num">'+x.leads+'</td><td class="num">'+x.inscrits+'</td><td class="num rate">'+x.rate+' %</td></tr>';}).join('');
-      body+='<tr class="tot"><td>TOTAL</td><td class="num">'+c.leads+'</td><td class="num">'+c.inscrits+'</td><td class="num rate">'+c.rate+' %</td></tr>';
+      var CMAP=[{lang:'IT',name:'Leads Italy',flag:'🇮🇹'},{lang:'ES',name:'Leads Spain',flag:'🇪🇸'},{lang:'DE',name:'Leads Germany',flag:'🇩🇪'},{lang:'FR',name:'Leads France',flag:'🇫🇷'},{lang:'EN',name:'Leads USA',flag:'🇺🇸'}];
+      function rateColor(rate,leads){ if(!leads||leads<10) return 'var(--muted)'; if(rate>=3) return 'var(--green)'; if(rate>=1) return 'var(--gold)'; return '#ff5c5c'; }
+      var crows=CMAP.map(function(m){var x=f.conv[m.lang]||{leads:0,inscrits:0,rate:0};return {m:m,leads:x.leads,inscrits:x.inscrits,rate:x.rate};});
+      crows.sort(function(a,b){ return (b.rate-a.rate)||(b.inscrits-a.inscrits)||(b.leads-a.leads); });
+      var body=crows.map(function(r){ var col=rateColor(r.rate,r.leads);
+        return '<tr><td><span class="dot" style="background:'+col+'"></span>'+r.m.flag+' '+r.m.name+'</td><td class="num">'+fr(r.leads)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num" style="font-weight:800;color:'+col+'">'+r.rate+' %</td></tr>';
+      }).join('');
+      body+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(c.leads)+'</td><td class="num">'+fr(c.inscrits)+'</td><td class="num rate">'+c.rate+' %</td></tr>';
       document.querySelector('#convtbl tbody').innerHTML=body;
 
       // Graphiques
