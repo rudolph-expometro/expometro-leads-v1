@@ -110,11 +110,77 @@ async function metaSpend() {
   const totalRows = await campaigns('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   if (todayRows === null && totalRows === null) return null; // pas d'acces -> feature off
   const t = summarize(todayRows), g = summarize(totalRows);
+
+  // --- Depense PAR AD SET (pour le detail par pays / ROAS par ad set) ---
+  async function adsetInsightsRaw(fields, dateQs) {
+    let url = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}`
+      + `&level=adset&fields=${fields}&limit=500&${dateQs}`;
+    let out = [];
+    for (let i = 0; i < 10; i++) {
+      let r; try { r = await fetch(url); } catch (e) { return null; }
+      if (!r.ok) return null;
+      const d = await r.json();
+      out = out.concat(d.data || []);
+      if (d.paging && d.paging.next) url = d.paging.next; else break;
+    }
+    return out;
+  }
+  // Certaines versions d'API refusent `objective` au niveau ad set -> on retente sans si echec.
+  async function adsetInsights(dateQs) {
+    let r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,objective,spend', dateQs);
+    if (r === null) r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,spend', dateQs);
+    return r;
+  }
+  async function adsetBudgets() {
+    let url = `https://graph.facebook.com/${ver}/${id}/adsets?access_token=${encodeURIComponent(token)}`
+      + `&fields=name,daily_budget,lifetime_budget,effective_status&limit=500`;
+    let out = [];
+    for (let i = 0; i < 10; i++) {
+      let r; try { r = await fetch(url); } catch (e) { return null; }
+      if (!r.ok) return null;
+      const d = await r.json();
+      out = out.concat(d.data || []);
+      if (d.paging && d.paging.next) url = d.paging.next; else break;
+    }
+    return out;
+  }
+  const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
+  const asToday = await adsetInsights('date_preset=today');
+  const asBudgets = await adsetBudgets();
+  const byId = {};
+  function slot(k, name, campaign, objective) {
+    return byId[k] || (byId[k] = { id: k, name: name || '', campaign: campaign || '', objective: objective || '', spendTotal: 0, spendToday: 0, dailyBudget: null, status: '' });
+  }
+  for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); }
+  for (const r of (asToday || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendToday += +(r.spend || 0); }
+  for (const b of (asBudgets || [])) { const s = byId[b.id]; if (s) { s.dailyBudget = b.daily_budget ? +b.daily_budget / 100 : null; s.status = b.effective_status || ''; } }
+  // Retrouve l'objectif de chaque ad set via sa campagne (la lecture campagne, elle, renvoie bien l'objectif)
+  const campObj = {};
+  for (const c of (totalRows || [])) { if (c.campaign_name) campObj[c.campaign_name] = c.objective || ''; }
+  const adsets = Object.values(byId);
+  for (const a of adsets) { if (!a.objective && a.campaign && campObj[a.campaign]) a.objective = campObj[a.campaign]; }
+  const adsetDbg = {
+    totalRows: asTotal === null ? 'ERR' : asTotal.length,
+    todayRows: asToday === null ? 'ERR' : asToday.length,
+    budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0)
+  };
+
+  // Devise reelle du compte pub (souvent USD) : dépense/budget en devise native, ROAS reconverti en EUR.
+  let acctCur = 'EUR', curDbg = 'default-EUR';
+  try {
+    const rc = await fetch(`https://graph.facebook.com/${ver}/${id}?fields=currency&access_token=${encodeURIComponent(token)}`);
+    if (rc.ok) { const dc = await rc.json(); if (dc.currency) { acctCur = dc.currency; curDbg = 'ok'; } else curDbg = 'no-field'; }
+    else curDbg = 'http-' + rc.status;
+  } catch (e) { curDbg = 'throw'; }
+  adsetDbg.currency = curDbg + ':' + acctCur;   // ex "ok:USD" ou "http-400:default-EUR"
+
   return {
-    currency: 'EUR',
+    currency: acctCur,
     today: t.total, todayAcq: t.acq,
     total: g.total, totalAcq: g.acq,
-    breakdown: g.breakdown  // detail cumul par campagne (transparence)
+    breakdown: g.breakdown,  // detail cumul par campagne (transparence)
+    adsets,                  // detail par ad set (pour le ROAS par pays)
+    adsetDbg                 // diagnostic de la lecture par ad set
   };
 }
 
@@ -159,6 +225,7 @@ export default async function handler(req, res) {
     const todayRevEUR = { lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
     let todayRevEURtot = 0;
     const revEURtotByBucket = { lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
+    const revEURByLang = zeroLang();      // CA lead-bucket par langue (EUR), depuis J1 (pour le ROAS par pays)
     const rows = [];
 
     for (const c of paid) {
@@ -186,6 +253,7 @@ export default async function handler(req, res) {
         if (!seenLeadEmail.has(email)) { inscritsByLang[lead.lang]++; seenLeadEmail.add(email); }
         if (date === today) inscritsTodayByLang[lead.lang]++;
         convByDay[date] = (convByDay[date] || 0) + 1;
+        revEURByLang[lead.lang] += amtEUR;
       }
       if (h && COMMUNITY.has(h) && email) communityBuyers.add(email);
 
@@ -216,15 +284,65 @@ export default async function handler(req, res) {
     // Meta Ads -> ROAS (si dispo)
     let ads = { available: false };
     if (spend) {
+      const eurRate = EUR_RATES[spend.currency] || 1;   // devise du compte pub -> EUR
       ads = {
-        available: true, currency: spend.currency,
+        available: true, currency: spend.currency, eurRate,
         spendToday: Math.round(spend.today), spendTotal: Math.round(spend.total),
         spendTodayAcq: Math.round(spend.todayAcq), spendTotalAcq: Math.round(spend.totalAcq),
-        // ROAS sur la depense ACQUISITION (Leads + Conversions) ; Traffic/Follow exclus
-        roasToday: spend.todayAcq > 0 ? +(todayRevEURtot / spend.todayAcq).toFixed(2) : null,
-        roasTotal: spend.totalAcq > 0 ? +(revenueEUR / spend.totalAcq).toFixed(2) : null,
+        // ROAS sur la depense ACQUISITION (Leads + Conversions) ; Traffic/Follow exclus.
+        // Depense (devise compte) convertie en EUR car le CA est en EUR.
+        roasToday: spend.todayAcq > 0 ? +(todayRevEURtot / (spend.todayAcq * eurRate)).toFixed(2) : null,
+        roasTotal: spend.totalAcq > 0 ? +(revenueEUR / (spend.totalAcq * eurRate)).toFixed(2) : null,
         breakdown: spend.breakdown
       };
+    }
+
+    // --- Detail par PAYS (ad sets Leads) : ROAS + reco budget pour scaler ---
+    // Attribution du CA par langue de lead Brevo -> pays de l'ad set (IT->Italy, ES->Spain,
+    // DE->Germany, FR->France, EN->USA). Depense = somme des ad sets Leads dont le nom matche le pays.
+    if (spend) {
+      const allAdsets = Array.isArray(spend.adsets) ? spend.adsets : [];
+      // Diagnostic (visible dans le dashboard) : ce que Meta renvoie vraiment, pour caler le nommage.
+      ads.adsetsCount = allAdsets.length;
+      ads.adsetsDbg = spend.adsetDbg || null;
+      ads.adsetList = allAdsets
+        .map(a => ({ name: a.name, objective: a.objective || '', spend: Math.round(a.spendTotal), budget: a.dailyBudget != null ? Math.round(a.dailyBudget) : null }))
+        .sort((x, y) => y.spend - x.spend).slice(0, 60);
+
+      const COUNTRIES = [
+        { key: 'IT', name: 'Leads Italy',   flag: '🇮🇹', lang: 'IT', region: 'Europe',        match: /ital|(?:^|[^a-z])it(?:[^a-z]|$)/i },
+        { key: 'ES', name: 'Leads Spain',   flag: '🇪🇸', lang: 'ES', region: 'Europe',        match: /spain|espa|espagn|(?:^|[^a-z])es(?:[^a-z]|$)/i },
+        { key: 'DE', name: 'Leads Germany', flag: '🇩🇪', lang: 'DE', region: 'Europe',        match: /german|deutsch|allemagn|(?:^|[^a-z])de(?:[^a-z]|$)/i },
+        { key: 'FR', name: 'Leads France',  flag: '🇫🇷', lang: 'FR', region: 'Europe',        match: /france|fran(?:c|ç)ais|frankreich|(?:^|[^a-z])fr(?:[^a-z]|$)/i },
+        { key: 'US', name: 'Leads USA',     flag: '🇺🇸', lang: 'EN', region: 'North America', match: /\busa\b|united states|états-?unis|(?:^|[^a-z])us(?:[^a-z]|$)/i }
+      ];
+      // Pool = ad sets d'objectif Leads si l'objectif est connu ; sinon on prend tous les ad sets.
+      const anyObj = allAdsets.some(a => a.objective);
+      const pool = anyObj ? allAdsets.filter(a => /LEAD/i.test(a.objective || '')) : allAdsets;
+      const roasRate = EUR_RATES[spend.currency] || 1;   // depense (devise compte) -> EUR pour le ROAS
+      const used = new Set();
+      ads.byCountry = COUNTRIES.map(co => {
+        const ms = pool.filter(a => co.match.test(a.name || ''));
+        ms.forEach(a => used.add(a.id));
+        const spT = ms.reduce((s, a) => s + a.spendTotal, 0);
+        const spD = ms.reduce((s, a) => s + a.spendToday, 0);
+        const bud = ms.reduce((s, a) => s + (a.dailyBudget || 0), 0);
+        const rev = revEURByLang[co.lang] || 0;
+        const leadsN = leadsByLang[co.lang] || 0;
+        const insc = inscritsByLang[co.lang] || 0;
+        return {
+          key: co.key, name: co.name, flag: co.flag, region: co.region, lang: co.lang,
+          adsets: ms.map(a => a.name),
+          spendTotal: Math.round(spT), spendToday: Math.round(spD),
+          dailyBudget: bud > 0 ? Math.round(bud) : null,
+          leads: leadsN, inscrits: insc, revEUR: Math.round(rev),
+          cpl: leadsN > 0 && spT > 0 ? +(spT / leadsN).toFixed(2) : null,
+          convRate: leadsN > 0 ? +(100 * insc / leadsN).toFixed(1) : 0,
+          roas: spT > 0 ? +(rev / (spT * roasRate)).toFixed(2) : null
+        };
+      });
+      ads.unmatched = pool.filter(a => !used.has(a.id) && a.spendTotal > 0)
+        .map(a => ({ name: a.name, spend: Math.round(a.spendTotal) })).sort((x, y) => y.spend - x.spend);
     }
 
     // Taux de conversion par langue (depuis J1)

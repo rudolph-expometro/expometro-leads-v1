@@ -78,6 +78,29 @@
   .camptbl td:last-child{text-align:right;font-size:10.5px;font-weight:700;color:var(--green)}
   .camptbl tr.ex td{color:var(--muted)}
   .camptbl tr.ex td:last-child{color:var(--muted);font-weight:400}
+  /* Leads par pays (scaling) */
+  .creg{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .creg:first-child{margin-top:0}
+  .creg .crsum{font-size:11.5px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600}
+  .ctry{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 10px 16px;position:relative}
+  .ctry::before{content:'';position:absolute;left:-16px;top:26px;width:14px;height:2px;background:var(--line)}
+  .ctry-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .cflag{font-size:20px;line-height:1}
+  .cname{font-weight:800;font-size:15px}
+  .creco{margin-left:auto;font-size:10.5px;font-weight:800;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+  .creco.scale{background:rgba(34,224,107,.16);color:#7cf3ac}
+  .creco.hold{background:rgba(91,140,255,.16);color:#9bbcff}
+  .creco.fix{background:rgba(255,192,77,.16);color:#ffd98a}
+  .creco.wait{background:rgba(255,255,255,.07);color:var(--muted)}
+  .ctry-mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:8px;margin-top:12px}
+  .cm{background:var(--bg);border-radius:9px;padding:8px 10px}
+  .cm-n{font-size:15px;font-weight:800;display:block;letter-spacing:-.01em}
+  .cm-l{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:2px;display:block}
+  .cm.roas .cm-n{color:var(--green)}
+  .cm.roas.low .cm-n{color:var(--muted)}
+  .ctry-det{font-size:12.5px;color:var(--muted);margin-top:11px;line-height:1.5}
+  .ctry-det b{color:var(--txt);font-weight:700}
+  .cadsets{font-size:10.5px;color:var(--muted);margin-top:6px}
   /* buckets */
   .bkts{display:flex;gap:10px;flex-wrap:wrap}
   .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -164,6 +187,14 @@
       </div>
     </div>
 
+    <!-- LEADS PAR PAYS (scaling) -->
+    <div class="section" id="secCountries" style="display:none">
+      <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
+      <div id="countries"></div>
+      <div class="box" id="cUnmatched" style="display:none"></div>
+      <p class="hint">Dépense / budget / CPL dans la devise du compte pub (comme dans Meta) · CA en €. ROAS = CA attribué (leads qui ont payé, par langue) ÷ dépense de l'ad set convertie en €. Reco basée sur ROAS, CPL, taux lead→inscrit &amp; fréquence.</p>
+    </div>
+
     <!-- Graphique leads / jour -->
     <div class="section">
       <h2>Leads &amp; conversions par jour</h2>
@@ -227,7 +258,13 @@
 
 <script>
 var KEY='';
-function enter(){ KEY=document.getElementById('pw').value||''; sessionStorage.setItem('dk',KEY); load(); }
+/* Session persistante 48h (glissante) : localStorage + timestamp renouvelé à chaque chargement réussi. */
+var SESSION_MS=48*3600*1000;
+function saveKey(k){ try{ localStorage.setItem('dk',k); localStorage.setItem('dk_ts',String(Date.now())); }catch(e){} }
+function clearKey(){ try{ localStorage.removeItem('dk'); localStorage.removeItem('dk_ts'); }catch(e){} }
+function storedKey(){ try{ var k=localStorage.getItem('dk'), ts=+(localStorage.getItem('dk_ts')||0);
+  if(k && ts && (Date.now()-ts)<SESSION_MS) return k; clearKey(); }catch(e){} return ''; }
+function enter(){ KEY=document.getElementById('pw').value||''; saveKey(KEY); load(); }
 document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
 function fr(n){ return (n||0).toLocaleString('fr-FR'); }
 var MOIS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
@@ -293,8 +330,79 @@ function pie(segs,cNum,cLab){
   return s+'</svg>';
 }
 
+/* ---- Leads par pays : ROAS + reco de budget (pour scaler) ---- */
+function eurC(v){ return fr(Math.round(v||0))+' €'; }
+var CUR_SYM='€';   // devise du compte pub (souvent $), fixee dans renderCountries
+function curSym(c){ return {EUR:'€',USD:'$',GBP:'£',CHF:' CHF',CAD:'C$',AUD:'A$'}[c]||(c||'€'); }
+function curC(v){ return fr(Math.round(v||0))+' '+CUR_SYM; }
+function recoCountry(co){
+  var sp=co.spendTotal||0, leads=co.leads||0, roas=co.roas, cpl=co.cpl, cr=co.convRate||0, bud=co.dailyBudget;
+  if(leads<15 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Données encore trop faibles pour trancher — laisse mûrir avant de bouger le budget.'};
+  var scale=(roas!=null&&roas>=2)||cr>=2.5;
+  var bad=(cpl!=null&&cpl>1.5)||(roas!=null&&roas<1&&sp>=40);
+  var ok=(roas!=null&&roas>=1)||cr>=1;
+  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Monte le budget de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (palier de +40%).'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
+  if(bad) return {cls:'fix',label:'Optimiser',det:'CPL élevé / ROAS faible — refresh la créa ou resserre le ciblage avant de scaler.'};
+  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
+  return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le CPL et la fréquence.'};
+}
+function countryCard(co){
+  var rc=recoCountry(co);
+  function m(n,l,extra){ return '<div class="cm'+(extra||'')+'"><span class="cm-n">'+n+'</span><span class="cm-l">'+l+'</span></div>'; }
+  var roasTxt=co.roas!=null?co.roas.toFixed(2)+'×':'—';
+  var cplTxt=co.cpl!=null?co.cpl.toFixed(2)+' '+CUR_SYM:'—';
+  var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'—';
+  var noAds=!co.adsets||!co.adsets.length;
+  return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">'+co.name+'</span>'
+    +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
+    +'<div class="ctry-mets">'
+    + m(curC(co.spendTotal),'Dépensé')
+    + m(fr(co.leads),'Leads')
+    + m(cplTxt,'CPL')
+    + m(fr(co.inscrits)+' · '+co.convRate+'%','Inscrits')
+    + m(eurC(co.revEUR),'CA')
+    + m(roasTxt,'ROAS',' roas'+(co.roas!=null&&co.roas>=1?'':' low'))
+    + m(budTxt,'Budget/j')
+    +'</div>'
+    +'<div class="ctry-det">'+rc.det+'</div>'
+    +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set « '+co.name.replace('Leads ','')+' » trouvé sous tes campagnes Leads — vérifie le nommage.</div>'
+           :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
+    +'</div>';
+}
+function renderCountries(d){
+  var a=(d.ads)||{}, secC=document.getElementById('secCountries');
+  if(!a.available){ secC.style.display='none'; return; }  // Meta non connecte -> la box ROAS gere deja le fallback
+  secC.style.display='block';
+  CUR_SYM=curSym(a.currency);
+  var bc=a.byCountry||[];
+  var regions=[['Europe','Leads Europe'],['North America','Leads North America']];
+  document.getElementById('countries').innerHTML=regions.map(function(rg){
+    var list=bc.filter(function(x){return x.region===rg[0];});
+    if(!list.length) return '';
+    var sSum=list.reduce(function(s,x){return s+(x.spendTotal||0);},0);
+    var lSum=list.reduce(function(s,x){return s+(x.leads||0);},0);
+    return '<div class="creg"><span>'+rg[1]+'</span><span class="crsum">'+curC(sSum)+' dépensés · '+fr(lSum)+' leads</span></div>'
+      + list.map(countryCard).join('');
+  }).join('');
+  // ---- unmatched + diagnostic (pour caler le nommage des ad sets) ----
+  var un=a.unmatched||[], list=a.adsetList||[], dbg=a.adsetsDbg||{}, ue=document.getElementById('cUnmatched');
+  var html='';
+  if(un.length){
+    html+='<h3>Autres ad sets Leads (non rattachés à un pays)</h3>'
+      +un.map(function(u){return '<div class="roasrow"><div class="rl">'+u.name+'</div><div class="sp">'+eurC(u.spend)+'</div></div>';}).join('')
+      +'<p class="hint">Si l\'un correspond à un des 5 pays, donne-moi son nom exact pour le rattacher.</p>';
+  }
+  var dbgLine='devise '+(a.currency||'?')+(dbg&&dbg.currency?' ['+dbg.currency+']':'')+' · '+(a.adsetsCount||0)+' ad set(s) lus'+(dbg&&dbg.totalRows!==undefined?(' · rows total:'+dbg.totalRows+' / today:'+dbg.todayRows+' / budgets:'+dbg.budgetRows):'');
+  html+='<details class="camps"'+(bc.some(function(x){return x.spendTotal>0;})?'':' open')+'><summary>Diagnostic ad sets — '+dbgLine+'</summary>'
+    +(list.length?'<table class="camptbl"><tbody><tr><td style="color:var(--muted)">Ad set</td><td style="color:var(--muted)">Objectif</td><td class="num" style="color:var(--muted)">Dépensé</td></tr>'
+      +list.map(function(x){return '<tr><td>'+(x.name||'(sans nom)')+'</td><td>'+(x.objective||'—')+'</td><td class="num">'+eurC(x.spend)+'</td></tr>';}).join('')+'</tbody></table>'
+      :'<p class="hint">Aucun ad set renvoyé par Meta (rows='+(dbg.totalRows)+'). Si « ERR », la lecture par ad set est refusée (permission ads_read / version API).</p>')
+    +'</details>';
+  ue.style.display='block'; ue.innerHTML=html;
+}
+
 function load(){
-  KEY=KEY||sessionStorage.getItem('dk')||''; if(!KEY) return;
+  KEY=KEY||storedKey()||''; if(!KEY) return;
   fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
     .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
     .then(function(d){
@@ -302,6 +410,8 @@ function load(){
       document.getElementById('login').style.display='none';
       document.getElementById('dash').style.display='block';
       document.getElementById('dashErr').textContent='';
+      saveKey(KEY);   // renouvelle la fenetre de 48h a chaque chargement reussi
+      CUR_SYM=curSym((d.ads&&d.ads.currency)||'EUR');   // devise du compte pub ($ souvent), utilisee pour les depenses
       var f=d.florence, c=f.conv.TOTAL, cm=d.communaute;
       document.getElementById('sub').textContent='Base : '+fr(cm.inscrits)+' inscrits · '+fr(cm.exposants)+' exposants · depuis le '+frDate(d.since);
 
@@ -330,21 +440,22 @@ function load(){
       if(a.available){
         var fb=f.revEURByBucket||{lead:0}, tb=t.revEURByBucket||{lead:0};
         function eur(v){return fr(Math.round(v||0))+' €';}
+        var rate=a.eurRate||1; function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // depense en devise du compte
         function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
         function objLabel(o){o=o||'';
           if(/LEAD/.test(o))return'Leads'; if(/SALE|CONVERSION|CATALOG/.test(o))return'Conversions';
           if(/TRAFFIC|LINK_CLICKS/.test(o))return'Trafic'; if(/ENGAGEMENT|LIKE/.test(o))return'Engagement/Follow';
           if(/AWARENESS|REACH/.test(o))return'Notoriété'; if(/VIDEO/.test(o))return'Vidéo';
           if(/APP/.test(o))return'App'; if(/MESSAGE/.test(o))return'Messages'; return o||'—'; }
-        var roasPubT=a.spendTodayAcq>0?tb.lead/a.spendTodayAcq:null;
-        var roasPubC=a.spendTotalAcq>0?fb.lead/a.spendTotalAcq:null;
+        var roasPubT=a.spendTodayAcq>0?tb.lead/(a.spendTodayAcq*rate):null;
+        var roasPubC=a.spendTotalAcq>0?fb.lead/(a.spendTotalAcq*rate):null;
         var camps=(a.breakdown||[]).map(function(c){
-          return '<tr class="'+(c.counted?'':'ex')+'"><td>'+c.name+'</td><td>'+objLabel(c.objective)+'</td><td class="num">'+eur(c.spend)+'</td><td>'+(c.counted?'compté':'exclu')+'</td></tr>';
+          return '<tr class="'+(c.counted?'':'ex')+'"><td>'+c.name+'</td><td>'+objLabel(c.objective)+'</td><td class="num">'+spd(c.spend)+'</td><td>'+(c.counted?'compté':'exclu')+'</td></tr>';
         }).join('');
         adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
           +'<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
-          +'<tr><td>Dépensé (acquisition)</td><td>'+eur(a.spendTodayAcq)+'</td><td>'+eur(a.spendTotalAcq)+'</td></tr>'
-          +'<tr class="sub"><td>total pub (tous objectifs)</td><td>'+eur(a.spendToday)+'</td><td>'+eur(a.spendTotal)+'</td></tr>'
+          +'<tr><td>Dépensé (acquisition)</td><td>'+spd(a.spendTodayAcq)+'</td><td>'+spd(a.spendTotalAcq)+'</td></tr>'
+          +'<tr class="sub"><td>total pub (tous objectifs)</td><td>'+spd(a.spendToday)+'</td><td>'+spd(a.spendTotal)+'</td></tr>'
           +'<tr><td>CA via pubs</td><td>'+eur(tb.lead)+'</td><td>'+eur(fb.lead)+'</td></tr>'
           +'<tr class="roas"><td>ROAS</td><td>'+rx(roasPubT)+'</td><td>'+rx(roasPubC)+'</td></tr>'
           +'</tbody></table>'
@@ -358,6 +469,9 @@ function load(){
         var inp=document.getElementById('adSpend');
         if(inp){ var calc=function(){ var v=parseFloat(inp.value)||0; try{localStorage.setItem('adspend',inp.value||'');}catch(e){} document.getElementById('roasOut').textContent=(v>0?(f.revenueEUR/v).toFixed(2)+'×':'—'); }; inp.addEventListener('input',calc); calc(); }
       }
+
+      // ---- Leads par pays (scaling) ----
+      renderCountries(d);
 
       // CA par devise + total EUR
       var cur=f.revenueByCurrency||{};
@@ -412,11 +526,12 @@ function load(){
       document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
     })
     .catch(function(e){
-      if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; sessionStorage.removeItem('dk'); KEY=''; }
+      if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; clearKey(); KEY=''; }
       else document.getElementById('dashErr').textContent='Erreur : '+e.message;
     });
 }
-if(sessionStorage.getItem('dk')){ KEY=sessionStorage.getItem('dk'); load(); }
+// Auto-login : on cache tout de suite le login (sinon le champ mot de passe "flashe" pendant le fetch)
+if(storedKey()){ KEY=storedKey(); document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; document.getElementById('upd').textContent='Chargement…'; load(); }
 setInterval(function(){ if(KEY) load(); }, 60000);
 </script>
 </body>
