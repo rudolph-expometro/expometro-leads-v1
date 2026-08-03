@@ -1,6 +1,30 @@
 {
   "rewrites": [
     {
+      "source": "/en/florence",
+      "destination": "/florence/index.html"
+    },
+    {
+      "source": "/en/florence/",
+      "destination": "/florence/index.html"
+    },
+    {
+      "source": "/en/join-florence",
+      "destination": "/join-florence/index.html"
+    },
+    {
+      "source": "/en/join-florence/",
+      "destination": "/join-florence/index.html"
+    },
+    {
+      "source": "/en",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/florence/howitworks",
       "destination": "/florence/howitworks/index.html"
     },
