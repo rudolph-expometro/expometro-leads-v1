@@ -26,13 +26,13 @@ fbq('track', 'PageView');
 <meta property="og:title" content="ExpoMetro Florenz — Der Kunsttunnel"/>
 <meta property="og:description" content="Zeige dein Werk in einem 25 Meter langen Tunnel, der sich im Herzen von Florenz in eine spektakuläre öffentliche Kunstausstellung verwandelt. 28. November 2026."/>
 <meta property="og:image" content="https://artinthe.city/florence/img/tunnel-hero.jpg"/>
-<meta property="og:url" content="https://artinthe.city/de/florence"/>
-<link rel="alternate" hreflang="en" href="https://artinthe.city/florence"/>
-<link rel="alternate" hreflang="fr" href="https://artinthe.city/fr/florence"/>
-<link rel="alternate" hreflang="es" href="https://artinthe.city/es/florence"/>
-<link rel="alternate" hreflang="it" href="https://artinthe.city/it/florence"/>
-<link rel="alternate" hreflang="de" href="https://artinthe.city/de/florence"/>
-<link rel="alternate" hreflang="x-default" href="https://artinthe.city/florence"/>
+<meta property="og:url" content="https://artinthe.city/de/florence-member"/>
+<link rel="alternate" hreflang="en" href="https://artinthe.city/florence-member"/>
+<link rel="alternate" hreflang="fr" href="https://artinthe.city/fr/florence-member"/>
+<link rel="alternate" hreflang="es" href="https://artinthe.city/es/florence-member"/>
+<link rel="alternate" hreflang="it" href="https://artinthe.city/it/florence-member"/>
+<link rel="alternate" hreflang="de" href="https://artinthe.city/de/florence-member"/>
+<link rel="alternate" hreflang="x-default" href="https://artinthe.city/florence-member"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt_sz,wght@0,18..72,400;0,18..72,500;0,18..72,600;1,18..72,400&display=swap" rel="stylesheet"/>
@@ -708,9 +708,9 @@ footer a{color:rgba(255,255,255,.55)}
 .fmt-table td.cta-cell,.fmt-table th:last-child{text-align:right;width:53%}
 .fmt-table td{vertical-align:middle}
 .see-link{display:inline-block;box-sizing:border-box;min-width:132px;max-width:100%;text-decoration:none;color:var(--accent);font-weight:700;font-size:.82rem;line-height:1.25;border:1px solid var(--accent);border-radius:999px;padding:9px 14px;text-align:center;transition:background .15s,color .15s}
-.see-link i{font-size:.78rem;transition:transform .15s}
+.see-link i{font-size:1.2rem;vertical-align:-.18em;transition:transform .15s}
 .see-link:hover{background:var(--accent);color:#fff}
-.see-link:hover i{transform:translateX(2px)}
+.see-link:hover i{transform:scale(1.08)}
 .fmt-note{font-family:var(--sans);font-size:.85rem;font-style:italic;color:#98a2b3;text-align:center;max-width:420px;margin:14px auto 0}
 /* "À partir de 49 €" = sous-titre du h2 "Choisis le format..." (prix multi-devises auto via .startprice) */
 .fmt-from{text-align:center;font-family:var(--sans);margin:-2px 0 18px;color:#c8d0de;font-size:1.02rem;font-weight:600}
@@ -733,11 +733,11 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="lang">
         <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> DE <i class="ti ti-chevron-down"></i></button>
         <div class="lang-menu" id="langMenu">
-          <a href="/florence">English</a>
-          <a href="/fr/florence">Français</a>
-          <a href="/es/florence">Español</a>
-          <a href="/it/florence">Italiano</a>
-          <a href="/de/florence" class="active">Deutsch</a>
+          <a href="/florence-member">English</a>
+          <a href="/fr/florence-member">Français</a>
+          <a href="/es/florence-member">Español</a>
+          <a href="/it/florence-member">Italiano</a>
+          <a href="/de/florence-member" class="active">Deutsch</a>
         </div>
       </div>
       <a class="btn btn-ghost" href="https://expometro.co/de/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Jetzt Platz sichern</a>
@@ -842,11 +842,11 @@ section.rvx-sec{background:var(--night)}
 </section>
 <section class="sel-formats" id="formats"><div class="sel-wrap">
   <div class="howx-down" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div>
-  <h2>Wähle das Ausstellungsformat für dein Werk</h2>
+  <h2>Wähle dein Format</h2>  <!-- titre box = texte du CTA du haut (cohérence, source unique) -->
   <div class="fmt-from">Ab <span class="startprice" data-size="S">49 €</span></div>
   <img class="fmt-specs" loading="lazy" src="/florence/img/tunnel-specs.jpg" alt="25 m langer Tunnel, 1,5 m hohe Wände, Werke 50×50 cm"/>
   <svg class="fmt-svg" viewBox="0 -86 578 297" role="img" aria-label="Formats à l'échelle"><image class="fmt-sil" href="/florence/img/silhouette.png" x="0" y="30" width="88.5" height="175"/><a href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" class="fmt-a" aria-label="Format S"><rect class="fmt-frame" x="101" y="83.5" width="25" height="25" rx="3.5"/><text class="fmt-lbl" x="113.5" y="96" font-size="13">S</text></a><a href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" class="fmt-a" aria-label="Format M"><rect class="fmt-frame" x="140" y="58.5" width="50" height="50" rx="3.5"/><text class="fmt-lbl" x="165" y="83.5" font-size="18">M</text></a><a href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" class="fmt-a" aria-label="Format L"><rect class="fmt-frame" x="204" y="-41.5" width="100" height="150" rx="3.5"/><text class="fmt-lbl" x="254" y="33.5" font-size="30">L</text></a><a href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener" class="fmt-a" aria-label="Format XL"><rect class="fmt-frame" x="318" y="-79.5" width="252" height="188" rx="3.5"/><text class="fmt-lbl" x="444" y="14.5" font-size="44">XL</text></a></svg>
-  <table class="fmt-table"><thead><tr><th>Format</th><th class="plc-cell">Freie Plätze</th><th></th></tr></thead><tbody><tr><td><b>Small</b><span class="fmt-dim-sub">25 × 25 cm</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="S">22</span> <span class="plc-word">Plätze</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Plätze ansehen <i class="ti ti-arrow-right"></i></a></td></tr><tr><td><b>Medium</b><span class="fmt-dim-sub">50 × 50 cm</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="M">9</span> <span class="plc-word">Plätze</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Plätze ansehen <i class="ti ti-arrow-right"></i></a></td></tr><tr><td><b>Large</b><span class="fmt-dim-sub">100 × 150 cm</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="L">4</span> <span class="plc-word">Plätze</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Plätze ansehen <i class="ti ti-arrow-right"></i></a></td></tr><tr><td><b>Extra Large</b><span class="fmt-dim-sub">2,5 × 1,88 m</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="XL">1</span> <span class="plc-word">Platz</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener">Plätze ansehen <i class="ti ti-arrow-right"></i></a></td></tr></tbody></table>
+  <table class="fmt-table"><thead><tr><th>Format</th><th class="plc-cell">Freie Plätze</th><th></th></tr></thead><tbody><tr><td><b>Small</b><span class="fmt-dim-sub">25 × 25 cm</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="S">22</span> <span class="plc-word">Plätze</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener"><i class="ti ti-eye"></i> Plätze ansehen</a></td></tr><tr><td><b>Medium</b><span class="fmt-dim-sub">50 × 50 cm</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="M">9</span> <span class="plc-word">Plätze</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener"><i class="ti ti-eye"></i> Plätze ansehen</a></td></tr><tr><td><b>Large</b><span class="fmt-dim-sub">100 × 150 cm</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="L">4</span> <span class="plc-word">Plätze</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener"><i class="ti ti-eye"></i> Plätze ansehen</a></td></tr><tr><td><b>Extra Large</b><span class="fmt-dim-sub">2,5 × 1,88 m</span></td><td class="plc-cell"><span class="fmt-slots plc-num" data-size="XL">1</span> <span class="plc-word">Platz</span></td><td class="cta-cell"><a class="see-link" href="https://expometro.co/fr/exhibition/2026-florence#exhibition_posters" target="_blank" rel="noopener"><i class="ti ti-eye"></i> Plätze ansehen</a></td></tr></tbody></table>
   <p class="fmt-note">Wer zuerst kommt, stellt zuerst aus.<br>Sichere dir heute deinen Platz und reiche dein Werk später ein.<br>Weitere Plätze werden je nach Nachfrage freigegeben (begrenzte Plätze).</p>
 </div></section>
 
