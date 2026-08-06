@@ -25,6 +25,46 @@
       "destination": "/index.html"
     },
     {
+      "source": "/florence/howitworks",
+      "destination": "/florence/howitworks/index.html"
+    },
+    {
+      "source": "/florence/howitworks/",
+      "destination": "/florence/howitworks/index.html"
+    },
+    {
+      "source": "/fr/florence/howitworks",
+      "destination": "/fr/florence/howitworks/index.html"
+    },
+    {
+      "source": "/fr/florence/howitworks/",
+      "destination": "/fr/florence/howitworks/index.html"
+    },
+    {
+      "source": "/es/florence/howitworks",
+      "destination": "/es/florence/howitworks/index.html"
+    },
+    {
+      "source": "/es/florence/howitworks/",
+      "destination": "/es/florence/howitworks/index.html"
+    },
+    {
+      "source": "/it/florence/howitworks",
+      "destination": "/it/florence/howitworks/index.html"
+    },
+    {
+      "source": "/it/florence/howitworks/",
+      "destination": "/it/florence/howitworks/index.html"
+    },
+    {
+      "source": "/de/florence/howitworks",
+      "destination": "/de/florence/howitworks/index.html"
+    },
+    {
+      "source": "/de/florence/howitworks/",
+      "destination": "/de/florence/howitworks/index.html"
+    },
+    {
       "source": "/join-florence/",
       "destination": "/join-florence/index.html"
     },
@@ -39,102 +79,6 @@
     {
       "source": "/fr/join-florence/",
       "destination": "/fr/join-florence/index.html"
-    },
-    {
-      "source": "/fr/apply-florence",
-      "destination": "/fr/apply-florence/index.html"
-    },
-    {
-      "source": "/fr/apply-florence/",
-      "destination": "/fr/apply-florence/index.html"
-    },
-    {
-      "source": "/fr/apply-florence/thankyou",
-      "destination": "/fr/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/fr/apply-florence/thankyou/",
-      "destination": "/fr/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/apply-florence",
-      "destination": "/apply-florence/index.html"
-    },
-    {
-      "source": "/apply-florence/",
-      "destination": "/apply-florence/index.html"
-    },
-    {
-      "source": "/en/apply-florence",
-      "destination": "/apply-florence/index.html"
-    },
-    {
-      "source": "/en/apply-florence/",
-      "destination": "/apply-florence/index.html"
-    },
-    {
-      "source": "/apply-florence/thankyou",
-      "destination": "/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/apply-florence/thankyou/",
-      "destination": "/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/en/apply-florence/thankyou",
-      "destination": "/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/en/apply-florence/thankyou/",
-      "destination": "/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/es/apply-florence",
-      "destination": "/es/apply-florence/index.html"
-    },
-    {
-      "source": "/es/apply-florence/",
-      "destination": "/es/apply-florence/index.html"
-    },
-    {
-      "source": "/es/apply-florence/thankyou",
-      "destination": "/es/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/es/apply-florence/thankyou/",
-      "destination": "/es/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/it/apply-florence",
-      "destination": "/it/apply-florence/index.html"
-    },
-    {
-      "source": "/it/apply-florence/",
-      "destination": "/it/apply-florence/index.html"
-    },
-    {
-      "source": "/it/apply-florence/thankyou",
-      "destination": "/it/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/it/apply-florence/thankyou/",
-      "destination": "/it/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/de/apply-florence",
-      "destination": "/de/apply-florence/index.html"
-    },
-    {
-      "source": "/de/apply-florence/",
-      "destination": "/de/apply-florence/index.html"
-    },
-    {
-      "source": "/de/apply-florence/thankyou",
-      "destination": "/de/apply-florence/thankyou/index.html"
-    },
-    {
-      "source": "/de/apply-florence/thankyou/",
-      "destination": "/de/apply-florence/thankyou/index.html"
     },
     {
       "source": "/es/join-florence",
