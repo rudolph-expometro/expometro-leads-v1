@@ -400,7 +400,7 @@ footer a{color:rgba(255,255,255,.55)}
 .remote2{display:flex;flex-direction:column;gap:16px}
 .rcard{display:flex;align-items:stretch;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .rcard-img{width:240px;flex-shrink:0;object-fit:cover;background:#0b0f1e;display:block}
-.rcard-img[src*="worldmap"]{object-fit:contain;background:#000}
+.rcard-img.worldmap{object-fit:contain;background:#000}
 .rcard-body{flex:1;padding:24px 28px}
 .rcard .maxmin{margin:0 0 14px;font-size:1.2rem}
 .maxmin .wg{font-size:1.25em;line-height:1;flex-shrink:0}
@@ -674,7 +674,32 @@ footer a{color:rgba(255,255,255,.55)}
 /* STEPS */
 .ap-steps{padding:38px 0 30px;background:var(--paper)}
 .ap-steps h2,.ap-proof h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.4rem,4.5vw,1.9rem);text-align:center;color:#fff;margin:0 0 24px;letter-spacing:-.01em}
-.ap-steps h2.ap-eyebrow,.ap-proof h2.ap-eyebrow,.founder-light h2.ap-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin:0 0 18px}
+.ap-steps h2.ap-eyebrow,.ap-proof h2.ap-eyebrow,.founder-light h2.ap-eyebrow,.rvx-sec h2.ap-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin:0 0 18px}
+.rvx-feat{border-color:var(--accent)!important;background:linear-gradient(180deg,rgba(255,82,103,.11),rgba(255,82,103,.02))!important}
+.rvx-badge{align-self:flex-start;background:var(--accent);color:#fff;font-family:var(--sans);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:20px;margin:0 0 9px}
+.rvx-feat .rvx-c{-webkit-line-clamp:99}
+.rvx-wrap{position:relative;max-width:1080px;margin:0 auto;padding:0 26px}
+.rvx-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:6;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid rgba(255,255,255,.18);border-radius:50%;cursor:pointer;background:rgba(10,15,32,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.4);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s,background .15s,border-color .15s,transform .15s,box-shadow .15s}
+.rvx-nav.show{opacity:1;visibility:visible}
+.rvx-nav:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-50%) scale(1.1);box-shadow:0 8px 24px rgba(255,82,103,.5)}
+.rvx-nav svg{display:block}
+.rvx-prev{left:8px}
+.rvx-next{right:8px}
+section.rvx-sec{background:var(--night);padding:26px 0 22px}
+.rvx{display:flex;align-items:flex-start;gap:14px;overflow-x:auto;padding:4px 0 16px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.rvx::-webkit-scrollbar{height:8px}
+.rvx::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+.rvx::-webkit-scrollbar-track{background:transparent}
+.rvx-card{scroll-snap-align:start;flex:0 0 300px;min-height:88px;box-sizing:border-box;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 17px;display:flex;flex-direction:column}
+.rvx-c{margin:0 0 12px;overflow:hidden;font-family:var(--serif);font-style:italic;font-size:14px;line-height:1.5;color:#dfe4ee;display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical}
+.rvx-a{margin-top:0}
+.rvx-name{font-size:12.5px;font-weight:700;color:#fff;line-height:1.3}
+.rvx-stars{margin-left:6px;font-size:12px;letter-spacing:1px;white-space:nowrap}
+.rvx-country{margin-top:4px;font-size:12px;color:#8a93a6}
+.rvx-fl{font-size:15px;line-height:1}
+.rvx-lbl{font-size:13.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a93a6;margin:0 0 14px}
+@media(max-width:560px){.rvx-nav{width:40px;height:40px}.rvx-prev{left:6px}.rvx-next{right:6px}}
+@media(max-width:560px){.rvx-card{flex-basis:82vw;max-width:320px}}
 .ap-steps-grid{display:flex;flex-direction:column;gap:14px}
 .ap-step{display:flex;gap:15px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .ap-step .n{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--sans);font-weight:800;display:flex;align-items:center;justify-content:center}
@@ -761,7 +786,7 @@ footer a{color:rgba(255,255,255,.55)}
     <div class="rb-lead"><p>Chaque <span class="rotword" id="rotWord">artiste</span><br>mérite d'être vu et <b class="hl">représente son pays</b>.</p></div>
     <div class="remote2">
       <div class="rcard">
-        <img class="rcard-img" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="Artistes du monde entier"/>
+        <img class="rcard-img worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="Artistes du monde entier"/>
         <div class="rcard-body">
           <p class="maxmin"><span class="wg">🌍</span>Participe d'où que tu sois</p>
           <ul class="rcard-list rcard-check">
@@ -798,6 +823,16 @@ footer a{color:rgba(255,255,255,.55)}
       <figure><img loading="lazy" src="/florence/img/wt-madrid.jpg" alt="ExpoMetro Madrid"><figcaption>Madrid · 2026</figcaption></figure>
       <figure><img loading="lazy" src="/florence/img/wt-rome.jpg" alt="ExpoMetro Rome"><figcaption>Rome · 2026</figcaption></figure>
     </div>
+  </div>
+</section>
+
+<!-- CE QUE DISENT LES ARTISTES (carrousel repris de la PDV) -->
+<section class="sec rvx-sec">
+  <h2 class="ap-eyebrow">Ce que disent les artistes participants</h2>
+  <div class="rvx-wrap">
+    <button class="rvx-nav rvx-prev" type="button" aria-label="Avis précédents"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+    <button class="rvx-nav rvx-next" type="button" aria-label="Avis suivants"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+    <div class="rvx" id="rvxTrack"></div>
   </div>
 </section>
 
@@ -928,4 +963,8 @@ fbq('track', 'PageView');
   setTimeout(tick,700);
 })();
 </script>
+
+<!-- carrousel avis (données + nav, repris de la PDV) -->
+<script>(function(){var RVW=[{"c": "Après avoir exposé mon travail plusieurs fois avec Expo Metro, je reste profondément impressionnée par le professionnalisme de l'organisation. Du processus d'intégration des artistes, accessible et aux consignes claires, jusqu'à la communication régulière et à l'exceptionnelle couverture sur les réseaux sociaux, Expo Metro est devenu un lieu d'exposition de premier plan pour mes objectifs artistiques à long terme.", "n": "Sondra Bernstein", "cc": "US", "f": 1},{"c": "Merci, Expo Metro, de me donner l'occasion de partager mon œuvre avec un public international. Je suis ravie d'exposer aux côtés d'artistes du monde entier. C'est ma troisième participation avec Expo Metro, et c'est une expérience formidable à chaque fois. Cette exposition est particulièrement importante pour moi car ma peinture, Always Beside You, a été créée en l'honneur de ma mère. Elle a toujours eu peur de voyager, et pourtant, grâce à Expo Metro, son histoire et son esprit voyagent désormais dans le monde entier. Merci de créer des opportunités qui permettent aux artistes et à leurs histoires de toucher des gens au-delà des frontières. Je suis honorée d'en faire partie.", "n": "Alisa Marie", "cc": "US"},{"c": "Merci, ExpoMetro, pour une nouvelle expérience formidable. J'ai apprécié chaque étape du parcours, de l'organisation jusqu'à voir mon œuvre exposée. C'était une occasion inspirante de toucher un public international, et je suis reconnaissante d'en faire partie. On se voit à Florence !", "n": "Ilona Grumann", "cc": "DE"},{"c": "J'ai déjà participé trois fois et j'en suis très satisfait. La communication est extraordinairement bonne, tout comme les œuvres présentées. Dès qu'il y aura de nouveau, quelque part dans le monde, une possibilité d'exposer avec expometro, je serais aussitôt de la partie (et j'ai même réussi à convaincre un autre artiste de me rejoindre) !", "n": "Juergen Moers", "cc": "DE"},{"c": "Je suis très fière et reconnaissante de participer pour la dixième fois à Expometro, cette fois à Florence, et avec la nouveauté d'être une exposition d'art immersif. Que ce soit à distance ou sur place, faire partie de ce grand projet qui met l'art à la portée de tous et partout dans le monde est enrichissant et motivant. Sans compter la rencontre d'artistes de différents pays et le partage de cultures et de savoirs différents.", "n": "LUCWIKK", "cc": "ES"},{"c": "Je suis incroyablement reconnaissant envers ExpoMetro pour l'opportunité de présenter mon travail à Florence, en Italie. Voir Beneath the Brim, avec le modèle Saffron, exposée dans une ville célébrée dans le monde entier pour son art, sa beauté et son extraordinaire patrimoine créatif est un véritable honneur. ExpoMetro ne cesse de créer des opportunités exceptionnelles pour permettre aux artistes de partager leur travail sur une scène internationale et de rejoindre un mouvement artistique mondial. Je suis fier et enthousiaste de participer à cette remarquable exposition à Florence et profondément reconnaissant pour la vision, le dévouement et le soutien de toute l'équipe ExpoMetro.", "n": "Art Imagined - Steven Weisz", "cc": "US"},{"c": "Je suis fière de participer à cette incroyable exposition d'art dans une ville aussi riche d'histoire et d'Art que Florence, avec tant d'artistes venus du monde entier, dans le métro, lieu de modernité — l'art qui embarque.", "n": "Paola Pappalardo", "cc": "IT"},{"c": "Cette œuvre célèbre la paix, la diversité et l'unité, en reflétant la beauté des différentes cultures et en nous rappelant que nos différences nous enrichissent au lieu de nous diviser. J'espère qu'elle inspirera des conversations profondes sur l'acceptation, le respect et le vivre-ensemble. C'est un honneur d'exposer aux côtés d'artistes talentueux du monde entier et de partager ce message à travers l'art.", "n": "Siti Nozarina Binti Nordin", "cc": "MY"},{"c": "Un grand merci, et je suis fier et heureux de participer à ce projet artistique international. Meilleures salutations d'Autriche.", "n": "Gerhard Kroyer", "cc": "AT"},{"c": "Je suis fier de présenter Florence Dreaming Utopia à Expo Metro Firenze. Le projet me permet d'explorer comment la géométrie Renaissance de Florence entre en résonance avec une couche architecturale spéculative au-dessus de la ville. Le dialogue entre la coupole de Brunelleschi et les structures algorithmiques de mon travail reflète une Florence en évolution permanente — une ville qui se rêve en avant. Je suis reconnaissant de pouvoir participer et de partager mon travail dans un contexte aussi inspirant.", "n": "Torsten Skoetz", "cc": "CH"},{"c": "Tellement heureuse — participer à un projet qui réunit des artistes du monde entier est vraiment émouvant. Un projet qui unit et rassemble !", "n": "maristellaangeli60p", "cc": "IT"},{"c": "Ravie de faire partie de l'aventure à Florence !", "n": "Audrey Gaïa", "cc": "CH"},{"c": "Tellement fier de faire partie de cette magnifique exposition, dans une ville historique aussi exceptionnelle !", "n": "Markus Sladek", "cc": "AT"}, {"c": "Tellement reconnaissante.", "n": "Anna De Jesús Lugo", "cc": "PR"}, {"c": "C'est un immense honneur de participer à l'Expo Metro de Florence, après Barcelone, Rome et Madrid.", "n": "Lilie PERLINE", "cc": "FR"}, {"c": "Ma deuxième participation — et j'adore toujours autant faire partie d'une communauté aussi variée !", "n": "Caitlin Sheedy", "cc": "US"}, {"c": "Génial de participer pour la quatrième fois — après Barcelone, Rome et Madrid, voici Florence !", "n": "Heike Maria Glöckner", "cc": "DE"}, {"c": "Trop content d'être présent pour cette magnifique expo super originale — merci de nous donner la possibilité d'y participer !", "n": "althaus.daniel", "cc": "CH"}, {"c": "ExpoMetro offre une occasion unique de montrer son travail dans l'espace public, où l'art remplace la publicité. Fière d'avoir exposé à Rome, Madrid — et maintenant Florence.", "n": "ciszaifarba", "cc": "PL"}, {"c": "ExpoMetro crée une belle interruption dans le quotidien — un moment où la publicité laisse place à l'art.", "n": "Ravynne Wood", "cc": "DE"}, {"c": "Je suis fière de participer à une exposition collective, et en plus à Florence — merci !", "n": "pierretteprophete", "cc": "FR"}, {"c": "Ma troisième participation avec ExpoMetro, cette fois au Tunnel de l'Art à Florence. Toujours un plaisir de faire partie d'un projet aussi inspirant !", "n": "Artinella - Antonella Vella", "cc": "MT"}, {"c": "Ravie de participer pour la troisième fois à cette belle aventure.", "n": "Birgit Schmidmeier", "cc": "DE"}, {"c": "Heureuse et reconnaissante de faire partie de cet incroyable voyage ! Le street art n'a pas de frontières.", "n": "Patrizia Angiolina Belvedere", "cc": "IT"}, {"c": "Prête à participer de nouveau ! Merci ExpoMetro !", "n": "Gabriela Bonilla", "cc": "MX"}, {"c": "Tellement fière et reconnaissante d'en faire partie — ça compte beaucoup pour moi de partager ça avec d'autres artistes du monde entier.", "n": "My_one_painting_by_andersson", "cc": "SE"}, {"c": "Merci infiniment de me donner la possibilité de partager mes peintures d'anges avec le monde.", "n": "Katrin Meie", "cc": "DE"}, {"c": "Ma deuxième participation à ce projet formidable — tellement contente d'avoir deux œuvres dans le Tunnel de l'Art. Quel concept créatif !", "n": "Karen Pierce Gonzalez", "cc": "US"}];function fl(c){c=(c||"").toUpperCase();var o="";for(var i=0;i<c.length;i++){var d=c.charCodeAt(i)-65;if(d>=0&&d<26)o+=String.fromCodePoint(0x1F1E6+d);}return o;}function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}var CN={ES:"Espagne",MY:"Malaisie",AT:"Autriche",PR:"Porto Rico",FR:"France",US:"États-Unis",DE:"Allemagne",CH:"Suisse",PL:"Pologne",MT:"Malte",IT:"Italie",MX:"Mexique",SE:"Suède"};var FEAT="★ Coup de cœur";var t=document.getElementById("rvxTrack");if(t)t.innerHTML=RVW.map(function(r){return '<div class="rvx-card'+(r.f?' rvx-feat':'')+'">'+(r.f?'<span class="rvx-badge">'+FEAT+'</span>':'')+'<p class="rvx-c">\u201c'+esc(r.c)+'\u201d</p><div class="rvx-a"><div class="rvx-name">'+esc(r.n)+'<span class="rvx-stars">⭐⭐⭐⭐⭐</span></div><div class="rvx-country">'+(CN[r.cc]||"")+' <span class="rvx-fl">'+fl(r.cc)+'</span></div></div></div>';}).join("");})();</script>
+<script>(function(){var tr=document.getElementById("rvxTrack");if(!tr)return;var prev=document.querySelector(".rvx-prev"),next=document.querySelector(".rvx-next");if(!prev||!next)return;function step(){return Math.max(240,tr.clientWidth*0.85);}function upd(){var sl=tr.scrollLeft,max=tr.scrollWidth-tr.clientWidth-2;prev.classList.toggle("show",sl>8);next.classList.toggle("show",sl<max);}next.addEventListener("click",function(){tr.scrollBy({left:step(),behavior:"smooth"});});prev.addEventListener("click",function(){tr.scrollBy({left:-step(),behavior:"smooth"});});tr.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);window.addEventListener("load",upd);upd();setTimeout(upd,400);})();</script>
 </body></html>
