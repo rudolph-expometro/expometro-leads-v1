@@ -64,7 +64,10 @@ a{color:inherit}
 .cta-center .reassure{justify-content:center}
 
 /* topbar */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .25s,border-color .25s;background:linear-gradient(180deg,rgba(7,10,23,.72),rgba(7,10,23,0))}
+.ann-bar{background:var(--accent);color:#fff;text-align:center;padding:7px 10px;font-family:var(--sans);white-space:nowrap;overflow:hidden;line-height:1.2}
+.ann-bar .ann-txt{font-weight:700;font-size:clamp(9px,2.6vw,13px);letter-spacing:.005em}
+.ann-bar .ann-cd{font-weight:800;font-size:clamp(9px,2.6vw,13px);margin-left:6px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.topbar{position:absolute;top:0;left:0;right:0;z-index:60;line-height:normal;transition:background .25s,border-color .25s;background:linear-gradient(180deg,rgba(7,10,23,.72),rgba(7,10,23,0))}
 .btn-ghost{background:transparent;border:1.5px solid rgba(255,255,255,.6);color:#fff;box-shadow:none}
 .btn-ghost:hover{background:rgba(255,255,255,.14)}
 .topbar-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 26px}
@@ -400,14 +403,20 @@ footer a{color:rgba(255,255,255,.55)}
 .rcard-img[src*="worldmap"]{object-fit:contain;background:#000}
 .rcard-body{flex:1;padding:24px 28px}
 .rcard .maxmin{margin:0 0 14px;font-size:1.2rem}
+.maxmin .wg{font-size:1.25em;line-height:1;flex-shrink:0}
+.final-cta{text-align:center;padding:46px 20px 54px;background:var(--paper)}
+.final-cta .ap-reassure{font-size:.92rem;margin:15px 0 32px}
+.cd-final-lbl{font-family:var(--sans);font-weight:700;font-size:.82rem;letter-spacing:.02em;color:var(--accent);margin:0 0 14px}
+.qsj-cta{text-align:center;margin:34px 0 0}
+.cd-final-clock{font-family:var(--sans);font-weight:800;font-size:clamp(2.1rem,11vw,3.6rem);color:#fff;letter-spacing:.01em;font-variant-numeric:tabular-nums;line-height:1}
 .rcard-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
 .rcard-list li{display:flex;align-items:flex-start;gap:10px;font-family:var(--sans);font-size:15px;line-height:1.45;color:#dfe4ee}
 .rcard-list li i{color:var(--accent);font-size:18px;flex-shrink:0;margin-top:1px}
 .rcard-text{margin:0;font-family:var(--sans);font-size:15px;line-height:1.5;color:#dfe4ee}
-.obj-title{font-family:var(--sans);font-weight:800;font-size:1.5rem;line-height:1.32;color:var(--head);text-align:left;max-width:620px;margin:0 0 28px;padding:0}
+.obj-title{font-family:var(--sans);font-weight:800;font-size:1.2rem;line-height:1.35;color:var(--head);text-align:left;max-width:620px;margin:0 0 22px;padding:0}
 .obj-title .em{color:var(--accent)}
 .br-oui{display:none}
-@media(max-width:560px){.rcard{flex-direction:column}.rcard-img{width:100%;height:120px}.rcard-img[src*="reportage"]{object-position:center top;height:105px}.rcard-body{padding:16px 18px}.br-oui{display:inline}}
+@media(max-width:560px){.rcard{flex-direction:column}.rcard-img{width:100%;height:120px}.rcard-img[src*="reportage"]{object-position:center top;height:105px}.rcard-body{padding:16px 18px}}
 
 .hero-grid-wrap{position:relative;display:block;width:100%;max-width:380px;margin:6px 0 24px;padding:0;border:0;background:none;cursor:pointer;line-height:0;-webkit-tap-highlight-color:transparent}
 .hero-grid-wrap .hero-grid{margin:0;width:100%;max-width:100%}
@@ -624,7 +633,7 @@ footer a{color:rgba(255,255,255,.55)}
 .ap-form-sec h1 .em{color:var(--accent)}
 .ap-sub{font-family:var(--serif);font-size:clamp(1.02rem,2.9vw,1.18rem);line-height:1.5;color:#dfe4ee;max-width:500px;margin:0 auto 8px}
 .ap-process{font-family:var(--sans);font-size:.92rem;line-height:1.45;color:#98a2b3;max-width:480px;margin:0 auto 20px}
-.ap-timer{max-width:420px;margin:0 auto 18px;background:rgba(255,82,103,.1);border:1px solid rgba(255,82,103,.42);border-radius:14px;padding:12px 14px}
+.ap-timer{max-width:420px;margin:0 auto 18px}
 .ap-timer-top{font-family:var(--sans);font-weight:700;font-size:.9rem;color:#ffd7dd;text-align:center;margin:0 0 9px}
 .ap-timer-clock{display:flex;justify-content:center;gap:8px}
 .ap-timer-clock .tu{background:rgba(0,0,0,.28);border-radius:9px;padding:7px 0;min-width:58px;text-align:center}
@@ -665,6 +674,7 @@ footer a{color:rgba(255,255,255,.55)}
 /* STEPS */
 .ap-steps{padding:38px 0 30px;background:var(--paper)}
 .ap-steps h2,.ap-proof h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.4rem,4.5vw,1.9rem);text-align:center;color:#fff;margin:0 0 24px;letter-spacing:-.01em}
+.ap-steps h2.ap-eyebrow,.ap-proof h2.ap-eyebrow,.founder-light h2.ap-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin:0 0 18px}
 .ap-steps-grid{display:flex;flex-direction:column;gap:14px}
 .ap-step{display:flex;gap:15px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .ap-step .n{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--sans);font-weight:800;display:flex;align-items:center;justify-content:center}
@@ -681,30 +691,32 @@ footer a{color:rgba(255,255,255,.55)}
 .ap-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
 .ap-thumbs figcaption{position:absolute;left:0;right:0;bottom:0;font-family:var(--sans);font-size:.62rem;font-weight:700;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.75));padding:12px 5px 4px;text-align:center}
 .ap-final{text-align:center;margin:30px auto 0;max-width:460px}
-.ap-final .btn2{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:var(--sans);font-weight:800;font-size:1.05rem;padding:15px 30px;border-radius:12px;box-shadow:0 10px 30px rgba(255,82,103,.4)}
+.btn2{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:var(--sans);font-weight:800;font-size:1.05rem;padding:15px 30px;border-radius:12px;box-shadow:0 10px 30px rgba(255,82,103,.4)}
+.btn2:hover{background:var(--accent-d)}
 @media(max-width:560px){.ap-thumbs{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
-<header class="topbar" id="topbar">
-  <div class="topbar-inner">
-    <div class="tb-brand"><img src="/florence/img/logo-color.png" alt="ExpoMetro"/></div>
-    <div class="topbar-right">
-      <div class="lang">
-        <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> EN <i class="ti ti-chevron-down"></i></button>
-        <div class="lang-menu" id="langMenu">
-          <a href="/apply-florence" class="active">English</a>
-          <a href="/fr/apply-florence">Français</a>
-          <a href="/es/apply-florence">Español</a>
-          <a href="/it/apply-florence">Italiano</a>
-          <a href="/de/apply-florence">Deutsch</a>
+<!-- BARRE PROMO : compte à rebours, tout en haut -->
+<div class="ann-bar"><span class="ann-txt">Limited spots. Applications until August 15.</span> <span class="ann-cd" id="countdown">--</span></div>
+<!-- HERO : image plein cadre + header en overlay + bouton -->
+<section class="ap-hero">
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
+      <div class="tb-brand"><img src="/florence/img/logo-color.png" alt="ExpoMetro"/></div>
+      <div class="topbar-right">
+        <div class="lang">
+          <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false"><i class="ti ti-world"></i> EN <i class="ti ti-chevron-down"></i></button>
+          <div class="lang-menu" id="langMenu">
+            <a href="/apply-florence" class="active">English</a>
+            <a href="/fr/apply-florence">Français</a>
+            <a href="/es/apply-florence">Español</a>
+            <a href="/it/apply-florence">Italiano</a>
+            <a href="/de/apply-florence">Deutsch</a>
+          </div>
         </div>
       </div>
-      <a class="btn btn-ghost" href="#postuler" data-modal="leadmodal">I'm interested</a>
     </div>
-  </div>
-</header>
-<!-- HERO : image plein cadre + bouton -->
-<section class="ap-hero">
+  </header>
   <img class="ap-hero-img" src="/florence/img/tunnel-hero.jpg" alt="The Immersive Art Tunnel in Florence"/>
   <a class="ap-hero-cta" href="#postuler">Exhibit your artwork here</a>
 </section>
@@ -712,19 +724,11 @@ footer a{color:rgba(255,255,255,.55)}
 <!-- FORMULAIRE DE CANDIDATURE -->
 <section class="ap-form-sec" id="postuler">
   <div class="ap-wrap">
-    <span class="ap-kicker">Call for applications · Florence · Nov 28, 2026</span>
+    <span class="ap-kicker">Call for applications · The Art Tunnel</span>
     <h1>Exhibit your artwork in the Immersive Art Tunnel <span class="em">in front of 50,000 people</span> in the heart of Florence.</h1>
-    <p class="ap-process">We review your work. You'll hear back within 24h to know if you're selected.</p>
+    <p class="ap-process">Participate from anywhere. We'll review your artwork. Hear back within 24 hours to find out if you're selected.</p>
 
-    <div class="ap-timer">
-      <div class="ap-timer-top">Limited spots. Applications until August 15.</div>
-      <div class="ap-timer-clock" id="countdown">
-        <div class="tu"><b id="cd-d">--</b><span>days</span></div>
-        <div class="tu"><b id="cd-h">--</b><span>h</span></div>
-        <div class="tu"><b id="cd-m">--</b><span>min</span></div>
-        <div class="tu"><b id="cd-s">--</b><span>sec</span></div>
-      </div>
-    </div>
+    
 
     <form class="ap-form" id="apply" novalidate>
       <div class="ap-seg" role="radiogroup" aria-label="Are you an artist or a photographer">
@@ -737,7 +741,7 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="ap-field"><span class="emo">&#9993;&#65039;</span><input name="email" type="email" autocomplete="email" inputmode="email" placeholder="Your email" aria-label="Email" required></div>
       <button class="ap-submit" type="submit">Send my application <i class="ti ti-arrow-right"></i></button>
     </form>
-    <p class="ap-reassure">Free · no commitment · <b>reply within 24h</b></p>
+    <p class="ap-reassure">Free · No commitment · <b>Answer within 24h</b></p>
 
     <div id="applyDone" class="ap-done" style="display:none">
       <div class="ic">&#10003;</div>
@@ -745,19 +749,33 @@ footer a{color:rgba(255,255,255,.55)}
       <p>Our team is reviewing your work. You'll get an email within 24h to know if you're selected. Remember to check your spam folder.</p>
     </div>
 
-    <div class="ap-trust">Join <b>6,000+ artists from 100+ countries</b> already exhibited with ExpoMetro.</div>
+    <div class="ap-trust">Join <b>6,000+ artists from 100+ countries</b> who have already exhibited with ExpoMetro.</div>
   </div>
 </section>
 
 <!-- COMMENT ÇA MARCHE -->
 <section class="ap-steps">
   <div class="ap-wrap">
-    <h2>How it works</h2>
-    <p class="ap-steps-sub">Take part from anywhere. No need to travel or ship your physical artwork. We just need a photo of your work. That's it.</p>
+    <h2 class="ap-eyebrow">How it works</h2>
+    <p class="obj-title">You live on the other side of the world and wonder if this is for you? <br class="br-oui"><span class="em">The answer is YES.</span></p>
+    <div class="rb-lead"><p>Every <span class="rotword" id="rotWord">artiste</span><br>deserves to be seen and <b class="hl">has the chance to represent their country</b>.</p></div>
+    <div class="remote2">
+      <div class="rcard">
+        <img class="rcard-img" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="Artists from around the world"/>
+        <div class="rcard-body">
+          <p class="maxmin"><span class="wg">🌍</span>Participate from anywhere</p>
+          <ul class="rcard-list rcard-check">
+            <li><i class="ti ti-check"></i>90% of our artists exhibit remotely from 100+ countries.</li>
+            <li><i class="ti ti-check"></i>No physical artwork—just a photo.</li>
+            <li><i class="ti ti-check"></i>Follow the event LIVE on Instagram.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="ap-steps-grid">
       <div class="ap-step"><div class="n">1</div><div><h4>Apply</h4><p>Fill in the form with the link to your work (website, Instagram, Facebook…). 30 seconds, that's all.</p></div></div>
-      <div class="ap-step"><div class="n">2</div><div><h4>We review your work</h4><p>Our team reviews your portfolio within 24h for the Florence selection.</p></div></div>
-      <div class="ap-step"><div class="n">3</div><div><h4>Selected?</h4><p>You get all the details to confirm your spot and exhibit in the heart of Florence.</p></div></div>
+      <div class="ap-step"><div class="n">2</div><div><h4>We review your work</h4><p>Our team reviews your artwork within 24h for the selection.</p></div></div>
+      <div class="ap-step"><div class="n">3</div><div><h4>Selected?</h4><p>You get all the details to exhibit in the Immersive Art Tunnel.</p></div></div>
     </div>
   </div>
 </section>
@@ -765,8 +783,8 @@ footer a{color:rgba(255,255,255,.55)}
 <!-- PREUVE -->
 <section class="ap-proof">
   <div class="ap-wrap">
-    <h2>They already exhibit with us</h2>
-    <p class="ap-proof-lead">Since 2018, we've been exhibiting artists from all over the world in iconic public spaces.</p>
+    <h2 class="ap-eyebrow">They already exhibit with us</h2>
+    <p class="ap-proof-lead">Since 2018, we've exhibited artists from around the world in iconic public spaces.</p>
     <div class="ap-stats">
       <div class="ap-stat"><b>6&nbsp;000+</b><span>artists</span></div>
       <div class="ap-stat"><b>100+</b><span>countries</span></div>
@@ -780,11 +798,31 @@ footer a{color:rgba(255,255,255,.55)}
       <figure><img loading="lazy" src="/florence/img/wt-madrid.jpg" alt="ExpoMetro Madrid"><figcaption>Madrid · 2026</figcaption></figure>
       <figure><img loading="lazy" src="/florence/img/wt-rome.jpg" alt="ExpoMetro Rome"><figcaption>Rome · 2026</figcaption></figure>
     </div>
-    <div class="ap-final">
-      <a class="btn2" href="#postuler">Apply now</a>
-      <p class="ap-reassure">Free · no commitment · <b>reply within 24h</b></p>
+  </div>
+</section>
+
+<!-- QUI SUIS-JE -->
+<section class="founder-light">
+  <div class="narrow">
+    <h2 class="ap-eyebrow">About Me</h2>
+    <img class="founder-banner" loading="lazy" src="/florence/img/rudolph-expo.jpg" alt="Rudolph, founder of ExpoMetro"/>
+    <div class="founder-row">
+      <div class="ft">
+        <p>My name is Rudolph.</p>
+        <p>After working at leading auction houses and prestigious art galleries, I decided to break the rules of the art market. I was tired of seeing so many talented artists lost online or unable to exhibit beyond their own homes.</p>
+        <p>Today, my mission is simple: <b class="em">to take art beyond social media and bring it into real life, in front of the public.</b></p>
+        <p>I can't wait to discover your work and hopefully meet you in Florence—or through Instagram Live.</p>
+      </div>
     </div>
   </div>
+</section>
+
+<!-- CTA FINAL (zone bleue) : CTA + réassurance + grand timer -->
+<section class="final-cta">
+  <a class="btn2" href="#postuler">Apply now</a>
+  <p class="ap-reassure">Free · No commitment · <b>Answer within 24h</b></p>
+  <p class="cd-final-lbl">Limited spots. Applications until August 15.</p>
+  <div class="cd-final-clock" id="countdownBig">--</div>
 </section>
 <footer>
   <img class="foot-logo" src="/florence/img/logo-mark.png" alt="ExpoMetro"/>
@@ -793,6 +831,12 @@ footer a{color:rgba(255,255,255,.55)}
 </footer><script>
 (function(){
   var lang=(document.documentElement.lang||'fr').slice(0,2);
+  // --- menu langue : ouverture/fermeture ---
+  var lb=document.getElementById('langBtn'), lm=document.getElementById('langMenu');
+  if(lb&&lm){
+    lb.addEventListener('click',function(e){e.stopPropagation();var o=lm.classList.toggle('open');lb.setAttribute('aria-expanded',o);});
+    document.addEventListener('click',function(){lm.classList.remove('open');lb.setAttribute('aria-expanded',false);});
+  }
   // --- select pays : noms localisés + drapeaux + géoloc ---
   var sel=document.getElementById('country'), emo=document.getElementById('flagEmo');
   function flag(cc){return cc.toUpperCase().replace(/./g,function(c){return String.fromCodePoint(127397+c.charCodeAt(0));});}
@@ -834,16 +878,16 @@ footer a{color:rgba(255,255,255,.55)}
 })();
 // --- compte à rebours ---
 (function(){
-  var box=document.getElementById("countdown"); if(!box) return;
+  var box=document.getElementById("countdown"), big=document.getElementById("countdownBig");
+  if(!box&&!big) return;
   var target=new Date("2026-08-15T23:59:59").getTime();
-  var D=document.getElementById("cd-d"),H=document.getElementById("cd-h"),M=document.getElementById("cd-m"),S=document.getElementById("cd-s");
+  var U={d:"d",h:"h",m:"m",s:"s"};
   function pad(n){return (n<10?"0":"")+n;}
   function tick(){
     var t=target-Date.now(); if(t<0)t=0;
-    D.textContent=pad(Math.floor(t/86400000));
-    H.textContent=pad(Math.floor(t/3600000)%24);
-    M.textContent=pad(Math.floor(t/60000)%60);
-    S.textContent=pad(Math.floor(t/1000)%60);
+    var d=pad(Math.floor(t/86400000)),h=pad(Math.floor(t/3600000)%24),m=pad(Math.floor(t/60000)%60),s=pad(Math.floor(t/1000)%60);
+    if(box)box.textContent=d+U.d+" "+h+U.h+" "+m+U.m;
+    if(big)big.textContent=d+U.d+" "+h+U.h+" "+m+U.m+" "+s+U.s;
   }
   tick(); setInterval(tick,1000);
 })();
@@ -861,4 +905,27 @@ fbq('init', '1647625338848662');
 fbq('track', 'PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1647625338848662&ev=PageView&noscript=1"/></noscript>
+<script>
+// Effet machine à écrire dans la box "Tu habites loin ?" : artiste <-> photographe
+(function(){
+  var el=document.getElementById('rotWord');
+  if(!el)return;
+  var words=['artist','photographer'];
+  var wi=0,ci=0,deleting=false;
+  var TYPE=95,ERASE=55,HOLD_FULL=1600,HOLD_EMPTY=350;
+  function tick(){
+    var w=words[wi];
+    if(!deleting){
+      ci++;el.textContent=w.slice(0,ci);
+      if(ci===w.length){deleting=true;return setTimeout(tick,HOLD_FULL);}
+      return setTimeout(tick,TYPE);
+    }
+    ci--;el.textContent=w.slice(0,ci);
+    if(ci===0){deleting=false;wi=(wi+1)%words.length;return setTimeout(tick,HOLD_EMPTY);}
+    return setTimeout(tick,ERASE);
+  }
+  el.textContent='';
+  setTimeout(tick,700);
+})();
+</script>
 </body></html>
