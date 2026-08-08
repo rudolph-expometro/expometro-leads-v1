@@ -48,7 +48,7 @@
   .split .sl{color:var(--muted);display:flex;align-items:center;gap:8px}
   .split .sv{font-weight:700}
   .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-  .dot.blue{background:var(--blue)} .dot.green{background:var(--green)} .dot.gold{background:var(--gold)}
+  .dot.blue{background:var(--blue)} .dot.green{background:var(--green)} .dot.gold{background:var(--gold)} .dot.candidat{background:var(--accent)}
   .roasrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid rgba(255,255,255,.06)}
   .roasrow:first-of-type{border-top:none}
   .roasrow .rl{color:var(--muted);font-size:12.5px}
@@ -112,6 +112,7 @@
   .bkt.nouveau{border-color:rgba(255,192,77,.4)} .bkt.nouveau .n{color:var(--gold)}
   .bkt.first{border-color:rgba(255,192,77,.4)} .bkt.first .n{color:var(--gold)}
   .bkt.recur{border-color:rgba(91,140,255,.4)} .bkt.recur .n{color:var(--blue)}
+  .bkt.candidat{border-color:rgba(255,82,103,.4)} .bkt.candidat .n{color:var(--accent)}
   /* tables */
   table{width:100%;border-collapse:collapse;font-size:13px}
   th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
@@ -123,6 +124,7 @@
   .tag.lead{background:rgba(91,140,255,.16);color:#9bbcff}
   .tag.existant{background:rgba(34,224,107,.15);color:#7cf3ac}
   .tag.nouveau{background:rgba(255,192,77,.16);color:#ffd98a}
+  .tag.candidat{background:rgba(255,82,103,.16);color:#ff9aa8}
   .exp{display:inline-block;min-width:20px;text-align:center;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.07);color:var(--muted)}
   .exp.rec{background:rgba(91,140,255,.16);color:#9bbcff}
   .medal{font-size:13px}
@@ -187,6 +189,13 @@
         </table></div>
         <p class="hint" style="margin-top:8px">Trié par ROAS (le plus rentable en haut). <span style="color:var(--green)">● ≥2×</span> · <span style="color:var(--gold)">● 1–2×</span> · <span style="color:#ff5c5c">● &lt;1×</span> · <span style="color:var(--muted)">● pas de dépense pub</span></p>
       </div>
+    </div>
+
+    <!-- CANDIDATS (candidature LAL / apply-florence) -->
+    <div class="section">
+      <h2>Candidats — candidature LAL 🎯</h2>
+      <div class="box"><div class="bkts" id="candi"></div>
+        <p class="hint">Candidatures via les pubs apply-florence (listes Candidats Brevo #157-161). Taux de transformation = candidats ayant payé une place.</p></div>
     </div>
 
     <!-- LEADS PAR PAYS (scaling) -->
@@ -454,12 +463,12 @@ function load(){
       ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';}).join('');
 
       // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
-      var t=d.todayStats, trb=t.revEURByBucket||{lead:0,existant:0,nouveau:0};
+      var t=d.todayStats, trb=t.revEURByBucket||{candidat:0,lead:0,existant:0,nouveau:0};
       function srow(dot,label,n,eur){ return '<div class="srow"><span class="sl"><i class="dot '+dot+'"></i>'+label+'</span><span class="sv">'+fr(n)+' vente'+(n>1?'s':'')+' · '+fr(eur)+' €</span></div>'; }
       document.getElementById('todayHero').innerHTML=
         '<h3>Chiffres du jour</h3>'
         +'<div class="lead-hero"><span class="big">≈ '+fr(t.revenueEUR)+' €</span><span class="rate"><span class="rlab">ventes</span> '+fr(t.payments)+'</span></div>'
-        +'<div class="split">'+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
+        +'<div class="split">'+srow('candidat','Candidats',t.buckets.candidat||0,trb.candidat||0)+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
         +(t.buckets.nouveau>0?srow('gold','Nouveaux',t.buckets.nouveau,trb.nouveau):'')+'</div>';
 
       // ---- Meta Ads -> ROAS ----
@@ -542,6 +551,11 @@ function load(){
       document.getElementById('commu').innerHTML=
         bkt('lead',fr(cm.inscrits),'Inscrits (total)')+bkt('existant',fr(cm.exposants),'Exposants payants')+bkt('nouveau',cm.rate+' %','Taux de conversion');
 
+      // Candidats (candidature LAL / apply-florence)
+      var cd=d.candidats||{total:0,converted:0,rate:0};
+      document.getElementById('candi').innerHTML=
+        bkt('candidat',fr(cd.total),'Candidats inscrits')+bkt('existant',fr(cd.converted),'Ont payé une place')+bkt('candidat',cd.rate+' %','Taux de transformation');
+
       // Top artistes
       var med=['🥇','🥈','🥉'];
       document.querySelector('#toptbl tbody').innerHTML=(d.topArtists||[]).map(function(r,i){
@@ -553,7 +567,7 @@ function load(){
 
       // Derniers paiements
       document.querySelector('#tbl tbody').innerHTML=(d.recent||[]).map(function(r){
-        var lbl={lead:'Lead '+(r.lang||''),existant:'Existant',nouveau:'Nouveau'}[r.bucket];
+        var lbl={candidat:'Candidat '+(r.lang||''),lead:'Lead '+(r.lang||''),existant:'Existant',nouveau:'Nouveau'}[r.bucket];
         var ex=r.expos?('<span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span>'):'—';
         return '<tr><td>'+frDate(r.date)+'</td><td>'+(r.email||'—')+'</td><td class="num">'+fr(Math.round(r.amount))+' '+r.currency+'</td><td class="num">'+ex+'</td><td><span class="tag '+r.bucket+'">'+lbl+'</span></td></tr>';
       }).join('')||'<tr><td colspan="5" style="color:var(--muted)">Aucun paiement depuis J1.</td></tr>';

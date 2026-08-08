@@ -10,6 +10,7 @@ import { COMMUNITY_HASHES, PARTICIPATION } from '../lib/community.js';
 const J1 = '2026-07-15';                       // debut des inscriptions Florence
 const J1_TS = Math.floor(new Date(J1 + 'T00:00:00Z').getTime() / 1000);
 const LEAD_LISTS = { 152: 'FR', 153: 'EN', 154: 'ES', 155: 'IT', 156: 'DE' };
+const CANDIDAT_LISTS = { 157: 'FR', 158: 'EN', 159: 'ES', 160: 'IT', 161: 'DE' }; // funnel apply-florence (pubs LAL)
 const LANGS = ['FR', 'EN', 'ES', 'IT', 'DE'];
 const COMMUNITY = new Set(COMMUNITY_HASHES);
 const PART = PARTICIPATION; // hash email -> nb d'expos lifetime (clients)
@@ -49,10 +50,10 @@ async function stripeCharges() {
   return out;
 }
 
-async function brevoLeads() {
+async function brevoContacts(lists) {
   const key = process.env.BREVO_API_KEY;
   const map = {}; // email -> { lang, created }
-  for (const lid of Object.keys(LEAD_LISTS)) {
+  for (const lid of Object.keys(lists)) {
     let off = 0;
     while (true) {
       const r = await fetch(`https://api.brevo.com/v3/contacts/lists/${lid}/contacts?limit=500&offset=${off}`,
@@ -62,7 +63,7 @@ async function brevoLeads() {
       const cs = d.contacts || [];
       for (const c of cs) {
         const e = (c.email || '').trim().toLowerCase();
-        if (e && !map[e]) map[e] = { lang: LEAD_LISTS[lid], created: (c.createdAt || '').slice(0, 10) };
+        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10) };
       }
       if (cs.length < 500) break;
       off += 500;
@@ -194,7 +195,7 @@ export default async function handler(req, res) {
   try {
     const today = todayISO();
     const nowTs = Math.floor(Date.now() / 1000);
-    const [charges, leads, spend] = await Promise.all([stripeCharges(), brevoLeads(), metaSpend()]);
+    const [charges, leads, candidats, spend] = await Promise.all([stripeCharges(), brevoContacts(LEAD_LISTS), brevoContacts(CANDIDAT_LISTS), metaSpend()]);
 
     // Axe des jours J1 -> aujourd'hui (UTC)
     const days = [];
@@ -210,10 +211,20 @@ export default async function handler(req, res) {
       if (l.created >= J1) leadsByDay[l.created] = (leadsByDay[l.created] || 0) + 1;
     }
 
+    // Candidats Brevo (funnel apply-florence / pubs LAL) : total par langue + nouveaux aujourd'hui
+    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang();
+    let candidatsTotal = 0;
+    for (const e in candidats) {
+      const cd = candidats[e];
+      candidatsByLang[cd.lang] = (candidatsByLang[cd.lang] || 0) + 1;
+      candidatsTotal++;
+      if (cd.created === today) newCandidatsToday[cd.lang] = (newCandidatsToday[cd.lang] || 0) + 1;
+    }
+
     const paid = charges.filter(c => c.paid && !c.refunded && c.status === 'succeeded');
     const revByCur = {};
-    const buckets = { lead: 0, existant: 0, nouveau: 0 };
-    const bucketsToday = { lead: 0, existant: 0, nouveau: 0 };
+    const buckets = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };
+    const bucketsToday = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };
     const inscritsByLang = zeroLang(), inscritsTodayByLang = zeroLang();
     const convByDay = {};                 // conversions (leads qui paient) par jour
     const salesByDay = {};                // TOTAL des ventes par jour (tous buckets)
@@ -222,9 +233,10 @@ export default async function handler(req, res) {
     const artists = { first: 0, recurring: 0 };
     const communityBuyers = new Set();    // emails de la communaute existante qui ont paye
     const seenLeadEmail = new Set(), seenArtist = new Set();
-    const todayRevEUR = { lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
+    const seenCandidatEmail = new Set();  // candidats uniques ayant paye (pour le taux de transformation)
+    const todayRevEUR = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
     let todayRevEURtot = 0;
-    const revEURtotByBucket = { lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
+    const revEURtotByBucket = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
     const revEURByLang = zeroLang();      // CA lead-bucket par langue (EUR), depuis J1 (pour le ROAS par pays)
     const rows = [];
 
@@ -238,10 +250,13 @@ export default async function handler(req, res) {
       const h = email ? sha256(email) : '';
       const expos = (h && PART[h]) || 0;
       const lead = email && leads[email];
+      const candidat = email && candidats[email];
       let bucket;
-      if (lead) bucket = 'lead';
+      if (candidat) bucket = 'candidat';
+      else if (lead) bucket = 'lead';
       else if (h && COMMUNITY.has(h)) bucket = 'existant';
       else bucket = 'nouveau';
+      if (candidat && email) seenCandidatEmail.add(email);
 
       const amtEUR = amt * (EUR_RATES[cur] || 0);
       buckets[bucket]++;
@@ -266,7 +281,7 @@ export default async function handler(req, res) {
         const a = artistAgg[email] || (artistAgg[email] = { expos, amount: 0, currency: cur, bucket });
         a.amount += amt; a.expos = Math.max(a.expos, expos);
       }
-      rows.push({ date, email, amount: amt, currency: cur, bucket, lang: lead ? lead.lang : '', expos });
+      rows.push({ date, email, amount: amt, currency: cur, bucket, lang: candidat ? candidat.lang : (lead ? lead.lang : ''), expos });
     }
     rows.sort((a, b) => (a.date < b.date ? 1 : -1));
 
@@ -367,17 +382,27 @@ export default async function handler(req, res) {
       florenceBuyers: communityBuyers.size  // clients existants ayant repris une place pour Florence
     };
 
+    // Candidats (funnel apply-florence / pubs LAL) : total inscrits vs candidats ayant payé
+    const candidatsSummary = {
+      total: candidatsTotal,
+      converted: seenCandidatEmail.size,
+      rate: candidatsTotal ? +(100 * seenCandidatEmail.size / candidatsTotal).toFixed(1) : 0,
+      byLang: candidatsByLang,
+      newToday: newCandidatsToday
+    };
+
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
       updated: new Date().toISOString(),
       since: J1, today,
       communaute,
+      candidats: candidatsSummary,
       florence: {
         payments: paid.length,
         artistsTotal: seenArtist.size,
         revenueByCurrency: revByCur,
         revenueEUR: Math.round(revenueEUR),
-        revEURByBucket: { lead: Math.round(revEURtotByBucket.lead), existant: Math.round(revEURtotByBucket.existant), nouveau: Math.round(revEURtotByBucket.nouveau) },
+        revEURByBucket: { candidat: Math.round(revEURtotByBucket.candidat), lead: Math.round(revEURtotByBucket.lead), existant: Math.round(revEURtotByBucket.existant), nouveau: Math.round(revEURtotByBucket.nouveau) },
         revenueIgnored: revIgnored,
         buckets,
         artistsSplit: artists,
@@ -389,7 +414,7 @@ export default async function handler(req, res) {
       todayStats: {
         payments: paid.filter(c => new Date(c.created * 1000).toISOString().slice(0, 10) === today).length,
         revenueEUR: Math.round(todayRevEURtot),
-        revEURByBucket: { lead: Math.round(todayRevEUR.lead), existant: Math.round(todayRevEUR.existant), nouveau: Math.round(todayRevEUR.nouveau) },
+        revEURByBucket: { candidat: Math.round(todayRevEUR.candidat), lead: Math.round(todayRevEUR.lead), existant: Math.round(todayRevEUR.existant), nouveau: Math.round(todayRevEUR.nouveau) },
         buckets: bucketsToday,
         newLeadsByLang: newLeadsToday,
         inscritsByLang: inscritsTodayByLang
