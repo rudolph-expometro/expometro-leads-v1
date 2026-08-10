@@ -649,6 +649,8 @@ footer a{color:rgba(255,255,255,.55)}
  padding:15px 16px 15px 46px;font-family:var(--sans);font-size:1rem;color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.14);transition:border-color .15s,box-shadow .15s,background .15s}
 .ap-field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23dfe4ee' stroke-width='2.4' stroke-linecap='round'><path d='M2 5l5 5 5-5'/></svg>");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer}
 .ap-field input::placeholder{color:rgba(255,255,255,.62)}
+.ap-fieldhint{font-family:var(--sans);font-size:.76rem;line-height:1.35;color:#8b93a5;margin:-6px 2px 0;display:flex;align-items:flex-start;gap:5px}
+.ap-fieldhint::before{content:"↳";color:var(--accent);font-weight:700}
 .ap-field select:invalid{color:rgba(255,255,255,.62)}
 .ap-field input:focus,.ap-field select:focus{outline:none;border-color:#fff;background:rgba(255,255,255,.13);box-shadow:0 0 0 3px rgba(255,255,255,.16)}
 .ap-field option{color:#0e1431;background:#fff}
@@ -665,7 +667,9 @@ footer a{color:rgba(255,255,255,.55)}
 .ap-submit[disabled]{opacity:.6;cursor:default}
 .ap-reassure{font-family:var(--sans);font-size:.85rem;color:#98a2b3;margin:13px 0 0}
 .ap-reassure b{color:#cfd6e4}
-.ap-trust{font-family:var(--sans);font-size:.9rem;color:#dfe4ee;margin:18px auto 0;max-width:420px;padding-top:16px;border-top:1px solid var(--line)}
+.ap-stars{text-align:center;font-size:1rem;letter-spacing:3px;line-height:1;margin:0 0 5px}
+.ap-trust{font-family:var(--sans);font-size:.85rem;color:#aeb6c6;text-align:center;margin:0 auto 14px;max-width:440px}
+.ap-trust b{color:#fff}
 .ap-trust b{color:#fff}
 .ap-done{max-width:420px;margin:0 auto;text-align:center;background:rgba(34,224,107,.08);border:1px solid rgba(34,224,107,.4);border-radius:16px;padding:26px 22px}
 .ap-done .ic{width:52px;height:52px;border-radius:50%;background:var(--green,#22e06b);color:#04220f;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;font-weight:900}
@@ -722,7 +726,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 </style></head>
 <body>
 <!-- BARRE PROMO : compte à rebours, tout en haut -->
-<div class="ann-bar"><span class="ann-txt">Plazas limitadas. Inscripciones hasta el 15 de agosto.</span> <span class="ann-cd" id="countdown">--</span></div>
+<div class="ann-bar"><span class="ann-txt">Plazas limitadas. Inscripciones cerrando pronto.</span> <span class="ann-cd" id="countdown">--</span></div>
 <!-- HERO : image plein cadre + header en overlay + bouton -->
 <section class="ap-hero">
   <header class="topbar" id="topbar">
@@ -749,9 +753,11 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 <!-- FORMULAIRE DE CANDIDATURE -->
 <section class="ap-form-sec" id="postuler">
   <div class="ap-wrap">
-    <span class="ap-kicker">Convocatoria · El Túnel del Arte</span>
+    <div class="ap-stars" aria-label="5 étoiles">⭐⭐⭐⭐⭐</div>
+    <div class="ap-trust"><b>6000+ artistas de 100+ países</b> ya han expuesto</div>
+    <span class="ap-kicker">Convocatoria</span>
     <h1>Expón tu obra en el Túnel del Arte Inmersivo <span class="em">ante 50&nbsp;000 personas</span> en el corazón de Florencia.</h1>
-    <p class="ap-process">Participa desde donde estés. Analizamos tus obras. Respuesta en 24h para saber si estás seleccionado·a.</p>
+    <p class="ap-process">Analizamos tus obras. Recibirás una respuesta en 24h para saber si estás seleccionado·a.</p>
 
     
 
@@ -762,7 +768,8 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
       </div>
       <div class="ap-field"><span class="emo">&#128100;</span><input name="artist" type="text" autocomplete="name" placeholder="Tu nombre de artista" aria-label="Nombre de artista" required></div>
       <div class="ap-field"><span class="emo" id="flagEmo">&#127757;</span><select name="country" id="country" required><option value="" disabled selected>Tu país</option></select></div>
-      <div class="ap-field"><span class="emo">&#128279;</span><input name="portfolio" type="text" autocomplete="url" placeholder="Tu web, Instagram, Facebook…" aria-label="Enlace a tus obras" required></div>
+      <div class="ap-field"><span class="emo">&#128279;</span><input name="portfolio" type="text" autocomplete="url" placeholder="Instagram, sitio web, Facebook, PDF…" aria-label="Enlace a tus obras" required></div>
+      <p class="ap-fieldhint">El enlace que nuestro equipo analizará para la selección.</p>
       <div class="ap-field"><span class="emo">&#9993;&#65039;</span><input name="email" type="email" autocomplete="email" inputmode="email" placeholder="Tu email" aria-label="Email" required></div>
       <button class="ap-submit" type="submit">Enviar mi candidatura <i class="ti ti-arrow-right"></i></button>
     </form>
@@ -773,8 +780,6 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
       <h3>¡Candidatura enviada!</h3>
       <p>Nuestro equipo analiza tu trabajo. Recibirás un email en 24h para saber si estás seleccionado·a. Recuerda revisar tu spam.</p>
     </div>
-
-    <div class="ap-trust">Únete a <b>6000+ artistas de 100+ países</b> que ya han expuesto con ExpoMetro.</div>
   </div>
 </section>
 
@@ -856,7 +861,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 <section class="final-cta">
   <a class="btn2" href="#postuler">Presenta tu candidatura ahora</a>
   <p class="ap-reassure">Gratis · sin compromiso · <b>respuesta en 24h</b></p>
-  <p class="cd-final-lbl">Plazas limitadas. Inscripciones hasta el 15 de agosto.</p>
+  <p class="cd-final-lbl">Plazas limitadas. Inscripciones cerrando pronto.</p>
   <div class="cd-final-clock" id="countdownBig">--</div>
 </section>
 <footer>
@@ -915,11 +920,19 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 (function(){
   var box=document.getElementById("countdown"), big=document.getElementById("countdownBig");
   if(!box&&!big) return;
-  var target=new Date("2026-08-15T23:59:59").getTime();
+  var anchor=new Date("2026-08-15T23:59:59").getTime();  // 1re echeance
+  var END=new Date("2026-10-31T23:59:59").getTime();      // fin reelle des inscriptions
+  var WEEK=604800000;                                     // renouvellement auto : +7j en boucle jusqu'a END
   var U={d:"d",h:"h",m:"m",s:"s"};
   function pad(n){return (n<10?"0":"")+n;}
+  function deadline(){
+    var now=Date.now();
+    if(now>=END) return END;
+    var t=anchor; while(t<=now) t+=WEEK;   // prochaine echeance hebdo strictement future
+    return Math.min(t,END);
+  }
   function tick(){
-    var t=target-Date.now(); if(t<0)t=0;
+    var t=deadline()-Date.now(); if(t<0)t=0;
     var d=pad(Math.floor(t/86400000)),h=pad(Math.floor(t/3600000)%24),m=pad(Math.floor(t/60000)%60),s=pad(Math.floor(t/1000)%60);
     if(box)box.textContent=d+U.d+" "+h+U.h+" "+m+U.m;
     if(big)big.textContent=d+U.d+" "+h+U.h+" "+m+U.m+" "+s+U.s;
