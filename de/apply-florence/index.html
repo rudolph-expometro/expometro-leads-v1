@@ -398,9 +398,9 @@ footer a{color:rgba(255,255,255,.55)}
 /* --- Bloc "Ce que tu reçois" (repris de la page leads) --- */
 .remotebox{background:var(--night);padding:44px 0 46px}
 .remote2{display:flex;flex-direction:column;gap:16px}
-.rcard{display:flex;align-items:stretch;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.rcard-img{width:240px;flex-shrink:0;object-fit:cover;background:#0b0f1e;display:block}
-.rcard-img.worldmap{object-fit:contain;background:#000}
+.rcard{display:flex;flex-direction:column;align-items:stretch;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.rcard-img{width:100%;flex-shrink:0;object-fit:cover;background:#0b0f1e;display:block}
+.rcard-img.rmap{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#000;margin:0;display:block}
 .rcard-body{flex:1;padding:24px 28px}
 .rcard .maxmin{margin:0 0 14px;font-size:1.2rem}
 .maxmin .wg{font-size:1.25em;line-height:1;flex-shrink:0}
@@ -704,7 +704,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 .rvx-lbl{font-size:13.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a93a6;margin:0 0 14px}
 @media(max-width:560px){.rvx-nav{width:40px;height:40px}.rvx-prev{left:6px}.rvx-next{right:6px}}
 @media(max-width:560px){.rvx-card{flex-basis:82vw;max-width:320px}}
-.ap-steps-grid{display:flex;flex-direction:column;gap:14px}
+.ap-steps-grid{display:flex;flex-direction:column;gap:14px;margin-top:22px}
 .ap-step{display:flex;gap:15px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .ap-step .n{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--sans);font-weight:800;display:flex;align-items:center;justify-content:center}
 .ap-step h4{font-family:var(--sans);font-weight:700;font-size:1.05rem;color:#fff;margin:2px 0 4px}
@@ -791,7 +791,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
     <div class="rb-lead"><p>Jede*r <span class="rotword" id="rotWord">artiste</span><br>verdient es, gesehen zu werden – und <b class="hl">kann das eigene Land vertreten</b>.</p></div>
     <div class="remote2">
       <div class="rcard">
-        <img class="rcard-img worldmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="Künstler aus aller Welt"/>
+        <img class="rcard-img rmap" loading="lazy" src="/florence/img/worldmap-clean.jpg" alt="Künstler aus aller Welt"/>
         <div class="rcard-body">
           <p class="maxmin"><span class="wg">🌍</span>Mach mit von überall</p>
           <ul class="rcard-list rcard-check">
