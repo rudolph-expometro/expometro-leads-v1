@@ -766,9 +766,7 @@ footer a{color:rgba(255,255,255,.55)}
   <div class="cf-hero-inner">
     <div class="cf-timer-label">Ich antworte in</div>
     <div class="cf-clock" id="cfClock">
-      <span class="cf-u"><b id="cf-h">24</b><i>h</i></span>
-      <span class="cf-sep">:</span>
-      <span class="cf-u"><b id="cf-m">00</b><i>min</i></span>
+      <span class="cf-u"><b id="cf-m">30</b><i>min</i></span>
       <span class="cf-sep">:</span>
       <span class="cf-u"><b id="cf-s">00</b><i>sec</i></span>
     </div>
@@ -788,7 +786,7 @@ footer a{color:rgba(255,255,255,.55)}
       <div class="cf-quote">
         <img class="cf-q-photo" src="/florence/img/rudolph-round.png" alt="Rudolph, ExpoMetro"/>
         <div>
-          <p class="cf-q-text">« Ich sehe mir jetzt dein Werk-Portfolio an und antworte dir innerhalb von 24 Stunden persönlich. »</p>
+          <p class="cf-q-text">« Ich sehe mir jetzt dein Werk-Portfolio an und antworte dir in 30 Minuten persönlich. »</p>
           <span class="cf-q-cite">— Rudolph<br>Gründer von ExpoMetro</span>
         </div>
       </div>
@@ -803,7 +801,7 @@ footer a{color:rgba(255,255,255,.55)}
         <li><span class="cf-n">1</span><div><b>Lass diese Seite geöffnet.</b></div></li>
         <li><span class="cf-n">2</span><div><b>Öffne jetzt deine E-Mails</b> um zu prüfen, ob du meine Willkommens-E-Mail erhalten hast.</div></li>
         <li><span class="cf-n">3</span><div>Füge <b class="cf-mail">hello@expometro.co</b> zu deinem Adressbuch hinzu.</div></li>
-        <li><span class="cf-n">4</span><div><b>Sieh in deine E-Mails</b> in <span class="cf-timerval">24 h</span> um die Antwort zu erhalten.</div></li>
+        <li><span class="cf-n">4</span><div><b>Sieh in deine E-Mails</b> in <span class="cf-timerval">30 min</span> um die Antwort zu erhalten.</div></li>
       </ol>
     </div>
 
@@ -814,7 +812,7 @@ footer a{color:rgba(255,255,255,.55)}
       <p class="cf-outro-sent">Ich habe dir gerade eine Willkommens-E-Mail geschickt an&nbsp;:<br><span class="cf-email" id="cfEmail">deine E-Mail-Adresse</span></p>
       <p class="cf-outro-help">Hast du sie erhalten&nbsp;?<br>Schau in deinem Spam-Ordner nach.<br>Falsche E-Mail&nbsp;? <a id="cfResend" href="/fr/apply-florence">Formular erneut senden</a></p>
       <div class="cf-outro-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></div>
-      <p class="cf-outro-rdv">Wir sehen uns in deiner E-Mail in<br><span class="cf-timerval">24 h</span></p>
+      <p class="cf-outro-rdv">Wir sehen uns in deiner E-Mail in<br><span class="cf-timerval">30 min</span></p>
     </div>
 
   </div>
@@ -835,8 +833,8 @@ footer a{color:rgba(255,255,255,.55)}
   if(resend){ var ap=location.pathname.replace(/\/thankyou\/?$/,"").replace(/\/+$/,""); if(ap) resend.setAttribute("href",ap); }
   var ts=Number(data.ts)||Date.now();
   if(!data.ts){ try{ localStorage.setItem(KEY,JSON.stringify(Object.assign({},data,{ts:ts}))); }catch(e){} }
-  var target=ts+24*3600*1000;
-  var H=document.getElementById("cf-h"),M=document.getElementById("cf-m"),S=document.getElementById("cf-s");
+  var target=ts+30*60*1000;
+  var M=document.getElementById("cf-m"),S=document.getElementById("cf-s");
   var clock=document.getElementById("cfClock"),exp=document.getElementById("cfExpired");
   var vals=document.querySelectorAll(".cf-timerval");
   function pad(n){return (n<10?"0":"")+n;}
@@ -844,9 +842,9 @@ footer a{color:rgba(255,255,255,.55)}
   function tick(){
     var t=target-Date.now();
     if(t<=0){ if(clock)clock.style.display="none"; if(exp)exp.style.display="block"; setVals("wenigen Augenblicken"); return; }
-    var hh=Math.floor(t/3600000), mm=Math.floor(t/60000)%60, ss=Math.floor(t/1000)%60;
-    setVals(hh+" h "+pad(mm)+" min "+pad(ss)+" s");
-    if(H)H.textContent=pad(hh); if(M)M.textContent=pad(mm); if(S)S.textContent=pad(ss);
+    var mm=Math.floor(t/60000), ss=Math.floor(t/1000)%60;
+    setVals(pad(mm)+" min "+pad(ss)+" s");
+    if(M)M.textContent=pad(mm); if(S)S.textContent=pad(ss);
   }
   tick(); setInterval(tick,1000);
 })();

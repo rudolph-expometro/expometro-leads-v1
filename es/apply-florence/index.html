@@ -780,7 +780,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
     <div class="ap-trust"><b>6000+ artistas de 100+ países</b> ya han expuesto</div>
     <span class="ap-kicker">Convocatoria</span>
     <h1>Expón tu obra en el Túnel del Arte Inmersivo <span class="em">ante 50&nbsp;000 personas</span> en el corazón de Florencia.</h1>
-    <p class="ap-process">Analizamos tus obras. Recibes una respuesta en 24 horas para saber si has sido seleccionado.</p>
+    <p class="ap-process">Analizamos tus obras. Recibes una respuesta en menos de 30 min para saber si has sido seleccionado.</p>
 
     
 
@@ -796,12 +796,12 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
       <div class="ap-field"><span class="emo">&#9993;&#65039;</span><input name="email" type="email" autocomplete="email" inputmode="email" placeholder="Tu email" aria-label="Email" required></div>
       <button class="ap-submit" type="submit">Enviar mi candidatura <i class="ti ti-arrow-right"></i></button>
     </form>
-    <p class="ap-reassure">Gratis · sin compromiso · <b>respuesta en 24h</b></p>
+    <p class="ap-reassure">Gratis · sin compromiso · <b>respuesta en menos de 30 min</b></p>
 
     <div id="applyDone" class="ap-done" style="display:none">
       <div class="ic">&#10003;</div>
       <h3>¡Candidatura enviada!</h3>
-      <p>Nuestro equipo analiza tu trabajo. Recibirás un email en 24h para saber si estás seleccionado·a. Recuerda revisar tu spam.</p>
+      <p>Nuestro equipo analiza tu trabajo. Recibirás un email en menos de 30 min para saber si estás seleccionado·a. Recuerda revisar tu spam.</p>
     </div>
   </div>
 </section>
@@ -827,7 +827,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
     </div>
     <div class="ap-steps-grid">
       <div class="ap-step"><div class="n">1</div><div><h4>Presenta tu candidatura</h4><p>Rellena el formulario con el enlace a tus obras (web, Instagram, Facebook…). 30 segundos, nada más.</p></div></div>
-      <div class="ap-step"><div class="n">2</div><div><h4>Analizamos tu trabajo</h4><p>Nuestro equipo estudia tus obras en 24h para la selección.</p></div></div>
+      <div class="ap-step"><div class="n">2</div><div><h4>Analizamos tu trabajo</h4><p>Nuestro equipo estudia tus obras en menos de 30 min para la selección.</p></div></div>
       <div class="ap-step"><div class="n">3</div><div><h4>¿Seleccionado·a?</h4><p>Recibes toda la información para exponer en el Túnel del Arte Inmersivo.</p></div></div>
     </div>
   </div>
@@ -917,7 +917,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 <!-- CTA FINAL (zone bleue) : CTA + réassurance + grand timer -->
 <section class="final-cta">
   <a class="btn2" href="#postuler">Presenta tu candidatura ahora</a>
-  <p class="ap-reassure">Gratis · sin compromiso · <b>respuesta en 24h</b></p>
+  <p class="ap-reassure">Gratis · sin compromiso · <b>respuesta en menos de 30 min</b></p>
   <p class="cd-final-lbl">Plazas limitadas. Las inscripciones cierran en</p>
   <div class="cd-final-clock" id="countdownBig">--</div>
 </section>
@@ -967,7 +967,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
     fetch("/api/apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(
       Object.assign({},d,{lang:lang,src:utm(),eid:eid,fbp:cookie("_fbp"),fbc:cookie("_fbc"),url:location.href})
     )}).catch(function(){}).finally(function(){
-      // on mémorise le portfolio + l'heure de candidature, puis on redirige vers la page de confirmation (compteur 24h persistant)
+      // on mémorise le portfolio + l'heure de candidature, puis on redirige vers la page de confirmation (compteur 30 min persistant)
       try{ localStorage.setItem("af_apply", JSON.stringify({portfolio:d.portfolio, email:d.email, ts:Date.now()})); }catch(_){}
       var _b=location.pathname.replace(/\/index\.html$/,"").replace(/\/+$/,"");location.href=_b+"/thankyou";
     });
