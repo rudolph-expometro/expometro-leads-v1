@@ -200,7 +200,7 @@
           <thead><tr><th>Pays</th><th class="num">Candidats</th><th class="num">Convertis</th><th class="num">Taux</th></tr></thead>
           <tbody></tbody>
         </table></div>
-        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · pays sans conversion masqués.</p></div>
+        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · pays indésirables (spam) masqués (tous les pays ciblés restent, même à 0 conversion).</p></div>
     </div>
 
     <!-- LEADS PAR PAYS (scaling) -->
@@ -560,12 +560,16 @@ function load(){
       var cd=d.candidats||{total:0,converted:0,rate:0,byCountry:[]};
       document.getElementById('candi').innerHTML=
         bkt('candidat',fr(cd.total),'Candidats inscrits')+bkt('existant',fr(cd.converted),'Ont payé une place')+bkt('candidat',cd.rate+' %','Taux de transformation');
+      // Pays indésirables (spam cheap-lead venu de la campagne EN worldwide) — masqués du tableau.
+      // ÉDITABLE : ajoute/retire des noms tels qu'ils apparaissent dans la colonne « Pays ». Insensible à la casse.
+      var HIDE_COUNTRIES=['Pakistan','India','Bangladesh','Philippines','Nigeria','Indonesia','Egypt','Kenya','Ghana','Nepal','Sri Lanka','Morocco','Algeria','Vietnam','Ethiopia','Uganda','Tanzania','Cameroon','Senegal','Zimbabwe','Zambia','Myanmar','Cambodia','Iraq','Yemen','Sudan','Afghanistan','Mali','Rwanda','Malawi','Mozambique','Madagascar','Angola','Guinea','Niger','Ivory Coast'];
+      var HIDE=new Set(HIDE_COUNTRIES.map(function(s){return s.toLowerCase();}));
       document.querySelector('#candtbl tbody').innerHTML=(cd.byCountry||[])
-        .filter(function(r){ return (r.converted||0) > 0; })                              // masque les pays sans conversion (indésirables)
-        .sort(function(a,b){ return (b.converted-a.converted) || (b.count-a.count); })    // tri : convertis ↓, puis candidats ↓
+        .filter(function(r){ return !HIDE.has(String(r.country||'').trim().toLowerCase()); })  // masque les pays indésirables (garde tous les pays ciblés, même à 0 conversion)
+        .sort(function(a,b){ return (b.converted-a.converted) || (b.count-a.count); })         // tri : convertis ↓, puis candidats ↓
         .map(function(r){
         return '<tr><td>'+(r.country||'—')+'</td><td class="num">'+fr(r.count)+'</td><td class="num">'+fr(r.converted)+'</td><td class="num rate">'+r.rate+' %</td></tr>';
-      }).join('')||'<tr><td colspan="4" style="color:var(--muted)">Aucun pays avec conversion pour l\'instant.</td></tr>';
+      }).join('')||'<tr><td colspan="4" style="color:var(--muted)">Aucun candidat pour l\'instant.</td></tr>';
 
       // Top artistes
       var med=['🥇','🥈','🥉'];
