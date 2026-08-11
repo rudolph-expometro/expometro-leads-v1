@@ -200,7 +200,7 @@
           <thead><tr><th>Pays</th><th class="num">Candidats</th><th class="num">Convertis</th><th class="num">Taux</th></tr></thead>
           <tbody></tbody>
         </table></div>
-        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · pays indésirables (spam) masqués (tous les pays ciblés restent, même à 0 conversion).</p></div>
+        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · n'affiche que les pays ciblés par les campagnes LAL (tout le reste = spam masqué, même à 0 conversion).</p></div>
     </div>
 
     <!-- LEADS PAR PAYS (scaling) -->
@@ -560,12 +560,37 @@ function load(){
       var cd=d.candidats||{total:0,converted:0,rate:0,byCountry:[]};
       document.getElementById('candi').innerHTML=
         bkt('candidat',fr(cd.total),'Candidats inscrits')+bkt('existant',fr(cd.converted),'Ont payé une place')+bkt('candidat',cd.rate+' %','Taux de transformation');
-      // Pays indésirables (spam cheap-lead venu de la campagne EN worldwide) — masqués du tableau.
-      // ÉDITABLE : ajoute/retire des noms tels qu'ils apparaissent dans la colonne « Pays ». Insensible à la casse.
-      var HIDE_COUNTRIES=['Pakistan','India','Bangladesh','Philippines','Nigeria','Indonesia','Egypt','Kenya','Ghana','Nepal','Sri Lanka','Morocco','Algeria','Vietnam','Ethiopia','Uganda','Tanzania','Cameroon','Senegal','Zimbabwe','Zambia','Myanmar','Cambodia','Iraq','Yemen','Sudan','Afghanistan','Mali','Rwanda','Malawi','Mozambique','Madagascar','Angola','Guinea','Niger','Ivory Coast'];
-      var HIDE=new Set(HIDE_COUNTRIES.map(function(s){return s.toLowerCase();}));
+      // Pays CIBLÉS par les campagnes LAL (toutes variantes de langue). On n'affiche QUE ceux-là
+      // → tout le reste (spam de la phase EN worldwide) est masqué automatiquement, sans blocklist à maintenir.
+      // ÉDITABLE : ajoute un pays ici si tu élargis le ciblage d'une campagne.
+      var KEEP_COUNTRIES=[
+        'France','Francia','Frankreich',
+        'United States','États-Unis','Estados Unidos','Stati Uniti','USA',
+        'United Kingdom','Royaume-Uni','Reino Unido','Regno Unito','Vereinigtes Königreich','Großbritannien',
+        'Canada','Canadá','Kanada',
+        'Australia','Australie','Australien',
+        'Ireland','Irlande','Irlanda','Irland',
+        'New Zealand','Nouvelle-Zélande','Nueva Zelanda','Nuova Zelanda','Neuseeland',
+        'United Arab Emirates','Émirats arabes unis','Emiratos Árabes Unidos','Emirati Arabi Uniti','Vereinigte Arabische Emirate',
+        'Qatar',
+        'Singapore','Singapour','Singapur',
+        'Netherlands','Pays-Bas','Países Bajos','Paesi Bassi','Niederlande','Nederland',
+        'Sweden','Suède','Suecia','Svezia','Schweden',
+        'Norway','Norvège','Noruega','Norvegia','Norwegen',
+        'Denmark','Danemark','Dinamarca','Danimarca','Dänemark',
+        'Switzerland','Suisse','Suiza','Svizzera','Schweiz',
+        'Italy','Italie','Italia','Italien',
+        'Spain','Espagne','España','Spagna','Spanien',
+        'Germany','Allemagne','Alemania','Germania','Deutschland',
+        'Austria','Autriche','Österreich',
+        'Belgium','Belgique','Bélgica','Belgio','Belgien',
+        'Luxembourg','Luxemburgo','Lussemburgo','Luxemburg',
+        'Monaco','Mónaco',
+        'Hong Kong','San Marino'
+      ];
+      var KEEP=new Set(KEEP_COUNTRIES.map(function(s){return s.toLowerCase();}));
       document.querySelector('#candtbl tbody').innerHTML=(cd.byCountry||[])
-        .filter(function(r){ return !HIDE.has(String(r.country||'').trim().toLowerCase()); })  // masque les pays indésirables (garde tous les pays ciblés, même à 0 conversion)
+        .filter(function(r){ return KEEP.has(String(r.country||'').trim().toLowerCase()); })   // n'affiche QUE les pays ciblés (masque tout le spam, présent et futur)
         .sort(function(a,b){ return (b.converted-a.converted) || (b.count-a.count); })         // tri : convertis ↓, puis candidats ↓
         .map(function(r){
         return '<tr><td>'+(r.country||'—')+'</td><td class="num">'+fr(r.count)+'</td><td class="num">'+fr(r.converted)+'</td><td class="num rate">'+r.rate+' %</td></tr>';
