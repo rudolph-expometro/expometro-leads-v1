@@ -152,17 +152,26 @@ async function resolveTemplateId(obj) {
   return BREVO_TEMPLATES[lang] || DEFAULT_TEMPLATE;
 }
 
-// Envoie le template transactionnel Brevo (statique, sans variable). Sans BREVO_API_KEY -> no-op.
+// Envoie le template transactionnel Brevo (statique, sans variable).
+// Renvoie une chaîne de diagnostic (visible dans la réponse du webhook, côté Stripe) — jamais throw.
 async function sendConfirmationEmail(email, templateId) {
   const key = process.env.BREVO_API_KEY;
-  if (!key || !email || !templateId) return;
+  if (!key) return 'skip:no-key';
+  if (!email) return 'skip:no-email';
+  if (!templateId) return 'skip:no-template';
   try {
-    await fetch('https://api.brevo.com/v3/smtp/email', {
+    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: { 'api-key': key, 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({ to: [{ email }], templateId: Number(templateId) })
     });
-  } catch (e) { /* on n'échoue jamais le webhook pour un mail */ }
+    if (r.ok) return 'sent:' + templateId;
+    let body = '';
+    try { body = (await r.text()).slice(0, 180); } catch (e) {}
+    return 'err:' + r.status + ':' + body;
+  } catch (e) {
+    return 'exc:' + (e && e.message ? e.message : 'unknown');
+  }
 }
 
 export default async function handler(req, res) {
@@ -200,10 +209,13 @@ export default async function handler(req, res) {
     // -> on envoie sur celui qui arrive, quel qu'il soit (checkout.session / payment_intent / charge).
     // ⚠️ Si un jour tu abonnes cet endpoint à PLUSIEURS events de succès, ajoute une dédup
     //    (ex. sur data.dedupId) pour ne pas envoyer 2 mails pour la même vente.
+    let mail = 'not-run';
     if (data.email) {
-      await sendConfirmationEmail(data.email, await resolveTemplateId(obj));
+      mail = await sendConfirmationEmail(data.email, await resolveTemplateId(obj));
+    } else {
+      mail = 'skip:no-email(' + type + ')';
     }
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, mail });
   } catch (e) {
     // On répond 200 pour éviter les retries Stripe en boucle (l'event_id dédup de toute façon).
     return res.status(200).json({ ok: true, note: 'processed with error' });
