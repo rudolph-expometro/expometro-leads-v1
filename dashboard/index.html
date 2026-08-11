@@ -200,7 +200,7 @@
           <thead><tr><th>Pays</th><th class="num">Candidats</th><th class="num">Convertis</th><th class="num">Taux</th></tr></thead>
           <tbody></tbody>
         </table></div>
-        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · n'affiche que les pays ciblés par les campagnes LAL (tout le reste = spam masqué, même à 0 conversion).</p></div>
+        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · affiche les pays ciblés (même à 0 conversion) + tout pays ayant au moins 1 conversion · le reste (spam) masqué.</p></div>
     </div>
 
     <!-- LEADS PAR PAYS (scaling) -->
@@ -590,7 +590,7 @@ function load(){
       ];
       var KEEP=new Set(KEEP_COUNTRIES.map(function(s){return s.toLowerCase();}));
       document.querySelector('#candtbl tbody').innerHTML=(cd.byCountry||[])
-        .filter(function(r){ return KEEP.has(String(r.country||'').trim().toLowerCase()); })   // n'affiche QUE les pays ciblés (masque tout le spam, présent et futur)
+        .filter(function(r){ return KEEP.has(String(r.country||'').trim().toLowerCase()) || (r.converted||0) > 0; })  // pays ciblés (toujours) + tout pays ayant ≥1 conversion (signal intéressant) ; le reste (spam 0 conv) masqué
         .sort(function(a,b){ return (b.converted-a.converted) || (b.count-a.count); })         // tri : convertis ↓, puis candidats ↓
         .map(function(r){
         return '<tr><td>'+(r.country||'—')+'</td><td class="num">'+fr(r.count)+'</td><td class="num">'+fr(r.converted)+'</td><td class="num rate">'+r.rate+' %</td></tr>';
