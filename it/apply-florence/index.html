@@ -64,9 +64,14 @@ a{color:inherit}
 .cta-center .reassure{justify-content:center}
 
 /* topbar */
-.ann-bar{background:var(--accent);color:#fff;text-align:center;padding:7px 10px;font-family:var(--sans);white-space:nowrap;overflow:hidden;line-height:1.2}
-.ann-bar .ann-txt{font-weight:700;font-size:clamp(9px,2.6vw,13px);letter-spacing:.005em}
-.ann-bar .ann-cd{font-weight:800;font-size:clamp(9px,2.6vw,13px);margin-left:6px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.ann-bar{background:var(--accent);color:#fff;padding:7px 0;font-family:var(--sans);overflow:hidden;line-height:1.2}
+.ann-track{display:flex;flex-wrap:nowrap;width:max-content;white-space:nowrap;animation:ann-scroll 20s linear infinite;will-change:transform}
+.ann-unit{display:inline-flex;align-items:baseline;gap:6px;text-transform:uppercase;font-size:clamp(10px,2.6vw,13px);letter-spacing:.09em}
+.ann-unit .ann-txt{font-weight:700}
+.ann-unit .ann-cd{font-weight:800;font-variant-numeric:tabular-nums}
+.ann-unit::after{content:"•";margin:0 30px;opacity:.55;font-weight:700}
+@keyframes ann-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ann-track{animation:none}}
 .topbar{position:absolute;top:0;left:0;right:0;z-index:60;line-height:normal;transition:background .25s,border-color .25s;background:linear-gradient(180deg,rgba(7,10,23,.72),rgba(7,10,23,0))}
 .btn-ghost{background:transparent;border:1.5px solid rgba(255,255,255,.6);color:#fff;box-shadow:none}
 .btn-ghost:hover{background:rgba(255,255,255,.14)}
@@ -406,9 +411,10 @@ footer a{color:rgba(255,255,255,.55)}
 .maxmin .wg{font-size:1.25em;line-height:1;flex-shrink:0}
 .final-cta{text-align:center;padding:46px 20px 54px;background:var(--paper)}
 .final-cta .ap-reassure{font-size:.92rem;margin:15px 0 32px}
-.cd-final-lbl{font-family:var(--sans);font-weight:700;font-size:.82rem;letter-spacing:.02em;color:var(--accent);margin:0 0 14px}
+.cd-final-lbl{font-family:var(--sans);font-weight:700;font-size:.82rem;letter-spacing:.02em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
 .qsj-cta{text-align:center;margin:34px 0 0}
 .cd-final-clock{font-family:var(--sans);font-weight:800;font-size:clamp(2.1rem,11vw,3.6rem);color:#fff;letter-spacing:.01em;font-variant-numeric:tabular-nums;line-height:1}
+.cd-final-clock .cd-secs{color:var(--accent)}
 .rcard-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
 .rcard-list li{display:flex;align-items:flex-start;gap:10px;font-family:var(--sans);font-size:15px;line-height:1.45;color:#dfe4ee}
 .rcard-list li i{color:var(--accent);font-size:18px;flex-shrink:0;margin-top:1px}
@@ -724,6 +730,10 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 .btn2:hover{background:var(--accent-d)}
 /* CE QUE TU REÇOIS : cartes reprises de la PDV florence-member */
 .ap-recap{background:var(--night);padding:38px 0 30px}
+.ap-arrow{background:var(--night);text-align:center;color:var(--accent);line-height:0;padding:2px 0 16px}
+.ap-recap-cta{background:var(--night);text-align:center;padding:0 18px 8px}
+.ap-arrow svg{display:inline-block;animation:recapbounce 1.5s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.ap-arrow svg{animation:none}}
 .tag-grid{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:12px}
 .tag-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:16px 17px}
 .tag-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:#22e06b;background:rgba(34,224,107,.1);border:1px solid rgba(34,224,107,.38);padding:5px 11px;border-radius:999px;margin:0 0 10px}
@@ -737,7 +747,9 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 </style></head>
 <body>
 <!-- BARRE PROMO : compte à rebours, tout en haut -->
-<div class="ann-bar"><span class="ann-txt">Posti limitati. Iscrizioni in chiusura.</span> <span class="ann-cd" id="countdown">--</span></div>
+<div class="ann-bar" role="complementary" aria-label="Posti limitati. Le iscrizioni chiudono tra">
+  <div class="ann-track" id="annTrack" aria-hidden="true"><span class="ann-unit"><span class="ann-txt">Posti limitati. Le iscrizioni chiudono tra</span><span class="ann-cd">--</span></span></div>
+</div>
 <!-- HERO : image plein cadre + header en overlay + bouton -->
 <section class="ap-hero">
   <header class="topbar" id="topbar">
@@ -768,7 +780,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
     <div class="ap-trust"><b>6.000+ artisti da 100+ paesi</b> hanno già esposto</div>
     <span class="ap-kicker">Candidature aperte</span>
     <h1>Esponi la tua opera nel Tunnel dell'Arte Immersiva <span class="em">davanti a 50.000 persone</span> nel cuore di Firenze.</h1>
-    <p class="ap-process">Analizziamo le tue opere. Riceverai una risposta entro 24h per sapere se sei selezionato·a.</p>
+    <p class="ap-process">Esaminiamo le tue opere. Ricevi una risposta entro 24 ore per sapere se sei stato selezionato.</p>
 
     
 
@@ -849,6 +861,12 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
   </div>
 </section>
 
+<!-- flèche animée vers le bas (même style que la PDV) -->
+<div class="ap-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></div>
+
+<!-- CTA intermédiaire (sous la flèche, avant la preuve) -->
+<div class="ap-recap-cta"><a class="btn2" href="#postuler">Candidati ora</a></div>
+
 <!-- PREUVE -->
 <section class="ap-proof">
   <div class="ap-wrap">
@@ -900,7 +918,7 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 <section class="final-cta">
   <a class="btn2" href="#postuler">Candidati ora</a>
   <p class="ap-reassure">Gratis · senza impegno · <b>risposta entro 24h</b></p>
-  <p class="cd-final-lbl">Posti limitati. Iscrizioni in chiusura.</p>
+  <p class="cd-final-lbl">Posti limitati. Le iscrizioni chiudono tra</p>
   <div class="cd-final-clock" id="countdownBig">--</div>
 </section>
 <footer>
@@ -955,10 +973,26 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
     });
   });
 })();
+// --- bandeau promo : marquee defilant en continu (boucle sans couture) ---
+(function(){
+  var track=document.getElementById("annTrack"); if(!track) return;
+  var bar=track.parentNode, base=track.querySelector(".ann-unit"); if(!base) return;
+  function need(){return bar.offsetWidth||window.innerWidth;}
+  function build(){
+    track.style.animation="none"; track.innerHTML="";
+    track.appendChild(base.cloneNode(true));
+    var g=0; while(track.scrollWidth<need()&&g<60){ track.appendChild(base.cloneNode(true)); g++; }
+    var seq=track.innerHTML; track.innerHTML=seq+seq;           // 2 sequences identiques
+    var one=track.scrollWidth/2, dur=Math.max(14,Math.round(one/55)); // vitesse ~55 px/s
+    track.style.animation="ann-scroll "+dur+"s linear infinite";
+  }
+  build();
+  var rt; window.addEventListener("resize",function(){ clearTimeout(rt); rt=setTimeout(build,250); });
+})();
 // --- compte à rebours ---
 (function(){
-  var box=document.getElementById("countdown"), big=document.getElementById("countdownBig");
-  if(!box&&!big) return;
+  var big=document.getElementById("countdownBig");
+  if(!document.querySelector(".ann-cd")&&!big) return;
   var anchor=new Date("2026-08-15T23:59:59").getTime();  // 1re echeance
   var END=new Date("2026-10-31T23:59:59").getTime();      // fin reelle des inscriptions
   var WEEK=604800000;                                     // renouvellement auto : +7j en boucle jusqu'a END
@@ -973,8 +1007,9 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
   function tick(){
     var t=deadline()-Date.now(); if(t<0)t=0;
     var d=pad(Math.floor(t/86400000)),h=pad(Math.floor(t/3600000)%24),m=pad(Math.floor(t/60000)%60),s=pad(Math.floor(t/1000)%60);
-    if(box)box.textContent=d+U.d+" "+h+U.h+" "+m+U.m;
-    if(big)big.textContent=d+U.d+" "+h+U.h+" "+m+U.m+" "+s+U.s;
+    var c=d+U.d+" "+h+U.h+" "+m+U.m, cds=document.querySelectorAll(".ann-cd");
+    for(var i=0;i<cds.length;i++) cds[i].textContent=c;
+    if(big)big.innerHTML=c+' <span class="cd-secs">'+s+U.s+'</span>';
   }
   tick(); setInterval(tick,1000);
 })();
