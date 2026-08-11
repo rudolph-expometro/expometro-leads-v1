@@ -63,7 +63,7 @@ async function brevoContacts(lists) {
       const cs = d.contacts || [];
       for (const c of cs) {
         const e = (c.email || '').trim().toLowerCase();
-        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10) };
+        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10), pays: ((c.attributes && c.attributes.PAYS) || '').trim() };
       }
       if (cs.length < 500) break;
       off += 500;
@@ -212,12 +212,14 @@ export default async function handler(req, res) {
     }
 
     // Candidats Brevo (funnel apply-florence / pubs LAL) : total par langue + nouveaux aujourd'hui
-    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang();
+    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {};
     let candidatsTotal = 0;
     for (const e in candidats) {
       const cd = candidats[e];
       candidatsByLang[cd.lang] = (candidatsByLang[cd.lang] || 0) + 1;
       candidatsTotal++;
+      const co = cd.pays || '(inconnu)';
+      candidatsByCountry[co] = (candidatsByCountry[co] || 0) + 1;
       if (cd.created === today) newCandidatsToday[cd.lang] = (newCandidatsToday[cd.lang] || 0) + 1;
     }
 
@@ -234,6 +236,7 @@ export default async function handler(req, res) {
     const communityBuyers = new Set();    // emails de la communaute existante qui ont paye
     const seenLeadEmail = new Set(), seenArtist = new Set();
     const seenCandidatEmail = new Set();  // candidats uniques ayant paye (pour le taux de transformation)
+    const candidatConvByCountry = {};     // pays -> candidats uniques ayant paye
     const todayRevEUR = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
     let todayRevEURtot = 0;
     const revEURtotByBucket = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
@@ -256,7 +259,11 @@ export default async function handler(req, res) {
       else if (lead) bucket = 'lead';
       else if (h && COMMUNITY.has(h)) bucket = 'existant';
       else bucket = 'nouveau';
-      if (candidat && email) seenCandidatEmail.add(email);
+      if (candidat && email && !seenCandidatEmail.has(email)) {
+        seenCandidatEmail.add(email);
+        const cco = candidat.pays || '(inconnu)';
+        candidatConvByCountry[cco] = (candidatConvByCountry[cco] || 0) + 1;
+      }
 
       const amtEUR = amt * (EUR_RATES[cur] || 0);
       buckets[bucket]++;
@@ -383,11 +390,16 @@ export default async function handler(req, res) {
     };
 
     // Candidats (funnel apply-florence / pubs LAL) : total inscrits vs candidats ayant payé
+    const candByCountry = Object.keys(candidatsByCountry).map(function (co) {
+      const n = candidatsByCountry[co], cv = candidatConvByCountry[co] || 0;
+      return { country: co, count: n, converted: cv, rate: n ? +(100 * cv / n).toFixed(1) : 0 };
+    }).sort((a, b) => (b.count - a.count) || (b.converted - a.converted));
     const candidatsSummary = {
       total: candidatsTotal,
       converted: seenCandidatEmail.size,
       rate: candidatsTotal ? +(100 * seenCandidatEmail.size / candidatsTotal).toFixed(1) : 0,
       byLang: candidatsByLang,
+      byCountry: candByCountry,
       newToday: newCandidatsToday
     };
 
