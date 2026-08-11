@@ -678,7 +678,7 @@ footer a{color:rgba(255,255,255,.55)}
 /* STEPS */
 .ap-steps{padding:38px 0 30px;background:var(--paper)}
 .ap-steps h2,.ap-proof h2{font-family:var(--sans);font-weight:800;font-size:clamp(1.4rem,4.5vw,1.9rem);text-align:center;color:#fff;margin:0 0 24px;letter-spacing:-.01em}
-.ap-steps h2.ap-eyebrow,.ap-proof h2.ap-eyebrow,.founder-light h2.ap-eyebrow,.rvx-sec h2.ap-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin:0 0 18px}
+.ap-steps h2.ap-eyebrow,.ap-proof h2.ap-eyebrow,.ap-recap h2.ap-eyebrow,.founder-light h2.ap-eyebrow,.rvx-sec h2.ap-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin:0 0 18px}
 .rvx-feat{border-color:var(--accent)!important;background:linear-gradient(180deg,rgba(255,82,103,.11),rgba(255,82,103,.02))!important}
 .rvx-badge{align-self:flex-start;background:var(--accent);color:#fff;font-family:var(--sans);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:20px;margin:0 0 9px}
 .rvx-feat .rvx-c{-webkit-line-clamp:99}
@@ -722,6 +722,17 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
 .ap-final{text-align:center;margin:30px auto 0;max-width:460px}
 .btn2{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:var(--sans);font-weight:800;font-size:1.05rem;padding:15px 30px;border-radius:12px;box-shadow:0 10px 30px rgba(255,82,103,.4)}
 .btn2:hover{background:var(--accent-d)}
+/* CE QUE TU REÇOIS : cartes reprises de la PDV florence-member */
+.ap-recap{background:var(--night);padding:38px 0 30px}
+.tag-grid{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:12px}
+.tag-item{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:16px 17px}
+.tag-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:#22e06b;background:rgba(34,224,107,.1);border:1px solid rgba(34,224,107,.38);padding:5px 11px;border-radius:999px;margin:0 0 10px}
+.tag-item p{font-family:var(--sans);font-size:.94rem;line-height:1.5;color:#c8d0de;margin:0}
+.tag-wide{grid-column:1 / -1}
+.tag-plus{grid-column:1 / -1;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:800;font-size:2rem;line-height:1;color:var(--accent);margin:-3px 0}
+.tag-img{width:100%;display:block;border-radius:10px;margin:0}
+.tag-fig{position:relative;margin:12px 0 0;line-height:0;border-radius:10px;overflow:hidden}
+.tag-arthere{position:absolute;top:41%;left:40%;transform:translate(-50%,-50%);font-family:var(--sans);font-weight:800;font-size:clamp(1rem,3.2vw,1.5rem);text-transform:uppercase;color:#fff;text-align:center;line-height:1.02;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.7);pointer-events:none}
 @media(max-width:560px){.ap-thumbs{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
@@ -806,6 +817,34 @@ section.rvx-sec{background:var(--night);padding:26px 0 22px}
       <div class="ap-step"><div class="n">1</div><div><h4>Apply</h4><p>Fill in the form with the link to your work (website, Instagram, Facebook…). 30 seconds, that's all.</p></div></div>
       <div class="ap-step"><div class="n">2</div><div><h4>We review your work</h4><p>Our team reviews your artwork within 24h for the selection.</p></div></div>
       <div class="ap-step"><div class="n">3</div><div><h4>Selected?</h4><p>You get all the details to exhibit in the Immersive Art Tunnel.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CE QUE TU REÇOIS (cartes reprises de la PDV florence-member) -->
+<section class="ap-recap">
+  <div class="ap-wrap">
+    <h2 class="ap-eyebrow">What you get</h2>
+    <div class="tag-grid">
+      <div class="tag-item tag-wide"><span class="tag-badge">🌍 Public exhibition</span><p>Your artwork exhibited in the heart of Florence, in a tunnel used by 50,000 people a day, between the train station and the Santa Maria Novella basilica.</p><figure class="tag-fig"><img class="tag-img" loading="lazy" src="/florence/img/plan-florence4-1.jpg" alt="ExpoMetro Florence"/><span class="tag-arthere">Your art<br>here</span></figure></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item tag-wide"><span class="tag-badge">✨ Immersive</span><p>The artworks are displayed on the walls and ceiling of a 25-metre tunnel. Passers-by are literally immersed among the works of artists from all over the world.</p><figure class="tag-fig"><img class="tag-img" loading="lazy" src="/florence/img/tunnel-vision.jpg" alt="The Art Tunnel"/></figure></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">📱 Interactive</span><p>A QR code and an interactive link on your artwork point to your website and social media.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">📸 Photos and videos</span><p>You receive professional photos and videos of your artwork on display.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">🖥️ Technology</span><p>The artworks are shown on high-definition LED screens.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">🎵 Music</span><p>The artworks are accompanied by music, for an extraordinary visual and audio experience.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">📜 Certificate</span><p>You receive your personalised certificate of participation.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">📣 Promotion</span><p>Your artwork is promoted on our social media to our community.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item"><span class="tag-badge">🔴 Live</span><p>The event is streamed live on Instagram Live: you can see your artwork on screen and follow the event live from home.</p></div>
+      <div class="tag-plus" aria-hidden="true">+</div>
+      <div class="tag-item tag-wide"><span class="tag-badge">🎉 Event</span><p>On day 1, a big opening day with several meetups all day long (morning, afternoon and evening). On the programme: a talk by the Founder, photos and videos in front of the artworks, artist interviews and drinks to mingle at a venue next to the exhibition.</p></div>
     </div>
   </div>
 </section>
