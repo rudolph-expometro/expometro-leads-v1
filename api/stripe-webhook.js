@@ -11,6 +11,7 @@
 //   META_PIXEL_ID         (obligatoire) — 1647625338848662
 //   META_GRAPH_VERSION    (optionnel)   — défaut v21.0
 //   META_TEST_EVENT_CODE  (optionnel)   — pour voir l'event en direct dans Events Manager > Test events
+//   BREVO_API_KEY         (obligatoire pour le mail) — clé API Brevo (transactionnel)
 //
 // Config Stripe : Developers → Webhooks → Add endpoint
 //   URL      = https://artinthe.city/api/stripe-webhook
@@ -91,6 +92,88 @@ function extract(type, obj) {
   return undefined; // type non géré
 }
 
+// ---------- Mail de confirmation de paiement (Brevo transactionnel) ----------
+// Un template Brevo ACTIF par langue. zh-hk -> template EN (choix produit : artistes HK anglophones).
+const BREVO_TEMPLATES = { fr: 960, en: 961, de: 962, es: 963, it: 965, 'zh-cn': 964, 'zh-hk': 961 };
+const DEFAULT_TEMPLATE = 961; // EN si langue inconnue
+
+// Repli approximatif pays -> langue (utilisé SEULEMENT si la session ne porte pas la locale).
+// Ne distingue pas fiablement zh-cn/zh-hk ni les pays multilingues -> préférer metadata.lang.
+const COUNTRY_LANG = {
+  FR: 'fr', BE: 'fr', LU: 'fr', MC: 'fr',
+  DE: 'de', AT: 'de', CH: 'de',
+  ES: 'es', MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es', VE: 'es',
+  IT: 'it',
+  CN: 'zh-cn', SG: 'zh-cn', HK: 'zh-hk', TW: 'zh-hk', MO: 'zh-hk',
+  GB: 'en', US: 'en', IE: 'en', AU: 'en', NZ: 'en', CA: 'en'
+};
+
+// Fetch générique GET sur l'API Stripe (auth = STRIPE_API_KEY).
+async function stripeGet(path) {
+  const r = await fetch('https://api.stripe.com/v1/' + path, {
+    headers: { Authorization: 'Bearer ' + process.env.STRIPE_API_KEY }
+  });
+  if (!r.ok) throw new Error('stripe ' + r.status);
+  return r.json();
+}
+
+// Normalise une locale brute (fr, en-US, zh-hk, zh_CN…) vers une de nos clés de template.
+function localeToLang(raw) {
+  raw = String(raw || '').trim().toLowerCase();
+  if (!raw || raw === 'auto') return '';
+  if (raw.startsWith('zh')) return /hk|tw|hant|mo/.test(raw) ? 'zh-hk' : 'zh-cn';
+  const base = raw.split(/[-_]/)[0];
+  return ['fr', 'en', 'de', 'es', 'it'].includes(base) ? base : '';
+}
+
+// Choisit le templateId. Ordre : metadata/locale de l'objet de l'event
+// -> metadata.lang du PaymentIntent (cas charge.succeeded : la charge ne porte pas la metadata du PI)
+// -> repli sur le pays de facturation -> EN.
+async function resolveTemplateId(obj) {
+  let lang = localeToLang(
+    (obj.metadata && (obj.metadata.lang || obj.metadata.locale || obj.metadata.language)) ||
+    (obj.locale)
+  );
+  if (!lang && obj.object === 'charge' && obj.payment_intent) {
+    try {
+      const pi = await stripeGet('payment_intents/' + encodeURIComponent(obj.payment_intent));
+      lang = localeToLang(pi.metadata && (pi.metadata.lang || pi.metadata.locale));
+    } catch (e) { /* on retombe sur le pays */ }
+  }
+  if (!lang) {
+    const addr =
+      (obj.customer_details && obj.customer_details.address) ||
+      (obj.billing_details && obj.billing_details.address) ||
+      (obj.charges && obj.charges.data && obj.charges.data[0] && obj.charges.data[0].billing_details && obj.charges.data[0].billing_details.address) ||
+      null;
+    const country = ((addr && addr.country) || '').toUpperCase();
+    lang = COUNTRY_LANG[country] || 'en';
+  }
+  return BREVO_TEMPLATES[lang] || DEFAULT_TEMPLATE;
+}
+
+// Envoie le template transactionnel Brevo (statique, sans variable).
+// Renvoie une chaîne de diagnostic (visible dans la réponse du webhook, côté Stripe) — jamais throw.
+async function sendConfirmationEmail(email, templateId) {
+  const key = process.env.BREVO_API_KEY;
+  if (!key) return 'skip:no-key';
+  if (!email) return 'skip:no-email';
+  if (!templateId) return 'skip:no-template';
+  try {
+    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': key, 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ to: [{ email }], templateId: Number(templateId) })
+    });
+    if (r.ok) return 'sent:' + templateId;
+    let body = '';
+    try { body = (await r.text()).slice(0, 180); } catch (e) {}
+    return 'err:' + r.status + ':' + body;
+  } catch (e) {
+    return 'exc:' + (e && e.message ? e.message : 'unknown');
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!process.env.STRIPE_API_KEY) return res.status(500).json({ error: 'STRIPE_API_KEY manquant' });
@@ -122,7 +205,17 @@ export default async function handler(req, res) {
       // event_id = id du PaymentIntent → dédup stable côté Meta.
       await sendPurchaseCapi(data.email, data.value, data.currency, data.dedupId, event.created);
     }
-    return res.status(200).json({ ok: true });
+    // Mail de confirmation. Cet endpoint n'est abonné qu'à UN SEUL event de succès
+    // -> on envoie sur celui qui arrive, quel qu'il soit (checkout.session / payment_intent / charge).
+    // ⚠️ Si un jour tu abonnes cet endpoint à PLUSIEURS events de succès, ajoute une dédup
+    //    (ex. sur data.dedupId) pour ne pas envoyer 2 mails pour la même vente.
+    let mail = 'not-run';
+    if (data.email) {
+      mail = await sendConfirmationEmail(data.email, await resolveTemplateId(obj));
+    } else {
+      mail = 'skip:no-email(' + type + ')';
+    }
+    return res.status(200).json({ ok: true, mail });
   } catch (e) {
     // On répond 200 pour éviter les retries Stripe en boucle (l'event_id dédup de toute façon).
     return res.status(200).json({ ok: true, note: 'processed with error' });
