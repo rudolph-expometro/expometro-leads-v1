@@ -609,7 +609,9 @@ function load(){
       ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div>'+(k[3]||'')+'</div>';}).join('');
 
       // Graphe CA encaissé vs dépense pub, par jour (section Cumul)
-      var ddC=d.daily||[], dslC=ddC.map(function(x){return x.date;});
+      // Démarre au 18/07 : avant, c'est le bruit du lancement (pas représentatif).
+      var CAPUB_START='2026-07-18';
+      var ddC=(d.daily||[]).filter(function(x){return x.date>=CAPUB_START;}), dslC=ddC.map(function(x){return x.date;});
       document.getElementById('chartCaPub').innerHTML=chartCaPub(dslC, ddC.map(function(x){return x.caEUR||0;}), ddC.map(function(x){return x.pubEUR||0;}));
 
       // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
