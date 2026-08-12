@@ -41,6 +41,11 @@
   #adsRecap{border-top:3px solid var(--gold)} #adsRecap>h3{color:var(--gold)}
   .roas-lead{border-top:3px solid var(--blue)} .roas-lead>h3{color:var(--blue)}
   .roas-cand{border-top:3px solid var(--accent)} .roas-cand>h3{color:var(--accent)}
+  /* Code couleur des blocs : bleu = Leads, rouge = Candidats */
+  .lead-top{border-top:3px solid var(--blue)} .lead-top>h3{color:var(--blue)}
+  .cand-top{border-top:3px solid var(--accent)} .cand-top>h3{color:var(--accent)}
+  #countries .ctry{border-top:3px solid var(--blue)}
+  #candidatCountries .ctry{border-top:3px solid var(--accent)}
   .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
   .adstbl tr.sub2 td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px}
   .adstbl tr.sub2 td:first-child{padding-left:14px}
@@ -152,8 +157,9 @@
   .chart{width:100%;height:auto;display:block}
   .chart .grid{stroke:rgba(255,255,255,.07);stroke-width:1}
   .chart .bar{fill:var(--blue);opacity:.72}
-  .chart .lineC{fill:none;stroke:var(--accent);stroke-width:2.2}
-  .chart .dotC{fill:var(--accent)}
+  .chart .bar2{fill:var(--accent);opacity:.72}
+  .chart .lineC{fill:none;stroke:var(--green);stroke-width:2.2}
+  .chart .dotC{fill:var(--green)}
   .chart .lineT{fill:none;stroke:var(--gold);stroke-width:2.2}
   .chart .dotT{fill:var(--gold)}
   .chart .area{fill:rgba(34,224,107,.14)}
@@ -201,7 +207,7 @@
       <div class="grid2" style="align-items:start">
         <div>
           <div class="box roas-lead" id="roasLeads"></div>
-          <div class="box" style="margin-top:14px"><h3>Leads → Inscrits</h3>
+          <div class="box lead-top" style="margin-top:14px"><h3>Leads → Inscrits</h3>
             <div class="lead-hero" id="leadHero"></div>
             <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
               <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
@@ -211,7 +217,7 @@
         </div>
         <div>
           <div class="box roas-cand" id="roasCand"></div>
-          <div class="box" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
+          <div class="box cand-top" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
             <div class="lead-hero" id="candHero"></div>
             <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
               <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
@@ -226,22 +232,20 @@
     <div class="section" id="secCountries" style="display:none">
       <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
       <div id="countries"></div>
-      <div class="box" id="cUnmatched" style="display:none"></div>
-      <p class="hint">Dépense / budget / CPL dans la devise du compte pub (comme dans Meta) · CA en €. ROAS = CA attribué (leads qui ont payé, par langue) ÷ dépense de l'ad set convertie en €. Reco basée sur ROAS, CPL, taux lead→inscrit &amp; fréquence.</p>
     </div>
 
     <!-- CANDIDATS PAR LANGUE (scaling) -->
     <div class="section" id="secCandidatScale" style="display:none">
       <h2>Candidats par langue — ROAS &amp; budget pour scaler 🚀</h2>
       <div id="candidatCountries"></div>
-      <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat = dépense ÷ candidats reçus · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (naturellement bas : le tunnel candidat→inscrit prend du temps). Reco calée sur le coût/candidat &amp; le taux candidat→inscrit — pas seulement le ROAS.</p>
+      <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat affiché pour info · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (structurellement bas : le tunnel candidat→inscrit prend du temps). Reco basée sur le taux candidat→inscrit &amp; le ROAS — le coût/candidat n'entre pas dans la décision.</p>
     </div>
 
     <!-- Graphique leads / jour -->
     <div class="section">
-      <h2>Leads &amp; conversions par jour</h2>
+      <h2>Leads, candidats &amp; conversions par jour</h2>
       <div class="box">
-        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Conversions ads</span><span><i style="background:var(--gold)"></i>Ventes totales</span></div>
+        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Nouveaux candidats</span><span><i style="background:var(--green)"></i>Conversions ads</span><span><i style="background:var(--gold)"></i>Ventes totales</span></div>
         <div id="chartLeads"></div>
       </div>
     </div>
@@ -319,15 +323,21 @@ function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!==
 function bkt(cls,n,l){ return '<div class="bkt '+cls+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
 
 /* ---- Graphique barres (leads) + ligne (conversions), double échelle ---- */
-function chartBarsLine(days,bars,line,line2){
-  line2=line2||[];
+function chartBarsLine(days,bars,bars2,line,line2){
+  bars2=bars2||[]; line2=line2||[];
   var W=740,H=210,pl=30,pr=30,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
-  var bmax=Math.max.apply(null,bars.concat(1));
+  var bmax=Math.max.apply(null,bars.concat(bars2).concat(1));   // échelle des barres = max(leads, candidats)
   var lmax=Math.max.apply(null,line.concat(line2).concat(1)),slot=iw/n;   // échelle partagée des 2 lignes
   var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
   for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
-  for(var i=0;i<n;i++){var bh=ih*bars[i]/bmax,x=pl+slot*i+slot*0.22,w=slot*0.56,y=pt+ih-bh;
-    s+='<rect class="bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2"/>';}
+  var bw=slot*0.26,gap=slot*0.04;                               // 2 barres côte à côte : leads (bleu) + candidats (rouge)
+  for(var i=0;i<n;i++){
+    var x=pl+slot*i+slot*0.20;
+    var bh=ih*bars[i]/bmax,y=pt+ih-bh;
+    s+='<rect class="bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2"/>';
+    var bh2=ih*(bars2[i]||0)/bmax,x2=x+bw+gap,y2=pt+ih-bh2;
+    s+='<rect class="bar2" x="'+x2.toFixed(1)+'" y="'+y2.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh2.toFixed(1)+'" rx="2"/>';
+  }
   function poly(a){return a.map(function(v,i){return [pl+slot*i+slot*0.5, pt+ih-ih*v/lmax];});}
   function path(cls,a){return '<path class="'+cls+'" d="'+poly(a).map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ')+'"/>';}
   if(line2.length){ s+=path('lineT',line2); poly(line2).forEach(function(p,i){ if(line2[i]>0) s+='<circle class="dotT" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4"/>'; }); }
@@ -401,21 +411,23 @@ function trackBudgets(bc,today){
   try{ localStorage.setItem('budgets_v1',JSON.stringify(store)); }catch(e){}
 }
 function recoCountry(co){
-  var sp=co.spendTotal||0, leads=co.leads||0, roas=co.roas, cpl=co.cpl, cr=co.convRate||0, bud=co.dailyBudget;
+  // 100% basé sur la RENTABILITÉ : ROAS = CA des leads qui ont payé ÷ dépense. Le CPL n'entre PAS en compte.
+  var sp=co.spendTotal||0, leads=co.leads||0, roas=co.roas, bud=co.dailyBudget;
   if(leads<15 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Données encore trop faibles pour trancher — laisse mûrir avant de bouger le budget.'};
-  var scale=(roas!=null&&roas>=2)||cr>=2.5;
-  var bad=(cpl!=null&&cpl>1.5)||(roas!=null&&roas<1&&sp>=40);
-  var ok=(roas!=null&&roas>=1)||cr>=1;
+  if(roas==null) return {cls:'wait',label:'Laisser tourner',det:'Aucune vente encore attribuée à ces leads — attends une conversion (lead→inscrit payant) avant d\'ajuster le budget.'};
+  var scale=roas>=1.5;                    // largement rentable -> on pousse
+  var bad=roas<0.8 && sp>=40;             // perd de l'argent malgré une dépense significative
+  var ok=roas>=1;                         // rentable
   // COOLDOWN : budget monté récemment -> on laisse Meta se re-stabiliser avant le prochain palier
   var ds=co._daysSinceBudget;
   if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
     var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
-    return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse Meta se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste bonne ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
+    return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse Meta se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). ROAS '+roas.toFixed(2)+'× ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
   }
-  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Monte le budget de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (palier de +40%).'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
-  if(bad) return {cls:'fix',label:'Optimiser',det:'CPL élevé / ROAS faible — refresh la créa ou resserre le ciblage avant de scaler.'};
-  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
-  return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le CPL et la fréquence.'};
+  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+40%).'):'ROAS '+roas.toFixed(2)+'× — monte par paliers de +40% tous les 3–4 j.'}; }
+  if(bad) return {cls:'fix',label:'Optimiser',det:'ROAS <b>'+roas.toFixed(2)+'×</b> sous le seuil de rentabilité — refresh la créa / resserre le ciblage, ou baisse le budget. Pas de scale tant que ce n\'est pas > 1×.'};
+  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — petit palier <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'ROAS rentable — petit palier de +20%.'}; }
+  return {cls:'hold',label:'Maintenir',det:'ROAS <b>'+roas.toFixed(2)+'×</b> autour de l\'équilibre — garde le budget et surveille la rentabilité.'};
 }
 function countryCard(co){
   var rc=recoCountry(co);
@@ -456,40 +468,26 @@ function renderCountries(d){
     return '<div class="creg"><span>'+rg[1]+'</span><span class="crsum">'+curC(sSum)+' dépensés · '+fr(lSum)+' leads</span></div>'
       + list.map(countryCard).join('');
   }).join('');
-  // ---- unmatched + diagnostic (pour caler le nommage des ad sets) ----
-  var un=a.unmatched||[], list=a.adsetList||[], dbg=a.adsetsDbg||{}, ue=document.getElementById('cUnmatched');
-  var html='';
-  if(un.length){
-    html+='<h3>Autres ad sets Leads (non rattachés à un pays)</h3>'
-      +un.map(function(u){return '<div class="roasrow"><div class="rl">'+u.name+'</div><div class="sp">'+eurC(u.spend)+'</div></div>';}).join('')
-      +'<p class="hint">Si l\'un correspond à un des 5 pays, donne-moi son nom exact pour le rattacher.</p>';
-  }
-  var dbgLine='devise '+(a.currency||'?')+(dbg&&dbg.currency?' ['+dbg.currency+']':'')+' · '+(a.adsetsCount||0)+' ad set(s) lus'+(dbg&&dbg.totalRows!==undefined?(' · rows total:'+dbg.totalRows+' / today:'+dbg.todayRows+' / budgets:'+dbg.budgetRows):'');
-  html+='<details class="camps"'+(bc.some(function(x){return x.spendTotal>0;})?'':' open')+'><summary>Diagnostic ad sets — '+dbgLine+'</summary>'
-    +(list.length?'<table class="camptbl"><tbody><tr><td style="color:var(--muted)">Ad set</td><td style="color:var(--muted)">Objectif</td><td class="num" style="color:var(--muted)">Dépensé</td></tr>'
-      +list.map(function(x){return '<tr><td>'+(x.name||'(sans nom)')+'</td><td>'+(x.objective||'—')+'</td><td class="num">'+eurC(x.spend)+'</td></tr>';}).join('')+'</tbody></table>'
-      :'<p class="hint">Aucun ad set renvoyé par Meta (rows='+(dbg.totalRows)+'). Si « ERR », la lecture par ad set est refusée (permission ads_read / version API).</p>')
-    +'</details>';
-  ue.style.display='block'; ue.innerHTML=html;
 }
 
 /* ---- Candidats par langue : ROAS + reco de budget (haut de tunnel) ----
    Reco calée sur le coût/candidat & le taux candidat→inscrit — pas le ROAS seul
    (le ROAS candidat est structurellement bas : le tunnel candidat→inscrit met du temps). */
 function recoCandidat(co){
-  var sp=co.spendTotal||0, cand=co.candidats||0, roas=co.roas, cpl=co.cpl, cr=co.convRate||0, bud=co.dailyBudget;
+  // Basé sur la RENTABILITÉ : taux candidat→inscrit payant (cr) + ROAS. Le coût/candidat n'entre PAS en compte.
+  var sp=co.spendTotal||0, cand=co.candidats||0, roas=co.roas, cr=co.convRate||0, bud=co.dailyBudget;
   if(cand<20 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Pas encore assez de candidats/dépense pour trancher — laisse le CBO apprendre avant de bouger le budget.'};
-  var scale=(roas!=null&&roas>=1)||(cpl!=null&&cpl<=3&&cr>=0.6);          // profitable, OU candidats pas chers qui convertissent
-  var bad=(cpl!=null&&cpl>6)||(cr<0.15&&sp>=50)||(roas!=null&&roas<0.2&&sp>=60);  // trop chers / n'inscrivent pas
-  var ok=(cpl!=null&&cpl<=4)||cr>=0.3;
+  var scale=(roas!=null&&roas>=1)||cr>=3;                       // rentable, OU fort taux candidat→inscrit
+  var bad=(cr<0.3&&sp>=50)||(roas!=null&&roas<0.2&&sp>=60);     // ne transforme pas en inscrits malgré la dépense
+  var ok=(roas!=null&&roas>=0.5)||cr>=1;
   // COOLDOWN : budget monté récemment -> on laisse le CBO se re-stabiliser
   var ds=co._daysSinceBudget;
   if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
     var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
     return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse le CBO se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste OK ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
   }
-  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Coût candidat maîtrisé — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+40%) pour plus de volume.'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
-  if(bad) return {cls:'fix',label:'Optimiser',det:'Candidats chers ou peu d\'inscrits derrière — refresh la créa / resserre le LAL avant de scaler.'};
+  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Bon taux candidat→inscrit — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+40%) pour plus de volume.'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
+  if(bad) return {cls:'fix',label:'Optimiser',det:'Peu d\'inscrits payants derrière ces candidats malgré la dépense — refresh la créa / resserre le LAL avant de scaler.'};
   if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
   return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le coût/candidat et le taux candidat→inscrit.'};
 }
@@ -650,7 +648,7 @@ function load(){
 
       // Graphiques
       var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
-      document.getElementById('chartLeads').innerHTML=chartBarsLine(dsl, dd.map(function(x){return x.leads;}), dd.map(function(x){return x.conv;}), dd.map(function(x){return x.sales;}));
+      document.getElementById('chartLeads').innerHTML=chartBarsLine(dsl, dd.map(function(x){return x.leads;}), dd.map(function(x){return x.candidats||0;}), dd.map(function(x){return x.conv;}), dd.map(function(x){return x.sales;}));
       var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
       document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
 

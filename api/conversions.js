@@ -235,7 +235,7 @@ export default async function handler(req, res) {
     }
 
     // Candidats Brevo (funnel apply-florence / pubs LAL) : total par langue + nouveaux aujourd'hui
-    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {}, candidatsByLangCountry = {};
+    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {}, candidatsByLangCountry = {}, candidatsByDay = {};
     let candidatsTotal = 0;
     for (const e in candidats) {
       const cd = candidats[e];
@@ -246,6 +246,7 @@ export default async function handler(req, res) {
       const lc = candidatsByLangCountry[cd.lang] || (candidatsByLangCountry[cd.lang] = {});
       lc[co] = (lc[co] || 0) + 1;
       if (cd.created === today) newCandidatsToday[cd.lang] = (newCandidatsToday[cd.lang] || 0) + 1;
+      if (cd.created >= J1) candidatsByDay[cd.created] = (candidatsByDay[cd.created] || 0) + 1;
     }
 
     const paid = charges.filter(c => c.paid && !c.refunded && c.status === 'succeeded');
@@ -335,7 +336,7 @@ export default async function handler(req, res) {
     for (const e in firstDate) { const d = firstDate[e]; artByDay[d] = (artByDay[d] || 0) + 1; }
 
     // Serie quotidienne depuis J1
-    const daily = days.map(d => ({ date: d, leads: leadsByDay[d] || 0, conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0 }));
+    const daily = days.map(d => ({ date: d, leads: leadsByDay[d] || 0, candidats: candidatsByDay[d] || 0, conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0 }));
 
     // CA converti en EUR (indicatif ; devises inconnues/crypto ignorees)
     let revenueEUR = 0; const revIgnored = [];
@@ -377,8 +378,11 @@ export default async function handler(req, res) {
         { key: 'US', name: 'Leads USA',     flag: '🇺🇸', lang: 'EN', region: 'North America', match: /\busa\b|united states|états-?unis|(?:^|[^a-z])us(?:[^a-z]|$)/i }
       ];
       // Pool = ad sets d'objectif Leads si l'objectif est connu ; sinon on prend tous les ad sets.
+      // MAIS on exclut toujours les ad sets candidature LAL (campagne séparée) : sinon "Candidatures LAL IT"
+      // serait rattaché au pays "IT" et gonflerait à tort le budget / la dépense / le ROAS des Leads.
+      const notCand = a => !/candidat|LAL/i.test(a.campaign || '') && !/candidat|LAL/i.test(a.name || '');
       const anyObj = allAdsets.some(a => a.objective);
-      const pool = anyObj ? allAdsets.filter(a => /LEAD/i.test(a.objective || '')) : allAdsets;
+      const pool = (anyObj ? allAdsets.filter(a => /LEAD/i.test(a.objective || '')) : allAdsets).filter(notCand);
       const roasRate = EUR_RATES[spend.currency] || 1;   // depense (devise compte) -> EUR pour le ROAS
       const used = new Set();
       ads.byCountry = COUNTRIES.map(co => {
