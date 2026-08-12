@@ -604,6 +604,7 @@ function load(){
       }).join('')||'<tr><td colspan="4" style="color:var(--muted)">—</td></tr>';
 
       // Aujourd'hui — détail par langue (t déjà défini plus haut)
+      var langs=['FR','EN','ES','IT','DE'];
       document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){var nl=t.newLeadsByLang[L]||0,ins=t.inscritsByLang[L]||0;var rt=nl>0?Math.round(100*ins/nl)+' %':'—';return '<tr><td>'+L+'</td><td class="num">'+nl+'</td><td class="num">'+ins+'</td><td class="num rate">'+rt+'</td></tr>';}).join('');
 
       // Derniers paiements
