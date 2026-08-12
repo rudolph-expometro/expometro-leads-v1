@@ -155,6 +155,19 @@ async function metaSpend() {
   for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); }
   for (const r of (asToday || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendToday += +(r.spend || 0); }
   for (const b of (asBudgets || [])) { const s = byId[b.id]; if (s) { s.dailyBudget = b.daily_budget ? +b.daily_budget / 100 : null; s.status = b.effective_status || ''; } }
+  // Filet de secours : Meta ne remonte pas toujours le budget par ad set (CBO, permission, champ vide).
+  // On retombe alors sur le budget réel saisi ici (devise du compte pub, $). Ne remplit QUE les budgets
+  // manquants -> la valeur LIVE de Meta reste prioritaire quand elle existe. À mettre à jour SEULEMENT
+  // si tu changes un budget dans Meta pendant que Meta ne le remonte pas (sinon ça se met à jour tout seul).
+  const BUDGET_FALLBACK = [
+    { re: /leads\s*italy/i,  budget: 45 },   // Leads Italy
+    { re: /leads\s*spain/i,  budget: 35 },   // Leads Spain
+    { re: /leads\s*german/i, budget: 55 },   // Leads Germany
+    { re: /leads\s*france/i, budget: 50 }    // Leads France
+  ];
+  for (const s of Object.values(byId)) {
+    if (s.dailyBudget == null) { const fb = BUDGET_FALLBACK.find(f => f.re.test(s.name || '')); if (fb) s.dailyBudget = fb.budget; }
+  }
   // Retrouve l'objectif de chaque ad set via sa campagne (la lecture campagne, elle, renvoie bien l'objectif)
   const campObj = {};
   for (const c of (totalRows || [])) { if (c.campaign_name) campObj[c.campaign_name] = c.objective || ''; }
