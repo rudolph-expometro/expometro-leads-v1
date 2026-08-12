@@ -197,8 +197,26 @@ async function metaSpend() {
   } catch (e) { curDbg = 'throw'; }
   adsetDbg.currency = curDbg + ':' + acctCur;   // ex "ok:USD" ou "http-400:default-EUR"
 
+  // --- Depense PAR JOUR (devise compte) pour le graphe CA vs Pub : insights niveau compte, time_increment=1 ---
+  async function dailySpend() {
+    const qs = 'level=account&fields=spend&time_increment=1&limit=500&time_range='
+      + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() }));
+    let url = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}&${qs}`;
+    const by = {};
+    for (let i = 0; i < 12; i++) {
+      let r; try { r = await fetch(url); } catch (e) { return by; }
+      if (!r.ok) return by;
+      const d = await r.json();
+      for (const row of (d.data || [])) { if (row.date_start) by[row.date_start] = (by[row.date_start] || 0) + (+row.spend || 0); }
+      if (d.paging && d.paging.next) url = d.paging.next; else break;
+    }
+    return by;
+  }
+  const spendByDay = await dailySpend();
+
   return {
     currency: acctCur,
+    spendByDay,              // depense (devise compte) par jour, pour le graphe CA vs Pub
     today: t.total, todayAcq: t.acq,
     total: g.total, totalAcq: g.acq,
     breakdown: g.breakdown,  // detail cumul par campagne (transparence)
@@ -256,6 +274,7 @@ export default async function handler(req, res) {
     const inscritsByLang = zeroLang(), inscritsTodayByLang = zeroLang();
     const convByDay = {};                 // conversions (leads qui paient) par jour
     const salesByDay = {};                // TOTAL des ventes par jour (tous buckets)
+    const revEURByDay = {};               // CA (EUR) par jour, pour le graphe CA vs Pub
     const firstDate = {};                 // email -> date du 1er paiement (pour cumul artistes)
     const artistAgg = {};                 // email -> { expos, amount, currency, bucket }
     const artists = { first: 0, recurring: 0 };
@@ -302,6 +321,7 @@ export default async function handler(req, res) {
       buckets[bucket]++;
       revEURtotByBucket[bucket] += amtEUR;
       salesByDay[date] = (salesByDay[date] || 0) + 1;
+      revEURByDay[date] = (revEURByDay[date] || 0) + amtEUR;
       if (date === today) { bucketsToday[bucket]++; todayRevEUR[bucket] += amtEUR; todayRevEURtot += amtEUR; }
 
       if (lead) {
@@ -336,7 +356,14 @@ export default async function handler(req, res) {
     for (const e in firstDate) { const d = firstDate[e]; artByDay[d] = (artByDay[d] || 0) + 1; }
 
     // Serie quotidienne depuis J1
-    const daily = days.map(d => ({ date: d, leads: leadsByDay[d] || 0, candidats: candidatsByDay[d] || 0, conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0 }));
+    const _eurRateSpend = (spend && EUR_RATES[spend.currency]) || 1;   // depense (devise compte) -> EUR pour comparer au CA
+    const _spendByDay = (spend && spend.spendByDay) || {};
+    const daily = days.map(d => ({
+      date: d, leads: leadsByDay[d] || 0, candidats: candidatsByDay[d] || 0,
+      conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0,
+      caEUR: Math.round(revEURByDay[d] || 0),                                  // CA du jour en €
+      pubEUR: Math.round((_spendByDay[d] || 0) * _eurRateSpend)               // depense pub du jour en €
+    }));
 
     // CA converti en EUR (indicatif ; devises inconnues/crypto ignorees)
     let revenueEUR = 0; const revIgnored = [];

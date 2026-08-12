@@ -22,6 +22,11 @@
   .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
   .updated{color:var(--muted);font-size:11.5px;display:block;margin-top:4px;text-align:right}
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:14px}
+  /* Cumul : graphe CA/Pub à gauche, 4 KPIs en 2x2 à droite */
+  .cumul-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin-bottom:14px;align-items:stretch}
+  .cumul-grid>.box{display:flex;flex-direction:column}
+  .cumul-grid .kpis{grid-template-columns:1fr 1fr;gap:11px;margin-bottom:0}
+  @media(max-width:760px){ .cumul-grid{grid-template-columns:1fr} }
   .kpi .ca-det{margin-top:8px;font-size:11px}
   .kpi .ca-det summary{color:var(--muted);cursor:pointer;list-style:none;font-size:10.5px}
   .kpi .ca-det summary::-webkit-details-marker{display:none}
@@ -164,6 +169,8 @@
   .chart .dotT{fill:var(--gold)}
   .chart .area{fill:rgba(34,224,107,.14)}
   .chart .lineA{fill:none;stroke:var(--green);stroke-width:2.4}
+  .chart .lineP{fill:none;stroke:var(--accent);stroke-width:2.2}
+  .chart .dotP{fill:var(--accent)}
   .chart .dotA{fill:var(--green)}
   .chart text{fill:var(--muted);font-size:9.5px;font-family:inherit}
   .pierow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -199,7 +206,13 @@
 
     <!-- CUMUL -->
     <h2 class="sech">Cumul depuis le 15 juillet</h2>
-    <div class="kpis" id="kpis"></div>
+    <div class="cumul-grid">
+      <div class="box"><h3>CA &amp; dépense pub par jour</h3>
+        <div class="legend"><span><i style="background:var(--green)"></i>CA encaissé (€)</span><span><i style="background:var(--accent)"></i>Dépense pub (€)</span></div>
+        <div id="chartCaPub"></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+    </div>
 
     <!-- META ADS → ROAS -->
     <div class="section">
@@ -346,6 +359,26 @@ function chartBarsLine(days,bars,bars2,line,line2){
   s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--gold)">'+lmax+'</text>';
   var step=Math.ceil(n/9);
   for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+/* ---- Graphique CA encaissé (vert, aire) vs dépense pub (rouge), par jour ---- */
+function chartCaPub(days,ca,pub){
+  ca=ca||[]; pub=pub||[];
+  var W=740,H=210,pl=40,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var mx=Math.max.apply(null,ca.concat(pub).concat(1)),slot=n>1?iw/(n-1):iw;   // échelle € partagée
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  function pts(a){return a.map(function(v,i){return [pl+slot*i, pt+ih-ih*(v||0)/mx];});}
+  function path(a){return a.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');}
+  var pca=pts(ca);
+  s+='<path class="area" d="'+path(pca)+' L'+pca[n-1][0].toFixed(1)+' '+(pt+ih)+' L'+pca[0][0].toFixed(1)+' '+(pt+ih)+' Z"/>';
+  s+='<path class="lineP" d="'+path(pts(pub))+'"/>';   // dépense pub (rouge)
+  s+='<path class="lineA" d="'+path(pca)+'"/>';        // CA encaissé (vert)
+  pts(pub).forEach(function(p,i){ if(pub[i]>0) s+='<circle class="dotP" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.2"/>'; });
+  pca.forEach(function(p,i){ if(ca[i]>0) s+='<circle class="dotA" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4"/>'; });
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+fr(Math.round(mx))+' €</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+(pl+slot*i).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
   return s+'</svg>';
 }
 /* ---- Graphique aire cumulée (artistes) ---- */
@@ -572,9 +605,12 @@ function load(){
         ['hi','≈ '+fr(f.revenueEUR)+' €','CA Florence (converti)',caDetail],
         ['','≈ '+fr(panier)+' €','Panier moyen'],
         ['',fr(f.payments),'Paiements'],
-        ['',fr(f.artistsTotal),'Artistes participants'],
-        ['hi',c.rate+' %','Taux lead → inscrit']
+        ['',fr(f.artistsTotal),'Artistes participants']
       ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div>'+(k[3]||'')+'</div>';}).join('');
+
+      // Graphe CA encaissé vs dépense pub, par jour (section Cumul)
+      var ddC=d.daily||[], dslC=ddC.map(function(x){return x.date;});
+      document.getElementById('chartCaPub').innerHTML=chartCaPub(dslC, ddC.map(function(x){return x.caEUR||0;}), ddC.map(function(x){return x.pubEUR||0;}));
 
       // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
       var t=d.todayStats, trb=t.revEURByBucket||{candidat:0,lead:0,existant:0,nouveau:0};
