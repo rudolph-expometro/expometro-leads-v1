@@ -44,6 +44,10 @@
   .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
   .adstbl tr.sub2 td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px}
   .adstbl tr.sub2 td:first-child{padding-left:14px}
+  #candConvtbl .clang{cursor:pointer} #candConvtbl .clang:hover{background:rgba(255,255,255,.03)}
+  #candConvtbl .chev{color:var(--muted);display:inline-block;width:12px;font-size:10px}
+  #candConvtbl .cdet td{color:var(--muted);font-size:12px;background:rgba(255,255,255,.02)}
+  #candConvtbl .cdet .cdet-c{padding-left:22px}
   .box h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px;font-weight:600}
   /* CA */
   .ca .row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -218,18 +222,6 @@
       </div>
     </div>
 
-    <!-- CANDIDATS (candidature LAL / apply-florence) -->
-    <div class="section">
-      <h2>Candidats — candidature LAL 🎯</h2>
-      <div class="box"><div class="bkts" id="candi"></div>
-        <h3 style="margin:18px 0 8px">Candidats par pays</h3>
-        <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table id="candtbl">
-          <thead><tr><th>Pays</th><th class="num">Candidats</th><th class="num">Convertis</th><th class="num">Taux</th></tr></thead>
-          <tbody></tbody>
-        </table></div>
-        <p class="hint">Vrai pays (attribut PAYS du formulaire) — à comparer avec « Leads par pays » de l'autre campagne. « Convertis » = candidats de ce pays ayant payé une place · Taux = convertis ÷ candidats. Trié par convertis ↓ · affiche les pays ciblés (même à 0 conversion) + tout pays ayant au moins 1 conversion · le reste (spam) masqué.</p></div>
-    </div>
-
     <!-- LEADS PAR PAYS (scaling) -->
     <div class="section" id="secCountries" style="display:none">
       <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
@@ -310,6 +302,10 @@ function storedKey(){ try{ var k=localStorage.getItem('dk'), ts=+(localStorage.g
 function enter(){ KEY=document.getElementById('pw').value||''; saveKey(KEY); load(); }
 document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
 function fr(n){ return (n||0).toLocaleString('fr-FR'); }
+// nom de pays -> code ISO (drapeau emoji), pour le détail par pays des candidats
+var C2I={"france":"FR","francia":"FR","frankreich":"FR","united states":"US","états-unis":"US","estados unidos":"US","stati uniti":"US","usa":"US","united kingdom":"GB","royaume-uni":"GB","reino unido":"GB","regno unito":"GB","vereinigtes königreich":"GB","großbritannien":"GB","canada":"CA","canadá":"CA","kanada":"CA","australia":"AU","australie":"AU","australien":"AU","ireland":"IE","irlande":"IE","irlanda":"IE","irland":"IE","new zealand":"NZ","nouvelle-zélande":"NZ","nueva zelanda":"NZ","nuova zelanda":"NZ","neuseeland":"NZ","united arab emirates":"AE","émirats arabes unis":"AE","emiratos árabes unidos":"AE","emirati arabi uniti":"AE","vereinigte arabische emirate":"AE","qatar":"QA","singapore":"SG","singapour":"SG","singapur":"SG","netherlands":"NL","pays-bas":"NL","países bajos":"NL","paesi bassi":"NL","niederlande":"NL","nederland":"NL","sweden":"SE","suède":"SE","suecia":"SE","svezia":"SE","schweden":"SE","norway":"NO","norvège":"NO","noruega":"NO","norvegia":"NO","norwegen":"NO","denmark":"DK","danemark":"DK","dinamarca":"DK","danimarca":"DK","dänemark":"DK","switzerland":"CH","suisse":"CH","suiza":"CH","svizzera":"CH","schweiz":"CH","italy":"IT","italie":"IT","italia":"IT","italien":"IT","spain":"ES","espagne":"ES","españa":"ES","spagna":"ES","spanien":"ES","germany":"DE","allemagne":"DE","alemania":"DE","germania":"DE","deutschland":"DE","austria":"AT","autriche":"AT","österreich":"AT","belgium":"BE","belgique":"BE","bélgica":"BE","belgio":"BE","belgien":"BE","luxembourg":"LU","luxemburgo":"LU","lussemburgo":"LU","luxemburg":"LU","monaco":"MC","mónaco":"MC","hong kong":"HK","san marino":"SM","south africa":"ZA","congo - kinshasa":"CD","mexico":"MX","lebanon":"LB","tunisia":"TN","botswana":"BW","malaysia":"MY","saudi arabia":"SA","myanmar (burma)":"MM","venezuela":"VE","georgia":"GE","colombia":"CO","mauritius":"MU","brazil":"BR","chile":"CL","chad":"TD","namibia":"NA","hongrie":"HU","hungary":"HU","sierra leone":"SL","burundi":"BI","bahrain":"BH","uzbekistan":"UZ","trinidad & tobago":"TT","azerbaijan":"AZ","north macedonia":"MK","gambia":"GM","jamaica":"JM","bosnia & herzegovina":"BA","honduras":"HN","ecuador":"EC","haiti":"HT","kazakhstan":"KZ","el salvador":"SV","ukraine":"UA","bulgaria":"BG","bhutan":"BT","croatia":"HR","guyana":"GY","liberia":"LR","cyprus":"CY","guatemala":"GT","papua new guinea":"PG","romania":"RO"};
+function flag(name){ var iso=C2I[String(name==null?'':name).trim().toLowerCase()]; return iso?String.fromCodePoint(0x1F1E6+iso.charCodeAt(0)-65,0x1F1E6+iso.charCodeAt(1)-65)+' ':''; }
+function toggleCand(l){ var open=false; document.querySelectorAll('.cdet-'+l).forEach(function(r){ r.style.display=(r.style.display==='none'?'':'none'); if(r.style.display!=='none')open=true; }); var ch=document.getElementById('chev-'+l); if(ch) ch.textContent=open?'▾':'▸'; }
 var MOIS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
 function frDate(iso){ if(!iso) return ''; var p=String(iso).slice(0,10).split('-'); return parseInt(p[2],10)+' '+(MOIS[parseInt(p[1],10)-1]||''); }
 function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!=='PWETH'&&o[c]>0;}); }
@@ -560,7 +556,7 @@ function load(){
       var crows=CMAP.map(function(m){var x=f.conv[m.lang]||{leads:0,inscrits:0,rate:0}; var bc=byLang[m.lang]||{}; return {m:m,leads:x.leads,inscrits:x.inscrits,rate:x.rate,roas:(bc.roas!=null?bc.roas:null)};});
       crows.sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.rate-a.rate)||(b.inscrits-a.inscrits); });
       var body=crows.map(function(r){ var col=roasColor(r.roas);
-        return '<tr><td><span class="dot" style="background:'+col+'"></span>'+r.m.flag+' '+r.m.name+'</td><td class="num">'+fr(r.leads)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.rate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        return '<tr><td>'+r.m.flag+' '+r.m.name+'</td><td class="num">'+fr(r.leads)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.rate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
       }).join('');
       var totRoas=(d.ads&&d.ads.roasTotal!=null)?d.ads.roasTotal:null;
       body+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(c.leads)+'</td><td class="num">'+fr(c.inscrits)+'</td><td class="num">'+c.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(totRoas)+'">'+(totRoas!=null?totRoas.toFixed(1)+'×':'—')+'</td></tr>';
@@ -573,7 +569,11 @@ function load(){
         +'<span class="rate"><span class="rlab">taux</span> '+cdC.rate+' %</span>';
       var cbc=((d.ads&&d.ads.candidatByCountry)||[]).slice().sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.convRate-a.convRate)||(b.inscrits-a.inscrits); });
       var cbody=cbc.map(function(r){ var col=roasColor(r.roas);
-        return '<tr><td><span class="dot" style="background:'+col+'"></span>'+r.flag+' '+r.name+'</td><td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        var head='<tr class="clang" onclick="toggleCand(\''+r.lang+'\')"><td><span class="chev" id="chev-'+r.lang+'">▸</span> '+r.flag+' '+r.name+'</td><td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        var det=(r.detail||[]).map(function(x){ var dc=roasColor(x.roas);
+          return '<tr class="cdet cdet-'+r.lang+'" style="display:none"><td class="cdet-c">'+flag(x.country)+(x.country||'—')+'</td><td class="num">'+fr(x.candidats)+'</td><td class="num">'+fr(x.inscrits)+'</td><td class="num">'+x.convRate+' %</td><td class="num" style="font-weight:800;color:'+dc+'">'+(x.roas!=null?x.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        }).join('');
+        return head+det;
       }).join('');
       var candTot=(d.ads&&d.ads.cat&&d.ads.cat.candidat)?d.ads.cat.candidat.roasTotal:null;
       cbody+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(cdC.total)+'</td><td class="num">'+fr(cdC.converted)+'</td><td class="num">'+cdC.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(candTot)+'">'+(candTot!=null?candTot.toFixed(1)+'×':'—')+'</td></tr>';
@@ -596,48 +596,6 @@ function load(){
       document.getElementById('commu').innerHTML=
         bkt('lead',fr(cm.inscrits),'Inscrits (total)')+bkt('existant',fr(cm.exposants),'Exposants payants')+bkt('nouveau',cm.rate+' %','Taux de conversion');
 
-      // Candidats (candidature LAL / apply-florence)
-      var cd=d.candidats||{total:0,converted:0,rate:0,byCountry:[]};
-      document.getElementById('candi').innerHTML=
-        bkt('candidat',fr(cd.total),'Candidats inscrits')+bkt('existant',fr(cd.converted),'Ont payé une place')+bkt('candidat',cd.rate+' %','Taux de transformation');
-      // Pays CIBLÉS par les campagnes LAL (toutes variantes de langue). On n'affiche QUE ceux-là
-      // → tout le reste (spam de la phase EN worldwide) est masqué automatiquement, sans blocklist à maintenir.
-      // ÉDITABLE : ajoute un pays ici si tu élargis le ciblage d'une campagne.
-      var KEEP_COUNTRIES=[
-        'France','Francia','Frankreich',
-        'United States','États-Unis','Estados Unidos','Stati Uniti','USA',
-        'United Kingdom','Royaume-Uni','Reino Unido','Regno Unito','Vereinigtes Königreich','Großbritannien',
-        'Canada','Canadá','Kanada',
-        'Australia','Australie','Australien',
-        'Ireland','Irlande','Irlanda','Irland',
-        'New Zealand','Nouvelle-Zélande','Nueva Zelanda','Nuova Zelanda','Neuseeland',
-        'United Arab Emirates','Émirats arabes unis','Emiratos Árabes Unidos','Emirati Arabi Uniti','Vereinigte Arabische Emirate',
-        'Qatar',
-        'Singapore','Singapour','Singapur',
-        'Netherlands','Pays-Bas','Países Bajos','Paesi Bassi','Niederlande','Nederland',
-        'Sweden','Suède','Suecia','Svezia','Schweden',
-        'Norway','Norvège','Noruega','Norvegia','Norwegen',
-        'Denmark','Danemark','Dinamarca','Danimarca','Dänemark',
-        'Switzerland','Suisse','Suiza','Svizzera','Schweiz',
-        'Italy','Italie','Italia','Italien',
-        'Spain','Espagne','España','Spagna','Spanien',
-        'Germany','Allemagne','Alemania','Germania','Deutschland',
-        'Austria','Autriche','Österreich',
-        'Belgium','Belgique','Bélgica','Belgio','Belgien',
-        'Luxembourg','Luxemburgo','Lussemburgo','Luxemburg',
-        'Monaco','Mónaco',
-        'Hong Kong','San Marino'
-      ];
-      var KEEP=new Set(KEEP_COUNTRIES.map(function(s){return s.toLowerCase();}));
-      // nom de pays -> code ISO (pour le drapeau emoji) : ciblés en 5 langues + pays vus dans les données.
-      var C2I={"france":"FR","francia":"FR","frankreich":"FR","united states":"US","états-unis":"US","estados unidos":"US","stati uniti":"US","usa":"US","united kingdom":"GB","royaume-uni":"GB","reino unido":"GB","regno unito":"GB","vereinigtes königreich":"GB","großbritannien":"GB","canada":"CA","canadá":"CA","kanada":"CA","australia":"AU","australie":"AU","australien":"AU","ireland":"IE","irlande":"IE","irlanda":"IE","irland":"IE","new zealand":"NZ","nouvelle-zélande":"NZ","nueva zelanda":"NZ","nuova zelanda":"NZ","neuseeland":"NZ","united arab emirates":"AE","émirats arabes unis":"AE","emiratos árabes unidos":"AE","emirati arabi uniti":"AE","vereinigte arabische emirate":"AE","qatar":"QA","singapore":"SG","singapour":"SG","singapur":"SG","netherlands":"NL","pays-bas":"NL","países bajos":"NL","paesi bassi":"NL","niederlande":"NL","nederland":"NL","sweden":"SE","suède":"SE","suecia":"SE","svezia":"SE","schweden":"SE","norway":"NO","norvège":"NO","noruega":"NO","norvegia":"NO","norwegen":"NO","denmark":"DK","danemark":"DK","dinamarca":"DK","danimarca":"DK","dänemark":"DK","switzerland":"CH","suisse":"CH","suiza":"CH","svizzera":"CH","schweiz":"CH","italy":"IT","italie":"IT","italia":"IT","italien":"IT","spain":"ES","espagne":"ES","españa":"ES","spagna":"ES","spanien":"ES","germany":"DE","allemagne":"DE","alemania":"DE","germania":"DE","deutschland":"DE","austria":"AT","autriche":"AT","österreich":"AT","belgium":"BE","belgique":"BE","bélgica":"BE","belgio":"BE","belgien":"BE","luxembourg":"LU","luxemburgo":"LU","lussemburgo":"LU","luxemburg":"LU","monaco":"MC","mónaco":"MC","hong kong":"HK","san marino":"SM","south africa":"ZA","congo - kinshasa":"CD","mexico":"MX","lebanon":"LB","tunisia":"TN","botswana":"BW","malaysia":"MY","saudi arabia":"SA","myanmar (burma)":"MM","venezuela":"VE","georgia":"GE","colombia":"CO","mauritius":"MU","brazil":"BR","chile":"CL","chad":"TD","namibia":"NA","hongrie":"HU","hungary":"HU","sierra leone":"SL","burundi":"BI","bahrain":"BH","uzbekistan":"UZ","trinidad & tobago":"TT","azerbaijan":"AZ","north macedonia":"MK","gambia":"GM","jamaica":"JM","bosnia & herzegovina":"BA","honduras":"HN","ecuador":"EC","haiti":"HT","kazakhstan":"KZ","el salvador":"SV","ukraine":"UA","bulgaria":"BG","bhutan":"BT","croatia":"HR","guyana":"GY","liberia":"LR","cyprus":"CY","guatemala":"GT","papua new guinea":"PG","romania":"RO"};
-      function flag(name){ var iso=C2I[String(name==null?'':name).trim().toLowerCase()]; return iso?String.fromCodePoint(0x1F1E6+iso.charCodeAt(0)-65,0x1F1E6+iso.charCodeAt(1)-65)+' ':''; }
-      document.querySelector('#candtbl tbody').innerHTML=(cd.byCountry||[])
-        .filter(function(r){ return KEEP.has(String(r.country||'').trim().toLowerCase()) || (r.converted||0) > 0; })  // pays ciblés (toujours) + tout pays ayant ≥1 conversion (signal intéressant) ; le reste (spam 0 conv) masqué
-        .sort(function(a,b){ return (b.converted-a.converted) || (b.count-a.count); })         // tri : convertis ↓, puis candidats ↓
-        .map(function(r){
-        return '<tr><td>'+flag(r.country)+(r.country||'—')+'</td><td class="num">'+fr(r.count)+'</td><td class="num" style="'+((r.converted||0)>0?'color:var(--accent);font-weight:800':'color:var(--muted)')+'">'+fr(r.converted)+'</td><td class="num rate"'+((r.rate||0)>0?'':' style="color:#fff"')+'>'+r.rate+' %</td></tr>';
-      }).join('')||'<tr><td colspan="4" style="color:var(--muted)">Aucun candidat pour l\'instant.</td></tr>';
 
       // Top artistes
       var med=['🥇','🥈','🥉'];

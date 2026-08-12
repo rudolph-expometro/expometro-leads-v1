@@ -230,6 +230,8 @@ export default async function handler(req, res) {
       candidatsTotal++;
       const co = cd.pays || '(inconnu)';
       candidatsByCountry[co] = (candidatsByCountry[co] || 0) + 1;
+      const lc = candidatsByLangCountry[cd.lang] || (candidatsByLangCountry[cd.lang] = {});
+      lc[co] = (lc[co] || 0) + 1;
       if (cd.created === today) newCandidatsToday[cd.lang] = (newCandidatsToday[cd.lang] || 0) + 1;
     }
 
@@ -249,6 +251,9 @@ export default async function handler(req, res) {
     const candidatConvByCountry = {};     // pays -> candidats uniques ayant paye
     const candidatConvByLang = zeroLang();     // candidats uniques ayant paye, par langue (table Candidats -> Inscrits)
     const revEURCandidatByLang = zeroLang();   // CA candidat par langue (EUR), pour le ROAS candidats par pays
+    const candidatsByLangCountry = {};         // lang -> pays -> nb candidats (drill-down par ad set)
+    const candidatConvByLangCountry = {};      // lang -> pays -> nb convertis
+    const revEURCandidatByLangCountry = {};    // lang -> pays -> CA EUR
     const todayRevEUR = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
     let todayRevEURtot = 0;
     const revEURtotByBucket = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
@@ -276,6 +281,8 @@ export default async function handler(req, res) {
         const cco = candidat.pays || '(inconnu)';
         candidatConvByCountry[cco] = (candidatConvByCountry[cco] || 0) + 1;
         candidatConvByLang[candidat.lang] = (candidatConvByLang[candidat.lang] || 0) + 1;
+        const lcv = candidatConvByLangCountry[candidat.lang] || (candidatConvByLangCountry[candidat.lang] = {});
+        lcv[cco] = (lcv[cco] || 0) + 1;
       }
 
       const amtEUR = amt * (EUR_RATES[cur] || 0);
@@ -290,7 +297,12 @@ export default async function handler(req, res) {
         convByDay[date] = (convByDay[date] || 0) + 1;
         revEURByLang[lead.lang] += amtEUR;
       }
-      if (candidat) revEURCandidatByLang[candidat.lang] += amtEUR;
+      if (candidat) {
+        revEURCandidatByLang[candidat.lang] += amtEUR;
+        const cco2 = candidat.pays || '(inconnu)';
+        const lcr = revEURCandidatByLangCountry[candidat.lang] || (revEURCandidatByLangCountry[candidat.lang] = {});
+        lcr[cco2] = (lcr[cco2] || 0) + amtEUR;
+      }
       if (h && COMMUNITY.has(h) && email) communityBuyers.add(email);
 
       if (email) {
@@ -417,12 +429,20 @@ export default async function handler(req, res) {
         const spT = ms.reduce((s, a) => s + a.spendTotal, 0), spD = ms.reduce((s, a) => s + a.spendToday, 0);
         const rev = revEURCandidatByLang[co.lang] || 0;
         const cand = candidatsByLang[co.lang] || 0, insc = candidatConvByLang[co.lang] || 0;
+        // Détail par pays (drill-down) : ROAS pays = dépense de l'ad set répartie au prorata des candidats.
+        const lc = candidatsByLangCountry[co.lang] || {}, lcv = candidatConvByLangCountry[co.lang] || {}, lcr = revEURCandidatByLangCountry[co.lang] || {};
+        const detail = Object.keys(lc).map(country => {
+          const cc = lc[country], cv = lcv[country] || 0, rvC = lcr[country] || 0;
+          const proxySpend = cand > 0 ? spT * (cc / cand) : 0;
+          return { country, candidats: cc, inscrits: cv, convRate: cc > 0 ? +(100 * cv / cc).toFixed(1) : 0, roas: proxySpend > 0 ? +(rvC / (proxySpend * rr)).toFixed(2) : null };
+        }).sort((x, y) => (y.inscrits - x.inscrits) || (y.candidats - x.candidats));
         return {
           key: co.key, name: co.name, flag: co.flag, lang: co.lang,
           spendTotal: Math.round(spT), spendToday: Math.round(spD),
           candidats: cand, inscrits: insc,
           convRate: cand > 0 ? +(100 * insc / cand).toFixed(1) : 0,
-          roas: spT > 0 ? +(rev / (spT * rr)).toFixed(2) : null
+          roas: spT > 0 ? +(rev / (spT * rr)).toFixed(2) : null,
+          detail
         };
       });
     }
