@@ -22,6 +22,13 @@
   .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
   .updated{color:var(--muted);font-size:11.5px;display:block;margin-top:4px;text-align:right}
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:14px}
+  .kpi .ca-det{margin-top:8px;font-size:11px}
+  .kpi .ca-det summary{color:var(--muted);cursor:pointer;list-style:none;font-size:10.5px}
+  .kpi .ca-det summary::-webkit-details-marker{display:none}
+  .kpi .ca-det summary::before{content:'▸ '}
+  .kpi .ca-det[open] summary::before{content:'▾ '}
+  .kpi .ca-det .row{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+  .kpi .ca-det .cur{color:var(--muted)} .kpi .ca-det .v{font-weight:700}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
   .kpi .n{font-size:23px;font-weight:800;letter-spacing:-.01em}
   .kpi .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
@@ -177,7 +184,7 @@
     <h2 class="sech" style="margin-top:0">Aujourd'hui — en direct</h2>
     <div class="grid2">
       <div class="box today-hero" id="todayHero"></div>
-      <div class="box ca"><h3>Chiffre d'affaires (depuis le 15/07)</h3><div id="ca"></div></div>
+      <div class="box" id="adsRecap"></div>
     </div>
 
     <!-- CUMUL -->
@@ -187,8 +194,7 @@
     <!-- META ADS → ROAS -->
     <div class="section">
       <h2>Meta Ads → ROAS</h2>
-      <div class="box" id="adsRecap"></div>
-      <div class="grid2" style="margin-top:14px;align-items:start">
+      <div class="grid2" style="align-items:start">
         <div>
           <div class="box roas-lead" id="roasLeads"></div>
           <div class="box" style="margin-top:14px"><h3>Leads → Inscrits</h3>
@@ -197,7 +203,6 @@
               <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
               <tbody></tbody>
             </table></div>
-            <p class="hint" style="margin-top:8px">Trié par ROAS (le plus rentable en haut). <span style="color:var(--green)">● ≥2×</span> · <span style="color:var(--gold)">● 1–2×</span> · <span style="color:#ff5c5c">● &lt;1×</span> · <span style="color:var(--muted)">● pas de dépense pub</span></p>
           </div>
         </div>
         <div>
@@ -208,7 +213,6 @@
               <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
               <tbody></tbody>
             </table></div>
-            <p class="hint" style="margin-top:8px">Trié par ROAS (le plus rentable en haut). <span style="color:var(--green)">● ≥2×</span> · <span style="color:var(--gold)">● 1–2×</span> · <span style="color:#ff5c5c">● &lt;1×</span> · <span style="color:var(--muted)">● pas de dépense pub</span><br>« Insc. » = candidats de cette langue ayant payé une place.</p>
           </div>
         </div>
       </div>
@@ -482,13 +486,18 @@ function load(){
 
       // KPIs
       var panier=f.payments?Math.round(f.revenueEUR/f.payments):0;
+      var curD=f.revenueByCurrency||{};
+      var curRows=money(curD).sort(function(a,b){return curD[b]-curD[a];}).map(function(k){
+        return '<div class="row"><span class="cur">'+k+'</span><span class="v">'+fr(Math.round(curD[k]))+'</span></div>';
+      }).join('')||'<div class="row"><span class="cur">—</span><span class="v">0</span></div>';
+      var caDetail='<details class="ca-det"><summary>détail par devise</summary>'+curRows+'</details>';
       document.getElementById('kpis').innerHTML=[
-        ['hi','≈ '+fr(f.revenueEUR)+' €','CA Florence (converti)'],
+        ['hi','≈ '+fr(f.revenueEUR)+' €','CA Florence (converti)',caDetail],
         ['','≈ '+fr(panier)+' €','Panier moyen'],
         ['',fr(f.payments),'Paiements'],
         ['',fr(f.artistsTotal),'Artistes participants'],
         ['hi',c.rate+' %','Taux lead → inscrit']
-      ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div></div>';}).join('');
+      ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div>'+(k[3]||'')+'</div>';}).join('');
 
       // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
       var t=d.todayStats, trb=t.revEURByBucket||{candidat:0,lead:0,existant:0,nouveau:0};
@@ -505,13 +514,14 @@ function load(){
       function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // dépense en devise du compte
       function eur(v){return fr(Math.round(v||0))+' €';}
       function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
+      function rxc(v){return '<span style="font-weight:800;color:'+roasColor(v)+'">'+rx(v)+'</span>';}   // ROAS coloré : rouge <1× · orange 1–2× · vert ≥2×
       if(a.available && a.cat){
         var C=a.cat;
         function catTbl(cat){
           return '<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
             +'<tr><td>Dépensé</td><td>'+spd(cat.spendToday)+'</td><td>'+spd(cat.spendTotal)+'</td></tr>'
             +'<tr><td>CA</td><td>'+eur(cat.caToday)+'</td><td>'+eur(cat.caTotal)+'</td></tr>'
-            +'<tr class="roas"><td>ROAS</td><td>'+rx(cat.roasToday)+'</td><td>'+rx(cat.roasTotal)+'</td></tr>'
+            +'<tr class="roas"><td>ROAS</td><td>'+rxc(cat.roasToday)+'</td><td>'+rxc(cat.roasTotal)+'</td></tr>'
             +'</tbody></table>';
         }
         recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
@@ -521,7 +531,7 @@ function load(){
           +'<tr class="sub2"><td>dont Candidats</td><td>'+spd(C.candidat.spendToday)+'</td><td>'+spd(C.candidat.spendTotal)+'</td></tr>'
           +'<tr class="sub2"><td>dont Follow</td><td>'+spd(C.follow.spendToday)+'</td><td>'+spd(C.follow.spendTotal)+'</td></tr>'
           +'<tr><td>CA total</td><td>'+eur(C.total.caToday)+'</td><td>'+eur(C.total.caTotal)+'</td></tr>'
-          +'<tr class="roas"><td>ROAS global</td><td>'+rx(C.total.roasToday)+'</td><td>'+rx(C.total.roasTotal)+'</td></tr>'
+          +'<tr class="roas"><td>ROAS global</td><td>'+rxc(C.total.roasToday)+'</td><td>'+rxc(C.total.roasTotal)+'</td></tr>'
           +'</tbody></table>';
         leadEl.innerHTML='<h3>Leads</h3>'+catTbl(C.lead);
         candEl.innerHTML='<h3>Candidats</h3>'+catTbl(C.candidat);
@@ -539,13 +549,6 @@ function load(){
       // ---- Leads par pays (scaling) ----
       renderCountries(d);
 
-      // CA par devise + total EUR
-      var cur=f.revenueByCurrency||{};
-      var caHtml=money(cur).sort(function(a,b){return cur[b]-cur[a];}).map(function(k){
-        return '<div class="row"><span class="cur">'+k+'</span><span class="v">'+fr(Math.round(cur[k]))+'</span></div>';
-      }).join('')||'<div class="row"><span class="cur">—</span><span class="v">0</span></div>';
-      caHtml+='<div class="row tot"><span>TOTAL ≈ EUR</span><span class="v">'+fr(f.revenueEUR)+' €</span></div>';
-      document.getElementById('ca').innerHTML=caHtml;
 
       // Leads combiné
       document.getElementById('leadHero').innerHTML=
