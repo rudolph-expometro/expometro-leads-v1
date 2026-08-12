@@ -394,6 +394,20 @@ function curC(v){ return fr(Math.round(v||0))+' '+CUR_SYM; }
 /* Suivi des budgets par ad set (localStorage) pour imposer un "cooldown" apres une hausse. */
 var BUDGET_COOLDOWN_DAYS=3;
 function daysBetween(a,b){ var d=(Date.parse(b)-Date.parse(a))/86400000; return isNaN(d)?null:Math.floor(d); }
+/* Hausses de budget faites à la main (garde-fou robuste, indépendant du localStorage/navigateur) :
+   après une hausse enregistrée ici, la reco force "Palier en cours" pendant BUDGET_COOLDOWN_DAYS jours,
+   même en navigation privée. Clés = co.key : leads IT/ES/DE/FR/US ; candidats CAND_EN/CAND_FR/CAND_ES/CAND_IT/CAND_DE.
+   -> ajoute une entrée à CHAQUE fois que tu montes des budgets juste avant de déployer. */
+var MANUAL_RAISES = { '2026-08-12': ['IT','ES','DE','FR','CAND_EN','CAND_FR'] };
+function manualRaiseDaysSince(key, today){
+  var best=null;
+  for(var dt in MANUAL_RAISES){
+    if(MANUAL_RAISES[dt].indexOf(key)<0) continue;
+    var dd=daysBetween(dt, today);
+    if(dd!=null && dd>=0 && (best==null || dd<best)) best=dd;
+  }
+  return best;
+}
 function trackBudgets(bc,today){
   var store={}; try{ store=JSON.parse(localStorage.getItem('budgets_v1')||'{}'); }catch(e){}
   bc.forEach(function(co){
@@ -407,6 +421,9 @@ function trackBudgets(bc,today){
     } else {                                                      // budget inchange
       co._daysSinceBudget = prev.raised ? daysBetween(prev.since,today) : null;   // compte les jours seulement si le 'since' vient d'une hausse
     }
+    // Garde-fou : hausse manuelle enregistrée -> impose le cooldown même sans historique localStorage.
+    var mr=manualRaiseDaysSince(co.key, today);
+    if(mr!=null && mr<BUDGET_COOLDOWN_DAYS && (co._daysSinceBudget==null || mr<co._daysSinceBudget)) co._daysSinceBudget=mr;
   });
   try{ localStorage.setItem('budgets_v1',JSON.stringify(store)); }catch(e){}
 }
@@ -424,9 +441,9 @@ function recoCountry(co){
     var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
     return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse Meta se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). ROAS '+roas.toFixed(2)+'× ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
   }
-  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+40%).'):'ROAS '+roas.toFixed(2)+'× — monte par paliers de +40% tous les 3–4 j.'}; }
+  if(scale){ var nb=bud?Math.round(bud*1.2):null; return {cls:'scale',label:'Scaler +20%',det:nb?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+20%, palier Meta-safe). Répète tous les 3–4 j tant que le ROAS tient ; jamais plus haut d\'un coup (reset de l\'apprentissage).'):'ROAS '+roas.toFixed(2)+'× — monte par paliers de +20% tous les 3–4 j.'}; }
   if(bad) return {cls:'fix',label:'Optimiser',det:'ROAS <b>'+roas.toFixed(2)+'×</b> sous le seuil de rentabilité — refresh la créa / resserre le ciblage, ou baisse le budget. Pas de scale tant que ce n\'est pas > 1×.'};
-  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — petit palier <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'ROAS rentable — petit palier de +20%.'}; }
+  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — petit palier <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>. Un seul cran, puis observe 3–4 j.'):'ROAS rentable — petit palier de +20%, puis observe.'}; }
   return {cls:'hold',label:'Maintenir',det:'ROAS <b>'+roas.toFixed(2)+'×</b> autour de l\'équilibre — garde le budget et surveille la rentabilité.'};
 }
 function countryCard(co){
@@ -486,7 +503,7 @@ function recoCandidat(co){
     var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
     return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse le CBO se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste OK ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
   }
-  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Bon taux candidat→inscrit — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+40%) pour plus de volume.'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
+  if(scale){ var nb=bud?Math.round(bud*1.2):null; return {cls:'scale',label:'Scaler +20%',det:nb?('Bon taux candidat→inscrit — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+20%, palier Meta-safe) pour plus de volume. Répète tous les 3–4 j.'):'Monte le budget par paliers de +20% tous les 3–4 j.'}; }
   if(bad) return {cls:'fix',label:'Optimiser',det:'Peu d\'inscrits payants derrière ces candidats malgré la dépense — refresh la créa / resserre le LAL avant de scaler.'};
   if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
   return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le coût/candidat et le taux candidat→inscrit.'};
