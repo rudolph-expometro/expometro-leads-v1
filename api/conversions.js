@@ -435,12 +435,16 @@ export default async function handler(req, res) {
           const proxySpend = cand > 0 ? spT * (cc / cand) : 0;
           return { country, candidats: cc, inscrits: cv, convRate: cc > 0 ? +(100 * cv / cc).toFixed(1) : 0, roas: proxySpend > 0 ? +(rvC / (proxySpend * rr)).toFixed(2) : null };
         }).sort((x, y) => (y.inscrits - x.inscrits) || (y.candidats - x.candidats));
+        const bud = ms.reduce((s, a) => s + (a.dailyBudget || 0), 0);
         return {
-          key: co.key, name: co.name, flag: co.flag, lang: co.lang,
+          key: 'CAND_' + co.key, name: co.name, flag: co.flag, lang: co.lang,
           spendTotal: Math.round(spT), spendToday: Math.round(spD),
-          candidats: cand, inscrits: insc,
+          dailyBudget: bud > 0 ? Math.round(bud) : null,
+          candidats: cand, inscrits: insc, revEUR: Math.round(rev),
+          cpl: cand > 0 && spT > 0 ? +(spT / cand).toFixed(2) : null,   // coût par candidat
           convRate: cand > 0 ? +(100 * insc / cand).toFixed(1) : 0,
           roas: spT > 0 ? +(rev / (spT * rr)).toFixed(2) : null,
+          adsets: ms.map(a => a.name),
           detail
         };
       });

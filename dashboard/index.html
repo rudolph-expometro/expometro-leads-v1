@@ -230,6 +230,13 @@
       <p class="hint">Dépense / budget / CPL dans la devise du compte pub (comme dans Meta) · CA en €. ROAS = CA attribué (leads qui ont payé, par langue) ÷ dépense de l'ad set convertie en €. Reco basée sur ROAS, CPL, taux lead→inscrit &amp; fréquence.</p>
     </div>
 
+    <!-- CANDIDATS PAR LANGUE (scaling) -->
+    <div class="section" id="secCandidatScale" style="display:none">
+      <h2>Candidats par langue — ROAS &amp; budget pour scaler 🚀</h2>
+      <div id="candidatCountries"></div>
+      <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat = dépense ÷ candidats reçus · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (naturellement bas : le tunnel candidat→inscrit prend du temps). Reco calée sur le coût/candidat &amp; le taux candidat→inscrit — pas seulement le ROAS.</p>
+    </div>
+
     <!-- Graphique leads / jour -->
     <div class="section">
       <h2>Leads &amp; conversions par jour</h2>
@@ -466,6 +473,65 @@ function renderCountries(d){
   ue.style.display='block'; ue.innerHTML=html;
 }
 
+/* ---- Candidats par langue : ROAS + reco de budget (haut de tunnel) ----
+   Reco calée sur le coût/candidat & le taux candidat→inscrit — pas le ROAS seul
+   (le ROAS candidat est structurellement bas : le tunnel candidat→inscrit met du temps). */
+function recoCandidat(co){
+  var sp=co.spendTotal||0, cand=co.candidats||0, roas=co.roas, cpl=co.cpl, cr=co.convRate||0, bud=co.dailyBudget;
+  if(cand<20 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Pas encore assez de candidats/dépense pour trancher — laisse le CBO apprendre avant de bouger le budget.'};
+  var scale=(roas!=null&&roas>=1)||(cpl!=null&&cpl<=3&&cr>=0.6);          // profitable, OU candidats pas chers qui convertissent
+  var bad=(cpl!=null&&cpl>6)||(cr<0.15&&sp>=50)||(roas!=null&&roas<0.2&&sp>=60);  // trop chers / n'inscrivent pas
+  var ok=(cpl!=null&&cpl<=4)||cr>=0.3;
+  // COOLDOWN : budget monté récemment -> on laisse le CBO se re-stabiliser
+  var ds=co._daysSinceBudget;
+  if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
+    var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
+    return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse le CBO se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste OK ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
+  }
+  if(scale){ var nb=bud?Math.round(bud*1.4):null; return {cls:'scale',label:'Scaler +40%',det:nb?('Coût candidat maîtrisé — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+40%) pour plus de volume.'):'Monte le budget par paliers de +40% tous les 3–4 j.'}; }
+  if(bad) return {cls:'fix',label:'Optimiser',det:'Candidats chers ou peu d\'inscrits derrière — refresh la créa / resserre le LAL avant de scaler.'};
+  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
+  return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le coût/candidat et le taux candidat→inscrit.'};
+}
+function candidatCard(co){
+  var rc=recoCandidat(co);
+  function m(n,l,extra){ return '<div class="cm'+(extra||'')+'"><span class="cm-n">'+n+'</span><span class="cm-l">'+l+'</span></div>'; }
+  var roasTxt=co.roas!=null?co.roas.toFixed(2)+'×':'—';
+  var cplTxt=co.cpl!=null?co.cpl.toFixed(2)+' '+CUR_SYM:'—';
+  var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'—';
+  var noAds=!co.adsets||!co.adsets.length;
+  return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">'+co.name+'</span>'
+    +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
+    +'<div class="ctry-mets">'
+    + m(curC(co.spendTotal),'Dépensé')
+    + m(fr(co.candidats),'Candidats')
+    + m(cplTxt,'Coût/cand.')
+    + m(fr(co.inscrits)+' · '+co.convRate+'%','Inscrits')
+    + m(eurC(co.revEUR),'CA')
+    + m(roasTxt,'ROAS',' roas'+(co.roas!=null&&co.roas>=1?'':' low'))
+    + m(budTxt,'Budget/j')
+    +'</div>'
+    +'<div class="ctry-det">'+rc.det+'</div>'
+    +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set candidat « '+co.name+' » trouvé — vérifie le nommage de la campagne LAL.</div>'
+           :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
+    +'</div>';
+}
+function renderCandidatScale(d){
+  var a=(d.ads)||{}, sec=document.getElementById('secCandidatScale');
+  var cc=(a.candidatByCountry)||[];
+  if(!a.available || !cc.length){ sec.style.display='none'; return; }
+  sec.style.display='block';
+  CUR_SYM=curSym(a.currency);
+  trackBudgets(cc, d.today||'');   // partage le suivi de budget (clés préfixées CAND_ côté API -> pas de collision avec les leads)
+  // tri : d'abord ceux qui ont de la dépense, puis par nb de candidats
+  var list=cc.slice().sort(function(x,y){ return (y.spendTotal-x.spendTotal)||(y.candidats-x.candidats); });
+  var sSum=list.reduce(function(s,x){return s+(x.spendTotal||0);},0);
+  var kSum=list.reduce(function(s,x){return s+(x.candidats||0);},0);
+  document.getElementById('candidatCountries').innerHTML=
+    '<div class="creg"><span>Campagnes candidature LAL</span><span class="crsum">'+curC(sSum)+' dépensés · '+fr(kSum)+' candidats</span></div>'
+    + list.map(candidatCard).join('');
+}
+
 function load(){
   KEY=KEY||storedKey()||''; if(!KEY) return;
   fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
@@ -544,6 +610,9 @@ function load(){
 
       // ---- Leads par pays (scaling) ----
       renderCountries(d);
+
+      // ---- Candidats par langue (scaling) ----
+      renderCandidatScale(d);
 
 
       // Leads combiné
