@@ -160,6 +160,15 @@ async function metaSpend() {
   for (const c of (totalRows || [])) { if (c.campaign_name) campObj[c.campaign_name] = c.objective || ''; }
   const adsets = Object.values(byId);
   for (const a of adsets) { if (!a.objective && a.campaign && campObj[a.campaign]) a.objective = campObj[a.campaign]; }
+  // Type de campagne par ad set (pour séparer le ROAS Leads / Candidats / Follow).
+  function adsetCat(a) {
+    const n = a.campaign || '';
+    if (/candidat|LAL/i.test(n)) return 'candidat';
+    if (/follow/i.test(n) || !ACQ_OBJECTIVES.has(a.objective)) return 'follow';
+    return 'lead';
+  }
+  const spendCat = { lead: { today: 0, total: 0 }, candidat: { today: 0, total: 0 }, follow: { today: 0, total: 0 } };
+  for (const a of adsets) { a.cat = adsetCat(a); spendCat[a.cat].today += a.spendToday; spendCat[a.cat].total += a.spendTotal; }
   const adsetDbg = {
     totalRows: asTotal === null ? 'ERR' : asTotal.length,
     todayRows: asToday === null ? 'ERR' : asToday.length,
@@ -181,6 +190,7 @@ async function metaSpend() {
     total: g.total, totalAcq: g.acq,
     breakdown: g.breakdown,  // detail cumul par campagne (transparence)
     adsets,                  // detail par ad set (pour le ROAS par pays)
+    spendCat,                // depense par type de campagne (lead/candidat/follow), today+total
     adsetDbg                 // diagnostic de la lecture par ad set
   };
 }
@@ -237,6 +247,8 @@ export default async function handler(req, res) {
     const seenLeadEmail = new Set(), seenArtist = new Set();
     const seenCandidatEmail = new Set();  // candidats uniques ayant paye (pour le taux de transformation)
     const candidatConvByCountry = {};     // pays -> candidats uniques ayant paye
+    const candidatConvByLang = zeroLang();     // candidats uniques ayant paye, par langue (table Candidats -> Inscrits)
+    const revEURCandidatByLang = zeroLang();   // CA candidat par langue (EUR), pour le ROAS candidats par pays
     const todayRevEUR = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
     let todayRevEURtot = 0;
     const revEURtotByBucket = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
@@ -263,6 +275,7 @@ export default async function handler(req, res) {
         seenCandidatEmail.add(email);
         const cco = candidat.pays || '(inconnu)';
         candidatConvByCountry[cco] = (candidatConvByCountry[cco] || 0) + 1;
+        candidatConvByLang[candidat.lang] = (candidatConvByLang[candidat.lang] || 0) + 1;
       }
 
       const amtEUR = amt * (EUR_RATES[cur] || 0);
@@ -277,6 +290,7 @@ export default async function handler(req, res) {
         convByDay[date] = (convByDay[date] || 0) + 1;
         revEURByLang[lead.lang] += amtEUR;
       }
+      if (candidat) revEURCandidatByLang[candidat.lang] += amtEUR;
       if (h && COMMUNITY.has(h) && email) communityBuyers.add(email);
 
       if (email) {
@@ -365,6 +379,52 @@ export default async function handler(req, res) {
       });
       ads.unmatched = pool.filter(a => !used.has(a.id) && a.spendTotal > 0)
         .map(a => ({ name: a.name, spend: Math.round(a.spendTotal) })).sort((x, y) => y.spend - x.spend);
+
+      // --- ROAS par catégorie : recap total + Leads + Candidats (today + cumul) ---
+      const sc = spend.spendCat || { lead: { today: 0, total: 0 }, candidat: { today: 0, total: 0 }, follow: { today: 0, total: 0 } };
+      const rr = roasRate;                                   // depense (devise compte) -> EUR
+      const roasOf = (caEUR, spendNat) => spendNat > 0 ? +(caEUR / (spendNat * rr)).toFixed(2) : null;
+      ads.cat = {
+        total: {
+          spendToday: Math.round(spend.today), spendTotal: Math.round(spend.total),
+          caToday: Math.round(todayRevEURtot), caTotal: Math.round(revenueEUR),
+          roasToday: roasOf(todayRevEURtot, spend.today), roasTotal: roasOf(revenueEUR, spend.total)
+        },
+        lead: {
+          spendToday: Math.round(sc.lead.today), spendTotal: Math.round(sc.lead.total),
+          caToday: Math.round(todayRevEUR.lead), caTotal: Math.round(revEURtotByBucket.lead),
+          roasToday: roasOf(todayRevEUR.lead, sc.lead.today), roasTotal: roasOf(revEURtotByBucket.lead, sc.lead.total)
+        },
+        candidat: {
+          spendToday: Math.round(sc.candidat.today), spendTotal: Math.round(sc.candidat.total),
+          caToday: Math.round(todayRevEUR.candidat), caTotal: Math.round(revEURtotByBucket.candidat),
+          roasToday: roasOf(todayRevEUR.candidat, sc.candidat.today), roasTotal: roasOf(revEURtotByBucket.candidat, sc.candidat.total)
+        },
+        follow: { spendToday: Math.round(sc.follow.today), spendTotal: Math.round(sc.follow.total) }
+      };
+
+      // --- Ad sets Candidats -> Inscrits (par langue de campagne LAL) ---
+      const candPool = allAdsets.filter(a => a.cat === 'candidat');
+      const CAND = [
+        { key: 'IT', name: 'Candidats Italy',  flag: '🇮🇹', lang: 'IT', match: /ital|(?:^|[^a-z])it(?:[^a-z]|$)/i },
+        { key: 'ES', name: 'Candidats Spain',  flag: '🇪🇸', lang: 'ES', match: /spain|espa|(?:^|[^a-z])es(?:[^a-z]|$)/i },
+        { key: 'DE', name: 'Candidats DACH',   flag: '🇩🇪', lang: 'DE', match: /german|deutsch|dach|(?:^|[^a-z])de(?:[^a-z]|$)/i },
+        { key: 'FR', name: 'Candidats France', flag: '🇫🇷', lang: 'FR', match: /france|fran|(?:^|[^a-z])fr(?:[^a-z]|$)/i },
+        { key: 'EN', name: 'Candidats EN',     flag: '🌍', lang: 'EN', match: /english|world|(?:^|[^a-z])en(?:[^a-z]|$)/i }
+      ];
+      ads.candidatByCountry = CAND.map(co => {
+        const ms = candPool.filter(a => co.match.test(a.name || ''));
+        const spT = ms.reduce((s, a) => s + a.spendTotal, 0), spD = ms.reduce((s, a) => s + a.spendToday, 0);
+        const rev = revEURCandidatByLang[co.lang] || 0;
+        const cand = candidatsByLang[co.lang] || 0, insc = candidatConvByLang[co.lang] || 0;
+        return {
+          key: co.key, name: co.name, flag: co.flag, lang: co.lang,
+          spendTotal: Math.round(spT), spendToday: Math.round(spD),
+          candidats: cand, inscrits: insc,
+          convRate: cand > 0 ? +(100 * insc / cand).toFixed(1) : 0,
+          roas: spT > 0 ? +(rev / (spT * rr)).toFixed(2) : null
+        };
+      });
     }
 
     // Taux de conversion par langue (depuis J1)

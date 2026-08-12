@@ -31,6 +31,12 @@
   .section{margin-top:22px}
   .section>h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 11px}
   .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:13px}
+  #adsRecap{border-top:3px solid var(--gold)} #adsRecap>h3{color:var(--gold)}
+  .roas-lead{border-top:3px solid var(--blue)} .roas-lead>h3{color:var(--blue)}
+  .roas-cand{border-top:3px solid var(--accent)} .roas-cand>h3{color:var(--accent)}
+  .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
+  .adstbl tr.sub2 td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px}
+  .adstbl tr.sub2 td:first-child{padding-left:14px}
   .box h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px;font-weight:600}
   /* CA */
   .ca .row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -171,23 +177,40 @@
     <h2 class="sech" style="margin-top:0">Aujourd'hui — en direct</h2>
     <div class="grid2">
       <div class="box today-hero" id="todayHero"></div>
-      <div class="box" id="adsBox"></div>
+      <div class="box ca"><h3>Chiffre d'affaires (depuis le 15/07)</h3><div id="ca"></div></div>
     </div>
 
     <!-- CUMUL -->
     <h2 class="sech">Cumul depuis le 15 juillet</h2>
     <div class="kpis" id="kpis"></div>
 
-    <!-- CA + LEADS -->
-    <div class="grid2">
-      <div class="box ca"><h3>Chiffre d'affaires (depuis le 15/07)</h3><div id="ca"></div></div>
-      <div class="box"><h3>Leads → Inscrits</h3>
-        <div class="lead-hero" id="leadHero"></div>
-        <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
-          <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
-          <tbody></tbody>
-        </table></div>
-        <p class="hint" style="margin-top:8px">Trié par ROAS (le plus rentable en haut). <span style="color:var(--green)">● ≥2×</span> · <span style="color:var(--gold)">● 1–2×</span> · <span style="color:#ff5c5c">● &lt;1×</span> · <span style="color:var(--muted)">● pas de dépense pub</span></p>
+    <!-- META ADS → ROAS -->
+    <div class="section">
+      <h2>Meta Ads → ROAS</h2>
+      <div class="box" id="adsRecap"></div>
+      <div class="grid2" style="margin-top:14px;align-items:start">
+        <div>
+          <div class="box roas-lead" id="roasLeads"></div>
+          <div class="box" style="margin-top:14px"><h3>Leads → Inscrits</h3>
+            <div class="lead-hero" id="leadHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
+              <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+            <p class="hint" style="margin-top:8px">Trié par ROAS (le plus rentable en haut). <span style="color:var(--green)">● ≥2×</span> · <span style="color:var(--gold)">● 1–2×</span> · <span style="color:#ff5c5c">● &lt;1×</span> · <span style="color:var(--muted)">● pas de dépense pub</span></p>
+          </div>
+        </div>
+        <div>
+          <div class="box roas-cand" id="roasCand"></div>
+          <div class="box" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
+            <div class="lead-hero" id="candHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
+              <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+            <p class="hint" style="margin-top:8px">Trié par ROAS (le plus rentable en haut). <span style="color:var(--green)">● ≥2×</span> · <span style="color:var(--gold)">● 1–2×</span> · <span style="color:#ff5c5c">● &lt;1×</span> · <span style="color:var(--muted)">● pas de dépense pub</span><br>« Insc. » = candidats de cette langue ayant payé une place.</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -476,38 +499,39 @@ function load(){
         +'<div class="split">'+srow('candidat','Candidats',t.buckets.candidat||0,trb.candidat||0)+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
         +(t.buckets.nouveau>0?srow('gold','Nouveaux',t.buckets.nouveau,trb.nouveau):'')+'</div>';
 
-      // ---- Meta Ads -> ROAS ----
-      var a=d.ads||{available:false}, adsEl=document.getElementById('adsBox');
-      function roasRow(label,spendEur,roas){ return '<div class="roasrow"><div class="rl">'+label+'</div><div class="rr"><span class="sp">'+fr(spendEur)+' € dépensés</span><span class="roasbig">'+(roas!=null?roas+'×':'—')+'</span></div></div>'; }
-      if(a.available){
-        var fb=f.revEURByBucket||{lead:0}, tb=t.revEURByBucket||{lead:0};
-        function eur(v){return fr(Math.round(v||0))+' €';}
-        var rate=a.eurRate||1; function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // depense en devise du compte
-        function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
-        function objLabel(o){o=o||'';
-          if(/LEAD/.test(o))return'Leads'; if(/SALE|CONVERSION|CATALOG/.test(o))return'Conversions';
-          if(/TRAFFIC|LINK_CLICKS/.test(o))return'Trafic'; if(/ENGAGEMENT|LIKE/.test(o))return'Engagement/Follow';
-          if(/AWARENESS|REACH/.test(o))return'Notoriété'; if(/VIDEO/.test(o))return'Vidéo';
-          if(/APP/.test(o))return'App'; if(/MESSAGE/.test(o))return'Messages'; return o||'—'; }
-        var roasPubT=a.spendTodayAcq>0?tb.lead/(a.spendTodayAcq*rate):null;
-        var roasPubC=a.spendTotalAcq>0?fb.lead/(a.spendTotalAcq*rate):null;
-        var camps=(a.breakdown||[]).map(function(c){
-          return '<tr class="'+(c.counted?'':'ex')+'"><td>'+c.name+'</td><td>'+objLabel(c.objective)+'</td><td class="num">'+spd(c.spend)+'</td><td>'+(c.counted?'compté':'exclu')+'</td></tr>';
-        }).join('');
-        adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
+      // ---- Meta Ads → ROAS : recap total + Leads (bleu) + Candidats (rouge) ----
+      var a=d.ads||{available:false};
+      var recapEl=document.getElementById('adsRecap'), leadEl=document.getElementById('roasLeads'), candEl=document.getElementById('roasCand');
+      function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // dépense en devise du compte
+      function eur(v){return fr(Math.round(v||0))+' €';}
+      function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
+      if(a.available && a.cat){
+        var C=a.cat;
+        function catTbl(cat){
+          return '<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
+            +'<tr><td>Dépensé</td><td>'+spd(cat.spendToday)+'</td><td>'+spd(cat.spendTotal)+'</td></tr>'
+            +'<tr><td>CA</td><td>'+eur(cat.caToday)+'</td><td>'+eur(cat.caTotal)+'</td></tr>'
+            +'<tr class="roas"><td>ROAS</td><td>'+rx(cat.roasToday)+'</td><td>'+rx(cat.roasTotal)+'</td></tr>'
+            +'</tbody></table>';
+        }
+        recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
           +'<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
-          +'<tr><td>Dépensé (acquisition)</td><td>'+spd(a.spendTodayAcq)+'</td><td>'+spd(a.spendTotalAcq)+'</td></tr>'
-          +'<tr class="sub"><td>total pub (tous objectifs)</td><td>'+spd(a.spendToday)+'</td><td>'+spd(a.spendTotal)+'</td></tr>'
-          +'<tr><td>CA via pubs</td><td>'+eur(tb.lead)+'</td><td>'+eur(fb.lead)+'</td></tr>'
-          +'<tr class="roas"><td>ROAS</td><td>'+rx(roasPubT)+'</td><td>'+rx(roasPubC)+'</td></tr>'
-          +'</tbody></table>'
-          +(camps?'<details class="camps"><summary>Détail par campagne (cumul)</summary><table class="camptbl"><tbody>'+camps+'</tbody></table></details>':'');
+          +'<tr><td>Dépensé (total)</td><td>'+spd(C.total.spendToday)+'</td><td>'+spd(C.total.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont Leads</td><td>'+spd(C.lead.spendToday)+'</td><td>'+spd(C.lead.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont Candidats</td><td>'+spd(C.candidat.spendToday)+'</td><td>'+spd(C.candidat.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont Follow</td><td>'+spd(C.follow.spendToday)+'</td><td>'+spd(C.follow.spendTotal)+'</td></tr>'
+          +'<tr><td>CA total</td><td>'+eur(C.total.caToday)+'</td><td>'+eur(C.total.caTotal)+'</td></tr>'
+          +'<tr class="roas"><td>ROAS global</td><td>'+rx(C.total.roasToday)+'</td><td>'+rx(C.total.roasTotal)+'</td></tr>'
+          +'</tbody></table>';
+        leadEl.innerHTML='<h3>Leads</h3>'+catTbl(C.lead);
+        candEl.innerHTML='<h3>Candidats</h3>'+catTbl(C.candidat);
       } else {
         var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
-        adsEl.innerHTML='<h3>Meta Ads → ROAS</h3>'
+        recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
           +'<p class="hint" style="margin:0 0 4px">Dépenses pub non connectées — entre ta dépense totale depuis le 15/07 :</p>'
           +'<div class="manual"><input id="adSpend" type="number" inputmode="decimal" placeholder="€ dépensés" value="'+saved+'"/><span id="roasOut" class="roasbig">—</span></div>'
           +'<p class="hint" style="margin:2px 0 0">ROAS = CA converti ('+fr(f.revenueEUR)+' €) ÷ dépense.</p>';
+        leadEl.innerHTML=''; candEl.innerHTML='';
         var inp=document.getElementById('adSpend');
         if(inp){ var calc=function(){ var v=parseFloat(inp.value)||0; try{localStorage.setItem('adspend',inp.value||'');}catch(e){} document.getElementById('roasOut').textContent=(v>0?(f.revenueEUR/v).toFixed(2)+'×':'—'); }; inp.addEventListener('input',calc); calc(); }
       }
@@ -538,6 +562,19 @@ function load(){
       var totRoas=(d.ads&&d.ads.roasTotal!=null)?d.ads.roasTotal:null;
       body+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(c.leads)+'</td><td class="num">'+fr(c.inscrits)+'</td><td class="num">'+c.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(totRoas)+'">'+(totRoas!=null?totRoas.toFixed(1)+'×':'—')+'</td></tr>';
       document.querySelector('#convtbl tbody').innerHTML=body;
+
+      // ---- Candidats → Inscrits (ad sets candidature LAL) ----
+      var cdC=d.candidats||{total:0,converted:0,rate:0};
+      document.getElementById('candHero').innerHTML=
+        '<span class="big">'+fr(cdC.total)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(cdC.converted)+'</span>'
+        +'<span class="rate"><span class="rlab">taux</span> '+cdC.rate+' %</span>';
+      var cbc=((d.ads&&d.ads.candidatByCountry)||[]).slice().sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.convRate-a.convRate)||(b.inscrits-a.inscrits); });
+      var cbody=cbc.map(function(r){ var col=roasColor(r.roas);
+        return '<tr><td><span class="dot" style="background:'+col+'"></span>'+r.flag+' '+r.name+'</td><td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+      }).join('');
+      var candTot=(d.ads&&d.ads.cat&&d.ads.cat.candidat)?d.ads.cat.candidat.roasTotal:null;
+      cbody+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(cdC.total)+'</td><td class="num">'+fr(cdC.converted)+'</td><td class="num">'+cdC.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(candTot)+'">'+(candTot!=null?candTot.toFixed(1)+'×':'—')+'</td></tr>';
+      document.querySelector('#candConvtbl tbody').innerHTML=cbody;
 
       // Graphiques
       var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
