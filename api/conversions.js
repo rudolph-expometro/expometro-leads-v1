@@ -222,7 +222,7 @@ export default async function handler(req, res) {
     }
 
     // Candidats Brevo (funnel apply-florence / pubs LAL) : total par langue + nouveaux aujourd'hui
-    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {};
+    const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {}, candidatsByLangCountry = {};
     let candidatsTotal = 0;
     for (const e in candidats) {
       const cd = candidats[e];
@@ -251,7 +251,6 @@ export default async function handler(req, res) {
     const candidatConvByCountry = {};     // pays -> candidats uniques ayant paye
     const candidatConvByLang = zeroLang();     // candidats uniques ayant paye, par langue (table Candidats -> Inscrits)
     const revEURCandidatByLang = zeroLang();   // CA candidat par langue (EUR), pour le ROAS candidats par pays
-    const candidatsByLangCountry = {};         // lang -> pays -> nb candidats (drill-down par ad set)
     const candidatConvByLangCountry = {};      // lang -> pays -> nb convertis
     const revEURCandidatByLangCountry = {};    // lang -> pays -> CA EUR
     const todayRevEUR = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA du jour par source (EUR)
