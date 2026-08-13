@@ -63,7 +63,7 @@ async function brevoContacts(lists) {
       const cs = d.contacts || [];
       for (const c of cs) {
         const e = (c.email || '').trim().toLowerCase();
-        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10), pays: ((c.attributes && c.attributes.PAYS) || '').trim() };
+        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10), pays: ((c.attributes && c.attributes.PAYS) || '').trim(), source: ((c.attributes && c.attributes.UTM_SOURCE) || '').toLowerCase().trim() };
       }
       if (cs.length < 500) break;
       off += 500;
@@ -290,6 +290,7 @@ export default async function handler(req, res) {
     let todayRevEURtot = 0;
     const revEURtotByBucket = { candidat: 0, lead: 0, existant: 0, nouveau: 0 };  // CA total par source (EUR) depuis J1
     const revEURByLang = zeroLang();      // CA lead-bucket par langue (EUR), depuis J1 (pour le ROAS par pays)
+    const salesBySource = {};             // utm_source du contact -> { paid: payeurs uniques, revEUR } (impact ventes par canal, ex. ManyChat)
     const rows = [];
 
     for (const c of paid) {
@@ -323,6 +324,13 @@ export default async function handler(req, res) {
       salesByDay[date] = (salesByDay[date] || 0) + 1;
       revEURByDay[date] = (revEURByDay[date] || 0) + amtEUR;
       if (date === today) { bucketsToday[bucket]++; todayRevEUR[bucket] += amtEUR; todayRevEURtot += amtEUR; }
+
+      // Attribution ventes par SOURCE (utm_source du contact, Candidat prioritaire puis Lead) -> impact ManyChat & co.
+      const _srcC = candidat || lead;
+      const _src = (_srcC && _srcC.source) || '';
+      const _sb = salesBySource[_src] || (salesBySource[_src] = { paid: 0, revEUR: 0, _seen: new Set() });
+      _sb.revEUR += amtEUR;
+      if (email && !_sb._seen.has(email)) { _sb._seen.add(email); _sb.paid++; }
 
       if (lead) {
         if (!seenLeadEmail.has(email)) { inscritsByLang[lead.lang]++; seenLeadEmail.add(email); }
@@ -530,12 +538,17 @@ export default async function handler(req, res) {
       newToday: newCandidatsToday
     };
 
+    // Ventes par source (utm_source) — impact ManyChat & autres canaux. On retire le Set interne.
+    const salesBySourceOut = {};
+    for (const s in salesBySource) salesBySourceOut[s] = { paid: salesBySource[s].paid, revEUR: Math.round(salesBySource[s].revEUR) };
+
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
       updated: new Date().toISOString(),
       since: J1, today,
       communaute,
       candidats: candidatsSummary,
+      salesBySource: salesBySourceOut,
       florence: {
         payments: paid.length,
         artistsTotal: seenArtist.size,

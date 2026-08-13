@@ -51,6 +51,13 @@
   .cand-top{border-top:3px solid var(--accent)} .cand-top>h3{color:var(--accent)}
   #countries .ctry{border-top:3px solid var(--blue)}
   #candidatCountries .ctry{border-top:3px solid var(--accent)}
+  /* Ventes par source */
+  .srctbl{width:100%;border-collapse:collapse;font-size:13px}
+  .srctbl th{text-align:left;color:var(--muted);font-weight:600;padding:2px 6px 6px;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+  .srctbl th.num,.srctbl td.num{text-align:right}
+  .srctbl td{padding:6px;border-top:1px solid var(--line)}
+  .srctbl tr.mc td{color:var(--accent);font-weight:800}
+  .srctbl tr.tot td{font-weight:800;border-top:2px solid var(--line)}
   .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
   .adstbl tr.sub2 td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px}
   .adstbl tr.sub2 td:first-child{padding-left:14px}
@@ -236,6 +243,10 @@
               <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
               <tbody></tbody>
             </table></div>
+          </div>
+          <div class="box cand-top" style="margin-top:14px"><h3>Ventes par source</h3>
+            <div id="salesSource"></div>
+            <p class="hint" style="margin-top:8px">D'où viennent les ventes (via utm_source). ManyChat = ceux qui commentent l'ad → DM → candidature. Compté depuis la pose des liens (12/08).</p>
           </div>
         </div>
       </div>
@@ -580,6 +591,21 @@ function renderCandidatScale(d){
     + list.map(candidatCard).join('');
 }
 
+/* ---- Ventes par source (utm_source) : impact ManyChat & autres canaux ---- */
+function renderSalesSource(d){
+  var el=document.getElementById('salesSource'); if(!el) return;
+  var sbs=d.salesBySource||{};
+  var SRC={ manychat:{lbl:'ManyChat',emo:'🤖'}, popup:{lbl:'Popup → PDV',emo:'🔗'}, email:{lbl:'Email',emo:'✉️'}, '':{lbl:'Direct / ads',emo:'📣'} };
+  var rows=Object.keys(sbs).map(function(s){ var m=SRC[s]||{lbl:s,emo:'•'}; return {s:s,lbl:m.emo+' '+m.lbl,paid:sbs[s].paid||0,rev:sbs[s].revEUR||0}; })
+    .sort(function(a,b){ return (b.rev-a.rev)||(b.paid-a.paid); });
+  if(!rows.length){ el.innerHTML='<p class="hint">Aucune vente attribuée pour l\'instant.</p>'; return; }
+  var tot=rows.reduce(function(s,r){return s+r.rev;},0);
+  el.innerHTML='<table class="srctbl"><thead><tr><th>Source</th><th class="num">Ventes</th><th class="num">CA</th></tr></thead><tbody>'
+    + rows.map(function(r){ return '<tr'+(r.s==='manychat'?' class="mc"':'')+'><td>'+r.lbl+'</td><td class="num">'+fr(r.paid)+'</td><td class="num">'+eurC(r.rev)+'</td></tr>'; }).join('')
+    + '<tr class="tot"><td>TOTAL</td><td class="num"></td><td class="num">'+eurC(tot)+'</td></tr>'
+    + '</tbody></table>';
+}
+
 function load(){
   KEY=KEY||storedKey()||''; if(!KEY) return;
   fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
@@ -666,6 +692,7 @@ function load(){
 
       // ---- Candidats par langue (scaling) ----
       renderCandidatScale(d);
+      renderSalesSource(d);
 
 
       // Leads combiné
