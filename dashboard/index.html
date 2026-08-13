@@ -51,13 +51,15 @@
   .cand-top{border-top:3px solid var(--accent)} .cand-top>h3{color:var(--accent)}
   #countries .ctry{border-top:3px solid var(--blue)}
   #candidatCountries .ctry{border-top:3px solid var(--accent)}
-  /* Ventes par source */
-  .srctbl{width:100%;border-collapse:collapse;font-size:13px}
-  .srctbl th{text-align:left;color:var(--muted);font-weight:600;padding:2px 6px 6px;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
-  .srctbl th.num,.srctbl td.num{text-align:right}
-  .srctbl td{padding:6px;border-top:1px solid var(--line)}
-  .srctbl tr.mc td{color:var(--accent);font-weight:800}
-  .srctbl tr.tot td{font-weight:800;border-top:2px solid var(--line)}
+  /* Ventes via ManyChat */
+  .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mc-cell{background:var(--bg);border-radius:10px;padding:12px 14px}
+  .mc-lab{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .mc-n{font-size:22px;font-weight:800;color:var(--accent);margin-top:4px}
+  .mc-n span{font-size:12px;font-weight:600;color:var(--muted)}
+  .mc-ca{font-size:14px;font-weight:700;margin-top:2px}
+  .srow.sub{padding-left:22px;font-size:12.5px}
+  .srow.sub .sl{color:var(--muted)}
   .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
   .adstbl tr.sub2 td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px}
   .adstbl tr.sub2 td:first-child{padding-left:14px}
@@ -178,6 +180,8 @@
   .chart .lineA{fill:none;stroke:var(--green);stroke-width:2.4}
   .chart .lineP{fill:none;stroke:var(--accent);stroke-width:2.2}
   .chart .dotP{fill:var(--accent)}
+  .chart .lineAds{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-dasharray:5 3}
+  .chart .dotAds{fill:var(--gold)}
   .chart .dotA{fill:var(--green)}
   .chart text{fill:var(--muted);font-size:9.5px;font-family:inherit}
   .pierow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -215,7 +219,7 @@
     <h2 class="sech">Cumul depuis le 15 juillet</h2>
     <div class="cumul-grid">
       <div class="box"><h3>CA &amp; dépense pub par jour</h3>
-        <div class="legend"><span><i style="background:var(--green)"></i>CA encaissé (€)</span><span><i style="background:var(--accent)"></i>Dépense pub (€)</span></div>
+        <div class="legend"><span><i style="background:var(--green)"></i>CA encaissé (€)</span><span><i style="background:var(--gold)"></i>CA via ads (€)</span><span><i style="background:var(--accent)"></i>Dépense pub (€)</span></div>
         <div id="chartCaPub"></div>
       </div>
       <div class="kpis" id="kpis"></div>
@@ -244,9 +248,9 @@
               <tbody></tbody>
             </table></div>
           </div>
-          <div class="box cand-top" style="margin-top:14px"><h3>Ventes par source</h3>
+          <div class="box cand-top" style="margin-top:14px"><h3>Ventes via ManyChat 🤖</h3>
             <div id="salesSource"></div>
-            <p class="hint" style="margin-top:8px">D'où viennent les ventes (via utm_source). ManyChat = ceux qui commentent l'ad → DM → candidature. Compté depuis la pose des liens (12/08).</p>
+            <p class="hint" style="margin-top:8px">Ventes des artistes venus par tes commentaires ManyChat (DM → candidature). Compté depuis la pose des liens (12/08). Pour le CA total des ads → section Meta Ads → ROAS.</p>
           </div>
         </div>
       </div>
@@ -373,19 +377,21 @@ function chartBarsLine(days,bars,bars2,line,line2){
   return s+'</svg>';
 }
 /* ---- Graphique CA encaissé (vert, aire) vs dépense pub (rouge), par jour ---- */
-function chartCaPub(days,ca,pub){
-  ca=ca||[]; pub=pub||[];
+function chartCaPub(days,ca,pub,caAds){
+  ca=ca||[]; pub=pub||[]; caAds=caAds||[];
   var W=740,H=210,pl=40,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
-  var mx=Math.max.apply(null,ca.concat(pub).concat(1)),slot=n>1?iw/(n-1):iw;   // échelle € partagée
+  var mx=Math.max.apply(null,ca.concat(pub).concat(caAds).concat(1)),slot=n>1?iw/(n-1):iw;   // échelle € partagée
   var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
   for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
   function pts(a){return a.map(function(v,i){return [pl+slot*i, pt+ih-ih*(v||0)/mx];});}
   function path(a){return a.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');}
   var pca=pts(ca);
   s+='<path class="area" d="'+path(pca)+' L'+pca[n-1][0].toFixed(1)+' '+(pt+ih)+' L'+pca[0][0].toFixed(1)+' '+(pt+ih)+' Z"/>';
-  s+='<path class="lineP" d="'+path(pts(pub))+'"/>';   // dépense pub (rouge)
-  s+='<path class="lineA" d="'+path(pca)+'"/>';        // CA encaissé (vert)
+  s+='<path class="lineP" d="'+path(pts(pub))+'"/>';    // dépense pub (rouge)
+  s+='<path class="lineAds" d="'+path(pts(caAds))+'"/>'; // CA via ads (or)
+  s+='<path class="lineA" d="'+path(pca)+'"/>';         // CA encaissé total (vert)
   pts(pub).forEach(function(p,i){ if(pub[i]>0) s+='<circle class="dotP" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.2"/>'; });
+  pts(caAds).forEach(function(p,i){ if(caAds[i]>0) s+='<circle class="dotAds" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.2"/>'; });
   pca.forEach(function(p,i){ if(ca[i]>0) s+='<circle class="dotA" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4"/>'; });
   s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+fr(Math.round(mx))+' €</text>';
   var step=Math.ceil(n/9);
@@ -591,19 +597,13 @@ function renderCandidatScale(d){
     + list.map(candidatCard).join('');
 }
 
-/* ---- Ventes par source (utm_source) : impact ManyChat & autres canaux ---- */
-function renderSalesSource(d){
+/* ---- Ventes via ManyChat : Aujourd'hui + Cumulé ---- */
+function mcData(d){ return (d.salesBySource && d.salesBySource.manychat) || {paid:0,revEUR:0,paidToday:0,revEURToday:0}; }
+function renderManychat(d){
   var el=document.getElementById('salesSource'); if(!el) return;
-  var sbs=d.salesBySource||{};
-  var SRC={ manychat:{lbl:'ManyChat',emo:'🤖'}, popup:{lbl:'Popup → PDV',emo:'🔗'}, email:{lbl:'Email',emo:'✉️'}, '':{lbl:'Direct / ads',emo:'📣'} };
-  var rows=Object.keys(sbs).map(function(s){ var m=SRC[s]||{lbl:s,emo:'•'}; return {s:s,lbl:m.emo+' '+m.lbl,paid:sbs[s].paid||0,rev:sbs[s].revEUR||0}; })
-    .sort(function(a,b){ return (b.rev-a.rev)||(b.paid-a.paid); });
-  if(!rows.length){ el.innerHTML='<p class="hint">Aucune vente attribuée pour l\'instant.</p>'; return; }
-  var tot=rows.reduce(function(s,r){return s+r.rev;},0);
-  el.innerHTML='<table class="srctbl"><thead><tr><th>Source</th><th class="num">Ventes</th><th class="num">CA</th></tr></thead><tbody>'
-    + rows.map(function(r){ return '<tr'+(r.s==='manychat'?' class="mc"':'')+'><td>'+r.lbl+'</td><td class="num">'+fr(r.paid)+'</td><td class="num">'+eurC(r.rev)+'</td></tr>'; }).join('')
-    + '<tr class="tot"><td>TOTAL</td><td class="num"></td><td class="num">'+eurC(tot)+'</td></tr>'
-    + '</tbody></table>';
+  var mc=mcData(d);
+  function cell(lab,n,ca){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n">'+fr(n)+' <span>vente'+(n>1?'s':'')+'</span></div><div class="mc-ca">'+eurC(ca||0)+'</div></div>'; }
+  el.innerHTML='<div class="mc-grid">'+cell('Aujourd\'hui',mc.paidToday,mc.revEURToday)+cell('Cumulé',mc.paid,mc.revEUR)+'</div>';
 }
 
 function load(){
@@ -638,15 +638,17 @@ function load(){
       // Démarre au 18/07 : avant, c'est le bruit du lancement (pas représentatif).
       var CAPUB_START='2026-07-18';
       var ddC=(d.daily||[]).filter(function(x){return x.date>=CAPUB_START;}), dslC=ddC.map(function(x){return x.date;});
-      document.getElementById('chartCaPub').innerHTML=chartCaPub(dslC, ddC.map(function(x){return x.caEUR||0;}), ddC.map(function(x){return x.pubEUR||0;}));
+      document.getElementById('chartCaPub').innerHTML=chartCaPub(dslC, ddC.map(function(x){return x.caEUR||0;}), ddC.map(function(x){return x.pubEUR||0;}), ddC.map(function(x){return x.caAdsEUR||0;}));
 
       // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
       var t=d.todayStats, trb=t.revEURByBucket||{candidat:0,lead:0,existant:0,nouveau:0};
+      var mcT=mcData(d);
       function srow(dot,label,n,eur){ return '<div class="srow"><span class="sl"><i class="dot '+dot+'"></i>'+label+'</span><span class="sv">'+fr(n)+' vente'+(n>1?'s':'')+' · '+fr(eur)+' €</span></div>'; }
+      function srowSub(label,n,eur){ n=n||0; return '<div class="srow sub"><span class="sl">'+label+'</span><span class="sv">'+fr(n)+' vente'+(n>1?'s':'')+' · '+fr(eur||0)+' €</span></div>'; }
       document.getElementById('todayHero').innerHTML=
         '<h3>Chiffres du jour</h3>'
         +'<div class="lead-hero"><span class="big">≈ '+fr(t.revenueEUR)+' €</span><span class="rate"><span class="rlab">ventes</span> '+fr(t.payments)+'</span></div>'
-        +'<div class="split">'+srow('candidat','Candidats',t.buckets.candidat||0,trb.candidat||0)+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
+        +'<div class="split">'+srow('candidat','Candidats',t.buckets.candidat||0,trb.candidat||0)+srowSub('↳ 🤖 Via ManyChat',mcT.paidToday,mcT.revEURToday)+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
         +(t.buckets.nouveau>0?srow('gold','Nouveaux',t.buckets.nouveau,trb.nouveau):'')+'</div>';
 
       // ---- Meta Ads → ROAS : recap total + Leads (bleu) + Candidats (rouge) ----
@@ -692,7 +694,7 @@ function load(){
 
       // ---- Candidats par langue (scaling) ----
       renderCandidatScale(d);
-      renderSalesSource(d);
+      renderManychat(d);
 
 
       // Leads combiné
@@ -730,7 +732,10 @@ function load(){
 
       // Graphiques
       var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
-      document.getElementById('chartLeads').innerHTML=chartBarsLine(dsl, dd.map(function(x){return x.leads;}), dd.map(function(x){return x.candidats||0;}), dd.map(function(x){return x.conv;}), dd.map(function(x){return x.sales;}));
+      // Graphe leads/candidats/conversions : démarre au 22/07 (avant = bruit de lancement). Le cumul artistes garde tout l'historique.
+      var LC_START='2026-07-22';
+      var ddL=dd.filter(function(x){return x.date>=LC_START;}), dslL=ddL.map(function(x){return x.date;});
+      document.getElementById('chartLeads').innerHTML=chartBarsLine(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}), ddL.map(function(x){return x.conv;}), ddL.map(function(x){return x.sales;}));
       var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
       document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
 

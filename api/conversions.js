@@ -275,6 +275,7 @@ export default async function handler(req, res) {
     const convByDay = {};                 // conversions (leads qui paient) par jour
     const salesByDay = {};                // TOTAL des ventes par jour (tous buckets)
     const revEURByDay = {};               // CA (EUR) par jour, pour le graphe CA vs Pub
+    const revEURAdsByDay = {};            // CA (EUR) par jour venant des ads (buckets lead + candidat)
     const firstDate = {};                 // email -> date du 1er paiement (pour cumul artistes)
     const artistAgg = {};                 // email -> { expos, amount, currency, bucket }
     const artists = { first: 0, recurring: 0 };
@@ -323,14 +324,16 @@ export default async function handler(req, res) {
       revEURtotByBucket[bucket] += amtEUR;
       salesByDay[date] = (salesByDay[date] || 0) + 1;
       revEURByDay[date] = (revEURByDay[date] || 0) + amtEUR;
+      if (bucket === 'lead' || bucket === 'candidat') revEURAdsByDay[date] = (revEURAdsByDay[date] || 0) + amtEUR;
       if (date === today) { bucketsToday[bucket]++; todayRevEUR[bucket] += amtEUR; todayRevEURtot += amtEUR; }
 
       // Attribution ventes par SOURCE (utm_source du contact, Candidat prioritaire puis Lead) -> impact ManyChat & co.
       const _srcC = candidat || lead;
       const _src = (_srcC && _srcC.source) || '';
-      const _sb = salesBySource[_src] || (salesBySource[_src] = { paid: 0, revEUR: 0, _seen: new Set() });
+      const _sb = salesBySource[_src] || (salesBySource[_src] = { paid: 0, revEUR: 0, paidToday: 0, revEURToday: 0, _seen: new Set(), _seenT: new Set() });
       _sb.revEUR += amtEUR;
       if (email && !_sb._seen.has(email)) { _sb._seen.add(email); _sb.paid++; }
+      if (date === today) { _sb.revEURToday += amtEUR; if (email && !_sb._seenT.has(email)) { _sb._seenT.add(email); _sb.paidToday++; } }
 
       if (lead) {
         if (!seenLeadEmail.has(email)) { inscritsByLang[lead.lang]++; seenLeadEmail.add(email); }
@@ -370,6 +373,7 @@ export default async function handler(req, res) {
       date: d, leads: leadsByDay[d] || 0, candidats: candidatsByDay[d] || 0,
       conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0,
       caEUR: Math.round(revEURByDay[d] || 0),                                  // CA du jour en €
+      caAdsEUR: Math.round(revEURAdsByDay[d] || 0),                            // CA du jour venant des ads (leads+candidats)
       pubEUR: Math.round((_spendByDay[d] || 0) * _eurRateSpend)               // depense pub du jour en €
     }));
 
@@ -540,7 +544,7 @@ export default async function handler(req, res) {
 
     // Ventes par source (utm_source) — impact ManyChat & autres canaux. On retire le Set interne.
     const salesBySourceOut = {};
-    for (const s in salesBySource) salesBySourceOut[s] = { paid: salesBySource[s].paid, revEUR: Math.round(salesBySource[s].revEUR) };
+    for (const s in salesBySource) salesBySourceOut[s] = { paid: salesBySource[s].paid, revEUR: Math.round(salesBySource[s].revEUR), paidToday: salesBySource[s].paidToday, revEURToday: Math.round(salesBySource[s].revEURToday) };
 
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
