@@ -13,27 +13,31 @@ function unescapeHtml(s) {
     .replace(/&amp;/g, '&');
 }
 
+// Helper réutilisable (aussi importé par api/ask.js pour donner les chiffres LIVE à l'assistant).
+export async function getFlorenceStats() {
+  const r = await fetch(SRC, { headers: { 'User-Agent': 'Mozilla/5.0 (ExpoMetro ticker)' } });
+  const html = await r.text();
+  const m = html.match(/data-page="([^"]*)"/);
+  if (!m) throw new Error('data-page not found');
+  const data = JSON.parse(unescapeHtml(m[1]));
+  const byCountry = data.props && data.props.modal && data.props.modal.props
+    && data.props.modal.props.itemListByCountry;
+  if (!byCountry) throw new Error('itemListByCountry not found');
+
+  const artists = [];
+  for (const cc in byCountry) {
+    for (const a of byCountry[cc]) {
+      if (a && a.display_name) artists.push([a.display_name, a.country_code || cc]);
+    }
+  }
+  return { artists, count: artists.length, countries: new Set(artists.map((a) => a[1])).size };
+}
+
 export default async function handler(req, res) {
   try {
-    const r = await fetch(SRC, { headers: { 'User-Agent': 'Mozilla/5.0 (ExpoMetro ticker)' } });
-    const html = await r.text();
-    const m = html.match(/data-page="([^"]*)"/);
-    if (!m) throw new Error('data-page not found');
-    const data = JSON.parse(unescapeHtml(m[1]));
-    const byCountry = data.props && data.props.modal && data.props.modal.props
-      && data.props.modal.props.itemListByCountry;
-    if (!byCountry) throw new Error('itemListByCountry not found');
-
-    const artists = [];
-    for (const cc in byCountry) {
-      for (const a of byCountry[cc]) {
-        if (a && a.display_name) artists.push([a.display_name, a.country_code || cc]);
-      }
-    }
-    const countries = new Set(artists.map((a) => a[1])).size;
-
+    const { artists, count, countries } = await getFlorenceStats();
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
-    res.status(200).json({ artists, count: artists.length, countries });
+    res.status(200).json({ artists, count, countries });
   } catch (e) {
     // Never fail the page: the front-end keeps its baked fallback list.
     res.setHeader('Cache-Control', 's-maxage=120');
