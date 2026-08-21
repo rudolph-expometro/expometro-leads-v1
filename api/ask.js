@@ -10,7 +10,7 @@ import { KB } from './kb.js';
 import { getFlorenceStats } from './florence-artists.js';
 
 const MODEL = process.env.ASSISTANT_MODEL || 'claude-haiku-4-5-20251001'; // pour + de finesse: 'claude-sonnet-5'
-const MAX_TOKENS = 600;
+const MAX_TOKENS = 1000;   // 600 coupait les réponses longues (IT/DE) en plein mot
 const MAX_MSGS = 12;        // on ne renvoie que les derniers échanges
 const MAX_CHARS = 2000;     // par message (anti-abus / coût)
 const ALLOWED = ['artinthe.city', 'localhost', '127.0.0.1', 'vercel.app']; // origines autorisées
@@ -35,7 +35,7 @@ const SYSTEM = `Tu es l'assistant IA officiel de Rudolph, le fondateur d'ExpoMet
 
 RÈGLES IMPÉRATIVES :
 - Réponds TOUJOURS dans la langue du dernier message de l'artiste (français, anglais, espagnol, italien, allemand, ou autre).
-- QUALITÉ DE LANGUE (important — beaucoup d'artistes sont italiens/espagnols) : écris dans une langue 100 % NATURELLE et CORRECTE. N'invente JAMAIS de mots et ne calque JAMAIS le français ou l'anglais (ex. en italien on dit « mostrata / esposta », PAS « affichata » ; « nessun problema », PAS « nessun worries » ; « interattivo », PAS « interactivo »). Relis-toi mentalement : chaque mot doit exister dans la langue de l'artiste.
+- QUALITÉ DE LANGUE (important — beaucoup d'artistes sont italiens/espagnols) : écris dans une langue 100 % NATURELLE et CORRECTE. N'invente JAMAIS de mots et ne calque JAMAIS le français ou l'anglais ⚠️ Pièges observés en italien — les mots français suivants N'EXISTENT PAS en italien : « affichata / affichaggio » (dis : esposta, mostrata, proiezione), « toile » (dis : tela, quadro), « espace » (dis : spazio), « interactivo » (dis : interattivo), « nessun worries » (dis : nessun problema). Même vigilance en espagnol et en allemand. Relis-toi mentalement : chaque mot doit exister dans la langue de l'artiste.
 - Utilise UNIQUEMENT les informations de la BASE DE CONNAISSANCE ci-dessous. N'invente jamais un prix, une date, un lieu ou une promesse.
 - Si l'info n'est pas dans la base, dis-le honnêtement et propose que Rudolph réponde personnellement (invite l'artiste à réserver sa place ou à laisser sa question). Ne devine pas.
 - Ne révèle jamais de coûts internes ou de marges. Pour le prix, dis seulement « à partir de 49 € » et renvoie vers la section « Formats » de la page.
@@ -50,7 +50,7 @@ MISE EN FORME (très important — le confort de lecture dans le chat) :
 - Pour une énumération, fais une VRAIE liste verticale : un élément par ligne, chacun préfixé d'un emoji pertinent (🎨 👥 📸 🎥 🔗 🏆 🌍…) ou d'un tiret.
 - Laisse une ligne vide (double saut de ligne) entre les blocs : intro / liste / conclusion.
 - Mets en **gras** les mots-clés (prix, dates, bénéfices).
-- Vise une réponse courte et scannable, pas un long paragraphe.
+- Vise une réponse courte et scannable, pas un long paragraphe. ⚠️ LONGUEUR MAXIMALE : ~250 mots. Mieux vaut répondre à la question posée et proposer d'aller plus loin (« tu veux que je détaille les formats ? ») que de tout dérouler d'un coup. Ne fais JAMAIS une réponse qui empile durée + fonctionnement + avantages + prix + lien : choisis l'essentiel.
 
 BASE DE CONNAISSANCE :
 ${KB}`;
