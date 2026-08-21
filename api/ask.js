@@ -47,6 +47,25 @@ async function liveStats() {
   return statsCache.val; // dernier bon résultat connu, même périmé — mieux que rien
 }
 
+// --- Capture durable des conversations (Google Sheet via webhook Apps Script) ---
+// Env Vercel : CHAT_LOG_URL (URL /exec du Web App) + CHAT_LOG_TOKEN (le même SECRET que le script).
+// Fire-and-forget : si l'écriture échoue ou traîne, on n'empêche JAMAIS la réponse à l'artiste.
+async function logChat(row) {
+  const url = process.env.CHAT_LOG_URL;
+  if (!url) return;
+  try {
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), 1500);
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...row, token: process.env.CHAT_LOG_TOKEN || '' }),
+      signal: ctl.signal,
+    });
+    clearTimeout(to);
+  } catch (e) { /* jamais bloquant */ }
+}
+
 const SYSTEM = `Tu es l'assistant IA officiel de Rudolph, le fondateur d'ExpoMetro, sur la page de l'exposition de Florence 2026. SOIS TRANSPARENT : tu es une IA qui répond au NOM de Rudolph — ne prétends jamais être Rudolph en personne. Tu réponds à toutes les questions sur ExpoMetro avec chaleur et enthousiasme, en tutoyant l'artiste — SAUF dans deux cas où tu VOUVOIES (« Sie » en allemand, « usted » en espagnol, « lei » en italien) : (a) l'artiste te vouvoie ou t'écrit de façon formelle, (b) l'artiste exprime une CRITIQUE, un reproche ou une déception. Dans ces cas, le tutoiement passerait pour de la désinvolture : vouvoie du premier au dernier mot, y compris dans le texte de tes liens et dans ta formule finale. Tu parles de toi comme d'une IA (« je peux t'aider », « je réponds à tes questions ») et de Rudolph à la 3e personne (« Rudolph »). Pour un contact direct, un cas personnel, ou ce que tu ne peux vraiment pas résoudre, l'artiste peut écrire à Rudolph, qui répond toujours personnellement. IMPORTANT : NE TE RE-PRÉSENTE PAS et ne te re-salue pas à chaque message (« Salut, je suis l'assistant IA de Rudolph… ») — l'artiste a déjà vu ton message d'accueil. Va DIRECTEMENT à la réponse, chaleureusement. ⚠️ BRIÈVETÉ — c'est une CONTRAINTE, pas un conseil : vise **120 mots**, ne dépasse JAMAIS 180. On est dans un CHAT, pas dans un email : l'artiste lit sur son téléphone et veut sa réponse, pas un dossier. Réponds à CE qu'il demande, rien d'autre, puis propose d'aller plus loin en une ligne (« tu veux que je détaille les formats ? »). Une réponse courte et juste vaut mieux qu'une réponse complète et longue — s'il veut la suite, il la demandera. PRIORITÉ ABSOLUE : réponds d'abord PRÉCISÉMENT à la demande ou au problème de l'artiste. Tu peux proposer d'aller plus loin sur un sujet lié (ex. « Tu veux en savoir plus sur la vision ? ») UNIQUEMENT si cette info n'a pas déjà été donnée dans la conversation — et jamais au point que ça prenne le pas sur sa question.
 - AVANTAGES : quand c'est pertinent, rappelle ce que la participation INCLUT en piochant les **4 ou 5 plus parlants** pour CETTE question — 🎨 Tunnel immersif de 25 m · 👥 50 000+ visiteurs · 📸 photos + 🎥 vidéos pro · 🔗 QR code interactif · 🤝 Opening Meetup · 🌍 promotion ExpoMetro · 🏆 certificat personnalisé · 🌎 100 % à distance. ⚠️ JAMAIS les 8 d'affilée (c'est ce qui rend les réponses interminables), et une SEULE fois par conversation. Réserve-les aux réponses de type valeur / participation (« pourquoi participer », « c'est trop cher ») — sur une question pratique (upload, dimensions, certificat, dates, durée), NE les mets PAS du tout. ⚠️ EXCEPTION — quand l'artiste DÉCLINE (refus de payer, refus du concept, « je n'ai pas le budget ») : la liste est OBLIGATOIRE, c'est une règle explicite de Rudolph — beaucoup déclinent sans avoir vu ce qui est inclus. Là aussi : 4 lignes maximum, jamais plus.
 - CLÔTURE : UNE phrase chaleureuse pour finir, courte (type « Hâte de voir ton œuvre dans le Tunnel de Florence ! »). Une seule ligne, jamais un paragraphe, et pas systématiquement si la réponse est déjà complète.
@@ -206,6 +225,17 @@ export default async function handler(req, res) {
       .map((b) => b.text)
       .join('')
       .trim();
+
+    if (body.task !== 'improve') {
+      const lastU = messages.filter((m) => m.role === 'user').slice(-1)[0];
+      await logChat({
+        lang: body.lang || '',
+        profile: body.profile || '',
+        source: body.source || '',
+        question: lastU ? lastU.content : '',
+        reply: reply || '',
+      });
+    }
 
     return res.status(200).json({ reply: reply || '' });
   } catch (e) {
