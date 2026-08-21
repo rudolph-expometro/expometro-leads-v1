@@ -14,6 +14,24 @@ const MAX_TOKENS = 1000;   // 600 coupait les réponses longues (IT/DE) en plein
 const MAX_MSGS = 12;        // on ne renvoie que les derniers échanges
 const MAX_CHARS = 2000;     // par message (anti-abus / coût)
 const ALLOWED = ['artinthe.city', 'localhost', '127.0.0.1', 'vercel.app']; // origines autorisées
+const RL_MAX = Number(process.env.CHAT_RL_MAX || 30);        // messages max par IP...
+const RL_WINDOW = Number(process.env.CHAT_RL_WINDOW || 15) * 60000; // ...sur cette fenêtre (min)
+const DAY_MAX = Number(process.env.CHAT_DAY_MAX || 3000);    // plafond global/jour = disjoncteur de coût
+
+// Compteurs en mémoire. ⚠️ Best effort : Vercel peut lancer plusieurs instances, chacune a les siens.
+// Ça n'arrête pas une attaque distribuée, mais ça arrête le cas réel (un onglet qui boucle, un script naïf).
+const hits = new Map();
+let day = { at: 0, n: 0 };
+function tooMany(ip, now) {
+  const dayStart = Math.floor(now / 86400000);
+  if (day.at !== dayStart) day = { at: dayStart, n: 0 };
+  if (++day.n > DAY_MAX) return 'daily';
+  if (hits.size > 5000) hits.clear();                        // garde-fou mémoire
+  const arr = (hits.get(ip) || []).filter((t) => now - t < RL_WINDOW);
+  arr.push(now);
+  hits.set(ip, arr);
+  return arr.length > RL_MAX ? 'ip' : null;
+}
 const STATS_TTL = 30 * 60 * 1000; // 30 min : le compteur bouge lentement, on évite un fetch par message
 
 // Chiffres LIVE (artistes + pays) calculés automatiquement depuis la page publique de l'expo.
@@ -36,7 +54,7 @@ const SYSTEM = `Tu es l'assistant IA officiel de Rudolph, le fondateur d'ExpoMet
 RÈGLES IMPÉRATIVES :
 - LECTURE DU MESSAGE (piège fréquent) : un message COURT, sec, laconique ou ironique (« ok », « oui je sais », « basta pagare », « ah d'accord ») n'est PAS un accord ni un feu vert. Ne réponds JAMAIS « Parfait ! » / « Super ! » et n'envoie JAMAIS réserver sur cette base. Détecte l'ironie et la désillusion, et réponds au FOND de ce qui est exprimé. En cas de doute, demande gentiment ce qu'il voulait dire plutôt que de supposer.
 - Réponds TOUJOURS dans la langue du dernier message de l'artiste (français, anglais, espagnol, italien, allemand, ou autre).
-- QUALITÉ DE LANGUE (important — beaucoup d'artistes sont italiens/espagnols) : écris dans une langue 100 % NATURELLE et CORRECTE. N'invente JAMAIS de mots et ne calque JAMAIS le français ou l'anglais ⚠️ Pièges observés en italien — les mots français suivants N'EXISTENT PAS en italien : « affichata / affichaggio » (dis : esposta, mostrata, proiezione), « toile » (dis : tela, quadro), « espace » (dis : spazio), « interactivo » (dis : interattivo), « nessun worries » (dis : nessun problema). Même vigilance en espagnol et en allemand. Relis-toi mentalement : chaque mot doit exister dans la langue de l'artiste.
+- QUALITÉ DE LANGUE (important — beaucoup d'artistes sont italiens, espagnols ou allemands) : écris comme un locuteur NATIF, dans une langue simple et parfaitement correcte. N'emploie que des mots qui existent réellement dans cette langue. Pour l'emplacement réservé, dis « posto » (IT) / « plaza » (ES) / « Platz » (DE) ; pour l'action de montrer l'œuvre, dis « esporre / mostrare » (IT), « mostrar / exponer » (ES), « zeigen / ausstellen » (DE). Relis-toi avant d'envoyer.
 - Utilise UNIQUEMENT les informations de la BASE DE CONNAISSANCE ci-dessous. N'invente jamais un prix, une date, un lieu ou une promesse.
 - Si l'info n'est pas dans la base, dis-le honnêtement et propose que Rudolph réponde personnellement (invite l'artiste à réserver sa place ou à laisser sa question). Ne devine pas.
 - Ne révèle jamais de coûts internes ou de marges. Pour le prix, dis seulement « à partir de 49 € » et renvoie vers la section « Formats » de la page.
@@ -67,6 +85,13 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: 'forbidden' });
   }
 
+  const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const over = tooMany(ip, Date.now());
+  if (over) {
+    console.warn('[CHAT-LIMIT]', over, ip);
+    return res.status(429).json({ error: 'rate_limited' });
+  }
+
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) {
     return res.status(500).json({ error: 'not_configured' });
@@ -90,9 +115,8 @@ export default async function handler(req, res) {
   }
 
   // Mode "improve" : reformuler le message de l'artiste avant l'escalade vers Rudolph.
-  let sysPrompt = body.task === 'improve'
-    ? "Tu aides un artiste à reformuler le message qu'il s'apprête à envoyer à l'équipe ExpoMetro. Réécris son message pour qu'il soit clair, poli et complet, en gardant EXACTEMENT sa langue et son intention d'origine. Ne réponds PAS à sa question, n'ajoute aucun commentaire ni guillemets : renvoie UNIQUEMENT le message reformulé."
-    : SYSTEM;
+  const IMPROVE = "Tu aides un artiste à reformuler le message qu'il s'apprête à envoyer à l'équipe ExpoMetro. Réécris son message pour qu'il soit clair, poli et complet, en gardant EXACTEMENT sa langue et son intention d'origine. Ne réponds PAS à sa question, n'ajoute aucun commentaire ni guillemets : renvoie UNIQUEMENT le message reformulé.";
+  let sysExtra = ''; // ajouts variables (compteur live, profil) — JAMAIS dans le bloc mis en cache
   // Contexte live : le compteur d'artistes lu sur la page → l'IA peut citer le VRAI chiffre du moment.
   if (body.task !== 'improve') {
     let a = Math.round(Number(body.ctx && body.ctx.artists));
@@ -102,11 +126,11 @@ export default async function handler(req, res) {
       if (live) { a = live.count; c = live.countries; }
     }
     if (a > 0 && a < 100000 && c > 0 && c < 300) {
-      sysPrompt += "\n\nCONTEXTE LIVE (chiffres RÉELS à cet instant, n'invente JAMAIS d'autres chiffres). ⚠️ Dès que tu évoques l'objectif des 500 artistes ou la 2e journée, CITE ces chiffres — c'est concret et ça crée l'élan collectif : " + a + " artistes de " + c + " pays sont déjà inscrits pour Florence.";
+      sysExtra += "\n\nCONTEXTE LIVE (chiffres RÉELS à cet instant, n'invente JAMAIS d'autres chiffres). ⚠️ Dès que tu évoques l'objectif des 500 artistes ou la 2e journée, CITE ces chiffres — c'est concret et ça crée l'élan collectif : " + a + " artistes de " + c + " pays sont déjà inscrits pour Florence.";
       if (a >= 500) {
-        sysPrompt += " ✅ Le cap des 500 artistes est ATTEINT → la 2e journée (29 novembre) est donc CONFIRMÉE. Annonce-le comme une BONNE NOUVELLE (« on passe d'1 à 2 journées entières, soit 100 000 visiteurs ! ») et ne dis PLUS « si on atteint 500 ».";
+        sysExtra += " ✅ Le cap des 500 artistes est ATTEINT → la 2e journée (29 novembre) est donc CONFIRMÉE. Annonce-le comme une BONNE NOUVELLE (« on passe d'1 à 2 journées entières, soit 100 000 visiteurs ! ») et ne dis PLUS « si on atteint 500 ».";
       } else {
-        sysPrompt += " (Cap des 500 pas encore atteint : garde le conditionnel « si on atteint 500 artistes avant le 10 sept, une 2e journée s'ajoute le 29 nov ».)";
+        sysExtra += " (Cap des 500 pas encore atteint : garde le conditionnel « si on atteint 500 artistes avant le 10 sept, une 2e journée s'ajoute le 29 nov ».)";
       }
     }
   }
@@ -114,9 +138,9 @@ export default async function handler(req, res) {
   // Contexte profil : nouveau vs déjà réservé (choisi via les 2 branches du chat).
   if (body.task !== 'improve') {
     if (body.profile === 'booked') {
-      sysPrompt += "\n\nCONTEXTE : l'artiste a indiqué qu'il a DÉJÀ réservé sa place → NE lui dis pas de réserver ; aide-le comme un membre (compte « Mes œuvres », envoi/modif d'œuvre, infos pratiques de l'expo).";
+      sysExtra += "\n\nCONTEXTE : l'artiste a indiqué qu'il a DÉJÀ réservé sa place → NE lui dis pas de réserver ; aide-le comme un membre (compte « Mes œuvres », envoi/modif d'œuvre, infos pratiques de l'expo).";
     } else if (body.profile === 'new') {
-      sysPrompt += "\n\nCONTEXTE : l'artiste DÉCOUVRE ExpoMetro (nouveau) → explique, rassure, et invite gentiment à réserver quand c'est pertinent.";
+      sysExtra += "\n\nCONTEXTE : l'artiste DÉCOUVRE ExpoMetro (nouveau) → explique, rassure, et invite gentiment à réserver quand c'est pertinent.";
     }
   }
 
@@ -134,7 +158,22 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system: sysPrompt, messages }),
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        // Les modèles Sonnet/Opus réfléchissent par défaut : sur un chat de support c'est inutile,
+        // et ça consomme le budget de sortie (réponse coupée). Haiku n'accepte pas ce paramètre.
+        ...(/haiku/.test(MODEL) ? {} : { thinking: { type: 'disabled' } }),
+        // Cache du prompt : le bloc stable (persona + base de connaissance) est facturé 10 % en relecture.
+        // Il doit rester IDENTIQUE d'un appel à l'autre — d'où la séparation avec sysExtra.
+        system: body.task === 'improve'
+          ? IMPROVE
+          : [
+              { type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral', ttl: '1h' } },
+              ...(sysExtra ? [{ type: 'text', text: sysExtra }] : []),
+            ],
+        messages,
+      }),
     });
 
     if (!r.ok) {
@@ -145,6 +184,12 @@ export default async function handler(req, res) {
     }
 
     const data = await r.json();
+    if (data && data.usage) {
+      console.log('[CHAT-USAGE]', 'in=' + data.usage.input_tokens,
+        'cache_write=' + (data.usage.cache_creation_input_tokens || 0),
+        'cache_read=' + (data.usage.cache_read_input_tokens || 0),
+        'out=' + data.usage.output_tokens);
+    }
     const reply = (data && Array.isArray(data.content) ? data.content : [])
       .filter((b) => b && b.type === 'text')
       .map((b) => b.text)
