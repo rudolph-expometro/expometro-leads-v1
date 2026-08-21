@@ -197,11 +197,11 @@
     + '.emc-form .emc-fsend:disabled{opacity:.6}'
     + '.emc-form .emc-fcancel{background:transparent;color:#9aa4b2;border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:9px 15px;font-size:13.5px;cursor:pointer;font-family:inherit}'
     + '#emc-foot{flex:0 0 auto;border-top:1px solid rgba(255,255,255,.08);padding:10px;display:flex;gap:8px;background:#12161f}'
-    + '#emc-in{flex:1;background:#1e242f;border:1px solid rgba(255,255,255,.10);color:#e7ebf2;border-radius:12px;padding:10px 12px;font-size:14px;resize:none;max-height:90px;font-family:inherit;outline:none}'
+    + '#emc-in{flex:1 1 auto;min-width:0;box-sizing:border-box;background:#1e242f;border:1px solid rgba(255,255,255,.10);color:#e7ebf2;border-radius:12px;padding:10px 12px;font-size:16px;resize:none;max-height:90px;font-family:inherit;outline:none}'
     + '#emc-in::placeholder{color:#8a93a6}'
     + '#emc-send{background:' + ACCENT + ';border:none;border-radius:12px;width:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}'
     + '#emc-send:disabled{opacity:.5;cursor:default}#emc-send svg{width:20px;height:20px;stroke:#fff}'
-    + '@media(max-width:480px){#emc-panel{top:0;left:0;right:0;bottom:0;width:auto;height:auto;max-width:none;max-height:none;border-radius:0}#emc-btn{bottom:20px}}';
+    + '@media(max-width:480px){#emc-panel{top:0;left:0;right:0;bottom:0;width:auto;height:auto;max-width:none;max-height:none;border-radius:0}}';
   var style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
 
   // ---------- DOM ----------
