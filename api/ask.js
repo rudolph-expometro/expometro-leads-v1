@@ -144,6 +144,16 @@ export default async function handler(req, res) {
     }
   }
 
+  // Rappel de langue, placé APRÈS la base de connaissance (c'est ce que le modèle lit en dernier).
+  // Sans lui, une KB 100 % française fait répondre en français à un artiste qui écrit en anglais
+  // (mesuré : 5 réponses sur 6 en français ; avec le rappel : 0 sur 6).
+  // ⚠️ Il doit rester dans le bloc NON caché, sinon il casse le préfixe de cache.
+  if (body.task !== 'improve') {
+    sysExtra += "\n\n⚠️ RAPPEL FINAL, le plus important : la base de connaissance ci-dessus est rédigée en FRANÇAIS pour TOI, "
+      + "ce n'est pas la langue de la réponse. Écris ta réponse ENTIÈREMENT dans la langue du DERNIER message de l'artiste, "
+      + "et reformule toujours l'information avec tes propres mots dans cette langue — ne recopie jamais une phrase de la base telle quelle.";
+  }
+
   // Log léger pour analyse (questions récurrentes / nouvelles demandes) — visible dans les logs Vercel.
   if (body.task !== 'improve') {
     const lastU = messages.filter((m) => m.role === 'user').slice(-1)[0];
