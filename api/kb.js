@@ -130,7 +130,8 @@ Oui, un artiste peut tout à fait exposer PLUSIEURS œuvres différentes à Flor
 Question fréquente. Réponds ainsi :
 - Par défaut, on n'ajoute AUCUN texte sur les œuvres : le but est un magnifique « Wall of Art » avec le moins de texte possible, pour que les œuvres aient un impact visuel maximal.
 - MAIS ton nom n'est pas perdu, au contraire : chaque œuvre collective / board porte un QR code → en le scannant, les visiteurs accèdent à ton art en ligne, avec un lien direct vers ton site et tes réseaux. C'est ça qui relie chaque œuvre à son artiste.
-- Et si tu tiens à voir ton nom / ta signature sur l'image : tu peux l'ajouter TOI-MÊME directement sur ta photo avant de nous l'envoyer.
+- Point à ne PAS oublier ici (c'est un vrai argument) : via ce QR code, l'œuvre reste accessible EN LIGNE bien après l'expo physique de Florence, pour une durée indéterminée — l'expérience se prolonge donc au-delà de l'événement.
+- Et si l'artiste tient à voir son nom, sa signature ou le TITRE de l'œuvre sur l'image elle-même : il peut l'ajouter LUI-MÊME sur sa photo avant de l'enregistrer.
 
 ## PROBLÈME DE PAIEMENT & RÉSERVER PLUSIEURS PLACES (aide au checkout — très rassurant)
 Si l'artiste est bloqué au paiement (ex. Bancontact / carte refusée, banque qui bloque), rassure-le d'abord (« pas de panique, je te guide ») puis explique les étapes :
