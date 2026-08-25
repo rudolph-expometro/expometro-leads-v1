@@ -606,17 +606,19 @@ function renderCandidatScale(d){
 /* ---- Ventes via ManyChat : Aujourd'hui + Cumulé ---- */
 function mcData(d){ return (d.salesBySource && d.salesBySource.manychat) || {paid:0,revEUR:0,paidToday:0,revEURToday:0}; }
 function bioData(d){ return (d.salesBySource && d.salesBySource.instagram) || {paid:0,revEUR:0,paidToday:0,revEURToday:0}; }
+function candCount(d,src){ return { total:(d.candidatsBySource&&d.candidatsBySource[src])||0, today:(d.candidatsBySourceToday&&d.candidatsBySourceToday[src])||0 }; }
+function candBadge(cc){ return '<div style="font-size:13px;color:var(--muted);font-weight:600;margin:0 0 10px">📋 '+fr(cc.total)+' candidat'+(cc.total>1?'s':'')+' capté'+(cc.total>1?'s':'')+(cc.today>0?" · +"+fr(cc.today)+" aujourd'hui":'')+'</div>'; }
 function renderManychat(d){
   var el=document.getElementById('salesSource'); if(!el) return;
   var mc=mcData(d);
   function cell(lab,n,ca){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n">'+fr(n)+' <span>vente'+(n>1?'s':'')+'</span></div><div class="mc-ca">'+eurC(ca||0)+'</div></div>'; }
-  el.innerHTML='<div class="mc-grid">'+cell('Aujourd\'hui',mc.paidToday,mc.revEURToday)+cell('Cumulé',mc.paid,mc.revEUR)+'</div>';
+  el.innerHTML=candBadge(candCount(d,'manychat'))+'<div class="mc-grid">'+cell('Aujourd\'hui',mc.paidToday,mc.revEURToday)+cell('Cumulé',mc.paid,mc.revEUR)+'</div>';
 }
 function renderBio(d){
   var el=document.getElementById('salesBio'); if(!el) return;
   var b=bioData(d);
   function cell(lab,n,ca){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n">'+fr(n)+' <span>vente'+(n>1?'s':'')+'</span></div><div class="mc-ca">'+eurC(ca||0)+'</div></div>'; }
-  el.innerHTML='<div class="mc-grid">'+cell('Aujourd\'hui',b.paidToday,b.revEURToday)+cell('Cumulé',b.paid,b.revEUR)+'</div>';
+  el.innerHTML=candBadge(candCount(d,'instagram'))+'<div class="mc-grid">'+cell('Aujourd\'hui',b.paidToday,b.revEURToday)+cell('Cumulé',b.paid,b.revEUR)+'</div>';
 }
 
 function load(){

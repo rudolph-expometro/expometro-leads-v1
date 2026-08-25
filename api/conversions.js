@@ -546,6 +546,14 @@ export default async function handler(req, res) {
     const salesBySourceOut = {};
     for (const s in salesBySource) salesBySourceOut[s] = { paid: salesBySource[s].paid, revEUR: Math.round(salesBySource[s].revEUR), paidToday: salesBySource[s].paidToday, revEURToday: Math.round(salesBySource[s].revEURToday) };
 
+    // Candidats par source (utm_source) — visibilité du canal AVANT tout paiement (ManyChat, bio…)
+    const candidatsBySource = {}, candidatsBySourceToday = {};
+    for (const em in candidats) {
+      const s = (candidats[em] && candidats[em].source) || '';
+      candidatsBySource[s] = (candidatsBySource[s] || 0) + 1;
+      if (candidats[em] && candidats[em].created === today) candidatsBySourceToday[s] = (candidatsBySourceToday[s] || 0) + 1;
+    }
+
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
       updated: new Date().toISOString(),
@@ -553,6 +561,7 @@ export default async function handler(req, res) {
       communaute,
       candidats: candidatsSummary,
       salesBySource: salesBySourceOut,
+      candidatsBySource, candidatsBySourceToday,
       florence: {
         payments: paid.length,
         artistsTotal: seenArtist.size,
