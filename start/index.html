@@ -12,24 +12,20 @@
     --night:#070a17; --paper:#0e1431; --ink2:#0b0f1e;
     --head:#f4f6fa; --text:#aab2c4; --muted:#8b93a5; --faint:#6b7284;
     --accent:#FF5267; --accent-2:#ff6f80; --accent-d:#e23950;
-    --ok:#22e06b;
+    --ok:#22e06b; --ok-d:#12b457;
     --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.06);
     --maxw:600px;
     --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{
-    margin:0;font-family:var(--font);color:var(--text);line-height:1.55;
-    background:
-      radial-gradient(120% 55% at 50% -8%, rgba(255,82,103,.13), transparent 55%),
-      radial-gradient(90% 50% at 100% 0, rgba(60,90,220,.10), transparent 60%),
-      var(--night);
+  body{margin:0;font-family:var(--font);color:var(--text);line-height:1.55;background:var(--night);
     -webkit-font-smoothing:antialiased;min-height:100%;display:flex;flex-direction:column}
   a{color:inherit;text-decoration:none}
 
-  .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:11px 16px;border-bottom:1px solid var(--line-2);background:rgba(7,10,23,.82);backdrop-filter:saturate(140%) blur(10px)}
+  /* header */
+  .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 16px;background:rgba(7,10,23,.55);backdrop-filter:saturate(140%) blur(10px)}
   .brand img{height:26px;width:auto;display:block}
   .lang{position:relative}
   .lang-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:none;color:#fff;font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.08em;cursor:pointer;padding:6px 4px}
@@ -40,32 +36,44 @@
   .lang-menu a:hover{background:rgba(255,255,255,.08);opacity:1}
   .lang-menu a.active{color:var(--accent);opacity:1;font-weight:600}
 
-  .wrap{flex:1;max-width:var(--maxw);width:100%;margin:0 auto;padding:0 18px;display:flex;flex-direction:column;justify-content:center}
-  .hero{text-align:center;padding:34px 4px 26px}
-  .hero .me{width:74px;height:74px;border-radius:50%;object-fit:cover;object-position:50% 22%;
-    border:2px solid var(--accent);box-shadow:0 0 22px -4px rgba(255,82,103,.45);margin:0 0 16px}
-  .hero h1{color:var(--head);font-size:clamp(23px,5.6vw,30px);font-weight:800;letter-spacing:-.01em;margin:0 0 8px;text-wrap:balance}
-  .hero p{margin:0;color:var(--muted);font-size:15px}
+  /* hero tunnel (comme apply-florence) */
+  .hero{position:relative}
+  .hero-img{display:block;width:100%;height:auto}
+  .hero-tag{display:inline-block;margin:13px 0 0;
+    background:var(--accent);color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    padding:7px 15px;border-radius:100px;white-space:nowrap;
+    box-shadow:0 8px 20px -8px rgba(255,82,103,.6)}
+  @media (max-width:360px){.hero-tag{font-size:9px;padding:6px 11px;letter-spacing:.04em}}
 
-  .choices{display:flex;flex-direction:column;gap:14px;padding-bottom:10px}
-  .card{display:flex;align-items:center;gap:15px;padding:20px 20px;border-radius:18px;border:1px solid var(--line);
-    background:linear-gradient(180deg,var(--paper),rgba(14,20,49,.5));cursor:pointer;
-    transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
-  .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.28);box-shadow:0 18px 40px -22px rgba(0,0,0,.8)}
-  .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-  .card .emo{font-size:30px;line-height:1;flex:none}
-  .card .txt{flex:1;min-width:0}
-  .card .t{display:block;color:var(--head);font-weight:800;font-size:17px;line-height:1.2;margin:0 0 4px}
-  .card .s{display:block;color:var(--muted);font-size:13.5px;line-height:1.35}
-  .card .arr{flex:none;color:var(--accent-2);font-size:22px;line-height:1;transition:transform .14s ease}
-  .card:hover .arr{transform:translateX(3px)}
-  .card.member{border-color:rgba(34,224,107,.28);background:linear-gradient(180deg,rgba(34,224,107,.07),rgba(14,20,49,.5))}
-  .card.member:hover{border-color:rgba(34,224,107,.5)}
-  .card.member .arr{color:var(--ok)}
+  /* corps */
+  .wrap{flex:1;max-width:var(--maxw);width:100%;margin:0 auto;padding:0 18px 26px;text-align:center;display:flex;flex-direction:column}
+  .me{width:106px;height:106px;border-radius:50%;object-fit:cover;object-position:50% 22%;
+    margin:-53px auto 0;position:relative;z-index:5;
+    border:3px solid var(--accent);box-shadow:0 8px 26px -6px rgba(0,0,0,.7),0 0 22px -3px rgba(255,82,103,.5)}
+  h1{color:var(--head);font-size:clamp(24px,6vw,32px);font-weight:800;letter-spacing:-.01em;margin:16px 0 10px;line-height:1.12;text-wrap:balance}
+  .sub{margin:0 auto;color:var(--text);font-size:16px;line-height:1.5;max-width:30ch}
+  .sub b{color:var(--head)}
 
-  footer{text-align:center;color:var(--faint);font-size:11.5px;padding:22px 0 22px}
+  /* 2 boutons côte à côte + légende */
+  .choices{display:flex;gap:12px;justify-content:center;margin:26px 0 0}
+  .choice{flex:1 1 0;max-width:230px;display:flex;flex-direction:column;gap:9px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:17px 12px;border-radius:14px;
+    border:2px solid transparent;
+    font-weight:800;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#fff;
+    transition:transform .14s ease,box-shadow .14s ease,background .14s ease,color .14s ease}
+  .btn .arr{font-size:19px;line-height:1;transition:transform .14s ease}
+  .btn:hover{transform:translateY(-3px)}
+  .btn:hover .arr{transform:translateX(3px)}
+  .btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .btn.new{background:#fff;border-color:var(--accent);color:var(--accent);box-shadow:0 10px 24px -12px rgba(0,0,0,.55)}
+  .btn.new:hover{background:var(--accent);color:#fff}
+  .btn.member{background:linear-gradient(180deg,#ff6376,var(--accent));color:#fff;box-shadow:0 12px 28px -12px rgba(255,82,103,.75)}
+  .cap{margin:0;font-size:12.5px;color:var(--muted);line-height:1.35}
+
+  footer{text-align:center;color:var(--faint);font-size:11.5px;padding:26px 0 20px}
   footer b{color:var(--accent)}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (max-width:360px){.btn{font-size:13.5px;padding:15px 8px}.choices{gap:9px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -77,24 +85,25 @@
   </div>
 </header>
 
+<section class="hero">
+  <img class="hero-img" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art Immersif à Florence">
+</section>
+
 <main class="wrap">
-  <div class="hero">
-    <img class="me" src="/florence/img/rudolph.jpg" alt="Rudolph, ExpoMetro">
-    <h1 id="hTitle"></h1>
-    <p id="hSub"></p>
-  </div>
+  <img class="me" src="/florence/img/rudolph.jpg" alt="Rudolph, ExpoMetro">
+  <span class="hero-tag" id="heroTag">Pour les artistes et photographes</span>
+  <h1 id="hTitle">Bienvenue sur ExpoMetro&nbsp;!</h1>
+  <p class="sub" id="hSub">Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence <b>devant 50&nbsp;000 personnes</b>&nbsp;!</p>
 
   <div class="choices">
-    <a class="card new" id="cNew" href="#">
-      <span class="emo">🆕</span>
-      <span class="txt"><span class="t" id="nT"></span><span class="s" id="nS"></span></span>
-      <span class="arr">→</span>
-    </a>
-    <a class="card member" id="cMember" href="#">
-      <span class="emo">✅</span>
-      <span class="txt"><span class="t" id="mT"></span><span class="s" id="mS"></span></span>
-      <span class="arr">→</span>
-    </a>
+    <div class="choice">
+      <a class="btn new" id="cNew" href="/apply-florence"><span id="nT">Nouveau&nbsp;?</span> <span class="arr">→</span></a>
+      <p class="cap" id="nS">Découvre l'expo et rejoins le mouvement</p>
+    </div>
+    <div class="choice">
+      <a class="btn member" id="cMember" href="/florence-member"><span id="mT">Membre</span> <span class="arr">→</span></a>
+      <p class="cap" id="mS">Réserve ta place pour Florence</p>
+    </div>
   </div>
 </main>
 
@@ -104,33 +113,35 @@
 (function(){
   "use strict";
   var L={
-    fr:{cur:"FR",title:"Bonjour&nbsp;👋",sub:"Par où veux-tu commencer&nbsp;?",
-      nT:"Je découvre ExpoMetro",nS:"Découvre l'expo de Florence et rejoins le mouvement",
-      mT:"Je suis déjà membre",mS:"Réserve ta place pour Florence"},
-    en:{cur:"EN",title:"Hi&nbsp;👋",sub:"Where would you like to start?",
-      nT:"I'm discovering ExpoMetro",nS:"Discover the Florence exhibition and join the movement",
-      mT:"I'm already a member",mS:"Book your spot for Florence"},
-    es:{cur:"ES",title:"¡Hola&nbsp;👋",sub:"¿Por dónde quieres empezar?",
-      nT:"Estoy descubriendo ExpoMetro",nS:"Descubre la exposición de Florencia y únete al movimiento",
-      mT:"Ya soy miembro",mS:"Reserva tu plaza para Florencia"},
-    it:{cur:"IT",title:"Ciao&nbsp;👋",sub:"Da dove vuoi iniziare?",
-      nT:"Sto scoprendo ExpoMetro",nS:"Scopri l'esposizione di Firenze e unisciti al movimento",
-      mT:"Sono già membro",mS:"Prenota il tuo posto per Firenze"},
-    de:{cur:"DE",title:"Hallo&nbsp;👋",sub:"Wo möchtest du starten?",
-      nT:"Ich entdecke ExpoMetro",nS:"Entdecke die Florenz-Ausstellung und werde Teil der Bewegung",
-      mT:"Ich bin bereits Mitglied",mS:"Sichere dir deinen Platz für Florenz"}
+    fr:{cur:"FR",tag:"Pour les artistes et photographes",title:"Bienvenue sur ExpoMetro&nbsp;!",
+      sub:"Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence <b>devant 50&nbsp;000 personnes</b>&nbsp;!",
+      nT:"Nouveau&nbsp;?",nS:"Découvre l'expo et rejoins le mouvement",
+      mT:"Membre",mS:"Réserve ta place pour Florence"},
+    en:{cur:"EN",tag:"For artists & photographers",title:"Welcome to ExpoMetro!",
+      sub:"Exhibit your artwork in the Immersive Art Tunnel in Florence <b>in front of 50,000 people</b>!",
+      nT:"New?",nS:"Discover the expo and join the movement",
+      mT:"Member",mS:"Book your spot for Florence"},
+    es:{cur:"ES",tag:"Para artistas y fotógrafos",title:"¡Bienvenido a ExpoMetro!",
+      sub:"Expón tu obra en el Túnel del Arte Inmersivo de Florencia <b>ante 50.000 personas</b>!",
+      nT:"¿Nuevo?",nS:"Descubre la expo y únete al movimiento",
+      mT:"Miembro",mS:"Reserva tu plaza para Florencia"},
+    it:{cur:"IT",tag:"Per artisti e fotografi",title:"Benvenuto su ExpoMetro!",
+      sub:"Esponi la tua opera nel Tunnel dell'Arte Immersiva a Firenze <b>davanti a 50.000 persone</b>!",
+      nT:"Nuovo?",nS:"Scopri l'esposizione e unisciti al movimento",
+      mT:"Membro",mS:"Prenota il tuo posto per Firenze"},
+    de:{cur:"DE",tag:"Für Künstler & Fotografen",title:"Willkommen bei ExpoMetro!",
+      sub:"Stell dein Werk im Immersiven Kunsttunnel in Florenz <b>vor 50.000 Menschen</b> aus!",
+      nT:"Neu?",nS:"Entdecke die Ausstellung und mach mit",
+      mT:"Mitglied",mS:"Sichere dir deinen Platz für Florenz"}
   };
   var NAMES={en:"English",fr:"Français",es:"Español",it:"Italiano",de:"Deutsch"};
   var ORDER=["en","fr","es","it","de"];
 
-  var params=new URLSearchParams(location.search);
-  var qlang=params.get("lang");
-  var lang=(qlang||navigator.language||"fr").slice(0,2).toLowerCase();
+  var lang=((new URLSearchParams(location.search)).get("lang")||navigator.language||"fr").slice(0,2).toLowerCase();
   if(!L[lang]) lang="fr";
   var t=L[lang];
   document.documentElement.lang=lang;
 
-  // UTM/tracking à transmettre aux 2 destinations (tout sauf "lang")
   var fwd=new URLSearchParams(location.search); fwd.delete("lang");
   var qs=fwd.toString();
   var prefix=(lang==="en")?"":lang+"/";
@@ -138,14 +149,14 @@
 
   var $=function(s){return document.querySelector(s)};
   $("#hTitle").innerHTML=t.title; $("#hSub").innerHTML=t.sub;
-  $("#nT").textContent=t.nT; $("#nS").textContent=t.nS;
-  $("#mT").textContent=t.mT; $("#mS").textContent=t.mS;
+  $("#nT").innerHTML=t.nT; $("#nS").textContent=t.nS;
+  $("#mT").innerHTML=t.mT; $("#mS").textContent=t.mS;
   $("#langCur").textContent=t.cur;
+  $("#heroTag").textContent=t.tag;
   $("#cNew").href=dest("apply-florence");
   $("#cMember").href=dest("florence-member");
-  $("#brand").href=dest("florence-member");  // le logo mène à la PDV (garde les UTM)
+  $("#brand").href=dest("florence-member");
 
-  // sélecteur de langue (recharge en gardant les UTM)
   var langMenu=$("#langMenu"), langBtn=$("#langBtn");
   ORDER.forEach(function(code){
     var p=new URLSearchParams(location.search); p.set("lang",code);
