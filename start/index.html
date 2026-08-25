@@ -37,13 +37,13 @@
   .lang-menu a.active{color:var(--accent);opacity:1;font-weight:600}
 
   /* hero tunnel (comme apply-florence) */
-  .hero{position:relative}
+  .hero{position:relative;max-width:var(--maxw);margin:0 auto}
   .hero-img{display:block;width:100%;height:auto}
-  .hero-tag{display:inline-block;margin:13px 0 0;
-    background:var(--accent);color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-    padding:7px 15px;border-radius:100px;white-space:nowrap;
+  .hero-tag{align-self:center;margin:13px 0 0;
+    background:var(--accent);color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.02em;text-transform:uppercase;
+    padding:6px 12px;border-radius:100px;white-space:nowrap;
     box-shadow:0 8px 20px -8px rgba(255,82,103,.6)}
-  @media (max-width:360px){.hero-tag{font-size:9px;padding:6px 11px;letter-spacing:.04em}}
+  @media (max-width:360px){.hero-tag{font-size:9.5px;padding:5px 10px}}
 
   /* corps */
   .wrap{flex:1;max-width:var(--maxw);width:100%;margin:0 auto;padding:0 18px 26px;text-align:center;display:flex;flex-direction:column}
@@ -91,7 +91,7 @@
 
 <main class="wrap">
   <img class="me" src="/florence/img/rudolph.jpg" alt="Rudolph, ExpoMetro">
-  <span class="hero-tag" id="heroTag">Pour les artistes et photographes</span>
+  <span class="hero-tag" id="heroTag">🎨 Pour les artistes et photographes 📷</span>
   <h1 id="hTitle">Bienvenue sur ExpoMetro&nbsp;!</h1>
   <p class="sub" id="hSub">Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence <b>devant 50&nbsp;000 personnes</b>&nbsp;!</p>
 
@@ -113,23 +113,23 @@
 (function(){
   "use strict";
   var L={
-    fr:{cur:"FR",tag:"Pour les artistes et photographes",title:"Bienvenue sur ExpoMetro&nbsp;!",
+    fr:{cur:"FR",tag:"🎨 Pour les artistes et photographes 📷",title:"Bienvenue sur ExpoMetro&nbsp;!",
       sub:"Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence <b>devant 50&nbsp;000 personnes</b>&nbsp;!",
       nT:"Nouveau&nbsp;?",nS:"Découvre l'expo et rejoins le mouvement",
       mT:"Membre",mS:"Réserve ta place pour Florence"},
-    en:{cur:"EN",tag:"For artists & photographers",title:"Welcome to ExpoMetro!",
+    en:{cur:"EN",tag:"🎨 For artists & photographers 📷",title:"Welcome to ExpoMetro!",
       sub:"Exhibit your artwork in the Immersive Art Tunnel in Florence <b>in front of 50,000 people</b>!",
       nT:"New?",nS:"Discover the expo and join the movement",
       mT:"Member",mS:"Book your spot for Florence"},
-    es:{cur:"ES",tag:"Para artistas y fotógrafos",title:"¡Bienvenido a ExpoMetro!",
+    es:{cur:"ES",tag:"🎨 Para artistas y fotógrafos 📷",title:"¡Bienvenido a ExpoMetro!",
       sub:"Expón tu obra en el Túnel del Arte Inmersivo de Florencia <b>ante 50.000 personas</b>!",
       nT:"¿Nuevo?",nS:"Descubre la expo y únete al movimiento",
       mT:"Miembro",mS:"Reserva tu plaza para Florencia"},
-    it:{cur:"IT",tag:"Per artisti e fotografi",title:"Benvenuto su ExpoMetro!",
+    it:{cur:"IT",tag:"🎨 Per artisti e fotografi 📷",title:"Benvenuto su ExpoMetro!",
       sub:"Esponi la tua opera nel Tunnel dell'Arte Immersiva a Firenze <b>davanti a 50.000 persone</b>!",
       nT:"Nuovo?",nS:"Scopri l'esposizione e unisciti al movimento",
       mT:"Membro",mS:"Prenota il tuo posto per Firenze"},
-    de:{cur:"DE",tag:"Für Künstler & Fotografen",title:"Willkommen bei ExpoMetro!",
+    de:{cur:"DE",tag:"🎨 Für Künstler & Fotografen 📷",title:"Willkommen bei ExpoMetro!",
       sub:"Stell dein Werk im Immersiven Kunsttunnel in Florenz <b>vor 50.000 Menschen</b> aus!",
       nT:"Neu?",nS:"Entdecke die Ausstellung und mach mit",
       mT:"Mitglied",mS:"Sichere dir deinen Platz für Florenz"}
