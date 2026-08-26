@@ -97,6 +97,11 @@ function extract(type, obj) {
 const BREVO_TEMPLATES = { fr: 960, en: 961, de: 962, es: 963, it: 965, 'zh-cn': 964, 'zh-hk': 961 };
 const DEFAULT_TEMPLATE = 961; // EN si langue inconnue
 
+// Listes Brevo "Artistes Florence 2026" (participants confirmés = ont payé une place), par langue.
+// zh-cn / zh-hk / langue inconnue -> liste EN (cohérent avec le template EN).
+const FLORENCE_LISTS = { fr: 167, en: 168, es: 169, de: 170, it: 171 };
+const DEFAULT_LIST = 168; // EN
+
 // Repli approximatif pays -> langue (utilisé SEULEMENT si la session ne porte pas la locale).
 // Ne distingue pas fiablement zh-cn/zh-hk ni les pays multilingues -> préférer metadata.lang.
 const COUNTRY_LANG = {
@@ -126,10 +131,10 @@ function localeToLang(raw) {
   return ['fr', 'en', 'de', 'es', 'it'].includes(base) ? base : '';
 }
 
-// Choisit le templateId. Ordre : metadata/locale de l'objet de l'event
+// Détermine la LANGUE de l'acheteur. Ordre : metadata/locale de l'objet de l'event
 // -> metadata.lang du PaymentIntent (cas charge.succeeded : la charge ne porte pas la metadata du PI)
-// -> repli sur le pays de facturation -> EN.
-async function resolveTemplateId(obj) {
+// -> repli sur le pays de facturation -> EN. Sert au template ET à la liste (même langue partout).
+async function resolveLang(obj) {
   let lang = localeToLang(
     (obj.metadata && (obj.metadata.lang || obj.metadata.locale || obj.metadata.language)) ||
     (obj.locale)
@@ -149,7 +154,7 @@ async function resolveTemplateId(obj) {
     const country = ((addr && addr.country) || '').toUpperCase();
     lang = COUNTRY_LANG[country] || 'en';
   }
-  return BREVO_TEMPLATES[lang] || DEFAULT_TEMPLATE;
+  return lang;
 }
 
 // Envoie le template transactionnel Brevo (statique, sans variable).
@@ -157,6 +162,11 @@ async function resolveTemplateId(obj) {
 async function sendConfirmationEmail(email, templateId) {
   const key = process.env.BREVO_API_KEY;
   if (!key) return 'skip:no-key';
+  // Nettoie l'email (espaces/caractères invisibles, majuscules) AVANT l'envoi Brevo — même
+  // normalisation que pour le hash Meta (sha256). Évite les "envois fantômes" : quand la
+  // facturation Stripe contient un caractère parasite (ex. espace de fin), Brevo accepte
+  // l'appel (201) mais route mal l'email → l'acheteur ne reçoit jamais sa confirmation.
+  email = String(email == null ? '' : email).trim().toLowerCase();
   if (!email) return 'skip:no-email';
   if (!templateId) return 'skip:no-template';
   try {
@@ -171,6 +181,30 @@ async function sendConfirmationEmail(email, templateId) {
     return 'err:' + r.status + ':' + body;
   } catch (e) {
     return 'exc:' + (e && e.message ? e.message : 'unknown');
+  }
+}
+
+// Ajoute l'acheteur à la liste Brevo "Artistes Florence 2026" de sa langue (participants confirmés).
+// Idempotent : updateEnabled=true -> crée le contact OU met à jour un contact existant et l'ajoute
+// à la liste (n'ENVOIE aucun email -> ne consomme PAS de crédits). Renvoie une chaîne de diagnostic.
+async function addToParticipantList(email, listId) {
+  const key = process.env.BREVO_API_KEY;
+  if (!key) return 'skip:no-key';
+  email = String(email == null ? '' : email).trim().toLowerCase();
+  if (!email) return 'skip:no-email';
+  if (!listId) return 'skip:no-list';
+  try {
+    const r = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      headers: { 'api-key': key, 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ email, listIds: [Number(listId)], updateEnabled: true })
+    });
+    if (r.ok) return 'list:' + listId;
+    let body = '';
+    try { body = (await r.text()).slice(0, 180); } catch (e) {}
+    return 'listerr:' + r.status + ':' + body;
+  } catch (e) {
+    return 'listexc:' + (e && e.message ? e.message : 'unknown');
   }
 }
 
@@ -209,13 +243,16 @@ export default async function handler(req, res) {
     // -> on envoie sur celui qui arrive, quel qu'il soit (checkout.session / payment_intent / charge).
     // ⚠️ Si un jour tu abonnes cet endpoint à PLUSIEURS events de succès, ajoute une dédup
     //    (ex. sur data.dedupId) pour ne pas envoyer 2 mails pour la même vente.
-    let mail = 'not-run';
+    let mail = 'not-run', list = 'not-run';
     if (data.email) {
-      mail = await sendConfirmationEmail(data.email, await resolveTemplateId(obj));
+      const lang = await resolveLang(obj); // 1 seule résolution -> template + liste dans la même langue
+      mail = await sendConfirmationEmail(data.email, BREVO_TEMPLATES[lang] || DEFAULT_TEMPLATE);
+      list = await addToParticipantList(data.email, FLORENCE_LISTS[lang] || DEFAULT_LIST);
     } else {
       mail = 'skip:no-email(' + type + ')';
+      list = 'skip:no-email';
     }
-    return res.status(200).json({ ok: true, mail });
+    return res.status(200).json({ ok: true, mail, list });
   } catch (e) {
     // On répond 200 pour éviter les retries Stripe en boucle (l'event_id dédup de toute façon).
     return res.status(200).json({ ok: true, note: 'processed with error' });

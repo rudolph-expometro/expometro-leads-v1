@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ExpoMetro — Florence</title>
+<!-- Repli sans JS : candidature EN (racine) + tracking parrainage -->
+<meta http-equiv="refresh" content="0; url=/apply-florence?utm_source=parrainage&utm_medium=referral&utm_campaign=florence_500">
+<script>
+(function(){
+  var q = "?utm_source=parrainage&utm_medium=referral&utm_campaign=florence_500";
+  var l = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+  var base;
+  if (l.indexOf("fr") === 0)      base = "/fr/apply-florence";
+  else if (l.indexOf("es") === 0) base = "/es/apply-florence";
+  else if (l.indexOf("it") === 0) base = "/it/apply-florence";
+  else if (l.indexOf("de") === 0) base = "/de/apply-florence";
+  else                            base = "/apply-florence"; // EN = racine
+  location.replace(base + q);
+})();
+</script>
+</head>
+<body style="background:#070a17"></body>
+</html>
