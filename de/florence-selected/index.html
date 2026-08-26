@@ -583,12 +583,12 @@ footer a{color:rgba(255,255,255,.55)}
 /* infos light : lieu / dates / audience, tout en haut, sans blocs */
 .sel-infos-light{background:var(--night);padding:14px 0 18px}
 .sel-infos-light .sel-wrap{max-width:560px}
-.it-top{display:grid;grid-template-columns:1fr 1fr}
+.it-top{display:grid;grid-template-columns:1fr 1fr 1fr}
 .it-cell{display:flex;align-items:flex-start;gap:9px;font-family:var(--sans);font-size:.86rem;color:#c8d0de;line-height:1.4;padding:9px 2px}
 .it-cell i{color:var(--accent);font-size:1.05rem;flex-shrink:0;margin-top:1px}
 .it-cell b{color:#fff}
 .it-top .it-cell:first-child{border-right:1px solid rgba(255,255,255,.14);padding-right:16px}
-.it-top .it-cell:last-child{padding-left:16px}
+.it-top .it-cell:last-child{padding-left:16px}.it-top .it-cell:nth-child(2){border-right:1px solid rgba(255,255,255,.14);padding:9px 14px}@media(max-width:560px){.it-top .it-cell{flex-direction:column;align-items:center;text-align:center;gap:5px;padding:8px 4px;font-size:.8rem}.it-top .it-cell:first-child{padding-right:4px}.it-top .it-cell:nth-child(2){padding:8px 4px}.it-top .it-cell:last-child{padding-left:4px}.it-cell i{margin-top:0}}
 /* jours d'expo + jauge artistes */
 .it-days{display:flex;flex-direction:column;gap:9px;border-top:1px solid rgba(255,255,255,.14);padding-top:13px;margin-top:2px}
 .it-day{display:flex;align-items:flex-start;gap:9px;font-family:var(--sans);font-size:.86rem;color:#c8d0de;line-height:1.4}
@@ -762,17 +762,17 @@ footer a{color:rgba(255,255,255,.55)}
 <section class="sel-infos-light"><div class="sel-wrap">
   <div class="it-top">
     <div class="it-cell"><i class="ti ti-map-pin"></i><span><b>Sottopassaggio</b>, Florenz</span></div>
-    <div class="it-cell"><i class="ti ti-users"></i><span><b>50.000</b> Besucher / Tag</span></div>
+    <div class="it-cell"><i class="ti ti-users"></i><span><b>50.000</b> Besucher / Tag</span></div><div class="it-cell"><i class="ti ti-clock-hour-4"></i><span><b>7:00–21:00</b></span></div>
   </div>
   <div class="it-days">
     <div class="it-day it-day-on"><i class="ti ti-circle-check-filled"></i><span><b>28. Nov.</b> — 1. Ausstellungstag bestätigt</span></div>
-    <div class="it-day it-day-off"><i class="ti ti-lock"></i><span><b>29. Nov.</b> — 2. Ausstellungstag, wenn sich 500 Künstler anmelden <b>vor dem 10. Sept.</b></span></div>
+    <div class="it-day it-day-on"><i class="ti ti-circle-check-filled"></i><span><b>29. Nov.</b> — 2. Ausstellungstag bestätigt</span></div>
   </div>
   <div class="it-gauge">
-    <div class="it-gauge-head"><span class="it-gauge-label">Ziel</span><span class="it-gauge-num"><b id="artistNow">186</b> / 500 Künstler</span></div>
-    <div class="it-bar"><div class="it-bar-fill" id="artistBar" style="width:37.2%"></div></div>
-    <div class="it-bar-pctrow"><span class="it-bar-pct" id="artistPct" style="left:37.2%">37%</span></div>
-    <p class="it-unlock">Nimm jetzt teil, um den 2. Ausstellungstag freizuschalten und <b>100.000 Besucher</b> für deine Kunst zu erreichen!</p>
+    <div class="it-gauge-head"><span class="it-gauge-label">Ziel</span><span class="it-gauge-num"><b id="artistNow">500</b> / 1000 Künstler</span></div>
+    <div class="it-bar"><div class="it-bar-fill" id="artistBar" style="width:50%"></div></div>
+    <div class="it-bar-pctrow"><span class="it-bar-pct" id="artistPct" style="left:50%">50%</span></div>
+    <p class="it-unlock">🎉 <b>500+</b> teilnehmende Künstler: 2. Ausstellungstag geöffnet und <b>100.000 Besucher</b>!<br>✌️ Gemeinsam können wir 1000 Künstler zusammenbringen und die größte Kunst-Expo der Welt starten.</p>
   </div>
 </div></section>
 
@@ -1143,7 +1143,7 @@ function _apc(){var c=cur(),els=document.querySelectorAll('.fmt-price,.startpric
 })();</script>
 <script>(function(){var b=document.getElementById("toTop");if(!b)return;function upd(){if((window.pageYOffset||document.documentElement.scrollTop)>420){b.classList.add("show");}else{b.classList.remove("show");}}window.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);upd();b.addEventListener("click",function(){try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){window.scrollTo(0,0);}});})();</script>
 <script>(function(){var tr=document.getElementById("rvxTrack");if(!tr)return;var prev=document.querySelector(".rvx-prev"),next=document.querySelector(".rvx-next");if(!prev||!next)return;function step(){return Math.max(240,tr.clientWidth*0.85);}function upd(){var sl=tr.scrollLeft,max=tr.scrollWidth-tr.clientWidth-2;prev.classList.toggle("show",sl>8);next.classList.toggle("show",sl<max);}next.addEventListener("click",function(){tr.scrollBy({left:step(),behavior:"smooth"});});prev.addEventListener("click",function(){tr.scrollBy({left:-step(),behavior:"smooth"});});tr.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);window.addEventListener("load",upd);upd();setTimeout(upd,400);})();</script>
-<script>(function(){var GOAL=500;var numEl=document.getElementById("artistNow"),bar=document.getElementById("artistBar"),pctEl=document.getElementById("artistPct");if(!numEl||!bar)return;function apply(n){if(!n||n<1)return;numEl.textContent=n;var p=Math.min(100,Math.round(n/GOAL*1000)/10);bar.style.width=p+"%";if(pctEl){pctEl.textContent=Math.round(p)+"%";pctEl.style.left=p+"%";pctEl.style.transform=p<=8?"translateX(0)":p>=92?"translateX(-100%)":"translateX(-50%)";}}function readTicker(){var el=document.querySelector(".artix-count .artix-num");if(!el)return;var n=parseInt((el.textContent||"").replace(/[^0-9]/g,""),10);if(n)apply(n);}readTicker();var host=document.querySelector(".artix-count");if(host&&window.MutationObserver){new MutationObserver(readTicker).observe(host,{childList:true,subtree:true,characterData:true});}setTimeout(readTicker,600);})();</script>
+<script>(function(){var GOAL=1000;var numEl=document.getElementById("artistNow"),bar=document.getElementById("artistBar"),pctEl=document.getElementById("artistPct");if(!numEl||!bar)return;function apply(n){if(!n||n<1)return;numEl.textContent=n;var p=Math.min(100,Math.round(n/GOAL*1000)/10);bar.style.width=p+"%";if(pctEl){pctEl.textContent=Math.round(p)+"%";pctEl.style.left=p+"%";pctEl.style.transform=p<=8?"translateX(0)":p>=92?"translateX(-100%)":"translateX(-50%)";}}function readTicker(){var el=document.querySelector(".artix-count .artix-num");if(!el)return;var n=parseInt((el.textContent||"").replace(/[^0-9]/g,""),10);if(n)apply(n);}readTicker();var host=document.querySelector(".artix-count");if(host&&window.MutationObserver){new MutationObserver(readTicker).observe(host,{childList:true,subtree:true,characterData:true});}setTimeout(readTicker,600);})();</script>
 <script>(function(){var car=document.querySelector(".vcar");var p=document.querySelector(".vcar-prev"),n=document.querySelector(".vcar-next");if(!car||!p||!n)return;function amt(){return Math.max(car.clientWidth*0.85,260);}function mx(){return car.scrollWidth-car.clientWidth;}p.addEventListener("click",function(){car.scrollTo({left:Math.max(0,car.scrollLeft-amt()),behavior:"smooth"});});n.addEventListener("click",function(){car.scrollTo({left:Math.min(mx(),car.scrollLeft+amt()),behavior:"smooth"});});function upd(){var s=car.scrollLeft<=4,e=car.scrollLeft+car.clientWidth>=car.scrollWidth-4;p.disabled=s;p.style.opacity=s?".35":"1";n.disabled=e;n.style.opacity=e?".35":"1";}car.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);upd();setTimeout(upd,400);})();</script>
 <script>(function(){var qs=location.search;if(!qs||qs.length<2)return;var p=new URLSearchParams(qs),keep=new URLSearchParams();["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid","gclid","ttclid"].forEach(function(k){if(p.has(k))keep.set(k,p.get(k));});var extra=keep.toString();if(!extra)return;var a=document.querySelectorAll('a[href*="expometro.co"]');for(var i=0;i<a.length;i++){var el=a[i],h=el.getAttribute("href");if(!h)continue;var hash="",base=h,hi=h.indexOf("#");if(hi>=0){hash=h.slice(hi);base=h.slice(0,hi);}var sep=base.indexOf("?")>=0?"&":"?";el.setAttribute("href",base+sep+extra+hash);}})();</script>
 <script>(function(){var v=document.querySelector(".hero-vid");if(!v)return;function kick(){if(document.hidden)return;var p=v.play();if(p&&p.catch)p.catch(function(){});setTimeout(function(){if(v.paused||v.readyState<2){try{v.load();var q=v.play();if(q&&q.catch)q.catch(function(){});}catch(e){}}},350);}document.addEventListener("visibilitychange",kick);window.addEventListener("pageshow",kick);window.addEventListener("focus",kick);})();</script>
