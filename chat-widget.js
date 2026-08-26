@@ -266,11 +266,22 @@
     callAI(function () { if (it.m) addMedia(MEDIA[it.m]); renderChips(current); scrollToTopOf(uEl); });
   }
 
+  // L'artiste tape « ecrire a Rudolph » en TEXTE LIBRE au lieu de cliquer le bouton (vu en vrai le 25/08 :
+  // il l'a écrit deux fois sans le trouver). On ouvre alors le formulaire directement.
+  // Garde-fou : uniquement sur un message COURT, sinon « merci Rudolph » au milieu d'une phrase déclencherait.
+  var CONTACT_RE = /(ecri|contact|contatt|joindre|parl|writ|speak|talk|e?mail|escrib|scriv|schreib|kontaktier|habl)/;
+  function wantsContact(str) {
+    var n = String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (n.length > 40) return false;
+    return n.indexOf('rudolph') !== -1 && CONTACT_RE.test(n);
+  }
+
   function freeSend() {
     if (busy) return;
     var text = inEl.value.trim(); if (!text) return;
     inEl.value = ''; inEl.style.height = 'auto';
     removeChips();
+    if (wantsContact(text)) { addBubble('u', text); showContactForm(); return; }
     navEl = null;   // dès qu'on pose une question, l'accueil reste comme contexte (plus retiré)
     askCount++;
     var uEl = addBubble('u', text);
