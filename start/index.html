@@ -7,6 +7,8 @@
 <meta name="robots" content="noindex">
 <meta name="description" content="Rejoins l'exposition d'art immersif d'ExpoMetro à Florence.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --night:#070a17; --paper:#0e1431; --ink2:#0b0f1e;
@@ -16,6 +18,7 @@
     --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.06);
     --maxw:600px;
     --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -55,6 +58,12 @@
   .sub{margin:0 auto;color:var(--text);font-size:16px;line-height:1.5;max-width:30ch}
   .sub b{color:var(--head)}
 
+  /* citation founder — style IDENTIQUE à la PDV (.vbox-quote) */
+  .fq{display:flex;align-items:flex-start;gap:12px;text-align:left;margin:22px 0 4px}
+  .fq-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0}
+  .fq-text{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,3.4vw,1.6rem);line-height:1.4;color:#eef1f6;margin:0 0 8px}
+  .fq-cite{font-family:var(--font);font-size:.82rem;color:#98a2b3}
+
   /* 2 boutons côte à côte + légende */
   .choices{display:flex;gap:12px;justify-content:center;margin:26px 0 0}
   .choice{flex:1 1 0;max-width:230px;display:flex;flex-direction:column;gap:9px}
@@ -91,10 +100,14 @@
 </section>
 
 <main class="wrap">
-  <img class="me" src="/florence/img/rudolph.jpg" alt="Rudolph, ExpoMetro">
   <span class="hero-tag" id="heroTag">Pour les 🎨 artistes et 📸 photographes</span>
-  <h1 id="hTitle">Bienvenue sur ExpoMetro&nbsp;!</h1>
-  <p class="sub" id="hSub">Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence <b>devant 50&nbsp;000 personnes</b>&nbsp;!</p>
+  <div class="fq">
+    <img class="fq-photo" src="/florence/img/rudolph-round.png" alt="Rudolph, ExpoMetro">
+    <div>
+      <p class="fq-text" id="fqText">« Bienvenue sur ExpoMetro&nbsp;! Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence devant 50&nbsp;000 personnes&nbsp;! »</p>
+      <span class="fq-cite" id="fqCite">— Rudolph, Fondateur</span>
+    </div>
+  </div>
 
   <div class="choices">
     <div class="choice">
@@ -117,23 +130,23 @@
     fr:{cur:"FR",tag:"Pour les 🎨 artistes et 📸 photographes",title:"Bienvenue sur ExpoMetro&nbsp;!",
       sub:"Expose ton œuvre dans le Tunnel de l'Art Immersif à Florence <b>devant 50&nbsp;000 personnes</b>&nbsp;!",
       nT:"Nouveau&nbsp;?",nS:"Découvre l'expo et rejoins le mouvement",
-      mT:"Membre",mS:"Réserve ta place pour Florence"},
+      mT:"Membre",mS:"Réserve ta place pour Florence",cite:"Rudolph, Fondateur"},
     en:{cur:"EN",tag:"For 🎨 artists & 📸 photographers",title:"Welcome to ExpoMetro!",
       sub:"Exhibit your artwork in the Immersive Art Tunnel in Florence <b>in front of 50,000 people</b>!",
       nT:"New?",nS:"Discover the expo and join the movement",
-      mT:"Member",mS:"Book your spot for Florence"},
+      mT:"Member",mS:"Book your spot for Florence",cite:"Rudolph, Founder"},
     es:{cur:"ES",tag:"Para 🎨 artistas y 📸 fotógrafos",title:"¡Bienvenido a ExpoMetro!",
       sub:"Expón tu obra en el Túnel del Arte Inmersivo de Florencia <b>ante 50.000 personas</b>!",
       nT:"¿Nuevo?",nS:"Descubre la expo y únete al movimiento",
-      mT:"Miembro",mS:"Reserva tu plaza para Florencia"},
+      mT:"Miembro",mS:"Reserva tu plaza para Florencia",cite:"Rudolph, Fundador"},
     it:{cur:"IT",tag:"Per 🎨 artisti e 📸 fotografi",title:"Benvenuto su ExpoMetro!",
       sub:"Esponi la tua opera nel Tunnel dell'Arte Immersiva a Firenze <b>davanti a 50.000 persone</b>!",
       nT:"Nuovo?",nS:"Scopri l'esposizione e unisciti al movimento",
-      mT:"Membro",mS:"Prenota il tuo posto per Firenze"},
+      mT:"Membro",mS:"Prenota il tuo posto per Firenze",cite:"Rudolph, Fondatore"},
     de:{cur:"DE",tag:"Für 🎨 Künstler & 📸 Fotografen",title:"Willkommen bei ExpoMetro!",
       sub:"Stell dein Werk im Immersiven Kunsttunnel in Florenz <b>vor 50.000 Menschen</b> aus!",
       nT:"Neu?",nS:"Entdecke die Ausstellung und mach mit",
-      mT:"Mitglied",mS:"Sichere dir deinen Platz für Florenz"}
+      mT:"Mitglied",mS:"Sichere dir deinen Platz für Florenz",cite:"Rudolph, Gründer"}
   };
   var NAMES={en:"English",fr:"Français",es:"Español",it:"Italiano",de:"Deutsch"};
   var ORDER=["en","fr","es","it","de"];
@@ -149,7 +162,8 @@
   function dest(path){ return "/"+prefix+path+(qs?("?"+qs):""); }
 
   var $=function(s){return document.querySelector(s)};
-  $("#hTitle").innerHTML=t.title; $("#hSub").innerHTML=t.sub;
+  $("#fqText").innerHTML="« "+t.title+" "+t.sub.replace(/<\/?b>/g,"")+" »";
+  $("#fqCite").textContent="— "+t.cite;
   $("#nT").innerHTML=t.nT; $("#nS").textContent=t.nS;
   $("#mT").innerHTML=t.mT; $("#mS").textContent=t.mS;
   $("#langCur").textContent=t.cur;
