@@ -376,6 +376,10 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function format(s) {
     var h = esc(String(s).replace(/\n{3,}/g, '\n\n'));                 // pas de trous géants
+    // ⚠️ « Écrire à Rudolph » est un BOUTON de ce chat, pas une URL. Le modèle le transforme parfois en lien
+    // markdown pointant vers une page au hasard (vu en prod : la page d'inscription). On neutralise ici :
+    // tout lien dont le TEXTE mentionne Rudolph est réduit à son texte, en gras.
+    h = h.replace(/\[([^\]]*[Rr]udolph[^\]]*)\]\([^)]*\)/g, '<b>$1</b>');
     // liens markdown [texte](http-url) -> lien cliquable
     h = h.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
     // liens markdown vers un placeholder (non-URL) -> garder juste le texte, pas de lien cassé
