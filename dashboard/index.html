@@ -160,6 +160,8 @@
   .tabb:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
 
   /* ===== Plan interactif du tunnel ===== */
+  .h2live{text-transform:none;letter-spacing:0;font-weight:600;color:var(--green);margin-left:9px;font-size:12px}
+  .h2live.warn{color:var(--gold)}
   .pl-hint{color:var(--muted);font-size:11.5px;line-height:1.55;margin:9px 0 0}
   .pl-seq{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:13px;overflow:hidden}
   .pl-seqhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 16px;
@@ -369,11 +371,12 @@
 
     <!-- Artistes participants -->
     <div class="section">
-      <h2>Artistes participants à Florence</h2>
+      <h2>Artistes participants à Florence<span class="h2live" id="artistTotalLive"></span></h2>
       <div class="grid2">
         <div class="box">
-          <div class="legend"><span><i style="background:var(--green)"></i>Total cumulé d'artistes</span></div>
+          <div class="legend"><span><i style="background:var(--green)"></i>Cumul depuis le 15 juillet</span></div>
           <div id="chartArtists"></div>
+          <p class="hint" id="artistTotalHint"></p>
         </div>
         <div class="box"><h3>Type d'artiste</h3>
           <div class="bkts" id="artists"></div>
@@ -897,6 +900,7 @@ function load(){
       var asegs=[{label:'1ʳᵉ expo',value:ar.first,color:'#ffc04d'},{label:'Artistes récurrents',value:ar.recurring,color:'#5b8cff'}];
       var aleg=asegs.map(function(sg){return '<div class="pleg"><span class="pdot" style="background:'+sg.color+'"></span><span class="plab">'+sg.label+'</span><span class="pval">'+fr(sg.value)+' · '+Math.round(100*sg.value/atot)+'%</span></div>';}).join('');
       document.getElementById('artists').innerHTML='<div class="pierow">'+pie(asegs,fr(ar.first+ar.recurring),'artistes')+'<div class="plegs">'+aleg+'</div></div>';
+      ARTISTS_SINCE_J1=ar.first+ar.recurring; syncArtistTotal();
 
       // Communauté (base totale)
       document.getElementById('commu').innerHTML=
@@ -921,6 +925,7 @@ function load(){
       }).join('')||'<tr><td colspan="5" style="color:var(--muted)">Aucun paiement depuis J1.</td></tr>';
 
       document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
+      if(!PLAN_LOADED) loadPlan();   // alimente aussi le total d'artistes de l'onglet Conversions
     })
     .catch(function(e){
       if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; clearKey(); KEY=''; }
@@ -935,7 +940,34 @@ function load(){
    des places vendues est un chiffre different (un artiste peut prendre
    plusieurs places) — les deux sont affiches separement.
    ======================================================================= */
-var PLAN=null, PLAN_LOADED=false;
+var PLAN=null, PLAN_LOADED=false, ARTISTS_SINCE_J1=null;
+
+/* Le compteur "Artistes participants" de l'onglet Conversions compte les payeurs Stripe
+   DISTINCTS DEPUIS J1 (15 juillet). Il est structurellement plus bas que le total de la page
+   d'inscriptions pour deux raisons : (1) Rudolph credite certains artistes A LA MAIN (virement
+   bancaire ou place offerte) -> aucune trace Stripe ; (2) les ventes ont ouvert avant J1.
+   Ces artistes comptent pour l'objectif des 1 000 mais pas pour le CA ni le ROAS.
+   On affiche donc les deux chiffres cote a cote plutot que de laisser croire a une erreur. */
+function syncArtistTotal(){
+  var badge=document.getElementById('artistTotalLive'), hint=document.getElementById('artistTotalHint');
+  if(!badge||!hint) return;
+  if(!PLAN||!PLAN.artists){ badge.textContent=''; hint.textContent=''; return; }
+  var tot=PLAN.artists, since=ARTISTS_SINCE_J1;
+  badge.textContent='· '+fr(tot)+' au total';
+  if(since==null){ hint.textContent=''; return; }
+  var delta=tot-since;
+  var open='';
+  if(PLAN.saleStartDate){
+    open=' — les ventes ont ouvert le '+new Date(PLAN.saleStartDate).toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  }
+  badge.className='h2live'+(delta>0?' warn':'');
+  hint.innerHTML= delta>0
+    ? '<b>'+fr(tot)+' artistes</b> exposent à Florence d\'après la page d\'inscriptions, dont <b>'+fr(since)+
+      '</b> ont payé par Stripe depuis le 15 juillet. Les <b>'+fr(delta)+'</b> autres sont des <b>crédits manuels</b> '+
+      '(virement, place offerte) ou des inscriptions antérieures au 15 juillet'+open+'. Stripe ne les voit pas : '+
+      'ils sont absents de ce graphe, du CA et du ROAS, mais ils comptent bien dans l\'objectif des 1 000 artistes.'
+    : 'Les '+fr(since)+' artistes comptés depuis le 15 juillet couvrent la totalité des inscrits à Florence.';
+}
 var GOAL_ARTISTS=1000;
 var WALL_PER_SEQ=5, CEIL_PER_SEQ=5, WALL_SLOTS_PER_SEQ=10;
 var WALL_FORMATS=[{n:'Small',c:120},{n:'Medium',c:30},{n:'Large',c:5}];
@@ -1102,7 +1134,9 @@ function renderPlan(){
   document.getElementById('planNote').innerHTML=
     '<b>'+fr(PLAN.artists)+' artistes</b> pour <b>'+fr(s.filled)+' places</b> vendues — un artiste prend en moyenne '+
     s.perArtist.toFixed(2).replace('.',',')+' place. Objectif 1 000 artistes : il en manque <b>'+fr(Math.max(0,GOAL_ARTISTS-PLAN.artists))+'</b>. '+
-    'Clôture des inscriptions le <b>'+close+'</b>'+(PLAN.countries?' · '+PLAN.countries+' pays représentés':'')+'.';
+    'Clôture des inscriptions le <b>'+close+'</b>'+(PLAN.countries?' · '+PLAN.countries+' pays représentés':'')+'. '+
+    '<span style="color:var(--muted)">Ce compteur vient de la page d’inscriptions : il inclut les crédits manuels (virement, place offerte), '+
+    'contrairement au suivi Stripe de l’onglet Conversions.</span>';
 
   renderPlanSeqs(s);
 
@@ -1118,6 +1152,7 @@ function renderPlan(){
 
   renderPlanSim(s);
   renderPlanTable(s);
+  syncArtistTotal();
   document.getElementById('planSrc').innerHTML='Source : <a href="'+PLAN.source+'" target="_blank" rel="noopener" style="color:var(--blue)">page d’inscriptions</a> — lue '+
     new Date(PLAN.updated).toLocaleTimeString('fr-FR')+(PLAN.cached?' (cache 2 min)':'')+
     (PLAN.staleError?' — ⚠ dernière relecture en échec : '+PLAN.staleError:'');

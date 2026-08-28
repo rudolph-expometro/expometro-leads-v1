@@ -78,6 +78,7 @@ async function readPlan() {
     countries: Number(data.count_country) || null,
     artworksValidated: Number(data.count_artworks_validated) || null,
     placesAvailable: Number(data.booking_available_count) ?? null,
+    saleStartDate: item.sale_start_date || null,
     saleEndDate: item.sale_end_date || null,
     exhibitionDate: item.start_date || null,
     artworks,
