@@ -149,6 +149,82 @@
   .bkt.first{border-color:rgba(255,192,77,.4)} .bkt.first .n{color:var(--gold)}
   .bkt.recur{border-color:rgba(91,140,255,.4)} .bkt.recur .n{color:var(--blue)}
   .bkt.candidat{border-color:rgba(255,82,103,.4)} .bkt.candidat .n{color:var(--accent)}
+
+  /* ===== Onglets (Conversions / Plan interactif) ===== */
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}
+  .tabb{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);width:auto;
+        padding:9px 15px;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+        border-radius:0;cursor:pointer}
+  .tabb:hover{color:var(--txt);filter:none}
+  .tabb[aria-selected="true"]{color:var(--txt);border-bottom-color:var(--accent)}
+  .tabb:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+  /* ===== Plan interactif du tunnel ===== */
+  .pl-hint{color:var(--muted);font-size:11.5px;line-height:1.55;margin:9px 0 0}
+  .pl-seq{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:13px;overflow:hidden}
+  .pl-seqhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 16px;
+              background:var(--card2);border-bottom:1px solid var(--line)}
+  .pl-seqn{background:var(--txt);color:var(--bg);border-radius:7px;padding:3px 9px;font-size:11.5px;font-weight:800;letter-spacing:.03em}
+  .pl-seqt{font-size:14px;font-weight:700}
+  .pl-seqm{margin-left:auto;display:flex;gap:13px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .pl-seqm .warn{color:var(--accent);font-weight:700}
+  .pl-seqm .done{color:var(--green);font-weight:700}
+  .pl-seqbody{padding:13px 16px 16px;overflow-x:auto}
+  .pl-inner{min-width:640px}
+  .pl-ruler{display:grid;grid-template-columns:88px repeat(5,1fr);gap:0 6px;align-items:end;margin-bottom:6px}
+  .pl-rc{border-left:1px solid var(--line);padding:0 0 3px 5px;font-size:10px;color:var(--muted)}
+  .pl-rc:last-child{border-right:1px solid var(--line)}
+  .pl-rdir{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:0 6px 3px 0;white-space:nowrap}
+  .pl-track{display:grid;grid-template-columns:88px repeat(5,1fr);gap:6px;margin-bottom:6px}
+  .pl-tl{display:flex;flex-direction:column;justify-content:center;gap:2px;padding-right:8px}
+  .pl-tl b{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+  .pl-tl span{font-size:9.5px;color:var(--muted)}
+  .pl-cell{border:1px solid var(--line);border-radius:9px;background:var(--card2);padding:7px 9px;
+           display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .pl-w{height:72px} .pl-c{height:126px}
+  .pl-ctop{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .pl-cid{font-size:15px;font-weight:800;line-height:1}
+  .pl-cfmt{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:right;line-height:1.25}
+  .pl-cbot{display:flex;align-items:center;gap:8px}
+  .pl-cnt{font-size:10.5px;font-weight:700;white-space:nowrap}
+  .pl-bar{flex:1;height:6px;background:rgba(255,255,255,.09);border-radius:3px;overflow:hidden}
+  .pl-bar i{display:block;height:100%;border-radius:3px}
+  .pl-full{border-color:rgba(34,224,107,.5);background:rgba(34,224,107,.09)}
+  .pl-full .pl-cid{color:var(--green)} .pl-full .pl-bar i{background:var(--green)}
+  .pl-fill{border-color:rgba(255,192,77,.5);background:rgba(255,192,77,.09)}
+  .pl-fill .pl-cid{color:var(--gold)} .pl-fill .pl-bar i{background:var(--gold)}
+  .pl-empty{border:1.5px dashed rgba(255,82,103,.65);background:none;align-items:center;justify-content:center;gap:3px;text-align:center}
+  .pl-empty b{color:var(--accent);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+  .pl-empty span{color:var(--muted);font-size:9.5px}
+  /* trous a combler */
+  .pl-gap{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+  .pl-gap:first-child{border-top:none;padding-top:2px}
+  .pl-gapn{font-size:27px;font-weight:800;min-width:48px;color:var(--accent);line-height:1}
+  .pl-gapn.ok{color:var(--green)}
+  .pl-gapt{font-size:13px;line-height:1.35}
+  .pl-gapt small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+  /* simulateur */
+  .pl-ctrl{margin-bottom:13px}
+  .pl-ctrl>label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
+  .pl-seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .pl-seg button{flex:1 1 auto;min-width:62px;width:auto;background:var(--card2);border:none;
+                 border-right:1px solid var(--line);border-radius:0;padding:8px 7px;color:var(--muted);
+                 font-size:11px;font-weight:600}
+  .pl-seg button:last-child{border-right:none}
+  .pl-seg button:hover{color:var(--txt);filter:none}
+  .pl-seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+  .pl-out{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+  .pl-orow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12.5px}
+  .pl-orow span:first-child{color:var(--muted)}
+  .pl-orow b{font-size:17px;font-weight:800}
+  .pl-verdict{margin-top:11px;padding:10px 12px;border-radius:9px;font-size:12.5px;line-height:1.45}
+  .pl-verdict.good{background:rgba(34,224,107,.1);color:var(--green);border-left:3px solid var(--green)}
+  .pl-verdict.bad{background:rgba(255,82,103,.1);color:var(--accent);border-left:3px solid var(--accent)}
+  .pl-pill{display:inline-block;padding:2px 8px;border-radius:11px;font-size:10.5px;white-space:nowrap}
+  .pl-pill.f{background:rgba(34,224,107,.14);color:var(--green)}
+  .pl-pill.p{background:rgba(255,192,77,.14);color:var(--gold)}
+  .pl-mini{display:flex;align-items:center;gap:9px;min-width:120px}
+
   /* tables */
   table{width:100%;border-collapse:collapse;font-size:13px}
   th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
@@ -207,6 +283,13 @@
       <div><h1>Contrôle Florence</h1><p class="sub" id="sub"></p></div>
       <div><button class="refresh" onclick="load()">↻ Rafraîchir</button><span class="updated" id="upd"></span></div>
     </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tabb" id="tabConv" role="tab" aria-selected="true"  aria-controls="viewConv" onclick="showView('conv')">Conversions</button>
+      <button class="tabb" id="tabPlan" role="tab" aria-selected="false" aria-controls="viewPlan" onclick="showView('plan')">Plan interactif</button>
+    </div>
+
+    <div id="viewConv" role="tabpanel" aria-labelledby="tabConv">
 
     <!-- CHIFFRES DU JOUR -->
     <h2 class="sech" style="margin-top:0">Aujourd'hui — en direct</h2>
@@ -332,6 +415,58 @@
         <thead><tr><th>Date</th><th>Email</th><th class="num">Montant</th><th class="num">Expos</th><th>Source</th></tr></thead><tbody></tbody>
       </table></div></div>
     </div>
+    </div><!-- /viewConv -->
+
+    <div id="viewPlan" role="tabpanel" aria-labelledby="tabPlan" hidden>
+      <div class="kpis" id="planKpis"></div>
+      <p class="pl-hint" id="planNote"></p>
+
+      <div class="section">
+        <h2>Le tunnel, séquence par séquence</h2>
+        <p class="pl-hint" style="margin:-4px 0 12px">
+          Tunnel représenté <b>déplié</b> — mur gauche rabattu, plafond à plat, mur droit rabattu : c'est exactement
+          l'empilement du fichier vidéo master (768 + 1440 + 768 px). Les trois pistes partagent le même axe,
+          donc <b>ce qui est aligné verticalement est physiquement face à face</b>.
+          Les 5 premières œuvres murales occupent le mur gauche de 0 à 25 m, les 5 suivantes redescendent le mur droit
+          de 25 m à 0 — deux œuvres consécutives restent voisines, quel que soit le côté par lequel on entre.
+        </p>
+        <div id="planSeqs"></div>
+      </div>
+
+      <div class="section">
+        <h2>Ce qu'il reste à vendre</h2>
+        <div class="grid2" style="align-items:start">
+          <div class="box cand-top">
+            <h3>Les trous à combler</h3>
+            <p class="pl-hint" id="planGapSub" style="margin:0 0 10px"></p>
+            <div id="planGaps"></div>
+            <p class="pl-hint">Une séquence de 30 s réclame <b>10 œuvres murales</b> et <b>5 œuvres plafond</b>.
+              Le plafond consomme un tiers des emplacements mais ne représente qu'une petite part des ventes.</p>
+          </div>
+          <div class="box lead-top">
+            <h3>Simuler la fin de campagne</h3>
+            <div class="pl-ctrl"><label>Nombre de séquences visées</label><div class="pl-seg" id="planSegSeq"></div></div>
+            <div class="pl-ctrl"><label>Format des œuvres murales à ouvrir</label><div class="pl-seg" id="planSegWall"></div></div>
+            <div class="pl-ctrl"><label>Format des œuvres plafond à ouvrir</label><div class="pl-seg" id="planSegCeil"></div></div>
+            <div class="pl-out" id="planSimOut"></div>
+            <div id="planVerdict"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Les œuvres collectives</h2>
+        <div class="box"><div style="overflow-x:auto"><table id="planTbl">
+          <thead><tr><th>Œuvre</th><th>Surface</th><th>Format</th><th>Emplacement</th><th>Remplissage</th>
+            <th class="num">Places</th><th class="num">Restantes</th><th>Statut</th></tr></thead>
+          <tbody></tbody><tfoot></tfoot>
+        </table></div></div>
+      </div>
+
+      <p class="pl-hint" id="planSrc"></p>
+      <p class="err" id="planErr"></p>
+    </div><!-- /viewPlan -->
+
     <p class="err" id="dashErr"></p>
   </div>
 </div>
@@ -622,6 +757,7 @@ function renderBio(d){
 }
 
 function load(){
+  if(PLAN_LOADED && !document.getElementById('viewPlan').hidden){ PLAN_LOADED=false; loadPlan(); }
   KEY=KEY||storedKey()||''; if(!KEY) return;
   fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
     .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
@@ -791,8 +927,207 @@ function load(){
       else document.getElementById('dashErr').textContent='Erreur : '+e.message;
     });
 }
+
+/* =======================================================================
+   PLAN INTERACTIF DU TUNNEL — Florence
+   Source = /api/florence-plan (lit la page d'inscriptions publique en direct).
+   Le nombre d'ARTISTES vient de count_artist (artistes distincts) ; la somme
+   des places vendues est un chiffre different (un artiste peut prendre
+   plusieurs places) — les deux sont affiches separement.
+   ======================================================================= */
+var PLAN=null, PLAN_LOADED=false;
+var GOAL_ARTISTS=1000;
+var WALL_PER_SEQ=5, CEIL_PER_SEQ=5, WALL_SLOTS_PER_SEQ=10;
+var WALL_FORMATS=[{n:'Small',c:120},{n:'Medium',c:30},{n:'Large',c:5}];
+var CEIL_FORMATS=[{n:'Large Ceiling',c:16},{n:'Extra Large',c:4}];
+var sim={seqs:null,wall:'Small',ceil:'Large Ceiling'};
+
+function showView(v){
+  var conv=v==='conv';
+  document.getElementById('viewConv').hidden=!conv;
+  document.getElementById('viewPlan').hidden=conv;
+  document.getElementById('tabConv').setAttribute('aria-selected',conv?'true':'false');
+  document.getElementById('tabPlan').setAttribute('aria-selected',conv?'false':'true');
+  try{ localStorage.setItem('dashview',v); }catch(e){}
+  if(!conv && !PLAN_LOADED) loadPlan();
+}
+
+function loadPlan(){
+  if(!KEY) return;
+  document.getElementById('planErr').textContent='';
+  document.getElementById('planSrc').textContent='Lecture de la page d’inscriptions…';
+  fetch('/api/florence-plan',{headers:{'x-dash-key':KEY}})
+    .then(function(r){ if(!r.ok) throw new Error(r.status===401?'401':('HTTP '+r.status)); return r.json(); })
+    .then(function(d){ if(d.error) throw new Error(d.error); PLAN=d; PLAN_LOADED=true; sim.seqs=null; renderPlan(); })
+    .catch(function(e){
+      document.getElementById('planSrc').textContent='';
+      document.getElementById('planErr').textContent='Plan indisponible : '+e.message+
+        (String(e.message)==='401'?'' : ' — la page d’inscriptions a peut-être changé de structure.');
+    });
+}
+
+function planStats(){
+  var a=PLAN.artworks||[];
+  var w=a.filter(function(x){return x.surface==='wall';}).sort(function(p,q){return p.id-q.id;});
+  var c=a.filter(function(x){return x.surface==='ceiling';}).sort(function(p,q){return p.id-q.id;});
+  var filled=a.reduce(function(s,x){return s+x.filled;},0);
+  var total=a.reduce(function(s,x){return s+x.total;},0);
+  var seqs=Math.max(1,Math.ceil(w.length/WALL_SLOTS_PER_SEQ),Math.ceil(c.length/CEIL_PER_SEQ));
+  return {a:a,w:w,c:c,filled:filled,total:total,remaining:total-filled,
+    complete:a.filter(function(x){return x.filled>=x.total;}).length,
+    seqs:seqs, wallGap:seqs*WALL_SLOTS_PER_SEQ-w.length, ceilGap:seqs*CEIL_PER_SEQ-c.length,
+    perArtist: (PLAN.artists>0? filled/PLAN.artists : 1)};
+}
+
+function planCell(a,h){
+  if(!a) return '<div class="pl-cell '+h+' pl-empty"><b>À vendre</b><span>5 m disponibles</span></div>';
+  var pct=Math.round(a.filled/a.total*100), full=a.filled>=a.total;
+  return '<div class="pl-cell '+h+' '+(full?'pl-full':'pl-fill')+'">'+
+    '<div class="pl-ctop"><span class="pl-cid">'+a.id+'</span><span class="pl-cfmt">'+a.format+'</span></div>'+
+    '<div class="pl-cbot"><span class="pl-bar"><i style="width:'+pct+'%"></i></span>'+
+    '<span class="pl-cnt">'+a.filled+'/'+a.total+'</span></div></div>';
+}
+
+function renderPlanSeqs(s){
+  var pad=function(x,n){var r=x.slice();while(r.length<n)r.push(null);return r;};
+  var ruler='<div class="pl-ruler"><div class="pl-rdir">Position</div>'+
+    [0,5,10,15,20].map(function(m){return '<div class="pl-rc">'+m+' m</div>';}).join('')+'</div>';
+  var out='';
+  for(var i=0;i<s.seqs;i++){
+    var L=pad(s.w.slice(i*WALL_SLOTS_PER_SEQ,i*WALL_SLOTS_PER_SEQ+WALL_PER_SEQ),WALL_PER_SEQ);
+    /* mur droit inverse : la 6e oeuvre fait face a la 5e (pas d'aller-retour de 25 m).
+       On complete AVANT d'inverser, pour que les emplacements libres restent au bout de la file. */
+    var R=pad(s.w.slice(i*WALL_SLOTS_PER_SEQ+WALL_PER_SEQ,(i+1)*WALL_SLOTS_PER_SEQ),WALL_PER_SEQ).reverse();
+    var C=pad(s.c.slice(i*CEIL_PER_SEQ,(i+1)*CEIL_PER_SEQ),CEIL_PER_SEQ);
+    var placed=L.concat(C,R).filter(Boolean);
+    var artists=placed.reduce(function(t,x){return t+x.filled;},0);
+    var slots=WALL_SLOTS_PER_SEQ+CEIL_PER_SEQ, free=slots-placed.length;
+    var tr=function(nm,dim,arr,hh){
+      return '<div class="pl-track"><div class="pl-tl"><b>'+nm+'</b><span>'+dim+'</span></div>'+
+        arr.map(function(x){return planCell(x,hh);}).join('')+'</div>';
+    };
+    out+='<div class="pl-seq"><div class="pl-seqhead"><span class="pl-seqn">30 s — '+(i+1)+'</span>'+
+      '<span class="pl-seqt">Séquence '+(i+1)+'</span><span class="pl-seqm">'+
+      '<span>'+fr(artists)+' places</span><span>'+placed.length+'/'+slots+' emplacements</span>'+
+      (free>0?'<span class="warn">'+free+' à vendre</span>':'<span class="done">complète</span>')+
+      '</span></div><div class="pl-seqbody"><div class="pl-inner">'+ruler+
+      tr('Mur gauche','9600 × 768 px',L,'pl-w')+
+      tr('Plafond','9600 × 1440 px',C,'pl-c')+
+      tr('Mur droit','9600 × 768 px',R,'pl-w')+
+      '</div></div></div>';
+  }
+  document.getElementById('planSeqs').innerHTML=out;
+}
+
+function planSeg(node,opts,cur,cb){
+  node.innerHTML=opts.map(function(o){
+    return '<button type="button" data-v="'+o.v+'" aria-pressed="'+(o.v===cur)+'">'+o.l+'</button>';
+  }).join('');
+  [].forEach.call(node.querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ cb(b.dataset.v); });
+  });
+}
+
+function renderPlanSim(s){
+  if(sim.seqs===null||sim.seqs<s.seqs) sim.seqs=s.seqs;
+  var so=[]; for(var k=s.seqs;k<=s.seqs+4;k++) so.push({v:String(k),l:k+' × 30 s'});
+  planSeg(document.getElementById('planSegSeq'),so,String(sim.seqs),function(v){sim.seqs=+v;renderPlanSim(planStats());});
+  planSeg(document.getElementById('planSegWall'),WALL_FORMATS.map(function(f){return {v:f.n,l:f.n+' · '+f.c};}),sim.wall,
+    function(v){sim.wall=v;renderPlanSim(planStats());});
+  planSeg(document.getElementById('planSegCeil'),CEIL_FORMATS.map(function(f){return {v:f.n,l:f.n+' · '+f.c};}),sim.ceil,
+    function(v){sim.ceil=v;renderPlanSim(planStats());});
+
+  var wc=WALL_FORMATS.filter(function(f){return f.n===sim.wall;})[0].c;
+  var cc=CEIL_FORMATS.filter(function(f){return f.n===sim.ceil;})[0].c;
+  var nw=Math.max(0,sim.seqs*WALL_SLOTS_PER_SEQ-s.w.length);
+  var nc=Math.max(0,sim.seqs*CEIL_PER_SEQ-s.c.length);
+  var newPlaces=nw*wc+nc*cc, projPlaces=s.total+newPlaces;
+  /* Places -> artistes via le ratio observe (un artiste prend en moyenne s.perArtist places). */
+  var projArtists=Math.round(projPlaces/(s.perArtist||1));
+  var row=function(l,v,st){return '<div class="pl-orow"><span>'+l+'</span>'+(st?'<b>'+v+'</b>':'<span style="font-weight:700">'+v+'</span>')+'</div>';};
+  document.getElementById('planSimOut').innerHTML=
+    row('Œuvres à ouvrir',nw+' murales + '+nc+' plafond')+
+    row('Places créées',fr(newPlaces))+
+    row('Capacité totale du tunnel',fr(projPlaces)+' places')+
+    row('Artistes projetés',fr(projArtists),true)+
+    row('Places restant à vendre',fr(projPlaces-s.filled))+
+    row('Vidéos à produire',sim.seqs+' × 30 s = '+(sim.seqs*30)+' s');
+  var ok=projArtists>=GOAL_ARTISTS;
+  document.getElementById('planVerdict').innerHTML='<div class="pl-verdict '+(ok?'good':'bad')+'">'+
+    (ok? 'Ce scénario atteint l’objectif : ≈ '+fr(projArtists)+' artistes pour 1 000 visés ('+fr(projPlaces)+' places, ratio observé '+s.perArtist.toFixed(2).replace('.',',')+' place/artiste). Il reste '+fr(projPlaces-s.filled)+' places à vendre.'
+       : 'Ce scénario plafonne à ≈ '+fr(projArtists)+' artistes, soit '+fr(GOAL_ARTISTS-projArtists)+' de moins que l’objectif. Passer les œuvres murales en Small ou le plafond en Large Ceiling, ou viser une séquence de plus.')+
+    '</div>';
+}
+
+function renderPlanTable(s){
+  var wi={},ci={};
+  s.w.forEach(function(a,i){ var right=(i%WALL_SLOTS_PER_SEQ)>=WALL_PER_SEQ, j=i%WALL_PER_SEQ;
+    wi[a.id]={seq:Math.floor(i/WALL_SLOTS_PER_SEQ)+1,side:right?'D':'G',pos:right?WALL_PER_SEQ-j:j+1}; });
+  s.c.forEach(function(a,i){ ci[a.id]={seq:Math.floor(i/CEIL_PER_SEQ)+1,pos:(i%CEIL_PER_SEQ)+1}; });
+  var rows=s.a.slice().sort(function(p,q){return p.id-q.id;});
+  document.querySelector('#planTbl tbody').innerHTML=rows.map(function(a){
+    var pct=Math.round(a.filled/a.total*100), full=a.filled>=a.total;
+    var loc=a.surface==='wall'
+      ? 'Séq. '+wi[a.id].seq+' · Mur '+wi[a.id].side+' · '+wi[a.id].pos
+      : 'Séq. '+ci[a.id].seq+' · Plafond · '+ci[a.id].pos;
+    return '<tr><td><b>Artwork '+a.id+'</b></td><td>'+(a.surface==='wall'?'Mur':'Plafond')+'</td>'+
+      '<td>'+a.format+'</td><td>'+loc+'</td>'+
+      '<td><span class="pl-mini"><span class="pl-bar"><i style="width:'+pct+'%;background:'+(full?'var(--green)':'var(--gold)')+'"></i></span>'+
+      '<span style="font-size:11px;color:var(--muted);min-width:32px;text-align:right">'+pct+' %</span></span></td>'+
+      '<td class="num">'+a.filled+' / '+a.total+'</td>'+
+      '<td class="num"'+(full?'':' style="color:var(--gold);font-weight:700"')+'>'+(a.total-a.filled)+'</td>'+
+      '<td><span class="pl-pill '+(full?'f':'p')+'">'+(full?'Complet':'En cours')+'</span></td></tr>';
+  }).join('');
+  document.querySelector('#planTbl tfoot').innerHTML='<tr><td colspan="5">'+rows.length+' œuvres · '+fr(rows.length*5)+' m d’écran</td>'+
+    '<td class="num">'+fr(s.filled)+' / '+fr(s.total)+'</td><td class="num">'+fr(s.remaining)+'</td><td></td></tr>';
+}
+
+function renderPlan(){
+  if(!PLAN) return;
+  var s=planStats();
+  var pct=s.total? Math.round(s.filled/s.total*100):0;
+  var kp=[
+    {n:fr(PLAN.artists),l:'Artistes',hi:true},
+    {n:fr(s.filled)+' / '+fr(s.total),l:'Places vendues ('+pct+' %)'},
+    {n:fr(s.remaining),l:'Places à vendre'},
+    {n:s.complete+'/'+s.a.length,l:'Œuvres complètes'},
+    {n:String(s.seqs),l:'Vidéos de 30 s'},
+    {n:String(s.ceilGap),l:'Œuvres plafond manquantes'}
+  ];
+  document.getElementById('planKpis').innerHTML=kp.map(function(k){
+    return '<div class="kpi'+(k.hi?' hi':'')+'"><div class="n">'+k.n+'</div><div class="l">'+k.l+'</div></div>';
+  }).join('');
+
+  var close=PLAN.saleEndDate? new Date(PLAN.saleEndDate).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'—';
+  document.getElementById('planNote').innerHTML=
+    '<b>'+fr(PLAN.artists)+' artistes</b> pour <b>'+fr(s.filled)+' places</b> vendues — un artiste prend en moyenne '+
+    s.perArtist.toFixed(2).replace('.',',')+' place. Objectif 1 000 artistes : il en manque <b>'+fr(Math.max(0,GOAL_ARTISTS-PLAN.artists))+'</b>. '+
+    'Clôture des inscriptions le <b>'+close+'</b>'+(PLAN.countries?' · '+PLAN.countries+' pays représentés':'')+'.';
+
+  renderPlanSeqs(s);
+
+  document.getElementById('planGapSub').textContent='Pour boucler les '+s.seqs+' séquences déjà entamées';
+  document.getElementById('planGaps').innerHTML=[
+    {n:s.wallGap,t:'œuvres collectives murales à ouvrir',s:s.w.length+' sur '+(s.seqs*WALL_SLOTS_PER_SEQ)+' emplacements muraux occupés'},
+    {n:s.ceilGap,t:'œuvres collectives plafond à ouvrir',s:s.c.length+' sur '+(s.seqs*CEIL_PER_SEQ)+' emplacements plafond occupés'},
+    {n:s.remaining,t:'places libres dans les œuvres déjà ouvertes',s:'vendables immédiatement, sans rien créer'}
+  ].map(function(g){
+    return '<div class="pl-gap"><span class="pl-gapn'+(g.n===0?' ok':'')+'">'+fr(g.n)+'</span>'+
+      '<span class="pl-gapt">'+g.t+'<small>'+g.s+'</small></span></div>';
+  }).join('');
+
+  renderPlanSim(s);
+  renderPlanTable(s);
+  document.getElementById('planSrc').innerHTML='Source : <a href="'+PLAN.source+'" target="_blank" rel="noopener" style="color:var(--blue)">page d’inscriptions</a> — lue '+
+    new Date(PLAN.updated).toLocaleTimeString('fr-FR')+(PLAN.cached?' (cache 2 min)':'')+
+    (PLAN.staleError?' — ⚠ dernière relecture en échec : '+PLAN.staleError:'');
+}
+
 // Auto-login : on cache tout de suite le login (sinon le champ mot de passe "flashe" pendant le fetch)
-if(storedKey()){ KEY=storedKey(); document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; document.getElementById('upd').textContent='Chargement…'; load(); }
+if(storedKey()){ KEY=storedKey(); document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; document.getElementById('upd').textContent='Chargement…'; load();
+  var v=''; try{ v=localStorage.getItem('dashview')||''; }catch(e){}
+  if(v==='plan') showView('plan');
+}
 setInterval(function(){ if(KEY) load(); }, 60000);
 </script>
 </body>
