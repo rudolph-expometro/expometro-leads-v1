@@ -32,6 +32,30 @@ function tooMany(ip, now) {
   hits.set(ip, arr);
   return arr.length > RL_MAX ? 'ip' : null;
 }
+// Détection de langue du message de l'artiste. La base de connaissance est 100 % en français :
+// sans consigne EXPLICITE, le modèle répond parfois en français à un message court en anglais
+// (mesuré : 4 réponses françaises sur 4 sur « I went to book a slot and it tried to take $1000??? »).
+// On compte des mots-outils très fréquents ; en cas d'égalité on n'impose rien.
+const LANG_WORDS = {
+  fr: /\b(le|la|les|un|une|des|du|de|et|est|je|tu|vous|nous|mon|ma|mes|pour|pas|que|qui|dans|avec|sur|comment|bonjour|merci|ai|suis)\b/gi,
+  en: /\b(the|a|an|and|is|are|i|you|my|your|for|not|that|this|with|on|how|hello|hi|thanks|thank|it|to|of|was|can)\b/gi,
+  es: /\b(el|la|los|las|un|una|y|es|yo|tu|usted|mi|para|no|que|con|en|como|hola|gracias|he|soy)\b/gi,
+  it: /\b(il|lo|la|i|gli|le|un|una|e|è|io|tu|lei|mio|mia|per|non|che|con|in|come|ciao|grazie|ho|sono)\b/gi,
+  de: /\b(der|die|das|ein|eine|und|ist|ich|du|sie|mein|meine|für|nicht|dass|mit|auf|wie|hallo|danke|habe|bin|kann)\b/gi,
+};
+const LANG_NAME = { fr: 'FRANÇAIS', en: 'ANGLAIS', es: 'ESPAGNOL', it: 'ITALIEN', de: 'ALLEMAND' };
+function detectLang(txt) {
+  const t = String(txt || '').toLowerCase();
+  if (t.length < 3) return null;
+  let best = null, bestN = 0, second = 0;
+  for (const k in LANG_WORDS) {
+    const n = (t.match(LANG_WORDS[k]) || []).length;
+    if (n > bestN) { second = bestN; bestN = n; best = k; } else if (n > second) { second = n; }
+  }
+  // il faut au moins 2 mots-outils, et une avance nette sur la 2e langue
+  return (bestN >= 2 && bestN > second) ? best : null;
+}
+
 const STATS_TTL = 30 * 60 * 1000; // 30 min : le compteur bouge lentement, on évite un fetch par message
 
 // Chiffres LIVE (artistes + pays) calculés automatiquement depuis la page publique de l'expo.
@@ -175,6 +199,13 @@ export default async function handler(req, res) {
   // (mesuré : 5 réponses sur 6 en français ; avec le rappel : 0 sur 6).
   // ⚠️ Il doit rester dans le bloc NON caché, sinon il casse le préfixe de cache.
   if (body.task !== 'improve') {
+    const lastUser = messages.filter((m) => m.role === 'user').slice(-1)[0];
+    const detected = detectLang(lastUser && lastUser.content);
+    if (detected) {
+      sysExtra += "\n\n🌍 LANGUE DE LA RÉPONSE — NON NÉGOCIABLE : le dernier message de l'artiste est écrit en "
+        + LANG_NAME[detected] + ". Rédige TOUTE ta réponse en " + LANG_NAME[detected]
+        + ", du premier au dernier mot, titres et texte des liens compris. Ne réponds PAS en français si cette langue n'est pas le français.";
+    }
     sysExtra += "\n\n⚠️ RAPPEL FINAL, le plus important : la base de connaissance ci-dessus est rédigée en FRANÇAIS pour TOI, "
       + "ce n'est pas la langue de la réponse. Écris ta réponse ENTIÈREMENT dans la langue du DERNIER message de l'artiste, "
       + "et reformule toujours l'information avec tes propres mots dans cette langue — ne recopie jamais une phrase de la base telle quelle.";
