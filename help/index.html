@@ -71,11 +71,28 @@
   }
 
   /* ---------- CHAT (épuré, sans box) ---------- */
-  .chat{display:flex;flex-direction:column;margin-bottom:12px}
-  .atag{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--muted);font-size:12px;font-weight:600;padding:2px 0 12px}
+  .chat{display:flex;flex-direction:column;margin:0 0 36px}
+  .atag{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--muted);font-size:12px;font-weight:600;padding:2px 0 10px}
   .atag .dot{width:7px;height:7px;border-radius:50%;background:#7CFFB0;box-shadow:0 0 8px #7CFFB0}
 
-  .msgs{overflow-y:auto;max-height:52vh;padding:4px 2px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+  /* intake : « Je suis » + email (suivi & apprentissage) */
+  .intake{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;padding:0 2px 14px}
+  .intake .lbl{font-size:12.5px;color:var(--muted);font-weight:600}
+  .intake .tags{display:inline-flex;gap:6px}
+  .intake .tags button{font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--text);
+    background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:100px;padding:7px 13px;transition:background .12s ease,color .12s ease,border-color .12s ease}
+  .intake .tags button:hover{background:rgba(255,255,255,.10)}
+  .intake .tags button.on{background:linear-gradient(180deg,var(--accent),var(--accent-d));color:#fff;border-color:transparent}
+  .intake .em{flex:1 1 180px;min-width:150px;max-width:250px;font:inherit;font-size:14px;color:var(--head);
+    background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:8px 14px}
+  .intake .em::placeholder{color:var(--faint)}
+  .intake .em:focus{outline:none;border-color:rgba(255,255,255,.28)}
+
+  .msgs{overflow-y:auto;max-height:48vh;min-height:150px;padding:6px 12px 6px 2px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.16) transparent}
+  .msgs::-webkit-scrollbar{width:6px}
+  .msgs::-webkit-scrollbar-track{background:transparent}
+  .msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:4px}
+  .msgs::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.26)}
   .lead{color:var(--muted);font-size:13px;font-weight:600;text-align:center;margin:2px 0 0}
   .row{display:flex;max-width:90%}
   .row.u{align-self:flex-end}
@@ -108,7 +125,7 @@
   .esc button:hover{background:rgba(255,255,255,.06)}
 
   /* la SEULE box : écrire */
-  .composer{flex:none;display:flex;gap:6px;align-items:center;
+  .composer{flex:none;margin-top:12px;display:flex;gap:6px;align-items:center;
     padding:7px 7px 7px 15px;border:1px solid var(--line);border-radius:16px;background:var(--paper)}
   .composer textarea{flex:1 1 auto;min-width:0;resize:none;font:inherit;font-size:16px;color:var(--head);
     background:transparent;border:none;padding:6px 0;max-height:120px;line-height:1.4}
@@ -131,8 +148,10 @@
   .form .acts .cx{background:transparent;color:var(--muted)}
   .form .err{color:#ff8a97;font-size:12.5px;margin:-2px 0 8px;display:none}
 
-  footer{flex:none;margin-top:auto;text-align:center;color:var(--faint);font-size:11.5px;padding:12px 0 18px}
-  footer b{color:var(--accent)}
+  footer{flex:none;margin-top:auto;text-align:center;color:rgba(255,255,255,.45);font-size:12px;letter-spacing:.05em;padding:34px 26px 30px;border-top:1px solid var(--line)}
+  footer .foot-logo{width:46px;margin:0 auto 12px;display:block}
+  footer a{color:rgba(255,255,255,.55);text-decoration:none}
+  footer a:hover{color:#fff}
 
   @media (max-width:420px){
     .topbar{padding:10px 12px;gap:8px}
@@ -143,7 +162,7 @@
 </style>
 </head>
 <body>
-<header class="topbar">
+<header class="topbar" id="top">
   <a class="brand" id="brand" target="_blank" rel="noopener"><img src="/florence/img/logo-color.png" alt="ExpoMetro"></a>
   <div class="topbar-right">
     <div class="lang">
@@ -165,6 +184,11 @@
 
   <div class="chat">
     <div class="atag"><span class="dot"></span> Assistant ExpoMetro · <span id="stTxt">en ligne</span></div>
+    <div class="intake" id="intake">
+      <span class="lbl" id="iAmLbl"></span>
+      <span class="tags"><button type="button" id="tagNew"></button><button type="button" id="tagBooked"></button></span>
+      <input class="em" id="emailIn" type="email" autocomplete="email">
+    </div>
     <div class="msgs" id="msgs" aria-live="polite"></div>
     <div class="esc" id="esc"><button id="escBtn" type="button">✉️ Écrire à Rudolph</button></div>
     <form class="composer" id="composer" autocomplete="off">
@@ -175,7 +199,11 @@
     </form>
   </div>
 
-  <footer>Expo<b>Metro</b> · Art for everyone, everywhere</footer>
+  <footer>
+    <img class="foot-logo" src="/florence/img/logo-mark.png" alt="ExpoMetro">
+    EXPOMETRO<br>
+    <a href="#top" id="backTop">Retour en haut ↑</a>
+  </footer>
 </div>
 
 <script>
@@ -195,7 +223,8 @@
       fTitle:"✉️ Écris à Rudolph — il te répond en personne",fEmail:"Ton email",fMsg:"Ta question pour Rudolph…",
       fGo:"Envoyer à Rudolph",fCx:"Annuler",fErr:"Merci d'indiquer un email valide et un message.",
       fSent:"Merci ! Rudolph a bien reçu ton message et te répondra personnellement. 💛",
-      err:"Oups, une erreur est survenue. Réessaie dans un instant."},
+      err:"Oups, une erreur est survenue. Réessaie dans un instant.",
+      iAm:"Je suis :",tagNew:"🆕 Nouveau",tagBooked:"✅ Déjà inscrit",emailPh:"Ton email (facultatif)",backTop:"Retour en haut ↑"},
     en:{status:"online",
       heroTitle:"Hi! 👋 I'm Rudolph, <span class='em'>founder of ExpoMetro.</span>",
       heroBody:"I get many messages from artists all over the world. You can ask me all your questions below.\n\nAnd if you don't find your answer, you can contact me — I always reply personally.",
@@ -207,7 +236,8 @@
       fTitle:"✉️ Write to Rudolph — he replies personally",fEmail:"Your email",fMsg:"Your question for Rudolph…",
       fGo:"Send to Rudolph",fCx:"Cancel",fErr:"Please enter a valid email and a message.",
       fSent:"Thank you! Rudolph has received your message and will reply personally. 💛",
-      err:"Oops, something went wrong. Please try again in a moment."},
+      err:"Oops, something went wrong. Please try again in a moment.",
+      iAm:"I am:",tagNew:"🆕 New here",tagBooked:"✅ Already booked",emailPh:"Your email (optional)",backTop:"Back to top ↑"},
     es:{status:"en línea",
       heroTitle:"¡Hola! 👋 Soy Rudolph, <span class='em'>fundador de ExpoMetro.</span>",
       heroBody:"Recibo muchísimos mensajes de artistas de todo el mundo. Puedes hacerme todas tus preguntas aquí abajo.\n\nY si no encuentras tu respuesta, puedes contactarme — siempre respondo personalmente.",
@@ -219,7 +249,8 @@
       fTitle:"✉️ Escribe a Rudolph — te responde en persona",fEmail:"Tu email",fMsg:"Tu pregunta para Rudolph…",
       fGo:"Enviar a Rudolph",fCx:"Cancelar",fErr:"Por favor indica un email válido y un mensaje.",
       fSent:"¡Gracias! Rudolph ha recibido tu mensaje y te responderá personalmente. 💛",
-      err:"Vaya, ha ocurrido un error. Inténtalo de nuevo en un momento."},
+      err:"Vaya, ha ocurrido un error. Inténtalo de nuevo en un momento.",
+      iAm:"Soy:",tagNew:"🆕 Nuevo",tagBooked:"✅ Ya inscrito",emailPh:"Tu email (opcional)",backTop:"Volver arriba ↑"},
     it:{status:"online",
       heroTitle:"Ciao! 👋 Sono Rudolph, <span class='em'>fondatore di ExpoMetro.</span>",
       heroBody:"Ricevo moltissime richieste da artisti di tutto il mondo. Puoi farmi tutte le tue domande qui sotto.\n\nE se non trovi la tua risposta, puoi contattarmi — rispondo sempre personalmente.",
@@ -231,7 +262,8 @@
       fTitle:"✉️ Scrivi a Rudolph — ti risponde di persona",fEmail:"La tua email",fMsg:"La tua domanda per Rudolph…",
       fGo:"Invia a Rudolph",fCx:"Annulla",fErr:"Inserisci un'email valida e un messaggio.",
       fSent:"Grazie! Rudolph ha ricevuto il tuo messaggio e ti risponderà personalmente. 💛",
-      err:"Ops, si è verificato un errore. Riprova tra un istante."},
+      err:"Ops, si è verificato un errore. Riprova tra un istante.",
+      iAm:"Sono:",tagNew:"🆕 Nuovo",tagBooked:"✅ Già iscritto",emailPh:"La tua email (facoltativa)",backTop:"Torna su ↑"},
     de:{status:"online",
       heroTitle:"Hallo! 👋 Ich bin Rudolph, <span class='em'>Gründer von ExpoMetro.</span>",
       heroBody:"Ich erhalte viele Nachrichten von Künstlern aus aller Welt. Du kannst mir all deine Fragen hier unten stellen.\n\nUnd wenn du keine Antwort findest, kannst du mich kontaktieren — ich antworte immer persönlich.",
@@ -243,7 +275,8 @@
       fTitle:"✉️ Schreib Rudolph — er antwortet persönlich",fEmail:"Deine E-Mail",fMsg:"Deine Frage an Rudolph…",
       fGo:"An Rudolph senden",fCx:"Abbrechen",fErr:"Bitte gib eine gültige E-Mail und eine Nachricht ein.",
       fSent:"Danke! Rudolph hat deine Nachricht erhalten und antwortet dir persönlich. 💛",
-      err:"Ups, etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal."}
+      err:"Ups, etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal.",
+      iAm:"Ich bin:",tagNew:"🆕 Neu hier",tagBooked:"✅ Bereits gebucht",emailPh:"Deine E-Mail (optional)",backTop:"Nach oben ↑"}
   };
   var LANG_NAMES={en:"English",fr:"Français",es:"Español",it:"Italiano",de:"Deutsch"};
   var ORDER=["en","fr","es","it","de"];
@@ -276,6 +309,15 @@
   $("#stTxt").textContent=t.status; inEl.placeholder=t.ph; escBtn.textContent=t.esc;
 
   var messages=[], profile=null, askCount=0, busy=false;
+
+  // intake : « Je suis » (tag profil) + email — pour le suivi & l'apprentissage
+  $("#iAmLbl").textContent=t.iAm; $("#tagNew").textContent=t.tagNew;
+  $("#tagBooked").textContent=t.tagBooked; $("#emailIn").placeholder=t.emailPh;
+  $("#backTop").textContent=t.backTop;
+  var emailIn=$("#emailIn"), tagNewEl=$("#tagNew"), tagBookedEl=$("#tagBooked");
+  function setTag(p){ profile=p; tagNewEl.classList.toggle("on",p==="new"); tagBookedEl.classList.toggle("on",p==="booked"); inEl.focus(); }
+  tagNewEl.addEventListener("click",function(){setTag("new");});
+  tagBookedEl.addEventListener("click",function(){setTag("booked");});
 
   function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
   function fmt(raw){
@@ -312,14 +354,18 @@
     busy=true; sndEl.disabled=true;
     var tr=bubble("a",'<span class="typing"><i></i><i></i><i></i></span>');
     fetch(API,{method:"POST",headers:{"content-type":"application/json"},
-      body:JSON.stringify({messages:messages.slice(-12),lang:lang,profile:profile})})
+      body:JSON.stringify({messages:messages.slice(-12),lang:lang,profile:profile,email:(emailIn.value||"").trim(),source:"help"})})
     .then(function(r){return r.json()})
     .then(function(d){
       tr.remove();
       var reply=(d&&d.reply)?d.reply:t.err;
       messages.push({role:"assistant",content:reply});
       bubble("a",fmt(reply));
-      if(askCount>=ESCALATE_AFTER) escEl.classList.add("show");
+      // n'affiche "Écrire à Rudolph" QUE si l'assistant lui-même renvoie vers Rudolph
+      // (= vraiment bloqué), sinon en dernier recours après plusieurs échanges.
+      var escalates=/rudolph/i.test(reply) && /(écri|scriv|escrib|\bwrite\b|schreib|contact|contatt|kontakt)/i.test(reply);
+      if(escalates || askCount>=6) escEl.classList.add("show");
+      else escEl.classList.remove("show");
     })
     .catch(function(){ tr.remove(); bubble("a",esc(t.err)); })
     .finally(function(){ busy=false; sndEl.disabled=false; inEl.focus(); });
