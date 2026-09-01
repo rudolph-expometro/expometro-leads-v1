@@ -553,12 +553,16 @@
   .ths-cta{color:var(--accent);font-weight:800;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
   .ths-cta:hover{color:var(--accent-d)}
   /* box de bienvenue personnalisée (variantes PDV : bienvenue / member / selected) */
-  .welcomebox{border:1.5px solid rgba(52,211,153,.5);background:linear-gradient(180deg,rgba(16,44,31,.5),rgba(10,20,15,.28));border-radius:20px;padding:20px 15px 18px;margin:6px 0 2px;box-shadow:0 0 26px rgba(52,211,153,.10),0 12px 40px rgba(0,0,0,.28);text-align:center}
-  .wb-badge{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#4fe6a7;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.5);border-radius:100px;padding:6px 15px;margin-bottom:13px}
+  .welcomebox{border:1.5px solid rgba(52,211,153,.5);background:linear-gradient(180deg,rgba(16,44,31,.5),rgba(10,20,15,.28));border-radius:20px;overflow:hidden;padding:0;margin:6px 0 2px;box-shadow:0 0 26px rgba(52,211,153,.10),0 12px 40px rgba(0,0,0,.28)}
+  /* hero : tag + titre superposés sur l'image du tunnel, image collée aux bords haut/gauche/droite */
+  .wb-hero{position:relative;width:100%;min-height:clamp(180px,48vw,232px);display:flex}
+  .welcomebox .wb-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .wb-hero-ov{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;padding:18px 16px;text-align:center;background:linear-gradient(180deg,rgba(5,9,13,.32),rgba(5,9,13,.68))}
+  .wb-badge{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#5cf0b3;background:rgba(6,20,14,.55);border:1px solid rgba(52,211,153,.6);border-radius:100px;padding:6px 15px;margin:0;backdrop-filter:blur(2px)}
   .wb-star{font-size:11px;line-height:1}
-  .wb-title{font-family:var(--font);font-weight:800;color:#fff;font-size:clamp(1.35rem,5.4vw,1.85rem);line-height:1.2;margin:0 auto 16px;max-width:19ch}
-  .welcomebox .wb-cover{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;margin:0 auto}
-  .welcomebox .wb-quote{margin:18px auto 2px;text-align:left}
+  .wb-title{font-family:var(--font);font-weight:800;color:#fff;font-size:clamp(1.3rem,5vw,1.7rem);line-height:1.18;margin:0;max-width:20ch;text-shadow:0 2px 18px rgba(0,0,0,.7)}
+  .wb-body{padding:16px 15px 18px;text-align:center}
+  .welcomebox .wb-quote{margin:0 auto 2px;text-align:left}
   .welcomebox .wb-quote .big-quote{border-left:none;padding-left:0}
   .welcomebox .wb-quote .big-quote cite{text-align:left}
   .tour-step-lbl{font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:16px 0 12px}
@@ -1718,11 +1722,17 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
       var W=WELCOME[variant]||WELCOME.bienvenue;
       vd.innerHTML=
         '<div class="welcomebox">'+
-          '<span class="wb-badge"><span class="wb-star">✦</span> '+esc(W.badge)+'</span>'+
-          '<h2 class="wb-title">'+W.title+'</h2>'+
-          '<img class="wb-cover" loading="lazy" src="'+EXPO.coverImg+'" alt="'+esc(EXPO.title)+'">'+
-          '<div class="msn-quote wb-quote"><img class="msn-q-photo" loading="lazy" src="/florence/img/rudolph-round.png" alt="Rudolph"><blockquote class="big-quote">'+W.quote+'<cite>— Rudolph, '+esc(t.founderTitle||"Fondateur")+'</cite></blockquote></div>'+
-          '<a class="home-th-cta wb-start" data-open="infos" href="#infos">'+esc(t.startCta)+' <span class="ar">→</span></a>'+
+          '<div class="wb-hero">'+
+            '<img class="wb-cover" loading="lazy" src="'+EXPO.coverImg+'" alt="'+esc(EXPO.title)+'">'+
+            '<div class="wb-hero-ov">'+
+              '<span class="wb-badge"><span class="wb-star">✦</span> '+esc(W.badge)+'</span>'+
+              '<h2 class="wb-title">'+W.title+'</h2>'+
+            '</div>'+
+          '</div>'+
+          '<div class="wb-body">'+
+            '<div class="msn-quote wb-quote"><img class="msn-q-photo" loading="lazy" src="/florence/img/rudolph-round.png" alt="Rudolph"><blockquote class="big-quote">'+W.quote+'<cite>— Rudolph, '+esc(t.founderTitle||"Fondateur")+'</cite></blockquote></div>'+
+            '<a class="home-th-cta wb-start" data-open="infos" href="#infos">'+esc(t.startCta)+' <span class="ar">→</span></a>'+
+          '</div>'+
         '</div>';
     }
     var th=$("#homeTourHead");
