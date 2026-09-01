@@ -212,7 +212,7 @@
   .tile-current{border-color:var(--line)!important;background:rgba(255,255,255,.05);opacity:.7}
   .tile-current i{color:var(--muted)!important}
   .tour-row{display:flex;align-items:stretch;justify-content:center;gap:12px}
-  .tour-foot-cta{text-align:center;font-size:13.5px;color:var(--muted);margin:14px 0 0}
+  .catview .tour-foot-cta{text-align:center;font-size:13.5px;color:var(--muted);margin:22px 0 0}
   .tour-prev,.tour-next{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;font-family:var(--font);font-weight:800;font-size:.98rem;line-height:1.2;text-align:center;text-decoration:none;padding:15px 16px;border-radius:14px;cursor:pointer;transition:background .2s,transform .2s,border-color .2s,color .2s}
   .tour-prev{flex:1 1 0;min-width:0;background:transparent;border:1.5px solid var(--line);color:var(--muted)}
   .tour-prev:hover{border-color:rgba(255,255,255,.42);color:#fff}
@@ -1409,7 +1409,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
         '<div class="stepper stepper-bottom"><div class="stepper-dots">'+dots+'</div></div>'+
         '<div class="tour-row">'+nextBtn+'</div>'+(t.reserveCta?'<p class="tour-foot-cta">'+tpl(t.reserveCta)+'</p>':'')+'</div>';
     }
-    html+='<div class="tour-tiles"><p class="tour-tiles-lbl">'+esc(t.orExplore)+'</p>'+tilesHTML(id)+'</div>';
+    html+='<div class="tour-tiles">'+tilesHTML(id)+'</div>';
     if(id!=="faq"){
       html+='<footer class="cat-footer"><span class="cf-ava"><span class="cf-ring"><img class="cf-photo" src="/florence/img/rudolph-round.png" alt="Rudolph"></span><span class="cf-dot" title="En ligne"></span></span>'+
         '<a class="cf-link" href="#faq" data-open="faq">'+esc(t.catFooter)+'</a></footer>';
