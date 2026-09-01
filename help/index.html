@@ -547,6 +547,8 @@
   #homeTourHead .tour-head-sub{font-size:14.5px;margin-top:6px}
   .home-th-cta{display:inline-flex;align-items:center;gap:8px;margin-top:18px;white-space:nowrap;font-family:var(--font);font-weight:800;font-size:.98rem;color:var(--accent);text-decoration:none;padding:12px 24px;border-radius:11px;background:transparent;border:1.5px solid var(--accent);transition:background .2s,transform .2s,color .2s}
   .home-th-cta:hover{background:var(--accent);color:#fff;transform:translateY(-1px)}
+  .home-th-cta--light{color:#fff;border-color:rgba(255,255,255,.7);background:transparent}
+  .home-th-cta--light:hover{background:rgba(255,255,255,.12);border-color:#fff;color:#fff}
   .home-th-cta .ar{transition:transform .15s}
   .home-th-cta:hover .ar{transform:translateX(3px)}
   .welcomebox .wb-start{margin-top:16px}
@@ -560,9 +562,9 @@
   .wb-hero-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:56px 16px 14px;text-align:center;background:linear-gradient(180deg,rgba(4,7,11,.54),rgba(4,7,11,.78))}
   .wb-badge{position:absolute;top:26px;left:50%;transform:translateX(-50%);z-index:2;display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#5cf0b3;background:rgba(6,20,14,.55);border:1px solid rgba(52,211,153,.6);border-radius:100px;padding:6px 15px;margin:0;white-space:nowrap;backdrop-filter:blur(2px)}
   .wb-star{font-size:11px;line-height:1}
-  .wb-title{font-family:var(--font);font-weight:800;color:var(--accent);font-size:clamp(1rem,4.3vw,1.5rem);line-height:1.14;margin:0;max-width:22ch;text-shadow:0 2px 16px rgba(0,0,0,.82)}
-  .wb-hero-ov .wb-start{margin-top:3px;padding:10px 22px;font-size:.92rem;color:#fff;background:rgba(0,0,0,.24);border-color:rgba(255,255,255,.72);box-shadow:0 6px 20px rgba(0,0,0,.35)}
-  .wb-hero-ov .wb-start:hover{background:rgba(255,255,255,.18);border-color:#fff;color:#fff}
+  .wb-title{font-family:var(--font);font-weight:800;color:#fff;font-size:clamp(1rem,4.3vw,1.5rem);line-height:1.14;margin:0;max-width:22ch;text-shadow:0 2px 16px rgba(0,0,0,.82)}
+  .wb-hero-ov .wb-start{margin-top:3px;padding:10px 22px;font-size:.92rem;color:#fff;background:var(--accent);border-color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .wb-hero-ov .wb-start:hover{background:var(--accent-2);border-color:var(--accent-2);color:#fff}
   .wb-body{padding:14px 15px 16px;text-align:center}
   .welcomebox .wb-quote{margin:0 auto 2px;text-align:left}
   .welcomebox .wb-quote .big-quote{border-left:none;padding-left:0}
@@ -1742,7 +1744,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
       th.innerHTML='<div class="tour-head">'+
         '<div class="tour-head-title">'+esc(t.tourTitle)+'</div>'+
         '<p class="tour-head-sub">'+esc(t.tourSub)+'</p>'+
-        '<a class="home-th-cta" data-open="infos" href="#infos">'+esc(t.heroCta)+' <span class="ar">→</span></a>'+
+        '<a class="home-th-cta home-th-cta--light" data-open="infos" href="#infos">'+esc(t.heroCta)+' <span class="ar">→</span></a>'+
       '</div>';
     }
     var htw=document.querySelector("#tiles > .tiles");
