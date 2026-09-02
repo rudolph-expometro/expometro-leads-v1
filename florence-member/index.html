@@ -1261,6 +1261,12 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
         '</div>' }
   };
   var CAT_ORDER=["infos","prix","apropos","temoignages","expose"];  // Œuvres & Formats fusionné dans l'étape finale
+  // slugs d'URL en anglais (l'id interne reste FR ; seul le hash affiché change)
+  var CAT_SLUG={infos:"info",prix:"benefits",apropos:"vision",temoignages:"testimonials",expose:"exhibit"};
+  var CAT_ID={}; for(var _cs in CAT_SLUG) CAT_ID[CAT_SLUG[_cs]]=_cs;   // slug -> id
+  var CAT_LEGACY={formats:"expose",offre:"expose"};   // anciennes ancres PDV (liens des mails) -> étape 5 intégrée
+  function catHash(id){ return "#"+(CAT_SLUG[id]||id); }
+  function idFromHash(h){ return CAT_LEGACY[h]||((CATS&&CATS[h])?h:(CAT_ID[h]||h)); }   // legacy PDV + slug EN + ancien id FR
   // cartes thèmes (identiques à l'accueil) — ordre : infos, avantages, formats, histoire, témoignages, faq
   var TILES=[
     {id:"infos",ic:"ti-map-pin",t:"Infos & Programme",s:"Lieu, dates, comment ça marche"},
@@ -1498,7 +1504,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
         tpl(c.intro||"");
       hideAll(); catEl.innerHTML=hh; catEl.classList.add("show");
       loadSlots(); loadReviews(); loadFaq(); applyPriceCurrency();
-      if(history.replaceState){try{history.replaceState(null,"","#"+id);}catch(e){}}
+      if(history.replaceState){try{history.replaceState(null,"",catHash(id));}catch(e){}}
       if(doScroll!==false) window.scrollTo({top:0,behavior:"auto"});
       return;
     }
@@ -1533,7 +1539,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
     var prevId=pv?pv:"home";
     if(id!=="expose"){
       var nextBtn = nx
-        ? '<a class="tour-next" data-open="'+nx+'" href="#'+nx+'">'+esc(t.continueCta)+' <i class="ti ti-arrow-right ar"></i></a>'
+        ? '<a class="tour-next" data-open="'+nx+'" href="'+catHash(nx)+'">'+esc(t.continueCta)+' <i class="ti ti-arrow-right ar"></i></a>'
         : tpl('<a class="tour-next" href="{PRICE}" target="_blank" rel="noopener"><i class="ti ti-ticket"></i> '+esc(t.pdvCta)+' <i class="ti ti-arrow-right ar"></i></a>');
       html+='<div class="tour-foot">'+
         '<div class="step-count sc-bottom"><span class="sc-cur">'+stepNum+'</span>/'+stepTotal+'</div>'+
@@ -1566,7 +1572,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
         syncGauge(_c);   // garder la clone LIVE (sinon elle fige sur le nombre de repli avant que /api/florence-artists réponde)
       }
     }
-    if(history.replaceState){try{history.replaceState(null,"","#"+id);}catch(e){}}
+    if(history.replaceState){try{history.replaceState(null,"",catHash(id));}catch(e){}}
     if(doScroll!==false) window.scrollTo({top:0,behavior:"auto"});   // haut de page = bandeau artistes visible
   }
   // garde une jauge (clone sans id) synchronisée sur le compteur LIVE du ticker « EN DIRECT »
@@ -1887,7 +1893,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
             '<div class="wb-hero-ov">'+
               '<span class="wb-badge"><span class="wb-star">✦</span> '+esc(W.badge)+' <span class="wb-star">✦</span></span>'+
               '<h2 class="wb-title">'+W.title+'</h2>'+
-              '<a class="home-th-cta wb-start" data-open="infos" href="#infos">'+esc(t.startCta)+' <span class="ar">→</span></a>'+
+              '<a class="home-th-cta wb-start" data-open="infos" href="#info">'+esc(t.startCta)+' <span class="ar">→</span></a>'+
             '</div>'+
           '</div>'+
           '<div class="wb-body">'+
@@ -1922,7 +1928,8 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
 
   /* ---------- ouverture initiale (#hash) ---------- */
   var initHash=(location.hash||"").replace("#","");
-  if(initHash && CATS[initHash]) openCat(initHash, false);
+  var initId=idFromHash(initHash);
+  if(initHash && CATS[initId]) openCat(initId, false);
   else openCat("infos", false);   // accueil fusionné par défaut (étape 1 : hero + jauge + infos)
   if(initHash==="contact") openChat();
 })();
