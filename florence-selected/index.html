@@ -1561,10 +1561,32 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
         var _ids=_c.querySelectorAll("[id]"); for(var _i=0;_i<_ids.length;_i++)_ids[_i].removeAttribute("id");
         var _anchor=_eb||_th;   // sous l'eyebrow « INFOS PRATIQUES »
         _anchor.parentNode.insertBefore(_c, _anchor.nextSibling);
+        syncGauge(_c);   // garder la clone LIVE (sinon elle fige sur le nombre de repli avant que /api/florence-artists réponde)
       }
     }
     if(history.replaceState){try{history.replaceState(null,"","#"+id);}catch(e){}}
     if(doScroll!==false) window.scrollTo({top:0,behavior:"auto"});   // haut de page = bandeau artistes visible
+  }
+  // garde une jauge (clone sans id) synchronisée sur le compteur LIVE du ticker « EN DIRECT »
+  function syncGauge(g){
+    if(!g) return; var GOAL=1000;
+    function apply(n){
+      if(!n||n<1) return;
+      var numEl=g.querySelector(".it-gauge-num b"), bar=g.querySelector(".it-bar-fill"), pctEl=g.querySelector(".it-bar-pct");
+      if(numEl) numEl.textContent=n;
+      var p=Math.min(100,Math.round(n/GOAL*1000)/10);
+      if(bar) bar.style.width=p+"%";
+      if(pctEl){ pctEl.textContent=Math.round(p)+"%"; pctEl.style.left=p+"%"; pctEl.style.transform=p<=8?"translateX(0)":p>=92?"translateX(-100%)":"translateX(-50%)"; }
+    }
+    function read(){ var el=document.querySelector(".artix-count .artix-num"); if(!el) return; var n=parseInt((el.textContent||"").replace(/[^0-9]/g,""),10); if(n) apply(n); }
+    read();
+    var host=document.querySelector(".artix-count");
+    if(host && window.MutationObserver){
+      if(window.__gaugeObs) window.__gaugeObs.disconnect();   // pas d'observers empilés au re-render
+      window.__gaugeObs=new MutationObserver(read);
+      window.__gaugeObs.observe(host,{childList:true,subtree:true,characterData:true});
+    }
+    setTimeout(read,800);
   }
 
   // avis d'artistes : rendu du carousel + navigation (repris PDV)
