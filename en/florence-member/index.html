@@ -1514,7 +1514,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
     if(ci<0){
       // page hors-tour (ex : FAQ) : nav simple, pas de stepper ni de nav bas
       var hh='<a class="tour-accueil" data-open="infos" href="'+catHash("infos")+'">← '+esc(t.accueil)+'</a>'+
-        (id==="faq"?'<div class="faq-bravo faq-bravo-top"><p><span class="bravo-title">'+esc(t.faqBoxTitle)+'</span><a class="bravo-cta" data-open="infos" href="'+catHash("infos")+'">'+esc(t.faqBoxCta)+' <span class="ar">→</span></a></p></div>':'')+(c.hero
+        (id==="faq"?'<div class="faq-bravo faq-bravo-top"><p><span class="bravo-title">'+esc(t.faqBoxTitle)+'</span><a class="bravo-cta" data-open="infos" href="'+catHash("infos")+'">🧭 '+esc(t.faqBoxCta)+' <span class="ar">→</span></a></p></div>':'')+(c.hero
           ? '<div class="page-hero"><img class="page-hero-img" src="'+c.hero+'" alt="" loading="eager"><span class="page-hero-title">'+esc(c.eyebrow)+'</span></div>'
           : '<p class="eyebrow"><i class="ti '+c.icon+'"></i> '+esc(c.eyebrow)+'</p>')+
         (c.title?'<h2>'+c.title+'</h2>':'')+
