@@ -306,7 +306,13 @@ fbq('init','1647625338848662');fbq('track','PageView');
   .faq-card-chat .cf-ava{width:56px;height:56px;margin:0 0 2px}
   .faq-card-cta{display:inline-flex;align-items:center;gap:6px;margin-top:6px;color:var(--accent);font-weight:800;font-size:.92rem}
   .faq-card-cta i{font-size:16px}
+  @media(max-width:560px){
+    .faq-jumps{align-self:stretch;align-items:flex-start;padding:0 4px}
+    .faq-jump{align-items:flex-start;text-align:left}
+    .faq-card-chat .faq-card-cta{align-self:flex-start;align-items:flex-start;text-align:left}
+  }
   .faq-qh{font-family:var(--font);font-weight:800;color:#fff;font-size:1.1rem;margin:22px 0 12px}
+  .catview .faq-qh:not(.faq-qh-first){color:var(--accent)}   /* « Questions les plus fréquentes » + « Questions critiques » en rose */
   .faq-search{position:relative;display:flex;align-items:center;margin:0 0 14px}
   .faq-search > i{position:absolute;left:14px;color:var(--muted);font-size:19px;pointer-events:none}
   .faq-search input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--head);background:var(--well);border:1px solid var(--line);border-radius:12px;padding:14px 42px;transition:border-color .15s}
