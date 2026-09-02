@@ -604,10 +604,10 @@ fbq('init','1647625338848662');fbq('track','PageView');
   .tour-head{text-align:center;margin:2px 0 8px}
   .tour-head-title{font-family:var(--font);font-weight:700;font-size:1.15rem;letter-spacing:0;text-transform:none;color:#fff;line-height:1.35}
   .catview .tour-head-title{max-width:480px;margin-left:auto;margin-right:auto}   /* même largeur que la jauge, sinon le titre s'étale trop */
-  .catview .tour-accueil{display:inline-block;color:var(--accent);font-size:13px;font-weight:700;letter-spacing:.02em;text-decoration:none;margin:0 0 14px}
-  .catview .tour-accueil:hover{text-decoration:underline}
-  .tour-head .tour-head-note{font-size:12.5px;color:var(--muted);font-weight:400;margin:5px 0 0;line-height:1.4}
-  .catview .tour-foot-note{font-size:12.5px;color:var(--muted);font-weight:400;margin:10px 0 0;line-height:1.4;text-align:center}
+  .catview .tour-accueil{display:block;width:fit-content;color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.02em;text-decoration:none;margin:0 0 14px}
+  .catview .tour-accueil:hover{color:#fff;text-decoration:underline}
+  .tour-head .tour-head-note{font-size:15.5px;color:var(--text);font-weight:400;margin:8px 0 0;line-height:1.5}
+  .catview .tour-foot-note{font-size:15.5px;color:var(--text);font-weight:400;margin:12px 0 0;line-height:1.5;text-align:center}
   /* sous-titre + prix : même taille, même couleur, même graisse */
   .tour-head .tour-head-sub{font-size:14px;color:var(--muted);font-weight:400;margin:11px 0 0;line-height:1.45}
   .tour-head .tour-head-price{font-size:14px;color:var(--muted);font-weight:400;margin:2px 0 0;line-height:1.45}
@@ -1502,7 +1502,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
     var ci=CAT_ORDER.indexOf(id);
     if(ci<0){
       // page hors-tour (ex : FAQ) : nav simple, pas de stepper ni de nav bas
-      var hh=(c.hero
+      var hh='<a class="tour-accueil" data-open="infos" href="'+catHash("infos")+'">← '+esc(t.accueil)+'</a>'+(c.hero
           ? '<div class="page-hero"><img class="page-hero-img" src="'+c.hero+'" alt="" loading="eager"><span class="page-hero-title">'+esc(c.eyebrow)+'</span></div>'
           : '<p class="eyebrow"><i class="ti '+c.icon+'"></i> '+esc(c.eyebrow)+'</p>')+
         (c.title?'<h2>'+c.title+'</h2>':'')+
@@ -1535,7 +1535,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
       '<div class="tour-step-lbl tour-step-lbl-after"><span class="sc-cur">'+stepNum+'</span>/'+stepTotal+'</div>'+
     '</div>';
     var html=head+
-      (c.noEyebrow?'':'<p class="eyebrow"><i class="ti '+c.icon+'"></i> '+esc(c.eyebrow)+'</p>'+(c.eyebrowSub?'<p class="eyebrow-sub">'+esc(c.eyebrowSub)+'</p>':''))+
+      (c.noEyebrow?'':'<p class="eyebrow"><i class="ti '+c.icon+'"></i> '+esc(c.eyebrow)+'</p>')+
       (c.title?'<h2>'+c.title+'</h2>':'')+
       tpl(c.intro||"");
     if(faqs.length && !c.noFaq){
