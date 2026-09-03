@@ -683,7 +683,7 @@ fbq('init','1647625338848662');fbq('track','PageView');
     .sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;align-items:flex-start;padding:24px 16px calc(46px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(7,10,23,0) 0,rgba(7,10,23,.92) 24px,rgba(7,10,23,.92) 66px,rgba(7,10,23,0) 92px);pointer-events:none;transform:translateY(120%);opacity:0;transition:transform .28s ease,opacity .28s ease}
     .sticky-bar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(28px + env(safe-area-inset-bottom,0px));background:#070a17;z-index:-1;pointer-events:none}
     body.scrolled .sticky-bar{transform:translateY(0);opacity:1}
-    .sticky-bar .sticky-next{pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:440px;padding:15px 18px;border-radius:14px;background:rgba(255,82,103,.85);color:#fff;font-family:var(--font);font-weight:800;font-size:1rem;text-decoration:none;box-shadow:none}
+    .sticky-bar .sticky-next{pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:440px;padding:15px 18px;border-radius:14px;background:#000;color:#fff;font-family:var(--font);font-weight:800;font-size:1rem;text-decoration:none;box-shadow:none}
     body.has-sticky .page{padding-bottom:8px}
   }
   /* box verte « candidature validée » (variante selected uniquement) */
@@ -1429,7 +1429,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
   var lang=pickLang(), t=L[lang];
   document.documentElement.lang=lang;
   try{document.body.classList.add('has-sticky');}catch(e){}
-  (function(){var _st;function onScroll(){var y=(window.pageYOffset||document.documentElement.scrollTop||0);var s=y>(window.innerHeight*1.7);if(s!==_st){_st=s;try{document.body.classList.toggle('scrolled',s);}catch(e){}}}window.addEventListener('scroll',onScroll,{passive:true});onScroll();})();
+  (function(){var _st;function onScroll(){var y=(window.pageYOffset||document.documentElement.scrollTop||0);var s=y>(window.innerHeight*2.0);var cf=document.querySelector('#catview .cat-footer');if(s&&cf&&cf.getBoundingClientRect().top<window.innerHeight-20)s=false;if(s!==_st){_st=s;try{document.body.classList.toggle('scrolled',s);}catch(e){}}}window.addEventListener('scroll',onScroll,{passive:true});onScroll();})();
   /* ---- i18n : overlay du contenu traduit (EN/ES/IT/DE). Le FR reste la source. ---- */
   var TR=(window.__TR||{});
   (function(){
