@@ -1425,7 +1425,7 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
   var lang=pickLang(), t=L[lang];
   document.documentElement.lang=lang;
   try{document.body.classList.add('has-sticky');}catch(e){}
-  (function(){var _st;function onScroll(){var s=(window.pageYOffset||document.documentElement.scrollTop||0)>120;if(s!==_st){_st=s;try{document.body.classList.toggle('scrolled',s);}catch(e){}}}window.addEventListener('scroll',onScroll,{passive:true});onScroll();})();
+  (function(){var _st;function onScroll(){var y=(window.pageYOffset||document.documentElement.scrollTop||0);var s=y>(window.innerHeight*0.8);if(s!==_st){_st=s;try{document.body.classList.toggle('scrolled',s);}catch(e){}}}window.addEventListener('scroll',onScroll,{passive:true});onScroll();})();
   /* ---- i18n : overlay du contenu traduit (EN/ES/IT/DE). Le FR reste la source. ---- */
   var TR=(window.__TR||{});
   (function(){
