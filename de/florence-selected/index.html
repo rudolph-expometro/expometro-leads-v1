@@ -678,10 +678,10 @@ fbq('init','1647625338848662');fbq('track','PageView');
   .catview .next-top:hover{text-decoration:underline}
   .sticky-bar{display:none}
   @media(max-width:560px){
-    .sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(7,10,23,0),rgba(7,10,23,.97) 34%);pointer-events:none;transform:translateY(120%);opacity:0;transition:transform .28s ease,opacity .28s ease}
+    .sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;padding:12px 16px calc(30px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(7,10,23,0),#070a17 22px);pointer-events:none;transform:translateY(120%);opacity:0;transition:transform .28s ease,opacity .28s ease}
     body.scrolled .sticky-bar{transform:translateY(0);opacity:1}
     .sticky-bar .sticky-next{pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:440px;padding:15px 18px;border-radius:14px;background:var(--accent);color:#fff;font-family:var(--font);font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 6px 22px rgba(255,82,103,.5)}
-    body.has-sticky .page{padding-bottom:88px}
+    body.has-sticky .page{padding-bottom:104px}
   }
   /* box verte « candidature validée » (variante selected uniquement) */
   .sel-box{margin:22px auto 4px;max-width:520px;width:calc(100% - 40px);box-sizing:border-box;text-align:center;padding:13px 18px;border:1.5px solid rgba(52,211,153,.5);background:linear-gradient(180deg,rgba(16,44,31,.5),rgba(10,20,15,.28));border-radius:14px;box-shadow:0 0 22px rgba(52,211,153,.10)}
@@ -1566,9 +1566,9 @@ window.__AX=({fr:{a:'ARTISTES',c:'PAYS',live:'EN DIRECT'},en:{a:'ARTISTS',c:'COU
               : tpl('<a class="next-top" href="{PRICE}" target="_blank" rel="noopener">'+esc(t.pdvCta)+' →</a>'))+
           '</div>'
         : '')+
-      (t.regTag?'<span class="reg-tag"><span class="reg-dot"></span>'+esc(t.regTag)+'</span>':'')+
-      '<div class="tour-head-title">'+esc(t.tourTitle)+'</div>'+
-      '<p class="tour-head-note">'+esc(t.priceFrom)+' <span class="startprice" data-size="S">49 €</span></p>'+
+      (id==="infos" && t.regTag?'<span class="reg-tag"><span class="reg-dot"></span>'+esc(t.regTag)+'</span>':'')+
+      (id==="infos"?'<div class="tour-head-title">'+esc(t.tourTitle)+'</div>':'')+
+      (id==="infos"?'<p class="tour-head-note">'+esc(t.priceFrom)+' <span class="startprice" data-size="S">49 €</span></p>':'')+
       '<div class="stepper">'+prevArr+'<div class="stepper-dots">'+dots+'</div>'+nextArr+'</div>'+
       '<div class="tour-step-lbl tour-step-lbl-after"><span class="sc-cur">'+stepNum+'</span>/'+stepTotal+'</div>'+
     '</div>';
