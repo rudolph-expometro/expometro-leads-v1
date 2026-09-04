@@ -6,6 +6,7 @@ const COOKIE_PATH = '/';
 const SESSION_MAX_AGE = 90 * 24 * 60 * 60;
 const UPSTREAM_ORIGIN = 'https://expometro-cae-firenze-2026.espace-de-tr-7258.chatgpt.site';
 const PROXY_PREFIX = `${ROUTE_PATH}/_site`;
+const PROXY_METHODS = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']);
 
 function parseCookies(header = '') {
   return Object.fromEntries(
@@ -71,6 +72,18 @@ function transformText(text) {
     .replace(/url\(\/(?!\/)/g, `url(${PROXY_PREFIX}/`);
 }
 
+function proxyBody(req) {
+  if (req.method === 'GET' || req.method === 'HEAD' || req.body == null) return undefined;
+  if (Buffer.isBuffer(req.body) || typeof req.body === 'string') return req.body;
+
+  const contentType = req.headers['content-type'] || '';
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    return new URLSearchParams(req.body).toString();
+  }
+
+  return JSON.stringify(req.body);
+}
+
 async function proxy(req, res) {
   const rawPath = Array.isArray(req.query.assetPath) ? req.query.assetPath.join('/') : (req.query.assetPath || '');
   if (rawPath.includes('..') || rawPath.includes('://')) {
@@ -85,13 +98,17 @@ async function proxy(req, res) {
     else if (value != null) upstream.searchParams.set(key, value);
   }
 
+  const headers = {
+    accept: req.headers.accept || '*/*',
+    'user-agent': req.headers['user-agent'] || 'artinthe.city',
+    'OAI-Sites-Authorization': `Bearer ${process.env.CAE_FLORENCE_SITE_TOKEN || ''}`
+  };
+  if (req.headers['content-type']) headers['content-type'] = req.headers['content-type'];
+
   const response = await fetch(upstream, {
-    method: 'GET',
-    headers: {
-      accept: req.headers.accept || '*/*',
-      'user-agent': req.headers['user-agent'] || 'artinthe.city',
-      'OAI-Sites-Authorization': `Bearer ${process.env.CAE_FLORENCE_SITE_TOKEN || ''}`
-    },
+    method: req.method,
+    headers,
+    body: proxyBody(req),
     redirect: 'follow'
   });
 
@@ -101,6 +118,11 @@ async function proxy(req, res) {
   res.setHeader('Cache-Control', 'private, no-store');
   res.setHeader('X-Robots-Tag', 'noindex, nofollow');
 
+  if (req.method === 'HEAD' || response.status === 204 || response.status === 304) {
+    res.end();
+    return;
+  }
+
   if (/text\/(html|css)|javascript|json/.test(contentType)) {
     res.send(transformText(await response.text()));
   } else {
@@ -109,7 +131,9 @@ async function proxy(req, res) {
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
+  const isLoginRequest = req.method === 'POST' && !req.query.assetPath;
+
+  if (isLoginRequest) {
     const supplied = typeof req.body === 'string'
       ? new URLSearchParams(req.body).get('password') || ''
       : req.body?.password || '';
@@ -124,8 +148,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-    res.setHeader('Allow', 'GET, HEAD, POST');
+  if (!PROXY_METHODS.has(req.method)) {
+    res.setHeader('Allow', [...PROXY_METHODS].join(', '));
     res.status(405).send('Méthode non autorisée');
     return;
   }
