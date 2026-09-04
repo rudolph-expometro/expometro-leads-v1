@@ -1,10 +1,11 @@
 import crypto from 'node:crypto';
 
 const COOKIE_NAME = 'cae_florence_session';
-const COOKIE_PATH = '/florence/cercledesartisteseuropeens';
+const ROUTE_PATH = '/florence/cercledesartisteseuropeens';
+const COOKIE_PATH = '/';
 const SESSION_MAX_AGE = 90 * 24 * 60 * 60;
 const UPSTREAM_ORIGIN = 'https://expometro-cae-firenze-2026.espace-de-tr-7258.chatgpt.site';
-const PROXY_PREFIX = `${COOKIE_PATH}/_site`;
+const PROXY_PREFIX = `${ROUTE_PATH}/_site`;
 
 function parseCookies(header = '') {
   return Object.fromEntries(
@@ -119,7 +120,7 @@ export default async function handler(req, res) {
     }
 
     res.setHeader('Set-Cookie', `${COOKIE_NAME}=${encodeURIComponent(sessionValue())}; Max-Age=${SESSION_MAX_AGE}; Path=${COOKIE_PATH}; HttpOnly; Secure; SameSite=Lax`);
-    res.status(303).setHeader('Location', COOKIE_PATH).end();
+    res.status(303).setHeader('Location', ROUTE_PATH).end();
     return;
   }
 
