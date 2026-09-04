@@ -8,6 +8,10 @@
   ],
   "rewrites": [
     {
+      "source": "/_next/:assetPath*",
+      "destination": "/api/cercle-artistes-europeens?assetPath=_next/:assetPath*"
+    },
+    {
       "source": "/florence/cercledesartisteseuropeens",
       "destination": "/api/cercle-artistes-europeens"
     },
