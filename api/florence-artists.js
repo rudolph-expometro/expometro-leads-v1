@@ -30,7 +30,29 @@ export async function getFlorenceStats() {
       if (a && a.display_name) artists.push([a.display_name, a.country_code || cc]);
     }
   }
-  return { artists, count: artists.length, countries: new Set(artists.map((a) => a[1])).size };
+  // Grille des formats LIVE (dimensions, prix EUR, places restantes) — même payload, aucun appel de plus.
+  const dd = (data.props && data.props.data) || {};
+  const formats = Array.isArray(dd.poster_available_size_list)
+    ? dd.poster_available_size_list
+        .filter((f) => f && f.label && f.artwork_price > 0)
+        .map((f) => ({
+          label: String(f.label),
+          w: Number(f.artwork_width) || 0,
+          h: Number(f.artwork_height) || 0,
+          price: Number(f.artwork_price) || 0,
+          left: Number(f.available_count) || 0,
+        }))
+    : [];
+
+  return {
+    artists,
+    count: Number(dd.count_artist) > 0 ? Number(dd.count_artist) : artists.length,
+    countries: Number(dd.count_country) > 0
+      ? Number(dd.count_country)
+      : new Set(artists.map((a) => a[1])).size,
+    formats,
+    priceMin: Number(dd.booking_price_min) || 0,
+  };
 }
 
 export default async function handler(req, res) {

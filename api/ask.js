@@ -208,6 +208,27 @@ export default async function handler(req, res) {
         sysExtra += " (Cap des 500 pas encore atteint : garde le conditionnel « si on atteint 500 artistes avant le 10 sept, une 2e journée s'ajoute le 29 nov ».)";
       }
     }
+
+    // GRILLE DES FORMATS EN DIRECT (dimensions, prix, places restantes) — lue sur la page publique.
+    // Elle prime sur la consigne « ne donne que "à partir de 49 €" » : ici, les chiffres sont RÉELS.
+    const live2 = await liveStats();
+    const fmts = (live2 && Array.isArray(live2.formats)) ? live2.formats : [];
+    if (fmts.length) {
+      const grid = fmts
+        .map((f) => "• " + f.label + " — " + f.w + " × " + f.h + " cm — " + f.price + " € — "
+                   + (f.left > 0 ? f.left + " place(s) encore libre(s)" : "COMPLET"))
+        .join("\n");
+      sysExtra += "\n\n💶 GRILLE DES FORMATS EN DIRECT (prix et disponibilités RÉELS à cet instant, "
+        + "dimensions en largeur × hauteur) :\n" + grid
+        + "\n→ Quand on te demande le prix ou la taille d'un format, DONNE ces chiffres, simplement et sans détour. "
+        + "Ils remplacent la consigne « ne donne que le prix de départ » : tu les connais maintenant, sers-t'en. "
+        + "N'énumère la grille entière que si on te demande tous les formats ; sinon réponds sur le format concerné.\n"
+        + "⚠️ Ce sont des prix en EUROS. La page d'inscription les affiche automatiquement dans la devise de l'artiste — "
+        + "précise-le seulement s'il est hors zone euro.\n"
+        + "⚠️ Les prix montent au fur et à mesure du remplissage : présente-les comme le tarif D'AUJOURD'HUI, jamais comme un tarif garanti.\n"
+        + "⚠️ Une rareté ne se mentionne que si elle est VRAIE et utile (« il ne reste que 5 Large ») — jamais de fausse urgence, "
+        + "et ne mens jamais sur un format COMPLET : dis-le franchement et propose l'alternative la plus proche.";
+    }
   }
 
   // Contexte profil : nouveau vs déjà réservé (choisi via les 2 branches du chat).
