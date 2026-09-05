@@ -176,6 +176,22 @@ async function artworkStatus(exhibitionId, artistId) {
   } catch (e) { return null; }
 }
 
+// Adresses generiques : ne jamais en deduire un nom d'artiste.
+const LOCAUX_GENERIQUES = new Set(['contact', 'info', 'infos', 'hello', 'bonjour', 'mail', 'email',
+  'artiste', 'artist', 'gallery', 'galerie', 'photo', 'studio', 'atelier', 'admin', 'office',
+  'peinture', 'painting', 'noreply', 'newsletter']);
+
+// Dernier recours : deduire un nom de la partie gauche de l'adresse ("meli-lana3@..." -> "meli lana").
+// Exige au moins 5 caracteres utiles : 20 exposants ont un nom tres court (Eva, Flo, JP...) et
+// produiraient des faux positifs.
+function nomDepuisEmail(email) {
+  const local = String(email || '').split('@')[0];
+  const n = normName(local.replace(/[._+\-]+/g, ' ').replace(/[0-9]+/g, ' '));
+  if (!n || n.replace(/\s/g, '').length < 5) return '';
+  if (LOCAUX_GENERIQUES.has(n.replace(/\s/g, ''))) return '';
+  return n;
+}
+
 // Cle de comparaison insensible a l'ORDRE des mots : "PASSEY Francois" == "Francois PASSEY".
 function nameKey(s) { return normName(s).split(' ').filter(Boolean).sort().join(' '); }
 
@@ -258,8 +274,14 @@ export default async function handler(req, res) {
     // Trois sources de nom, par ordre de fiabilite : ce que l'appelant fournit, puis Brevo,
     // puis le nom du payeur Stripe (utile quand la fiche Brevo est vide, cas frequent).
     const nomBrevo = [brevo.prenom, brevo.nom].filter(Boolean).join(' ');
-    const rechercheNom = name || nomBrevo || nomStripe;
-    const sourceNom = name ? 'fourni dans la requete' : (nomBrevo ? 'fiche Brevo' : (nomStripe ? 'nom du payeur Stripe' : null));
+    const nomEmail = nomDepuisEmail(email);
+    const rechercheNom = name || nomBrevo || nomStripe || nomEmail;
+    const sourceNom = name ? 'fourni dans la requete'
+      : nomBrevo ? 'fiche Brevo'
+      : nomStripe ? 'nom du payeur Stripe'
+      : nomEmail ? 'deduit de l adresse email'
+      : null;
+    const nomDeduit = sourceNom === 'deduit de l adresse email';
     let nomTrouve = null;
     if (artistes && rechercheNom) {
       const m = matchNames(artistes, rechercheNom);
@@ -276,7 +298,8 @@ export default async function handler(req, res) {
     // On ne va chercher le statut de l'oeuvre que si UN SEUL artiste correspond sans ambiguite.
     let cible = null, baseCible = null;
     if (nomTrouve && nomTrouve.exposant_exact.length === 1) { cible = nomTrouve.exposant_exact[0]; baseCible = 'correspondance de nom exacte'; }
-    else if (nomTrouve && !nomTrouve.exposant_exact.length && nomTrouve.exposants_probables.length === 1) { cible = nomTrouve.exposants_probables[0]; baseCible = 'nom approchant (un seul candidat)'; }
+    else if (nomTrouve && !nomDeduit && !nomTrouve.exposant_exact.length && nomTrouve.exposants_probables.length === 1) { cible = nomTrouve.exposants_probables[0]; baseCible = 'nom approchant (un seul candidat)'; }
+    if (baseCible && sourceNom) baseCible += ' — nom ' + sourceNom;
     const oeuvre = cible ? await artworkStatus(expo && expo.exhibitionId, cible.id) : null;
 
     // --- FLORENCE (expo en cours) : repondu en TEMPS REEL, jamais par le snapshot.
@@ -320,7 +343,8 @@ export default async function handler(req, res) {
     const avertissements = [];
     if (!cible) avertissements.push("Statut de l'oeuvre indisponible (artiste non identifie par le nom dans la liste Florence). Ne jamais l'inventer.");
     else if (oeuvre && oeuvre.nb === 0) avertissements.push("Oeuvre NON publiee : ne pas dire 'vous n'avez pas envoye votre image' (elle peut etre envoyee et en attente). Formuler comme une question.");
-    if (cible && baseCible && baseCible.indexOf('approchant') === 0) avertissements.push('Artiste identifie par un nom APPROCHANT : homonyme possible, le statut de l\'oeuvre peut concerner quelqu\'un d\'autre.');
+    if (cible && baseCible && baseCible.indexOf('approchant') !== -1) avertissements.push("Artiste identifie par un nom APPROCHANT : homonyme possible, le statut de l'oeuvre peut concerner quelqu'un d'autre.");
+    if (cible && nomDeduit) avertissements.push("Artiste identifie a partir de son ADRESSE EMAIL (aucun nom disponible ailleurs). La correspondance est exacte, mais faire confirmer si le message porte a consequence.");
     if (!pay.ok) avertissements.push('Stripe injoignable sur cette requete : le champ paiement est incomplet, ne pas conclure a une absence de paiement.');
     if (pay.via && pay.via.startsWith('scan_')) avertissements.push(`Recherche Stripe limitee aux paiements depuis le ${FLORENCE_START}. Un paiement plus ancien ne remonte pas.`);
     if (!brevo.ok) avertissements.push('Brevo injoignable sur cette requete : listes incompletes.');
