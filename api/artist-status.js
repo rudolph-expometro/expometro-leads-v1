@@ -55,7 +55,25 @@ async function stripePayments(email) {
     }
   } catch (e) { /* on tente le repli */ }
 
-  // Repli : liste des charges depuis le debut de Florence (borne a 1000).
+  // Repli 1 : retrouver le client par son email, puis ses charges (couvre tout l'historique).
+  // Necessite "Customers: Read" sur la cle. Si refuse, on passe au repli 2.
+  try {
+    const rc = await fetch('https://api.stripe.com/v1/customers?limit=10&email=' + encodeURIComponent(email), { headers: H });
+    if (rc.ok) {
+      const dc = await rc.json();
+      const ids = (dc.data || []).map((c) => c.id);
+      if (ids.length) {
+        let out = [];
+        for (const cid of ids.slice(0, 5)) {
+          const rr = await fetch(`https://api.stripe.com/v1/charges?limit=100&customer=${cid}`, { headers: H });
+          if (rr.ok) { const dd = await rr.json(); out = out.concat(dd.data || []); }
+        }
+        if (out.length) return { ok: true, via: 'client_stripe', charges: out };
+      }
+    }
+  } catch (e) { /* on passe au repli 2 */ }
+
+  // Repli 2 : liste des charges depuis le debut de Florence (borne a 1000).
   try {
     const since = Math.floor(new Date(FLORENCE_START + 'T00:00:00Z').getTime() / 1000);
     let out = [], after = null, target = String(email).toLowerCase();
@@ -158,15 +176,19 @@ async function artworkStatus(exhibitionId, artistId) {
   } catch (e) { return null; }
 }
 
-// Correspondance de nom : exacte, puis "tous les mots du nom cherche sont presents".
+// Cle de comparaison insensible a l'ORDRE des mots : "PASSEY Francois" == "Francois PASSEY".
+function nameKey(s) { return normName(s).split(' ').filter(Boolean).sort().join(' '); }
+
+// Correspondance de nom : exacte (ordre indifferent), puis "tous les mots cherches sont presents".
 function matchNames(list, query) {
   const q = normName(query);
   if (!q || q.length < 3) return { exact: [], probables: [] };
+  const qk = nameKey(query);
   const words = q.split(' ').filter((w) => w.length > 1);
   const exact = [], probables = [];
   for (const a of list) {
     const n = normName(a.nom);
-    if (n === q) { exact.push(a); continue; }
+    if (nameKey(a.nom) === qk) { exact.push(a); continue; }
     if (words.length && words.every((w) => n.includes(w))) probables.push(a);
   }
   return { exact, probables: probables.slice(0, 8) };
