@@ -149,7 +149,12 @@ async function florenceArtists() {
   }
   // Id de l'exposition en cours, lu dans la page (pas code en dur : survivra a Florence).
   const exhibitionId = (data.props && data.props.item && data.props.item.id) || null;
-  const out = { list, exhibitionId };
+  // Panneaux (Collective Artworks) indexes par id : sert a nommer l'emplacement d'une oeuvre.
+  const posters = {};
+  for (const p of ((data.props && data.props.posterList) || [])) {
+    posters[p.id] = { nom: p.public_name || null, format: p.label || null };
+  }
+  const out = { list, exhibitionId, posters };
   _artistCache = { at: Date.now(), data: out };
   return out;
 }
@@ -157,7 +162,7 @@ async function florenceArtists() {
 // STATUT DE L'OEUVRE, via l'API publique que la page utilise pour sa popup artiste.
 // items non vide  -> au moins une oeuvre validee et exposee publiquement
 // items vide      -> rien de publie (pas encore envoyee OU en attente de validation : indiscernable ici)
-async function artworkStatus(exhibitionId, artistId) {
+async function artworkStatus(exhibitionId, artistId, posters) {
   if (!exhibitionId || !artistId) return null;
   try {
     const r = await fetch(`https://expometro.co/api/exhibition/${exhibitionId}/artist/${artistId}/?locale=en`,
@@ -167,11 +172,22 @@ async function artworkStatus(exhibitionId, artistId) {
     const items = (d && d.data && d.data.items) || [];
     return {
       nb: items.length,
-      oeuvres: items.slice(0, 5).map((it) => ({
-        titre: (it.data && it.data.artwork_title) || null,
-        technique: (it.data && it.data.artwork_medium) || null,
-        annee: (it.data && it.data.artwork_year) || null
-      }))
+      oeuvres: items.slice(0, 5).map((it) => {
+        // « 2_4-14516.png » -> ligne 2, colonne 4 (format verifie sur des cas reels)
+        const coord = String(it.image_urn || '').split('-')[0].split('_');
+        const panneau = (posters && posters[it.poster_id]) || {};
+        return {
+          titre: (it.data && it.data.artwork_title) || null,
+          technique: (it.data && it.data.artwork_medium) || null,
+          annee: (it.data && it.data.artwork_year) || null,
+          emplacement: {
+            artwork: panneau.nom || null,
+            format: panneau.format || null,
+            ligne: coord.length === 2 ? Number(coord[0]) : null,
+            colonne: coord.length === 2 ? Number(coord[1]) : null
+          }
+        };
+      })
     };
   } catch (e) { return null; }
 }
@@ -201,11 +217,15 @@ function matchNames(list, query) {
   if (!q || q.length < 3) return { exact: [], probables: [] };
   const qk = nameKey(query);
   const words = q.split(' ').filter((w) => w.length > 1);
+  // Un PRENOM SEUL ne doit jamais produire de correspondance approchante : « Ines » matcherait
+  // « Ines Scheithauer », qui peut etre quelqu'un d'autre. La correspondance exacte reste permise
+  // (des artistes exposent sous un nom unique : Bella, Dana, Khava...).
+  const motsSuffisants = words.length >= 2;
   const exact = [], probables = [];
   for (const a of list) {
     const n = normName(a.nom);
     if (nameKey(a.nom) === qk) { exact.push(a); continue; }
-    if (words.length && words.every((w) => n.includes(w))) probables.push(a);
+    if (motsSuffisants && words.every((w) => n.includes(w))) probables.push(a);
   }
   return { exact, probables: probables.slice(0, 8) };
 }
@@ -315,7 +335,7 @@ export async function lookupArtistStatus(email, name) {
     if (nomTrouve && nomTrouve.exposant_exact.length === 1) { cible = nomTrouve.exposant_exact[0]; baseCible = 'correspondance de nom exacte'; }
     else if (nomTrouve && !nomDeduit && !nomTrouve.exposant_exact.length && nomTrouve.exposants_probables.length === 1) { cible = nomTrouve.exposants_probables[0]; baseCible = 'nom approchant (un seul candidat)'; }
     if (baseCible && sourceNom) baseCible += ' — nom ' + sourceNom;
-    const oeuvre = cible ? await artworkStatus(expo && expo.exhibitionId, cible.id) : null;
+    const oeuvre = cible ? await artworkStatus(expo && expo.exhibitionId, cible.id, expo && expo.posters) : null;
 
     // --- FLORENCE (expo en cours) : repondu en TEMPS REEL, jamais par le snapshot.
     let participeFlorence, sourceFlorence;
