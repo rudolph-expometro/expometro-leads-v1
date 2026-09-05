@@ -11,7 +11,7 @@
 //         GET /api/artist-status?name=Jean Dupont (quand l'email ne donne rien)
 //         GET /api/artist-status?email=...&name=... (les deux : recommande)
 
-import { createHash } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { COMMUNITY_HASHES, PARTICIPATION } from '../lib/community.js';
 
 const COMMUNITY = new Set(COMMUNITY_HASHES);
@@ -243,6 +243,21 @@ export default async function handler(req, res) {
   console.log(`[artist-status] lookup email=${email || '-'} name=${name || '-'} ip=${ip}`);
 
   try {
+    return res.status(200).json(await lookupArtistStatus(email, name));
+  } catch (e) {
+    console.error('[artist-status] erreur', e);
+    return res.status(500).json({ error: String((e && e.message) || e) });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// COEUR DU LOOKUP — exporte pour etre appele DIRECTEMENT par les autres fonctions
+// du meme projet (ex. api/ask.js), sans passer par HTTP ni manipuler de token.
+// Meme motif que getFlorenceStats() dans api/florence-artists.js.
+// ---------------------------------------------------------------------------
+export async function lookupArtistStatus(email, name) {
+    email = String(email || '').trim().toLowerCase();
+    name = String(name || '').trim();
     const [pay, brevo, expo] = await Promise.all([
       email ? stripePayments(email) : Promise.resolve({ ok: true, charges: [] }),
       email ? brevoContact(email)   : Promise.resolve({ ok: true, found: false }),
@@ -354,7 +369,7 @@ export default async function handler(req, res) {
     if (participeFlorence === 'probable' || participeFlorence === 'a_verifier') avertissements.push("Participation a Florence deduite du NOM uniquement (liste publique) : homonyme possible, faire confirmer par l'artiste.");
     avertissements.push(`Base users = snapshot du ${SNAPSHOT_DATE}. Les comptes crees apres cette date n'y sont pas.`);
 
-    return res.status(200).json({
+    return {
       verdict,
       resume,
       participe_florence: { reponse: participeFlorence, source: sourceFlorence },
@@ -384,9 +399,49 @@ export default async function handler(req, res) {
             note: "Aucune oeuvre publiee pour cet artiste. Attention : impossible de distinguer ici 'image pas encore envoyee' de 'envoyee, en attente de validation'. Demander a l'artiste ou verifier dans l'admin avant d'affirmer laquelle des deux." },
       avertissements,
       genere_le: new Date().toISOString()
-    });
-  } catch (e) {
-    console.error('[artist-status] erreur', e);
-    return res.status(500).json({ error: String((e && e.message) || e) });
-  }
+    };
+}
+
+// ---------------------------------------------------------------------------
+// IDENTITE VERIFIEE — un email SAISI dans un champ ne prouve rien. Ces deux
+// fonctions signent / verifient un jeton court qu'on place dans les liens
+// envoyes a l'artiste (emails Brevo). Seul un porteur de ce jeton a prouve
+// qu'il a acces a la boite : c'est la condition pour lui montrer SON statut.
+// Env : CHAT_IDENTITY_SECRET (chaine aleatoire, propre a cet usage).
+// Format : base64url(email).exp.hmac
+// ---------------------------------------------------------------------------
+function b64url(buf) { return Buffer.from(buf).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function unb64url(str) { return Buffer.from(String(str).replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'); }
+
+function hmac(payload) {
+  const secret = process.env.CHAT_IDENTITY_SECRET;
+  if (!secret) return null;
+  return createHmac('sha256', secret).update(payload).digest('hex').slice(0, 32);
+}
+
+export function signIdentity(email, jours) {
+  const e = String(email || '').trim().toLowerCase();
+  if (!e) return null;
+  const exp = Math.floor(Date.now() / 1000) + Math.max(1, Number(jours) || 30) * 86400;
+  const payload = b64url(e) + '.' + exp;
+  const sig = hmac(payload);
+  return sig ? payload + '.' + sig : null;
+}
+
+// Renvoie l'email verifie, ou null. Ne throw jamais : un jeton invalide vaut « anonyme ».
+export function verifyIdentity(token) {
+  try {
+    const parts = String(token || '').split('.');
+    if (parts.length !== 3) return null;
+    const payload = parts[0] + '.' + parts[1];
+    const sig = hmac(payload);
+    if (!sig || sig.length !== parts[2].length) return null;
+    // comparaison a temps constant
+    let diff = 0;
+    for (let i = 0; i < sig.length; i++) diff |= sig.charCodeAt(i) ^ parts[2].charCodeAt(i);
+    if (diff !== 0) return null;
+    if (Number(parts[1]) < Math.floor(Date.now() / 1000)) return null; // expire
+    const email = unb64url(parts[0]);
+    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? email : null;
+  } catch (e) { return null; }
 }

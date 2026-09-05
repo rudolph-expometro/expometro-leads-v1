@@ -8,6 +8,7 @@
 
 import { KB } from './kb.js';
 import { getFlorenceStats } from './florence-artists.js';
+import { lookupArtistStatus, verifyIdentity } from './artist-status.js';
 
 const MODEL = process.env.ASSISTANT_MODEL || 'claude-haiku-4-5-20251001'; // pour + de finesse: 'claude-sonnet-5'
 const MAX_TOKENS = 1000;   // 600 coupait les réponses longues (IT/DE) en plein mot
@@ -238,6 +239,50 @@ export default async function handler(req, res) {
         + "⚠️ Les prix montent au fur et à mesure du remplissage : présente-les comme le tarif D'AUJOURD'HUI, jamais comme un tarif garanti.\n"
         + "⚠️ Une rareté ne se mentionne que si elle est VRAIE et utile (« il ne reste que 5 Large ») — jamais de fausse urgence, "
         + "et ne mens jamais sur un format COMPLET : dis-le franchement et propose l'alternative la plus proche.";
+    }
+  }
+
+  // --- CONTEXTE ARTISTE VÉRIFIÉ -------------------------------------------
+  // ⚠️ Un email SAISI dans un champ ne prouve rien : n'importe qui pourrait taper l'adresse
+  // d'un autre artiste et lire son paiement. On n'accepte donc QUE `ctx.at`, un jeton signé
+  // placé dans les liens qu'on envoie par email — le porteur a prouvé qu'il a accès à la boîte.
+  // Sans jeton valide : aucune donnée personnelle, et l'assistant propose la voie sûre.
+  if (body.task !== 'improve') {
+    const verifiedEmail = verifyIdentity(body.ctx && body.ctx.at);
+    if (verifiedEmail) {
+      try {
+        const st = await lookupArtistStatus(verifiedEmail, (body.ctx && body.ctx.name) || '');
+        const oeuvre = st.statut_oeuvre || {};
+        let bloc = "\n\n🔐 CONTEXTE ARTISTE VÉRIFIÉ (identité prouvée par le lien reçu par email — "
+          + "tu PEUX donc parler de sa situation personnelle, ce qui lève la consigne « tu n'as pas accès au back-office ») :\n"
+          + "• Verdict : " + st.verdict + " — " + st.resume + "\n"
+          + "• Participe à Florence : " + (st.participe_florence && st.participe_florence.reponse) + "\n"
+          + "• Statut de son œuvre : " + (oeuvre.valeur || 'INDETERMINE');
+        if (oeuvre.valeur === 'VALIDEE' && Array.isArray(oeuvre.oeuvres) && oeuvre.oeuvres.length) {
+          bloc += " — « " + (oeuvre.oeuvres[0].titre || '') + " » est en ligne. Tu peux la citer pour le rassurer.";
+        } else if (oeuvre.valeur === 'NON_VALIDEE') {
+          bloc += " — RIEN n'est publié, et on ne sait pas pourquoi : l'image peut ne pas avoir été envoyée, "
+            + "ou avoir été envoyée et attendre la validation. POSE LA QUESTION, n'accuse jamais l'artiste de n'avoir rien envoyé.";
+        }
+        if (Number(st.base_expometro && st.base_expometro.expositions_passees) > 0) {
+          bloc += "\n• Artiste fidèle : " + st.base_expometro.expositions_passees + " exposition(s) passée(s) avec ExpoMetro. Reconnais-le, ça compte.";
+        }
+        bloc += "\n⚠️ RÈGLES : n'énonce ces informations que si elles servent la question posée — ne récite pas sa fiche. "
+          + "Ne donne JAMAIS de montant ni de date de paiement spontanément. En cas de doute, pose une question plutôt qu'affirmer. "
+          + "Ces données concernent la personne qui te parle : ne les mentionne jamais dans une autre conversation.";
+        sysExtra += bloc;
+        console.log('[CHAT-ID] verifie', verifiedEmail, st.verdict);
+      } catch (e) {
+        console.warn('[CHAT-ID] lookup echoue', String((e && e.message) || e));
+      }
+    } else if (body.ctx && body.ctx.at) {
+      sysExtra += "\n\n🔐 Un lien d'identification était présent mais il est invalide ou expiré. "
+        + "Si l'artiste pose une question sur SA situation, explique-lui gentiment que le lien a expiré et propose-lui d'écrire à Rudolph.";
+    } else {
+      sysExtra += "\n\n🔐 VISITEUR NON IDENTIFIÉ : tu n'as accès à AUCUNE donnée personnelle. "
+        + "Si on te demande « ai-je bien réservé ? », « où en est mon œuvre ? », « ai-je payé ? », ne demande PAS l'adresse email "
+        + "pour vérifier — tu ne peux pas, et une adresse tapée dans un chat ne prouve rien. Explique simplement que Rudolph vérifie "
+        + "personnellement ce genre de chose, et oriente vers lui.";
     }
   }
 
