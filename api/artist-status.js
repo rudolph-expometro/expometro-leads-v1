@@ -246,6 +246,7 @@ export default async function handler(req, res) {
       florence: new Date(c.created * 1000).toISOString().slice(0, 10) >= FLORENCE_START
     })).sort((a, b) => (a.date < b.date ? 1 : -1));
     const paye = paiements.some((p) => !p.rembourse);
+    const nomStripe = reussis.map((c) => (c.billing_details && c.billing_details.name) || '').filter(Boolean)[0] || '';
     const payeFlorence = paiements.some((p) => !p.rembourse && p.florence);
 
     // --- base ExpoMetro (snapshot hashe, zero email en clair stocke)
@@ -254,12 +255,17 @@ export default async function handler(req, res) {
     const exposLifetime = h ? (PARTICIPATION[h] || 0) : 0;
 
     // --- correspondance sur le nom (liste publique des exposants Florence)
-    const rechercheNom = name || [brevo.prenom, brevo.nom].filter(Boolean).join(' ');
+    // Trois sources de nom, par ordre de fiabilite : ce que l'appelant fournit, puis Brevo,
+    // puis le nom du payeur Stripe (utile quand la fiche Brevo est vide, cas frequent).
+    const nomBrevo = [brevo.prenom, brevo.nom].filter(Boolean).join(' ');
+    const rechercheNom = name || nomBrevo || nomStripe;
+    const sourceNom = name ? 'fourni dans la requete' : (nomBrevo ? 'fiche Brevo' : (nomStripe ? 'nom du payeur Stripe' : null));
     let nomTrouve = null;
     if (artistes && rechercheNom) {
       const m = matchNames(artistes, rechercheNom);
       nomTrouve = {
         recherche: rechercheNom,
+        source: sourceNom,
         exposant_exact: m.exact,
         exposants_probables: m.probables
       };
@@ -330,7 +336,7 @@ export default async function handler(req, res) {
       participe_florence: { reponse: participeFlorence, source: sourceFlorence },
       langue: brevo.langue || null,
       email: email || null,
-      identite: { prenom: brevo.prenom || null, nom: brevo.nom || null, pays: brevo.pays || null },
+      identite: { prenom: brevo.prenom || null, nom: brevo.nom || null, pays: brevo.pays || null, nom_payeur_stripe: nomStripe || null },
       paiement: { paye, paye_florence: payeFlorence, nombre: paiements.length, paiements, source: pay.via || null },
       brevo: {
         contact_existe: !!brevo.found,
