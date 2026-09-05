@@ -362,16 +362,30 @@
   }
   function scrollDown() { msgsEl.scrollTop = msgsEl.scrollHeight; }
   function scrollToTopOf(el) { if (!el) return; var d = el.getBoundingClientRect().top - msgsEl.getBoundingClientRect().top; msgsEl.scrollTop += d - 8; }
+  // Jeton d'identite signe, present dans l'URL quand l'artiste arrive depuis un lien
+  // qu'on lui a envoye par email (?at=...). Memorise pour la duree de l'onglet : le
+  // visiteur peut naviguer sans le perdre. Le serveur le verifie, la page ne fait que
+  // le transporter — il ne donne acces a rien d'autre qu'au statut de CET artiste.
+  var IDENT = (function () {
+    try {
+      var m = String(location.search || '').match(/[?&]at=([^&]+)/);
+      if (m) { var t = decodeURIComponent(m[1]); sessionStorage.setItem('artix_at', t); return t; }
+      return sessionStorage.getItem('artix_at') || null;
+    } catch (e) { return null; }
+  })();
+
   function liveCtx() {
+    var ctx = null;
     try {
       var nums = document.querySelectorAll('.artix-count .artix-num');
       if (nums.length >= 2) {
         var a = parseInt((nums[0].textContent || '').replace(/[^0-9]/g, ''), 10);
         var c = parseInt((nums[1].textContent || '').replace(/[^0-9]/g, ''), 10);
-        if (a && c) return { artists: a, countries: c };
+        if (a && c) ctx = { artists: a, countries: c };
       }
     } catch (e) {}
-    return null;
+    if (IDENT) { ctx = ctx || {}; ctx.at = IDENT; }
+    return ctx;
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function format(s) {
