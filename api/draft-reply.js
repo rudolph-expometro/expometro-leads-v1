@@ -17,7 +17,7 @@ import { lookupArtistStatus } from './artist-status.js';
 import { KB_EMAIL, REGLES_EMAIL } from './kb-email.js';
 
 const MODEL = process.env.DRAFT_MODEL || 'claude-sonnet-5';
-const MAX_TOKENS = 2000;
+const MAX_TOKENS = 3000;
 const MAX_CHARS = 8000;   // par champ, anti-abus
 
 // --- Grille des formats (dimensions et disponibilites, JAMAIS les prix : regle du 5 septembre)
@@ -149,6 +149,9 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
+        // Sonnet/Opus reflechissent par defaut : le raisonnement consomme le budget de sortie
+        // et la reponse revient VIDE. Meme correctif que dans api/ask.js. Haiku refuse ce parametre.
+        ...(/haiku/.test(MODEL) ? {} : { thinking: { type: 'disabled' } }),
         system: [
           { type: 'text', text: stable, cache_control: { type: 'ephemeral', ttl: '1h' } },
         ],
