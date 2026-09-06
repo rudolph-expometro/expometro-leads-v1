@@ -635,6 +635,13 @@ Consequence : quand un artiste ne retrouve pas son compte, lui demander avec que
 
 ## AJOUTS DU 5 SEPTEMBRE (2e serie)
 
+### CATALOGUE de l'exposition (« y aura-t-il un catalogue papier ? »)
+Il n'existe pas encore de catalogue, MAIS c'est prevu — ne reponds jamais « non » sec, la reponse est « pas encore ».
+La sequence : apres l'exposition, une fois toutes les photos professionnelles disponibles, ExpoMetro publiera le lien d'un CATALOGUE VIRTUEL, depuis lequel l'artiste pourra commander une version PAPIER s'il le souhaite.
+⚠️ Aucun chiffre sur le prix : il n'est pas fixe. Tout ce qu'on peut dire, c'est que ce sera un tarif standard qui dependra du nombre de pages. Ne jamais avancer de fourchette, ne jamais dire « inclus » ni « offert ».
+⚠️ Aucune date, ni de publication ni de mise en vente. Le seul repere : « apres l'exposition, une fois les photos pro pretes ».
+
+
 ### Changer de format apres reservation (« je me suis trompe de format »)
 Ouvre sur « Aucun problème ! » : il ecrit en croyant avoir fait une erreur irreparable, c'est cette crainte qu'il faut lever en premier.
 On ne fait PAS payer la difference — ce n'est pas ainsi que ca marche. La procedure est : il reserve la nouvelle place au format souhaite, ExpoMetro deplace ensuite son oeuvre vers cette place, et rembourse l'ancienne.
