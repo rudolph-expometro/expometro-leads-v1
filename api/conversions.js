@@ -235,7 +235,7 @@ async function chatClicks() {
   try {
     const sep = url.indexOf('?') >= 0 ? '&' : '?';
     const ctl = new AbortController();
-    const to = setTimeout(() => ctl.abort(), 2500);
+    const to = setTimeout(() => ctl.abort(), 6000);   // Apps Script /exec = 1,7–2,9 s (redirect + cold start) → marge large
     const r = await fetch(url + sep + 'stats=clicks&token=' + encodeURIComponent(process.env.CHAT_LOG_TOKEN || ''), { signal: ctl.signal });
     clearTimeout(to);
     if (!r.ok) return null;
