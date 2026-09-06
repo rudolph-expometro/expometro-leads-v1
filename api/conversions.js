@@ -554,6 +554,11 @@ export default async function handler(req, res) {
       if (candidats[em] && candidats[em].created === today) candidatsBySourceToday[s] = (candidatsBySourceToday[s] || 0) + 1;
     }
 
+    // Type d'artiste par CANAL d'acquisition, en artistes UNIQUES (pas par paiement) :
+    // 1re expo = leads + candidats + nouveaux ; communauté = membres existants (compte avant J1).
+    const artistsByBucket = { lead: 0, candidat: 0, existant: 0, nouveau: 0 };
+    for (const e in artistAgg) { const b = artistAgg[e].bucket; if (artistsByBucket[b] != null) artistsByBucket[b]++; }
+
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
       updated: new Date().toISOString(),
@@ -571,6 +576,7 @@ export default async function handler(req, res) {
         revenueIgnored: revIgnored,
         buckets,
         artistsSplit: artists,
+        artistsByBucket,
         conv
       },
       daily,

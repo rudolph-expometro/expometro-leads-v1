@@ -269,6 +269,13 @@
   .pdot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
   .pleg .plab{color:var(--muted)}
   .pleg .pval{margin-left:auto;font-weight:700}
+  /* Camembert "Type d'artiste" dans le recap (sous le ROAS) */
+  .recap-pie{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .recap-pie-h{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin-bottom:10px}
+  .pleg.pleg-grp{font-size:13.5px}
+  .pleg.pleg-grp .plab{color:var(--txt);font-weight:800}
+  .pleg.pleg-sub{padding-left:18px;font-size:12.5px}
+  .pleg.pleg-sub .plab{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -842,6 +849,25 @@ function load(){
         var inp=document.getElementById('adSpend');
         if(inp){ var calc=function(){ var v=parseFloat(inp.value)||0; try{localStorage.setItem('adspend',inp.value||'');}catch(e){} document.getElementById('roasOut').textContent=(v>0?(f.revenueEUR/v).toFixed(2)+'×':'—'); }; inp.addEventListener('input',calc); calc(); }
       }
+
+      // ---- Camembert "Type d'artiste" dans le recap (sous le ROAS global) ----
+      // 1ʳᵉ expo = leads + candidats + nouveaux (artistes acquis) ; vs Communauté (membres existants).
+      var abk=(f.artistsByBucket)||{lead:0,candidat:0,nouveau:0,existant:0};
+      var tyFirst=(abk.lead||0)+(abk.candidat||0)+(abk.nouveau||0);
+      var tyCommu=abk.existant||0;
+      var tyTot=(tyFirst+tyCommu)||1;
+      var pct=function(v){return Math.round(100*v/tyTot);};
+      var tysegs=[
+        {label:'Leads',value:abk.lead||0,color:'#5b8cff'},
+        {label:'Candidats',value:abk.candidat||0,color:'#FF5267'},
+        {label:'Nouveaux',value:abk.nouveau||0,color:'#ffc04d'},
+        {label:'Communauté',value:tyCommu,color:'#22e06b'}
+      ];
+      var tySub=[['Leads',abk.lead||0,'#5b8cff'],['Candidats',abk.candidat||0,'#FF5267'],['Nouveaux',abk.nouveau||0,'#ffc04d']];
+      var tyLeg='<div class="pleg pleg-grp"><span class="plab">1ʳᵉ expo <span style="color:var(--muted);font-weight:600">(dont)</span></span><span class="pval">'+fr(tyFirst)+' · '+pct(tyFirst)+'%</span></div>'
+        +tySub.map(function(s){return '<div class="pleg pleg-sub"><span class="pdot" style="background:'+s[2]+'"></span><span class="plab">'+s[0]+'</span><span class="pval">'+fr(s[1])+' · '+pct(s[1])+'%</span></div>';}).join('')
+        +'<div class="pleg"><span class="pdot" style="background:#22e06b"></span><span class="plab" style="color:var(--txt);font-weight:700">Communauté</span><span class="pval">'+fr(tyCommu)+' · '+pct(tyCommu)+'%</span></div>';
+      recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+'<div class="plegs">'+tyLeg+'</div></div></div>');
 
       // ---- Leads par pays (scaling) ----
       renderCountries(d);
