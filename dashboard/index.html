@@ -275,17 +275,11 @@
   /* Camembert "Type d'artiste" dans le recap (sous le ROAS) */
   .recap-pie{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
   .recap-pie-h{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin-bottom:10px}
-  .tybk{flex:1;min-width:172px}
-  .tybk-kpi{display:flex;align-items:baseline;gap:8px}
-  .tybk-kpi .tybk-n{font-size:27px;font-weight:800;line-height:1}
-  .tybk-kpi .tybk-l{font-size:13px;font-weight:700;color:var(--txt)}
-  .tybk-kpi .tybk-pct{margin-left:auto;font-size:12.5px;color:var(--muted);font-weight:700}
-  .tybk-commu{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.08)}
-  .tybk-commu .tybk-n{color:var(--green)}
-  .tybk-subs{display:flex;flex-wrap:wrap;gap:4px 12px;margin:7px 0 2px}
-  .tybk-sub{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
-  .tybk-sub b{color:var(--txt);font-weight:700}
-  .tybk-sub .pdot{width:8px;height:8px;border-radius:2px}
+  .pleg.pleg-main .plab{color:var(--txt);font-weight:800;font-size:14px}
+  .pleg.pleg-main .pval{font-weight:800;font-size:14px}
+  .pleg.pleg-sub{padding-left:16px;font-size:12.5px}
+  .pleg.pleg-sub .plab{color:var(--muted)}
+  .pleg.pleg-commu .plab,.pleg.pleg-commu .pval{color:var(--green)}
 </style>
 </head>
 <body>
@@ -885,17 +879,18 @@ function load(){
         {label:'Nouveaux',value:abk.nouveau||0,color:'#ffc04d'},
         {label:'Communauté',value:tyCommu,color:'#22e06b'}
       ];
-      // 2 KPIs mis en avant (1ʳᵉ expo & Communauté) ; Leads/Candidats/Nouveaux = sub-kpi sous la 1ʳᵉ expo.
-      var tyMain='<div class="tybk">'
-        +'<div class="tybk-kpi tybk-first"><span class="tybk-n">'+fr(tyFirst)+'</span><span class="tybk-l">1ʳᵉ expo</span><span class="tybk-pct">'+pct(tyFirst)+'%</span></div>'
-        +'<div class="tybk-subs">'
-          +'<span class="tybk-sub"><i class="pdot" style="background:#5b8cff"></i>Leads <b>'+fr(abk.lead||0)+'</b></span>'
-          +'<span class="tybk-sub"><i class="pdot" style="background:#FF5267"></i>Candidats <b>'+fr(abk.candidat||0)+'</b></span>'
-          +'<span class="tybk-sub"><i class="pdot" style="background:#ffc04d"></i>Nouveaux <b>'+fr(abk.nouveau||0)+'</b></span>'
-        +'</div>'
-        +'<div class="tybk-kpi tybk-commu"><span class="tybk-n">'+fr(tyCommu)+'</span><span class="tybk-l">Communauté</span><span class="tybk-pct">'+pct(tyCommu)+'%</span></div>'
+      // Liste hiérarchisée : 1ʳᵉ expo (mise en avant) > Leads/Candidats/Nouveaux (détail) > Communauté (mise en avant).
+      var tyRow=function(cls,dot,label,val){
+        return '<div class="pleg '+cls+'">'+(dot?'<span class="pdot" style="background:'+dot+'"></span>':'')+'<span class="plab">'+label+'</span><span class="pval">'+fr(val)+' · '+pct(val)+'%</span></div>';
+      };
+      var tyList='<div class="plegs">'
+        +tyRow('pleg-main','','1ʳᵉ expo',tyFirst)
+        +tyRow('pleg-sub','#5b8cff','Leads',abk.lead||0)
+        +tyRow('pleg-sub','#FF5267','Candidats',abk.candidat||0)
+        +tyRow('pleg-sub','#ffc04d','Nouveaux',abk.nouveau||0)
+        +tyRow('pleg-main pleg-commu','#22e06b','Communauté',tyCommu)
         +'</div>';
-      recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+tyMain+'</div></div>');
+      recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+tyList+'</div></div>');
 
       // ---- Leads par pays (scaling) ----
       renderCountries(d);
