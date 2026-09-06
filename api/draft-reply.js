@@ -83,7 +83,13 @@ function dossier(st, formats) {
 
 const CONSIGNE_SORTIE = `
 Tu rends UNIQUEMENT un objet JSON valide, sans texte autour, sans bloc de code :
-{"demande":"<la demande de l'artiste en une ligne>","brouillon":"<le corps de l'email>"}
+{"repondre":true,"demande":"<la demande en une ligne>","brouillon":"<le corps de l'email>"}
+
+AVANT TOUT, decide si cet email appelle une reponse.
+Mets "repondre":false et laisse "brouillon" vide pour : newsletters, publicites, notifications
+automatiques, confirmations de paiement, messages d'un autre service, accuses de reception,
+desinscriptions deja traitees, ou tout message qui n'attend manifestement rien de Rudolph.
+Dans ce cas "demande" explique en une ligne pourquoi. Dans le doute, reponds (true).
 
 Le champ "brouillon" contient le corps de l'email et la signature, rien d'autre :
 ni objet, ni briefing, ni commentaire, ni marqueur interne.
@@ -171,8 +177,19 @@ export default async function handler(req, res) {
       const m = brut.match(/\{[\s\S]*\}/);
       if (m) { try { out = JSON.parse(m[0]); } catch (e2) { out = null; } }
     }
-    if (!out || !out.brouillon) {
+    if (!out) {
       return res.status(502).json({ error: 'reponse_illisible', brut: brut.slice(0, 500) });
+    }
+    // L'email n'appelle pas de reponse : on le dit au script, qui ne creera aucun brouillon.
+    if (out.repondre === false) {
+      return res.status(200).json({
+        repondre: false,
+        briefing: { demande: String(out.demande || 'aucune reponse attendue').slice(0, 300) },
+        genere_le: new Date().toISOString(),
+      });
+    }
+    if (!out.brouillon) {
+      return res.status(502).json({ error: 'brouillon_absent', brut: brut.slice(0, 500) });
     }
 
     // 4) Le briefing est construit ICI, a partir des donnees — pas invente par le modele.
@@ -180,6 +197,7 @@ export default async function handler(req, res) {
       /ADRESSE EMAIL|APPROCHANT|NON publiee|Stripe injoignable|Brevo injoignable/.test(a));
 
     return res.status(200).json({
+      repondre: true,
       brouillon: String(out.brouillon),
       briefing: {
         demande: String(out.demande || '').slice(0, 300),
