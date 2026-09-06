@@ -89,7 +89,12 @@ AVANT TOUT, decide si cet email appelle une reponse.
 Mets "repondre":false et laisse "brouillon" vide pour : newsletters, publicites, notifications
 automatiques, confirmations de paiement, messages d'un autre service, accuses de reception,
 desinscriptions deja traitees, ou tout message qui n'attend manifestement rien de Rudolph.
-Dans ce cas "demande" explique en une ligne pourquoi. Dans le doute, reponds (true).
+Dans ce cas "demande" explique en une ligne pourquoi.
+
+⚠️ Un message ECRIT PAR UN ARTISTE appelle presque toujours une reponse — y compris un simple
+remerciement, un « merci », un « super », une reaction enthousiaste a un email automatique.
+Ne mets "repondre":false que pour ce qui est manifestement automatique ou publicitaire.
+Dans le doute, reponds (true).
 
 Le champ "brouillon" contient le corps de l'email et la signature, rien d'autre :
 ni objet, ni briefing, ni commentaire, ni marqueur interne.
