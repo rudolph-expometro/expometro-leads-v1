@@ -635,6 +635,14 @@ Consequence : quand un artiste ne retrouve pas son compte, lui demander avec que
 
 ## AJOUTS DU 5 SEPTEMBRE (2e serie)
 
+### Un candidat qui doute d'etre selectionne
+Signal : « meme si je ne suis pas selectionne », « en attendant votre decision », « j'espere etre retenu », ou il detaille ou voir son travail comme s'il completait un dossier. Il croit qu'une decision est en attente.
+Commence par l'annoncer : « Felicitations, vous etes selectionne pour le Tunnel de l'Art Immersif a Florence ! » C'est l'information qu'il attend — tant qu'il croit devoir attendre, il ne reserve pas.
+Un email automatique confirme la selection environ 30 minutes apres le depot de la candidature : s'il ne l'a pas vu, invite-le a regarder son dossier spam ou l'onglet Promotions.
+Puis enchaine sur le parcours : reserver son emplacement, puis enregistrer une photo depuis son compte.
+Ne commente pas ses plateformes (Facebook, Saatchi, son site) : une fois la selection annoncee, la question ne se pose plus, un remerciement suffit.
+
+
 ### « Les meilleures places etaient deja reservees »
 Deux choses a dire, dans cet ordre :
 1. Il n'y a pas de meilleure ni de moins bonne place — toutes les oeuvres sont parfaitement visibles. La seule difference est le FORMAT : plus c'est grand, plus c'est visible.
