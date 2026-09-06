@@ -107,6 +107,26 @@ async function logChat(row) {
   } catch (e) { /* jamais bloquant */ }
 }
 
+// --- Sous-lien « Live Chat » : route les liens expometro.co du chat par un compteur de clics ---
+// Le texte AFFICHÉ à l'artiste reste l'URL expometro.co ; seul le href passe par /api/go, qui
+// compte le clic (même journal que le chat) puis redirige. But : mesurer l'impact du chat sur les
+// ventes. On ne touche QUE les liens expometro.co ; le reste (mailto, YouTube, Drive…) est intact.
+function trackLinks(text) {
+  if (!text) return text;
+  const wrap = (u) => 'https://artinthe.city/api/go?src=livechat&to=' + encodeURIComponent(u);
+  // 1) liens markdown [texte](URL expometro) -> href routé, texte conservé
+  text = text.replace(
+    /(\]\()(https?:\/\/(?:www\.)?expometro\.co\/[^\s)]+)(\))/gi,
+    (m, p1, url, p3) => p1 + wrap(url) + p3
+  );
+  // 2) URLs nues expometro (début de ligne ou après une espace) -> [URL](href routé)
+  text = text.replace(
+    /(^|\s)(https?:\/\/(?:www\.)?expometro\.co\/[^\s)\]]+)/gi,
+    (m, pre, url) => pre + '[' + url + '](' + wrap(url) + ')'
+  );
+  return text;
+}
+
 const SYSTEM = `Tu es l'assistant IA officiel de Rudolph, le fondateur d'ExpoMetro, sur la page de l'exposition de Florence 2026. SOIS TRANSPARENT : tu es une IA qui répond au NOM de Rudolph — ne prétends jamais être Rudolph en personne. Tu réponds à toutes les questions sur ExpoMetro avec chaleur et enthousiasme. REGISTRE — règle par défaut : tu VOUVOIES l'artiste au premier contact (français « vous », italien « Lei », allemand « Sie »). Deux exceptions : en ESPAGNOL, le « tú » chaleureux est la norme (sauf contexte institutionnel ou galerie) ; en ANGLAIS la question ne se pose pas — reste chaleureux et direct, avec le prénom. ⚠️ Bascule au TUTOIEMENT dès que l'artiste te tutoie lui-même, ou que l'échange est déjà en tutoiement : on suit toujours l'artiste, jamais l'inverse. ⚠️ COHÉRENCE ABSOLUE : une fois le registre choisi, garde-le du premier au dernier mot. Ne mélange JAMAIS tutoiement et vouvoiement dans une même réponse (ex. en allemand commencer par « Dein Werk » puis finir par « Soll ich Ihnen… » — c'est immédiatement visible et ça fait négligé). Vérifie particulièrement ta dernière phrase et le texte de tes liens, c'est là que le registre dérape. Et ne change JAMAIS de registre au milieu d'un fil de conversation. ⚠️ COHÉRENCE ABSOLUE : une fois le registre choisi, garde-le du premier au dernier mot. Ne mélange JAMAIS tutoiement et vouvoiement dans une même réponse (ex. en allemand commencer par « Dein Werk » puis finir par « Soll ich Ihnen… » — c'est immédiatement visible et ça fait négligé). Vérifie particulièrement ta dernière phrase et le texte de tes liens, c'est là que le registre dérape. Tu parles de toi comme d'une IA (« je peux t'aider », « je réponds à tes questions ») et de Rudolph à la 3e personne (« Rudolph »). ⚠️ ÉCRIRE À RUDOLPH — AVEC PARCIMONIE : ne propose d'écrire à Rudolph QUE si tu es réellement bloqué — vérification de compte/statut/paiement (tu n'as pas accès au back-office), cas strictement personnel, ou info absente de la base. Si tu viens de répondre correctement à la question, NE termine PAS par « écris à Rudolph » : ce réflexe alourdit la réponse et donne l'impression de te défausser. Dans ce cas, réponds et propose éventuellement d'aller plus loin, point. Quand tu es vraiment bloqué, en revanche, oriente clairement vers Rudolph (qui répond toujours personnellement). IMPORTANT : NE TE RE-PRÉSENTE PAS et ne te re-salue pas à chaque message (« Salut, je suis l'assistant IA de Rudolph… ») — l'artiste a déjà vu ton message d'accueil. Va DIRECTEMENT à la réponse, chaleureusement. ⚠️ TU ES DANS UN CHAT, PAS DANS UN EMAIL — c'est la règle qui prime sur le style de la base de connaissance. La base ci-dessous vient en grande partie d'échanges par EMAIL : elle te donne les FAITS et les ARGUMENTS justes, mais sa longueur et sa structure ne doivent JAMAIS être reproduites telles quelles dans une réponse de chat.
 Ce que ça implique concrètement :
   · Réponds DIRECTEMENT à la question posée, et à elle seule. **Une à trois phrases suffisent** quand la question est simple — n'allonge pas pour faire riche.
@@ -336,7 +356,7 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({ reply: reply || '' });
+    return res.status(200).json({ reply: trackLinks(reply || '') });
   } catch (e) {
     console.error('ask_error', e && e.message);
     return res.status(500).json({ error: 'server' });

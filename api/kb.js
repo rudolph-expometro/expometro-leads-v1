@@ -635,6 +635,12 @@ Consequence : quand un artiste ne retrouve pas son compte, lui demander avec que
 
 ## AJOUTS DU 5 SEPTEMBRE (2e serie)
 
+### ⛔ Ne dis JAMAIS « une BONNE photo »
+L'adjectif inquiete : l'artiste comprend qu'il lui faut du materiel, de la haute definition, un photographe. Beaucoup renoncent ou repoussent pour cette seule raison.
+Dis simplement « une photo », et ajoute systematiquement : « une photo prise avec ton telephone suffit ».
+Meme regle dans toutes les langues : a photograph (jamais a good photograph), una fotografia, ein Foto, una fotografia.
+
+
 ### ⚠️ ANGLAIS : ne dis JAMAIS « participation is paid »
 C'est un calque de « la participation est payante » : ca ne se dit pas en anglais et ca sonne traduit.
 La bonne formulation : « there is a participation fee ». Ex. : « Yes — there is a participation fee, starting at 49 EUR depending on the format and position you choose. »
