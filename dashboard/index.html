@@ -58,6 +58,9 @@
   .mc-n{font-size:22px;font-weight:800;color:var(--accent);margin-top:4px}
   .mc-n span{font-size:12px;font-weight:600;color:var(--muted)}
   .mc-ca{font-size:14px;font-weight:700;margin-top:2px}
+  #liveChatClicks{border-top:3px solid var(--gold)} #liveChatClicks>h3{color:var(--gold);margin:0 0 10px}
+  .mc-n.lcc-n{color:var(--gold)}
+  .mc-cell .mc-ca.lcc-sub{font-size:12px;font-weight:600;color:var(--muted)}
   .srow.sub{padding-left:22px;font-size:12.5px}
   .srow.sub .sl{color:var(--muted)}
   .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
@@ -272,10 +275,17 @@
   /* Camembert "Type d'artiste" dans le recap (sous le ROAS) */
   .recap-pie{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
   .recap-pie-h{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin-bottom:10px}
-  .pleg.pleg-grp{font-size:13.5px}
-  .pleg.pleg-grp .plab{color:var(--txt);font-weight:800}
-  .pleg.pleg-sub{padding-left:18px;font-size:12.5px}
-  .pleg.pleg-sub .plab{color:var(--muted)}
+  .tybk{flex:1;min-width:172px}
+  .tybk-kpi{display:flex;align-items:baseline;gap:8px}
+  .tybk-kpi .tybk-n{font-size:27px;font-weight:800;line-height:1}
+  .tybk-kpi .tybk-l{font-size:13px;font-weight:700;color:var(--txt)}
+  .tybk-kpi .tybk-pct{margin-left:auto;font-size:12.5px;color:var(--muted);font-weight:700}
+  .tybk-commu{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.08)}
+  .tybk-commu .tybk-n{color:var(--green)}
+  .tybk-subs{display:flex;flex-wrap:wrap;gap:4px 12px;margin:7px 0 2px}
+  .tybk-sub{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
+  .tybk-sub b{color:var(--txt);font-weight:700}
+  .tybk-sub .pdot{width:8px;height:8px;border-radius:2px}
 </style>
 </head>
 <body>
@@ -306,6 +316,7 @@
       <div class="box today-hero" id="todayHero"></div>
       <div class="box" id="adsRecap"></div>
     </div>
+    <div class="box" id="liveChatClicks" style="margin-top:14px"></div>
 
     <!-- CUMUL -->
     <h2 class="sech">Cumul depuis le 15 juillet</h2>
@@ -765,6 +776,17 @@ function renderBio(d){
   function cell(lab,n,ca){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n">'+fr(n)+' <span>vente'+(n>1?'s':'')+'</span></div><div class="mc-ca">'+eurC(ca||0)+'</div></div>'; }
   el.innerHTML=candBadge(candCount(d,'instagram'))+'<div class="mc-grid">'+cell('Aujourd\'hui',b.paidToday,b.revEURToday)+cell('Cumulé',b.paid,b.revEUR)+'</div>';
 }
+function renderClicks(d){
+  var el=document.getElementById('liveChatClicks'); if(!el) return;
+  var c=d.clicks;
+  if(!c){
+    el.innerHTML='<h3>Clics Live Chat 💬</h3><p class="hint" style="margin:0">Compteur pas encore connecté — ajoute le <code>doGet(?stats=clicks)</code> à l\'Apps Script du chat puis redéploie le Web App (même URL). Les clics sont déjà journalisés (profil = CLICK).</p>';
+    return;
+  }
+  function cell(lab,n,resa){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n lcc-n">'+fr(n)+' <span>clic'+(n>1?'s':'')+'</span></div>'+(resa!=null?'<div class="mc-ca lcc-sub">dont réservation : '+fr(resa)+'</div>':'')+'</div>'; }
+  el.innerHTML='<h3>Clics Live Chat 💬</h3><div class="mc-grid">'+cell('Aujourd\'hui',c.today,c.resaToday)+cell('Cumulé',c.total,c.resaTotal)+'</div>'
+    +'<p class="hint" style="margin:8px 0 0">Clics sur les liens donnés par l\'assistant (→ checkout expometro.co). Proxy d\'engagement ; l\'attribution des ventes nécessite le tracking Stripe côté expometro.co.</p>';
+}
 
 function load(){
   if(PLAN_LOADED && !document.getElementById('viewPlan').hidden){ PLAN_LOADED=false; loadPlan(); }
@@ -863,11 +885,17 @@ function load(){
         {label:'Nouveaux',value:abk.nouveau||0,color:'#ffc04d'},
         {label:'Communauté',value:tyCommu,color:'#22e06b'}
       ];
-      var tySub=[['Leads',abk.lead||0,'#5b8cff'],['Candidats',abk.candidat||0,'#FF5267'],['Nouveaux',abk.nouveau||0,'#ffc04d']];
-      var tyLeg='<div class="pleg pleg-grp"><span class="plab">1ʳᵉ expo <span style="color:var(--muted);font-weight:600">(dont)</span></span><span class="pval">'+fr(tyFirst)+' · '+pct(tyFirst)+'%</span></div>'
-        +tySub.map(function(s){return '<div class="pleg pleg-sub"><span class="pdot" style="background:'+s[2]+'"></span><span class="plab">'+s[0]+'</span><span class="pval">'+fr(s[1])+' · '+pct(s[1])+'%</span></div>';}).join('')
-        +'<div class="pleg"><span class="pdot" style="background:#22e06b"></span><span class="plab" style="color:var(--txt);font-weight:700">Communauté</span><span class="pval">'+fr(tyCommu)+' · '+pct(tyCommu)+'%</span></div>';
-      recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+'<div class="plegs">'+tyLeg+'</div></div></div>');
+      // 2 KPIs mis en avant (1ʳᵉ expo & Communauté) ; Leads/Candidats/Nouveaux = sub-kpi sous la 1ʳᵉ expo.
+      var tyMain='<div class="tybk">'
+        +'<div class="tybk-kpi tybk-first"><span class="tybk-n">'+fr(tyFirst)+'</span><span class="tybk-l">1ʳᵉ expo</span><span class="tybk-pct">'+pct(tyFirst)+'%</span></div>'
+        +'<div class="tybk-subs">'
+          +'<span class="tybk-sub"><i class="pdot" style="background:#5b8cff"></i>Leads <b>'+fr(abk.lead||0)+'</b></span>'
+          +'<span class="tybk-sub"><i class="pdot" style="background:#FF5267"></i>Candidats <b>'+fr(abk.candidat||0)+'</b></span>'
+          +'<span class="tybk-sub"><i class="pdot" style="background:#ffc04d"></i>Nouveaux <b>'+fr(abk.nouveau||0)+'</b></span>'
+        +'</div>'
+        +'<div class="tybk-kpi tybk-commu"><span class="tybk-n">'+fr(tyCommu)+'</span><span class="tybk-l">Communauté</span><span class="tybk-pct">'+pct(tyCommu)+'%</span></div>'
+        +'</div>';
+      recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+tyMain+'</div></div>');
 
       // ---- Leads par pays (scaling) ----
       renderCountries(d);
@@ -876,6 +904,7 @@ function load(){
       renderCandidatScale(d);
       renderManychat(d);
       renderBio(d);
+      renderClicks(d);
 
 
       // Leads combiné

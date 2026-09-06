@@ -226,6 +226,24 @@ async function metaSpend() {
   };
 }
 
+// Clics « Live Chat » : lit le compteur agrégé du même Web App Apps Script que les logs du chat
+// (CHAT_LOG_URL + CHAT_LOG_TOKEN). Nécessite un doGet(?stats=clicks) côté Apps Script (cf. dashboard).
+// Non bloquant : si absent/lent, on renvoie null et la tuile s'affiche « — ».
+async function chatClicks() {
+  const url = process.env.CHAT_LOG_URL;
+  if (!url) return null;
+  try {
+    const sep = url.indexOf('?') >= 0 ? '&' : '?';
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), 2500);
+    const r = await fetch(url + sep + 'stats=clicks&token=' + encodeURIComponent(process.env.CHAT_LOG_TOKEN || ''), { signal: ctl.signal });
+    clearTimeout(to);
+    if (!r.ok) return null;
+    const j = await r.json();
+    return (j && !j.error) ? j : null;
+  } catch (e) { return null; }
+}
+
 export default async function handler(req, res) {
   if (!process.env.DASHBOARD_PASSWORD || (req.headers['x-dash-key'] || '') !== process.env.DASHBOARD_PASSWORD) {
     return res.status(401).json({ error: 'unauthorized' });
@@ -236,7 +254,7 @@ export default async function handler(req, res) {
   try {
     const today = todayISO();
     const nowTs = Math.floor(Date.now() / 1000);
-    const [charges, leads, candidats, spend] = await Promise.all([stripeCharges(), brevoContacts(LEAD_LISTS), brevoContacts(CANDIDAT_LISTS), metaSpend()]);
+    const [charges, leads, candidats, spend, clicks] = await Promise.all([stripeCharges(), brevoContacts(LEAD_LISTS), brevoContacts(CANDIDAT_LISTS), metaSpend(), chatClicks()]);
 
     // Axe des jours J1 -> aujourd'hui (UTC)
     const days = [];
@@ -582,6 +600,8 @@ export default async function handler(req, res) {
       daily,
       topArtists,
       ads,
+      clicks,   // clics Live Chat (via Apps Script doGet) ou null
+
       todayStats: {
         payments: paid.filter(c => new Date(c.created * 1000).toISOString().slice(0, 10) === today).length,
         revenueEUR: Math.round(todayRevEURtot),
