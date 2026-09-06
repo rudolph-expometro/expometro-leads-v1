@@ -37,7 +37,7 @@ function tooMany(ip, now) {
 // (mesuré : 4 réponses françaises sur 4 sur « I went to book a slot and it tried to take $1000??? »).
 // On compte des mots-outils très fréquents ; en cas d'égalité on n'impose rien.
 const LANG_WORDS = {
-  fr: /\b(le|la|les|un|une|des|du|de|et|est|je|tu|vous|nous|mon|ma|mes|pour|pas|que|qui|dans|avec|sur|comment|bonjour|merci|ai|suis)\b/gi,
+  fr: /\b(le|la|les|un|une|des|du|de|et|est|je|tu|vous|nous|mon|ma|mes|pour|pas|que|qui|dans|avec|sur|comment|bonjour|merci|ai|suis|frinv)\b/gi,
   en: /\b(the|a|an|and|is|are|i|you|my|your|for|not|that|this|with|on|how|hello|hi|thanks|thank|it|to|of|was|can)\b/gi,
   es: /\b(el|la|los|las|un|una|y|es|yo|tu|usted|mi|para|no|que|con|en|como|hola|gracias|he|soy)\b/gi,
   it: /\b(il|lo|la|i|gli|le|un|una|e|è|io|tu|lei|mio|mia|per|non|che|con|in|come|ciao|grazie|ho|sono)\b/gi,
@@ -62,7 +62,12 @@ const REGISTER = {
   en: ['reste chaleureux et direct, avec le prénom (l\'anglais ne distingue pas)', 'reste chaleureux et direct, avec le prénom'],
 };
 function detectLang(txt) {
-  const t = String(txt || '').toLowerCase();
+  // L'inversion française (« aura-t-il », « est-elle », « pouvez-vous ») contient « il », qui est
+  // aussi l'article italien : sans ce nettoyage, un français sans accents est détecté italien.
+  // On la remplace par un marqueur FRINV, compté comme un mot-outil français.
+  const t = String(txt || '').toLowerCase()
+    .replace(/-t-(il|elle|on)\b/g, ' frinv ')
+    .replace(/-(il|elle|on|vous|nous|je|tu)\b/g, ' frinv ');
   if (t.length < 3) return null;
   let best = null, bestN = 0, second = 0;
   for (const k in LANG_WORDS) {
@@ -235,11 +240,12 @@ export default async function handler(req, res) {
     const fmts = (live2 && Array.isArray(live2.formats)) ? live2.formats : [];
     if (fmts.length) {
       const grid = fmts
-        .map((f) => "• " + f.label + " — " + f.w + " × " + f.h + " cm — " + f.price + " € — "
+        .map((f) => "• " + f.label + " — " + f.w + " × " + f.h + " cm — "
                    + (f.left > 0 ? f.left + " place(s) encore libre(s)" : "COMPLET"))
         .join("\n");
-      sysExtra += "\n\n💶 GRILLE DES FORMATS EN DIRECT (prix et disponibilités RÉELS à cet instant, "
-        + "dimensions en largeur × hauteur) :\n" + grid
+      sysExtra += "\n\n📐 GRILLE DES FORMATS EN DIRECT (dimensions en largeur × hauteur et disponibilités "
+        + "RÉELLES à cet instant). ⚠️ LES PRIX NE TE SONT VOLONTAIREMENT PAS COMMUNIQUÉS : tu ne peux donc "
+        + "citer aucun montant par format, seulement le prix d'entrée « à partir de 49 € » :\n" + grid
         + "\n→ CES CHIFFRES SONT RÉELS ET EN TEMPS RÉEL (prix + places restantes). TU PEUX ET TU DOIS les donner. "
         + "Quand l'artiste demande un prix (« combien coûte un Medium ? », « le prix du Large Ceiling ? », ou son œuvre fait telle taille) : "
         + "donne DIRECTEMENT et avec assurance le tarif ACTUEL du format concerné et les places encore libres, depuis cette grille — sans le faire redemander, jamais de refus ni de détour. "
@@ -270,7 +276,10 @@ export default async function handler(req, res) {
   // ⚠️ Il doit rester dans le bloc NON caché, sinon il casse le préfixe de cache.
   if (body.task !== 'improve') {
     const lastUser = messages.filter((m) => m.role === 'user').slice(-1)[0];
-    const detected = detectLang(lastUser && lastUser.content);
+    // Si la détection échoue (message trop court, mots-outils absents), on retombe sur la langue
+    // de la page envoyée par le widget plutôt que de laisser le modèle deviner.
+    const pageLang = ['fr','en','es','it','de'].includes(String(body.lang || '')) ? body.lang : null;
+    const detected = detectLang(lastUser && lastUser.content) || pageLang;
     if (detected) {
       sysExtra += "\n\n🌍 LANGUE DE LA RÉPONSE — NON NÉGOCIABLE : le dernier message de l'artiste est écrit en "
         + LANG_NAME[detected] + ". Rédige TOUTE ta réponse en " + LANG_NAME[detected]
