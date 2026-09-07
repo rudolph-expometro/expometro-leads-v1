@@ -2466,4 +2466,53 @@ ni délai.
 
 **⛔ Ne pas dire « c'est un bug ».** Ça inquiète davantage et ça n'aide pas. On dit ce qui s'est passé, simplement.
 
-**À rapprocher :** tant que le bouton « éditer sans refuser » n'existe pas côté admin, ce cas se reproduira à chaque intervention. Il est documenté dans la note de passation à Julien comme le point le plus rentable à corriger.`;
+**À rapprocher :** tant que le bouton « éditer sans refuser » n'existe pas côté admin, ce cas se reproduira à chaque intervention. Il est documenté dans la note de passation à Julien comme le point le plus rentable à corriger.
+
+### 7 septembre 2026 — « Où sera exactement ma place dans le tunnel ? »
+
+**La question devient fréquente** à mesure que l'exposition approche : les artistes veulent traduire leur coordonnée (Artwork N, ligne L, colonne C) en position physique dans le tunnel.
+
+**Ce qui est CERTAIN, et qu'on peut affirmer :**
+
+- **L'Artwork 1 se trouve au début du tunnel.** La numérotation des Collective Artworks suit l'ordre du parcours.
+- La grille d'un panneau : \`lignes × colonnes\` est exacte et lisible via \`lookupCollectiveArtworks\` (l'Artwork 1 est un Small mural, 120 places, 6 lignes × 20 colonnes).
+
+**Ce qui est PROBABLE, à annoncer comme tel :** la colonne 1 correspond à la première colonne à gauche en entrant. **Le dire avec sa réserve** — « très probable, nous finissons de confirmer » — jamais comme un fait établi.
+
+**⛔ Ce qu'on ne sait PAS et qu'il ne faut pas inventer :** la correspondance complète entre le plan et l'implantation physique. Hauteur réelle d'une ligne, sens de lecture, position au mètre près. **Un artiste qui vient à Florence chercher son œuvre à l'endroit qu'on lui a indiqué et ne l'y trouve pas, c'est le pire souvenir possible de l'exposition.**
+
+**Toujours mentionner le plan interactif** en préparation, qui donnera la position exacte, et proposer de prévenir l'artiste à sa mise en ligne. Ne pas annoncer de date.
+
+**Le réflexe qui transforme la réponse.** Lire la coordonnée et dire ce qu'elle produit visuellement. Cas du 7 septembre : une artiste avait réservé les deux coins du bas du même panneau — colonnes 1 et 20 de la ligne 6. Elle n'avait pas formulé que ses deux œuvres **encadrent toute la largeur du panneau**. Le lui dire vaut mieux que n'importe quelle explication technique : elle découvre que son placement est meilleur qu'elle ne le croyait.
+
+**À rapprocher :** même logique que la fiche « NOMMER le panneau ». On a les données, on s'en sert pour dire quelque chose d'utile — plutôt que de renvoyer l'artiste vers une page.
+
+### 7 septembre 2026 — Le code promo : DEUXIÈME exception, et elle reste étroite
+
+**Rappel de la règle générale, qui ne bouge pas : EXPOFL10 ne se donne JAMAIS spontanément.**
+
+Jusqu'ici une seule situation l'autorisait : une **difficulté d'argent explicite** (retraite, absence de revenus). Rudolph en a ouvert une seconde le 7 septembre, sous **deux conditions cumulatives** :
+
+1. **L'artiste demande lui-même un code.** Jamais à notre initiative.
+2. **La commande est importante** — deux places ou plus, ou un grand format.
+
+**Les deux conditions ensemble, ou rien.** Un artiste qui demande un code pour une seule place Small n'entre pas dans le cas. Un artiste qui réserve trois places sans rien demander non plus : on ne lui offre pas une remise qu'il n'a pas sollicitée.
+
+**⛔ Ce n'est pas une politique commerciale.** Rudolph a été explicite dès la première exception : *« on fait ça exceptionnellement, mais ce n'est surtout pas une règle à appliquer tout le temps »*. Chaque code donné hors de ces deux cas est une marge perdue sans contrepartie.
+
+**La formulation, quand le cas s'applique.** Présenter la remise comme un **geste lié à sa commande**, pas comme un tarif : « puisque vous prenez deux places, je vous fais un geste : le code EXPOFL10 vous donne 10 % ». Court, une seule phrase, sans insister.
+
+**⛔ Aucun code dans le chat du site.** Les gestes commerciaux passent uniquement par email. Cette règle est inchangée.
+
+### 7 septembre 2026 — « Agrandir ou réduire mon œuvre ? » : toujours agrandir
+
+**La règle : conseiller le format qui permet à l'œuvre d'occuper TOUT l'espace de sa place.** Une œuvre qui remplit son emplacement se lit de loin — et le tunnel se regarde de loin.
+
+**Le raisonnement à tenir, en deux temps :**
+
+1. **Comparer les proportions**, pas seulement les dimensions. Une œuvre en largeur va sur un format en largeur. Cas du 7 septembre : une œuvre de 75 × 50 cm (paysage) mise sur une place carrée 50 × 50 obligerait à couper **un tiers de la largeur** ; sur une place plafond, elle s'agrandit et remplit presque tout l'espace.
+2. **Rassurer sur le recadrage** : l'artiste ajuste lui-même le cadrage **au moment d'enregistrer son image dans son compte**. Rien n'est figé à la réservation. C'est ce qui lève l'hésitation.
+
+**⛔ Ne jamais déconseiller un agrandissement par crainte de la qualité.** L'affichage est en LED, à distance : les contraintes ne sont pas celles d'un tirage papier. Si la résolution pose réellement problème, c'est l'interface qui le signalera à l'upload — voir la fiche sur les images trop petites.
+
+**Utiliser \`lookupCollectiveArtworks\` pour comparer**, jamais de mémoire : \`largeur_cm\` et \`hauteur_cm\` donnent les proportions réelles de chaque format.`;
