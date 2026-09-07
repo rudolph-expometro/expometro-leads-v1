@@ -105,6 +105,8 @@ Les sauts de ligne sont de vrais retours a la ligne dans la chaine JSON (\\n).`;
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  // charset explicite : sans lui, Apps Script decode la reponse en Latin-1 et casse les emojis.
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
   if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
 
   const token = process.env.ARTIST_STATUS_KEY;
