@@ -93,6 +93,8 @@ Dans ce cas "demande" explique en une ligne pourquoi.
 
 ⚠️ Un message ECRIT PAR UN ARTISTE appelle presque toujours une reponse — y compris un simple
 remerciement, un « merci », un « super », une reaction enthousiaste a un email automatique.
+Un message VIDE ou sans texte utile (signature seule, « Inviato da iPhone », piece jointe sans mot)
+envoye par une PERSONNE est une OCCASION, pas un message a ignorer : reponds par une invitation.
 Ne mets "repondre":false que pour ce qui est manifestement automatique ou publicitaire.
 Dans le doute, reponds (true).
 

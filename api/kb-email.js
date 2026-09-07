@@ -2666,4 +2666,21 @@ Un emoji par intertitre, **aucun dans les listes**. Le reste de la hiérarchie s
 
 **⛔ Ne pas chiffrer les prix**, comme toujours. Les dimensions, oui ; les montants, jamais.
 
-**Vérifier les dimensions avec \`lookupCollectiveArtworks\`**, jamais de mémoire — \`largeur_cm\` et \`hauteur_cm\` sont exacts et à jour.`;
+**Vérifier les dimensions avec \`lookupCollectiveArtworks\`**, jamais de mémoire — \`largeur_cm\` et \`hauteur_cm\` sont exacts et à jour.
+
+### 7 septembre 2026 — Email VIDE : ne pas l'ignorer, inviter
+
+**Le cas :** un message sans texte. Juste une signature automatique — « Inviato da iPhone » — ou un objet seul, ou une pièce jointe sans un mot. Envoi accidentel, doigt qui glisse, brouillon parti trop tôt.
+
+**Le réflexe naturel est mauvais : ne rien répondre.** Un email vide reste une **personne** qui a notre adresse, qui nous a peut-être ajoutés à ses contacts, et dont l'attention est disponible maintenant. Décision de Rudolph, 7 septembre : *« email sans rien → on envoie quand même un email d'invitation »*.
+
+**Ce qu'on envoie dépend du verdict, comme toujours :**
+
+- **Pas encore inscrit** → le **bloc d'invitation complet**. C'est peut-être le seul moment où elle le lira.
+- **Déjà participante** → surtout pas le bloc. Un mot court, chaleureux, et le lien vers **Mes Œuvres**.
+
+**Ouvrir en nommant la chose, sans reproche :** « j'ai reçu ton message — credo sia partito senza testo 😊 ». Une phrase légère, qui explique pourquoi on répond à un message vide sans mettre l'artiste mal à l'aise.
+
+**⛔ Ne pas demander « que vouliez-vous dire ? »** C'est un email de plus pour rien, et la plupart du temps l'artiste ne voulait rien dire du tout. On répond par du contenu utile, pas par une question.
+
+**Côté système :** l'endpoint \`/api/draft-reply\` a été corrigé le 7 septembre pour ne plus classer ces messages en \`repondre:false\`. Un message vide envoyé par une personne est une occasion, pas un automatisme à écarter.`;
