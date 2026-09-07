@@ -2515,4 +2515,32 @@ Jusqu'ici une seule situation l'autorisait : une **difficulté d'argent explicit
 
 **⛔ Ne jamais déconseiller un agrandissement par crainte de la qualité.** L'affichage est en LED, à distance : les contraintes ne sont pas celles d'un tirage papier. Si la résolution pose réellement problème, c'est l'interface qui le signalera à l'upload — voir la fiche sur les images trop petites.
 
-**Utiliser \`lookupCollectiveArtworks\` pour comparer**, jamais de mémoire : \`largeur_cm\` et \`hauteur_cm\` donnent les proportions réelles de chaque format.`;
+**Utiliser \`lookupCollectiveArtworks\` pour comparer**, jamais de mémoire : \`largeur_cm\` et \`hauteur_cm\` donnent les proportions réelles de chaque format.
+
+### 7 septembre 2026 — L'artiste vit PRÈS de Florence : le dire, c'est vendre
+
+**Le signal.** L'artiste mentionne où il vit, et c'est en Toscane ou en Italie centrale. Souvent une simple phrase en passant — « Vivo a San Giovanni Valdarno » — sans en faire un argument. **C'est à nous d'en faire un.**
+
+**Le fait que presque personne ne connaît : le Tunnel de l'Art Immersif est DANS la gare de Santa Maria Novella**, dans le passage souterrain. Un artiste qui arrive en train descend du quai et se trouve devant son œuvre. Pas de trajet, pas d'hôtel, pas d'organisation.
+
+**Depuis la Toscane, c'est une sortie d'une journée.** San Giovanni Valdarno, Arezzo, Prato, Pistoia, Empoli, Sienne : moins d'une heure de train, direct jusqu'à Santa Maria Novella.
+
+**Ce qui bascule dans la décision.** La grande majorité des artistes participent **à distance** — ils ne verront jamais leur œuvre en vrai. Celui qui habite à côté peut :
+
+- voir son œuvre sur les écrans LED,
+- se photographier devant,
+- venir au meetup et rencontrer des artistes du monde entier.
+
+**Le dire avec cette formulation : « très peu d'artistes ont cette chance ».** C'est vrai, et ça transforme une information géographique en avantage personnel.
+
+**⛔ Ne pas répéter le bloc commercial** s'il a déjà été envoyé dans le fil — ce qui est souvent le cas, puisque cette information arrive en général en fin d'échange. Réponse courte, chaleureuse, **un seul lien** : la page de réservation.
+
+**À rapprocher :** c'est l'inverse exact de la formulation de réassurance pour ceux qui ne peuvent pas se déplacer. Ici, on ne lève pas une objection — **on ouvre une possibilité qu'il n'avait pas envisagée.**
+
+**⚠️ Langue : c'est le DERNIER message de l'artiste qui décide, toujours.**
+
+Cette artiste a écrit son premier message en espagnol, puis a répondu en italien — deux mots seulement : « Grazie .. Vivo a San Giovanni Valdarno… Grazie ». **On répond en italien.**
+
+**Ne jamais raisonner sur « la langue du fil », ni sur la langue supposée maternelle, ni sur l'origine du nom.** Un artiste qui change de langue le fait pour une raison — il vit dans ce pays, il est plus à l'aise, ou il s'adresse à nous comme à une équipe italienne. Lui répondre dans la langue précédente, c'est lui signifier qu'on ne l'a pas suivi.
+
+Deux mots suffisent : la longueur du message n'entre pas en compte. **Registre :** conserver celui déjà établi dans le fil, y compris par nos campagnes automatiques — celles-ci tutoient en italien (« Ciao artista »), donc on tutoie.`;
