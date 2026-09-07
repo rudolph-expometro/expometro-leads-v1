@@ -2654,7 +2654,7 @@ Un email qui répond parfaitement mais ne propose rien s'arrête dans le vide. L
 
 Un emoji par intertitre, **aucun dans les listes**. Le reste de la hiérarchie se fait en gras.
 
-**4. « Plus c'est grand, mieux c'est »** — une œuvre plus grande se lit mieux de loin.
+**4. « Plus c'est grand, mieux c'est »** — une œuvre plus grande se lit mieux, de loin comme de près.
 
 **5. Portrait ou paysage : aucun sens officiel au plafond.** Voir la fiche dédiée.
 
@@ -2683,4 +2683,51 @@ Un emoji par intertitre, **aucun dans les listes**. Le reste de la hiérarchie s
 
 **⛔ Ne pas demander « que vouliez-vous dire ? »** C'est un email de plus pour rien, et la plupart du temps l'artiste ne voulait rien dire du tout. On répond par du contenu utile, pas par une question.
 
-**Côté système :** l'endpoint \`/api/draft-reply\` a été corrigé le 7 septembre pour ne plus classer ces messages en \`repondre:false\`. Un message vide envoyé par une personne est une occasion, pas un automatisme à écarter.`;
+**Côté système :** l'endpoint \`/api/draft-reply\` a été corrigé le 7 septembre pour ne plus classer ces messages en \`repondre:false\`. Un message vide envoyé par une personne est une occasion, pas un automatisme à écarter.
+
+### 7 septembre 2026 — Double débit : s'excuser, expliquer, signaler
+
+**Le cas :** l'artiste voit **deux débits** pour la même réservation — souvent deux montants différents, l'un correspondant à un panier antérieur.
+
+**La cause identifiée par Rudolph le 7 septembre**, à donner à l'artiste : cela peut arriver quand on **sélectionne et supprime des places plusieurs fois de suite, sur plusieurs jours**. Entre-temps certaines places sont prises par d'autres artistes mais restent dans le panier, et le total finit par être calculé deux fois.
+
+**Les quatre choses à dire, dans cet ordre :**
+
+1. **S'excuser d'emblée.** L'artiste a vu partir deux fois de l'argent : c'est la seule chose qui compte pour lui à cet instant.
+2. **Le remboursement, avec le bon repère de temps** (voir ci-dessous).
+3. **L'explication**, en une phrase, sans jargon — et **« nous le signalons à notre équipe technique »**. Ça montre que le problème est pris au sérieux, pas balayé.
+4. **« Désolé pour la gêne occasionnée. »**
+
+**Puis passer à la suite : ses œuvres.** Ne pas laisser l'email se terminer sur l'incident. Le lien **Mes Œuvres** referme sur du positif.
+
+**⚠️ Préciser que le débit disparaîtra du relevé sous quelques jours ouvrés.** Un remboursement envoyé n'efface pas immédiatement une opération en attente sur la carte — sans cette phrase, l'artiste réécrit le lendemain.
+
+### 7 septembre 2026 — Dire QUAND, précisément
+
+**⛔ Ne pas écrire « aujourd'hui » quand l'action vient d'être faite.** « Le remboursement a été envoyé aujourd'hui » laisse penser à ce matin, ou à une action ancienne dont on rend compte après coup.
+
+**Écrire « à l'instant », « il y a quelques minutes », « je viens de ».** C'est plus vrai, et surtout ça change le sens : l'artiste comprend qu'on a traité son message **en le lisant**, pas dans un lot de tâches de la journée.
+
+**La règle générale :** quand Rudolph vient d'agir, le dire au présent immédiat. Quand c'est ancien, donner la date exacte. **« Aujourd'hui » est le seul repère à éviter** — il est vague dans les deux sens.
+
+### 7 septembre 2026 — « L'image rognée ou l'image originale est trop petite » + comment CHANGER d'œuvre
+
+**Le message exact que voit l'artiste**, en rouge dans la fenêtre de rognage : *« L'image rognée ou l'image originale est trop petite »*. Il apparaît quand le fichier n'a pas assez de pixels pour la taille de l'emplacement — soit dès l'origine, soit après un recadrage trop serré.
+
+**⭐ La manipulation qui débloque, et que personne ne trouve : le bouton « Previous », en bas à gauche de la fenêtre.** Il ramène à l'étape précédente, celle du choix du fichier, et permet d'enregistrer une autre image. C'est aussi la réponse à *« je voudrais changer d'œuvre mais c'est impossible »*.
+
+**Rien n'est définitif tant que l'enregistrement n'est pas terminé.** Le dire : c'est ce qui débloque l'artiste, plus encore que la manipulation elle-même.
+
+**Quand Rudolph est déjà intervenu**, l'annoncer d'emblée et renvoyer vers **Mes Œuvres** pour reprendre où l'artiste s'était arrêté : \`https://expometro.co/XX/account/artworks\`.
+
+**Le conseil qui suit toujours :** remplir tout l'espace de l'emplacement, **sans marges**. Une œuvre qui occupe toute sa place se voit mieux, de loin comme de près.
+
+**⛔ Ne jamais écrire « le tunnel se regarde de loin ».** C'est faux et c'est vexant : les visiteurs s'arrêtent devant les œuvres, les photographient, cherchent les détails. Un artiste à qui on dit que son travail sera vu de loin comprend qu'on ne le regardera pas vraiment.
+
+**Où l'artiste lit la contrainte :** la taille minimum est affichée **sous la zone de dépôt**, au moment de choisir le fichier, avec le format (JPG) et la résolution. Cette valeur **dépend de l'emplacement réservé** — la lire à l'écran, ne jamais annoncer un chiffre de mémoire.
+
+**Point de repère mesuré le 7 septembre :** pour une place **Medium 50 × 50 cm**, l'interface demande **1 100 × 1 100 pixels**. Les seuils des autres formats n'ont pas encore été vérifiés — **ne pas les extrapoler**.
+
+**⭐ La consigne à donner : envoyer le plus GRAND fichier disponible.** Il vaut toujours mieux trop grand que trop petit. Un fichier au-delà du minimum ne pose aucun problème — il est redimensionné —, alors qu'un fichier en dessous bloque l'enregistrement. **Ne jamais conseiller à un artiste de réduire son image** pour « respecter » une taille : le minimum est un plancher, pas une cible. Le seul plafond est le poids du fichier, 20 Mo.
+
+**À rapprocher :** la fiche sur l'agrandissement des images. Dans la grande majorité des cas, le blocage vient d'un fichier source trop petit, pas d'une erreur de l'artiste.`;
