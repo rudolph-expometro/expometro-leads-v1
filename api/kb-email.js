@@ -2445,4 +2445,25 @@ double réservation. Une formule de rétention serait déplacée.
 
 **À rapprocher :** quand c'est l'artiste qui *demande* un remboursement et que rien n'a encore
 été fait, on revient à la règle de prudence — orienter vers Rudolph, sans annoncer ni montant
-ni délai.`;
+ni délai.
+
+### 7 septembre 2026 — « J'ai reçu un mail disant que mon œuvre est refusée »
+
+**⚠️ Ce mail n'est PAS toujours un refus.** L'admin ExpoMetro n'a aujourd'hui aucun moyen d'éditer une œuvre sans passer par un refus, et **l'email « œuvre refusée » part automatiquement**. Un artiste que Rudolph vient d'aider — image agrandie, fichier remplacé, blocage technique levé — reçoit donc un message lui annonçant que son travail a été rejeté.
+
+**Les deux causes, à ne jamais confondre :**
+
+| Cause | Ce qui s'est passé | Ce qu'on répond |
+|---|---|---|
+| **Intervention technique** | Rudolph a repris le fichier pour débloquer l'enregistrement | Rassurer : l'œuvre n'est pas refusée, c'est une manipulation de notre côté |
+| **Contenu non accepté** | Nudité, tabac, alcool, politique, violence | Fiche « Contenus non acceptés » |
+
+**⛔ Ne jamais trancher seul entre les deux.** Rien dans les données ne permet de savoir laquelle s'applique : \`statut_oeuvre\` dira \`NON_VALIDEE\` dans les deux cas. **Signaler la question à Rudolph dans le briefing** et rédiger la version rassurante uniquement s'il a indiqué être intervenu.
+
+**Le ton quand c'est une intervention technique.** L'artiste a reçu un message brutal sur un travail personnel : ne pas minimiser, ne pas expliquer le fonctionnement interne de l'admin. Deux phrases suffisent.
+
+> Rassurez-vous, votre œuvre n'est pas refusée. Nous sommes intervenus sur votre fichier pour débloquer l'enregistrement, et ce message est parti automatiquement de notre côté. Votre œuvre est bien en ligne / en attente de validation.
+
+**⛔ Ne pas dire « c'est un bug ».** Ça inquiète davantage et ça n'aide pas. On dit ce qui s'est passé, simplement.
+
+**À rapprocher :** tant que le bouton « éditer sans refuser » n'existe pas côté admin, ce cas se reproduira à chaque intervention. Il est documenté dans la note de passation à Julien comme le point le plus rentable à corriger.`;
