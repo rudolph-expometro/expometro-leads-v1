@@ -39,6 +39,16 @@
   .lang-menu a:hover{background:rgba(255,255,255,.08);opacity:1}
   .lang-menu a.active{color:var(--accent);opacity:1;font-weight:600}
 
+  /* barre de langues bien visible (pour qui atterrit dans la mauvaise langue) */
+  .langbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:var(--maxw);margin:12px auto 0;padding:0 16px}
+  .langbar a{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--head);
+    background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:100px;padding:7px 13px;
+    transition:background .14s ease,border-color .14s ease,transform .14s ease}
+  .langbar a:hover{background:rgba(255,82,103,.14);border-color:var(--accent);transform:translateY(-1px)}
+  .langbar a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .langbar a .fl{font-size:16px;line-height:1}
+  @media (max-width:360px){.langbar a{font-size:12.5px;padding:6px 11px}}
+
   /* hero tunnel (comme apply-florence) */
   .hero{position:relative;max-width:var(--maxw);margin:0 auto}
   .hero-img{display:block;width:100%;height:auto}
@@ -94,6 +104,8 @@
     <div class="lang-menu" id="langMenu"></div>
   </div>
 </header>
+
+<nav class="langbar" id="langbar" aria-label="Choose your language"></nav>
 
 <section class="hero">
   <img class="hero-img" src="/florence/img/tunnel-hero.jpg" alt="Le Tunnel de l'Art Immersif à Florence">
@@ -178,6 +190,19 @@
     var a=document.createElement("a"); a.href=location.pathname+"?"+p.toString(); a.textContent=NAMES[code];
     if(code===lang) a.className="active"; langMenu.appendChild(a);
   });
+
+  // Barre de drapeaux visible : les AUTRES langues, en 1 tap (filet de sécurité, trafic Instagram).
+  var FLAGS={en:"🇬🇧",fr:"🇫🇷",es:"🇪🇸",it:"🇮🇹",de:"🇩🇪"};
+  var langbar=$("#langbar");
+  ORDER.forEach(function(code){
+    if(code===lang) return;
+    var p=new URLSearchParams(location.search); p.set("lang",code);
+    var a=document.createElement("a"); a.href=location.pathname+"?"+p.toString();
+    a.setAttribute("hreflang",code); a.setAttribute("lang",code);
+    a.innerHTML='<span class="fl">'+FLAGS[code]+'</span>'+NAMES[code];
+    langbar.appendChild(a);
+  });
+
   langBtn.addEventListener("click",function(e){e.stopPropagation();var o=langMenu.classList.toggle("open");langBtn.setAttribute("aria-expanded",o);});
   document.addEventListener("click",function(){langMenu.classList.remove("open");langBtn.setAttribute("aria-expanded",false);});
 })();
