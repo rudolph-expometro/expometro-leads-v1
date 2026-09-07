@@ -17,7 +17,7 @@ import { lookupArtistStatus } from './artist-status.js';
 import { KB_EMAIL, REGLES_EMAIL } from './kb-email.js';
 
 const MODEL = process.env.DRAFT_MODEL || 'claude-sonnet-5';
-const MAX_TOKENS = 3000;
+const MAX_TOKENS = 4500;   // 3000 tronquait les reponses longues (allemand, blocs complets)
 const MAX_CHARS = 8000;   // par champ, anti-abus
 
 // --- Grille des formats (dimensions et disponibilites, JAMAIS les prix : regle du 5 septembre)
@@ -177,6 +177,17 @@ export default async function handler(req, res) {
     }
     const d = await r.json();
     const brut = ((d.content || []).find((c) => c.type === 'text') || {}).text || '';
+
+    // Le modele a bute sur le plafond de sortie : la lettre s'arrete en plein milieu,
+    // sans conclusion ni signature. Mieux vaut aucun brouillon qu'un brouillon coupe —
+    // le fil part en IA/erreur, visible, plutot qu'en IA/brouillon-pret, invisible.
+    if (d.stop_reason === 'max_tokens') {
+      return res.status(502).json({
+        error: 'reponse_tronquee',
+        detail: 'max_tokens (' + MAX_TOKENS + ') atteint',
+        brut: brut.slice(-300),
+      });
+    }
 
     // 3) Extraction robuste du JSON, meme si le modele l'a entoure de texte.
     let out = null;
