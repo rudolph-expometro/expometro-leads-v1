@@ -151,7 +151,7 @@ async function metaSpend() {
     const sinceTs = Math.floor((Date.now() - 20 * 86400000) / 1000);   // 20 j : couvre large un cooldown de 3-4 j
     let url = `https://graph.facebook.com/${ver}/${id}/activities?access_token=${encodeURIComponent(token)}`
       + `&fields=event_type,event_time,object_id,object_type,extra_data&limit=500&since=${sinceTs}`;
-    const raises = {}; let seen = 0, hits = 0;
+    const raises = {}; let seen = 0, hits = 0; const typeCount = {}; let sample = null;
     try {
       for (let i = 0; i < 10; i++) {
         let r; try { r = await fetch(url); } catch (e) { return { raises, dbg: 'throw' }; }
@@ -159,7 +159,10 @@ async function metaSpend() {
         const d = await r.json();
         for (const e of (d.data || [])) {
           seen++;
-          if (String(e.event_type || '').toLowerCase().indexOf('budget') < 0) continue;   // events budget seulement
+          const et = String(e.event_type || '');
+          typeCount[et] = (typeCount[et] || 0) + 1;
+          if (!/budget/i.test(et)) continue;                                               // events budget seulement
+          if (!sample) sample = { et, ot: e.object_type || '', ed: String(e.extra_data || '').slice(0, 240) };
           if (e.object_type && !/ad_?set/i.test(e.object_type)) continue;                  // ad sets seulement
           let ov = NaN, nv = NaN;
           try { const x = typeof e.extra_data === 'string' ? JSON.parse(e.extra_data) : (e.extra_data || {});
@@ -172,7 +175,8 @@ async function metaSpend() {
         if (d.paging && d.paging.next) url = d.paging.next; else break;
       }
     } catch (e) { return { raises, dbg: 'throw' }; }
-    return { raises, dbg: 'ok:' + seen + 'act/' + hits + 'raise' };
+    const types = Object.keys(typeCount).sort((a, b) => typeCount[b] - typeCount[a]).slice(0, 14).map(k => k + ':' + typeCount[k]);
+    return { raises, dbg: 'ok:' + seen + 'act/' + hits + 'raise', types, sample };
   }
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
@@ -240,7 +244,9 @@ async function metaSpend() {
     totalRows: asTotal === null ? 'ERR' : asTotal.length,
     todayRows: asToday === null ? 'ERR' : asToday.length,
     budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0),
-    raises: _br.dbg
+    raises: _br.dbg,
+    raisesTypes: _br.types,
+    raisesSample: _br.sample
   };
 
   // Devise reelle du compte pub (souvent USD) : dépense/budget en devise native, ROAS reconverti en EUR.
