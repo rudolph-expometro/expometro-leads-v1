@@ -610,7 +610,7 @@ function daysBetween(a,b){ var d=(Date.parse(b)-Date.parse(a))/86400000; return 
    après une hausse enregistrée ici, la reco force "Palier en cours" pendant BUDGET_COOLDOWN_DAYS jours,
    même en navigation privée. Clés = co.key : leads IT/ES/DE/FR/US ; candidats CAND_EN/CAND_FR/CAND_ES/CAND_IT/CAND_DE.
    -> ajoute une entrée à CHAQUE fois que tu montes des budgets juste avant de déployer. */
-var MANUAL_RAISES = { '2026-08-12': ['IT','ES','DE','FR','CAND_EN','CAND_FR'], '2026-09-06': ['CAND_EN'] };
+var MANUAL_RAISES = { '2026-08-12': ['IT','ES','DE','FR','CAND_EN','CAND_FR'], '2026-09-06': ['CAND_EN','CAND_FR','CAND_ES','CAND_IT','CAND_DE'] };
 function manualRaiseDaysSince(key, today){
   var best=null;
   for(var dt in MANUAL_RAISES){
@@ -649,7 +649,7 @@ function recoCountry(co){
   var bad=roas<0.8 && sp>=40;             // perd de l'argent malgré une dépense significative
   var ok=roas>=1;                         // rentable
   // COOLDOWN : budget monté récemment -> on laisse Meta se re-stabiliser avant le prochain palier
-  var ds=co._daysSinceBudget;
+  var ds=(co.raisedDaysAgo!=null)?co.raisedDaysAgo:co._daysSinceBudget;  // Option C : Meta (Activity log) fait autorité, sinon repli localStorage/MANUAL_RAISES
   if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
     var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
     return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse Meta se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). ROAS '+roas.toFixed(2)+'× ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
@@ -711,7 +711,7 @@ function recoCandidat(co){
   var bad=(cr<0.3&&sp>=50)||(roas!=null&&roas<0.2&&sp>=60);     // ne transforme pas en inscrits malgré la dépense
   var ok=(roas!=null&&roas>=0.5)||cr>=1;
   // COOLDOWN : budget monté récemment -> on laisse le CBO se re-stabiliser
-  var ds=co._daysSinceBudget;
+  var ds=(co.raisedDaysAgo!=null)?co.raisedDaysAgo:co._daysSinceBudget;  // Option C : Meta (Activity log) fait autorité, sinon repli localStorage/MANUAL_RAISES
   if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
     var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
     return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse le CBO se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste OK ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
