@@ -690,15 +690,13 @@ function renderCountries(d){
   CUR_SYM=curSym(a.currency);
   var bc=a.byCountry||[];
   trackBudgets(bc, d.today||'');   // detecte les hausses de budget -> cooldown dans la reco
-  var regions=[['Europe','Leads Europe'],['North America','Leads North America']];
-  document.getElementById('countries').innerHTML=regions.map(function(rg){
-    var list=bc.filter(function(x){return x.region===rg[0];});
-    if(!list.length) return '';
-    var sSum=list.reduce(function(s,x){return s+(x.spendTotal||0);},0);
-    var lSum=list.reduce(function(s,x){return s+(x.leads||0);},0);
-    return '<div class="creg"><span>'+rg[1]+'</span><span class="crsum">'+curC(sSum)+' dépensés · '+fr(lSum)+' leads</span></div>'
-      + list.map(countryCard).join('');
-  }).join('');
+  // Classement : actifs d'abord (du meilleur ROAS au moins bon), pausés en dessous.
+  var order=bc.slice().sort(function(x,y){
+    var ax=(x.status&&x.status!=='ACTIVE')?1:0, ay=(y.status&&y.status!=='ACTIVE')?1:0;
+    if(ax!==ay) return ax-ay;
+    return (y.roas==null?-1:y.roas)-(x.roas==null?-1:x.roas);
+  });
+  document.getElementById('countries').innerHTML=order.map(countryCard).join('');
 }
 
 /* ---- Candidats par langue : ROAS + reco de budget (haut de tunnel) ----
@@ -755,7 +753,7 @@ function renderCandidatScale(d){
   CUR_SYM=curSym(a.currency);
   trackBudgets(cc, d.today||'');   // partage le suivi de budget (clés préfixées CAND_ côté API -> pas de collision avec les leads)
   // tri : d'abord ceux qui ont de la dépense, puis par nb de candidats
-  var list=cc.slice().sort(function(x,y){ return (y.spendTotal-x.spendTotal)||(y.candidats-x.candidats); });
+  var list=cc.slice().sort(function(x,y){ var ax=(x.status&&x.status!=='ACTIVE')?1:0, ay=(y.status&&y.status!=='ACTIVE')?1:0; if(ax!==ay) return ax-ay; return ((y.roas==null?-1:y.roas)-(x.roas==null?-1:x.roas))||(y.inscrits-x.inscrits); });
   var sSum=list.reduce(function(s,x){return s+(x.spendTotal||0);},0);
   var kSum=list.reduce(function(s,x){return s+(x.candidats||0);},0);
   document.getElementById('candidatCountries').innerHTML=
