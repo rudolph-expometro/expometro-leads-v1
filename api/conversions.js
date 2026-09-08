@@ -161,12 +161,14 @@ async function metaSpend() {
           seen++;
           const et = String(e.event_type || '');
           typeCount[et] = (typeCount[et] || 0) + 1;
-          if (!/^update_ad_set_budget$/i.test(et)) continue;                               // changement de budget d'AD SET uniquement (object_id = l'ad set)
-          if (!sample) sample = { et, ot: e.object_type || '', ed: String(e.extra_data || '').slice(0, 300) };
+          if (!/^update_ad_set_budget$/i.test(et)) continue;                               // changement de budget d'AD SET uniquement
+          if (!sample) sample = { et, ot: e.object_type || '', oid: e.object_id || '', ed: String(e.extra_data || '').slice(0, 300) };
           let ov = NaN, nv = NaN;
           try { const x = typeof e.extra_data === 'string' ? JSON.parse(e.extra_data) : (e.extra_data || {});
-            ov = parseFloat(x.old_value); nv = parseFloat(x.new_value); } catch (_) { }
-          if (!(nv > ov)) continue;                                                        // HAUSSE uniquement (new_value > old_value)
+            // extra_data budget = objets imbriqués : { old_value: { old_value: 13000 }, new_value: { new_value: 7000 } } (en cents)
+            const pick = (v) => (v && typeof v === 'object') ? (v.old_value != null ? v.old_value : (v.new_value != null ? v.new_value : v.value)) : v;
+            ov = parseFloat(pick(x.old_value)); nv = parseFloat(pick(x.new_value)); } catch (_) { }
+          if (!(nv > ov)) continue;                                                        // HAUSSE uniquement (new > old)
           hits++;
           const day = String(e.event_time || '').slice(0, 10), oid = e.object_id;
           if (oid && day && (!raises[oid] || day > raises[oid])) raises[oid] = day;         // la plus récente
@@ -224,7 +226,8 @@ async function metaSpend() {
   }
   // Date de la dernière HAUSSE de budget par ad set (source Meta) -> cooldown fiable, cross-appareil.
   const _br = await adsetBudgetRaises();
-  for (const s of Object.values(byId)) { s.raiseDay = _br.raises[s.id] || null; }
+  let _matched = 0;
+  for (const s of Object.values(byId)) { s.raiseDay = _br.raises[s.id] || null; if (s.raiseDay) _matched++; }
   // Retrouve l'objectif de chaque ad set via sa campagne (la lecture campagne, elle, renvoie bien l'objectif)
   const campObj = {};
   for (const c of (totalRows || [])) { if (c.campaign_name) campObj[c.campaign_name] = c.objective || ''; }
@@ -244,7 +247,9 @@ async function metaSpend() {
     todayRows: asToday === null ? 'ERR' : asToday.length,
     budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0),
     raises: _br.dbg,
-    raisesTypes: _br.types,
+    raisesMatched: _matched,
+    raiseIds: Object.keys(_br.raises).slice(0, 3),
+    adsetIdsSample: adsets.slice(0, 3).map(a => a.id),
     raisesSample: _br.sample
   };
 
