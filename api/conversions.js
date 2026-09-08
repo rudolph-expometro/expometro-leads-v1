@@ -424,7 +424,7 @@ export default async function handler(req, res) {
       ads.adsetsCount = allAdsets.length;
       ads.adsetsDbg = spend.adsetDbg || null;
       ads.adsetList = allAdsets
-        .map(a => ({ name: a.name, objective: a.objective || '', spend: Math.round(a.spendTotal), budget: a.dailyBudget != null ? Math.round(a.dailyBudget) : null }))
+        .map(a => ({ name: a.name, objective: a.objective || '', spend: Math.round(a.spendTotal), budget: a.dailyBudget != null ? Math.round(a.dailyBudget) : null, status: a.status || '' }))
         .sort((x, y) => y.spend - x.spend).slice(0, 60);
 
       const COUNTRIES = [
@@ -453,6 +453,7 @@ export default async function handler(req, res) {
         const insc = inscritsByLang[co.lang] || 0;
         return {
           key: co.key, name: co.name, flag: co.flag, region: co.region, lang: co.lang,
+          status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
           adsets: ms.map(a => a.name),
           spendTotal: Math.round(spT), spendToday: Math.round(spD),
           dailyBudget: bud > 0 ? Math.round(bud) : null,
@@ -512,6 +513,7 @@ export default async function handler(req, res) {
         const bud = ms.reduce((s, a) => s + (a.dailyBudget || 0), 0);
         return {
           key: 'CAND_' + co.key, name: co.name, flag: co.flag, lang: co.lang,
+          status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
           spendTotal: Math.round(spT), spendToday: Math.round(spD),
           dailyBudget: bud > 0 ? Math.round(bud) : null,
           candidats: cand, inscrits: insc, revEUR: Math.round(rev),
