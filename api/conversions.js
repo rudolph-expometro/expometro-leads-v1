@@ -161,13 +161,12 @@ async function metaSpend() {
           seen++;
           const et = String(e.event_type || '');
           typeCount[et] = (typeCount[et] || 0) + 1;
-          if (!/budget/i.test(et)) continue;                                               // events budget seulement
-          if (!sample) sample = { et, ot: e.object_type || '', ed: String(e.extra_data || '').slice(0, 240) };
-          if (e.object_type && !/ad_?set/i.test(e.object_type)) continue;                  // ad sets seulement
+          if (!/^update_ad_set_budget$/i.test(et)) continue;                               // changement de budget d'AD SET uniquement (object_id = l'ad set)
+          if (!sample) sample = { et, ot: e.object_type || '', ed: String(e.extra_data || '').slice(0, 300) };
           let ov = NaN, nv = NaN;
           try { const x = typeof e.extra_data === 'string' ? JSON.parse(e.extra_data) : (e.extra_data || {});
             ov = parseFloat(x.old_value); nv = parseFloat(x.new_value); } catch (_) { }
-          if (!(nv > ov)) continue;                                                        // HAUSSE uniquement
+          if (!(nv > ov)) continue;                                                        // HAUSSE uniquement (new_value > old_value)
           hits++;
           const day = String(e.event_time || '').slice(0, 10), oid = e.object_id;
           if (oid && day && (!raises[oid] || day > raises[oid])) raises[oid] = day;         // la plus récente
