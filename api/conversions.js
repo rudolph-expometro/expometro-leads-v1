@@ -151,7 +151,7 @@ async function metaSpend() {
     const sinceTs = Math.floor((Date.now() - 20 * 86400000) / 1000);   // 20 j : couvre large un cooldown de 3-4 j
     let url = `https://graph.facebook.com/${ver}/${id}/activities?access_token=${encodeURIComponent(token)}`
       + `&fields=event_type,event_time,object_id,object_type,extra_data&limit=500&since=${sinceTs}`;
-    const raises = {}; let seen = 0, hits = 0; const typeCount = {}; let sample = null;
+    const raises = {}; let seen = 0, hits = 0;
     try {
       for (let i = 0; i < 10; i++) {
         let r; try { r = await fetch(url); } catch (e) { return { raises, dbg: 'throw' }; }
@@ -159,10 +159,7 @@ async function metaSpend() {
         const d = await r.json();
         for (const e of (d.data || [])) {
           seen++;
-          const et = String(e.event_type || '');
-          typeCount[et] = (typeCount[et] || 0) + 1;
-          if (!/^update_ad_set_budget$/i.test(et)) continue;                               // changement de budget d'AD SET uniquement
-          if (!sample) sample = { et, ot: e.object_type || '', oid: e.object_id || '', ed: String(e.extra_data || '').slice(0, 300) };
+          if (!/^update_ad_set_budget$/i.test(String(e.event_type || ''))) continue;       // changement de budget d'AD SET uniquement
           let ov = NaN, nv = NaN;
           try { const x = typeof e.extra_data === 'string' ? JSON.parse(e.extra_data) : (e.extra_data || {});
             // extra_data budget = objets imbriqués : { old_value: { old_value: 13000 }, new_value: { new_value: 7000 } } (en cents)
@@ -176,8 +173,7 @@ async function metaSpend() {
         if (d.paging && d.paging.next) url = d.paging.next; else break;
       }
     } catch (e) { return { raises, dbg: 'throw' }; }
-    const types = Object.keys(typeCount).sort((a, b) => typeCount[b] - typeCount[a]).slice(0, 14).map(k => k + ':' + typeCount[k]);
-    return { raises, dbg: 'ok:' + seen + 'act/' + hits + 'raise', types, sample };
+    return { raises, dbg: 'ok:' + seen + 'act/' + hits + 'raise' };
   }
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
@@ -246,11 +242,7 @@ async function metaSpend() {
     totalRows: asTotal === null ? 'ERR' : asTotal.length,
     todayRows: asToday === null ? 'ERR' : asToday.length,
     budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0),
-    raises: _br.dbg,
-    raisesMatched: _matched,
-    raiseIds: Object.keys(_br.raises).slice(0, 3),
-    adsetIdsSample: adsets.slice(0, 3).map(a => a.id),
-    raisesSample: _br.sample
+    raises: _br.dbg + '/' + _matched + 'matched'
   };
 
   // Devise reelle du compte pub (souvent USD) : dépense/budget en devise native, ROAS reconverti en EUR.
