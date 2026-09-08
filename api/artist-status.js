@@ -44,14 +44,11 @@ async function stripePayments(email) {
   const key = process.env.STRIPE_API_KEY;
   if (!key || !email) return { ok: false, reason: 'no_key_or_email', charges: [] };
   const H = { Authorization: 'Bearer ' + key };
-  // expand[]=data.refunds : depuis les versions recentes de l'API, charge.refunds n'est PLUS
-  // renvoye par defaut. Sans cette extension, remboursements serait toujours vide — alors que
-  // amount_refunded, lui, est toujours present.
   const esc = String(email).replace(/"/g, '');
 
   try {
     const q = encodeURIComponent(`billing_details.email:"${esc}"`);
-    const r = await fetch(`https://api.stripe.com/v1/charges/search?limit=100&expand[]=data.refunds&query=${q}`, { headers: H });
+    const r = await fetch(`https://api.stripe.com/v1/charges/search?limit=100&query=${q}`, { headers: H });
     if (r.ok) {
       const d = await r.json();
       return { ok: true, via: 'search', charges: d.data || [] };
@@ -68,7 +65,7 @@ async function stripePayments(email) {
       if (ids.length) {
         let out = [];
         for (const cid of ids.slice(0, 5)) {
-          const rr = await fetch(`https://api.stripe.com/v1/charges?limit=100&expand[]=data.refunds&customer=${cid}`, { headers: H });
+          const rr = await fetch(`https://api.stripe.com/v1/charges?limit=100&customer=${cid}`, { headers: H });
           if (rr.ok) { const dd = await rr.json(); out = out.concat(dd.data || []); }
         }
         if (out.length) return { ok: true, via: 'client_stripe', charges: out };
@@ -81,7 +78,7 @@ async function stripePayments(email) {
     const since = Math.floor(new Date(FLORENCE_START + 'T00:00:00Z').getTime() / 1000);
     let out = [], after = null, target = String(email).toLowerCase();
     for (let i = 0; i < 10; i++) {
-      const url = `https://api.stripe.com/v1/charges?limit=100&expand[]=data.refunds&created[gte]=${since}` + (after ? '&starting_after=' + after : '');
+      const url = `https://api.stripe.com/v1/charges?limit=100&created[gte]=${since}` + (after ? '&starting_after=' + after : '');
       const r = await fetch(url, { headers: H });
       if (!r.ok) return { ok: false, reason: 'stripe_' + r.status, charges: [] };
       const d = await r.json();
@@ -295,17 +292,6 @@ export async function lookupArtistStatus(email, name) {
       montant: Math.round((c.amount || 0) / 100),
       devise: String(c.currency || '').toUpperCase(),
       rembourse: !!c.refunded,
-      // Le detail du remboursement, pas seulement son existence : permet de confirmer a
-      // l'artiste « le remboursement de 99 € du 7 septembre est parti » au lieu du vague
-      // « il y a eu un remboursement ». Un remboursement PARTIEL se lit ici : montant_rembourse
-      // inferieur au montant, avec rembourse = false cote Stripe.
-      montant_rembourse: Math.round((c.amount_refunded || 0) / 100),
-      remboursements: (((c.refunds && c.refunds.data) || []).map((r) => ({
-        date: r.created ? new Date(r.created * 1000).toISOString().slice(0, 10) : null,
-        montant: Math.round((r.amount || 0) / 100),
-        // 'succeeded' = parti chez la banque. 'pending' = en cours. 'failed' = a refaire.
-        statut: r.status || null
-      }))),
       description: c.description || null,
       // Convention reprise de /api/conversions : tout paiement depuis le 15/07/2026 = Florence.
       florence: new Date(c.created * 1000).toISOString().slice(0, 10) >= FLORENCE_START
@@ -399,13 +385,6 @@ export async function lookupArtistStatus(email, name) {
     if (!brevo.ok) avertissements.push('Brevo injoignable sur cette requete : listes incompletes.');
     if (!artistes) avertissements.push('Liste publique des exposants injoignable : la recherche par nom n\'a pas pu etre faite.');
     if (paiements.some((p) => p.rembourse)) avertissements.push('Au moins un paiement a ete REMBOURSE : verifier avant de confirmer une place.');
-    // Remboursement PARTIEL : Stripe laisse refunded=false, il passerait donc inapercu.
-    if (paiements.some((p) => !p.rembourse && p.montant_rembourse > 0)) {
-      avertissements.push('Remboursement PARTIEL sur un paiement : lire montant_rembourse avant de confirmer un montant.');
-    }
-    if (paiements.some((p) => (p.remboursements || []).some((r) => r.statut === 'pending'))) {
-      avertissements.push('Un remboursement est EN COURS (pending) : ne pas annoncer qu il est arrive, dire qu il est parti.');
-    }
     if (brevo.desabonne) avertissements.push('Contact desabonne des emails marketing Brevo.');
     if (participeFlorence === 'probable' || participeFlorence === 'a_verifier') avertissements.push("Participation a Florence deduite du NOM uniquement (liste publique) : homonyme possible, faire confirmer par l'artiste.");
     avertissements.push(`Base users = snapshot du ${SNAPSHOT_DATE}. Les comptes crees apres cette date n'y sont pas.`);

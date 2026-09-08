@@ -148,6 +148,28 @@ async function metaSpend() {
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
   const asBudgets = await adsetBudgets();
+  // --- Depense PAR AD (créa) : ROAS (Purchase ROAS Meta) + leads par créa ---
+  async function adInsightsRaw(dateQs) {
+    let url = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}`
+      + `&level=ad&fields=ad_name,adset_name,campaign_name,spend,actions,action_values,purchase_roas&limit=500&${dateQs}`;
+    let out = [];
+    for (let i = 0; i < 12; i++) {
+      let r; try { r = await fetch(url); } catch (e) { return null; }
+      if (!r.ok) return null;
+      const d = await r.json();
+      out = out.concat(d.data || []);
+      if (d.paging && d.paging.next) url = d.paging.next; else break;
+    }
+    return out;
+  }
+  const adRows = await adInsightsRaw('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
+  function actSum(arr, re) { let s = 0; for (const a of (arr || [])) if (re.test(a.action_type || '')) s += +(a.value || 0); return s; }
+  const adList = (adRows || []).map(function (r) {
+    const leads = actSum(r.actions, /lead/i);
+    const proas = (r.purchase_roas || []).reduce((m, x) => /purchase/i.test(x.action_type || '') ? Math.max(m, +x.value || 0) : m, 0);
+    const pval = actSum(r.action_values, /purchase/i);
+    return { name: r.ad_name || '', adset: r.adset_name || '', campaign: r.campaign_name || '', spend: Math.round(+(r.spend || 0)), leads: Math.round(leads), roas: proas ? +proas.toFixed(2) : null, pval: Math.round(pval) };
+  }).filter(a => a.spend > 0 || a.leads > 0);
   const byId = {};
   function slot(k, name, campaign, objective) {
     return byId[k] || (byId[k] = { id: k, name: name || '', campaign: campaign || '', objective: objective || '', spendTotal: 0, spendToday: 0, dailyBudget: null, status: '' });
@@ -221,6 +243,7 @@ async function metaSpend() {
     total: g.total, totalAcq: g.acq,
     breakdown: g.breakdown,  // detail cumul par campagne (transparence)
     adsets,                  // detail par ad set (pour le ROAS par pays)
+    adDetail: adList,        // detail par AD (créa) : ROAS + leads par créa
     spendCat,                // depense par type de campagne (lead/candidat/follow), today+total
     adsetDbg                 // diagnostic de la lecture par ad set
   };
@@ -426,6 +449,7 @@ export default async function handler(req, res) {
       ads.adsetList = allAdsets
         .map(a => ({ name: a.name, objective: a.objective || '', spend: Math.round(a.spendTotal), budget: a.dailyBudget != null ? Math.round(a.dailyBudget) : null, status: a.status || '' }))
         .sort((x, y) => y.spend - x.spend).slice(0, 60);
+      ads.adDetail = Array.isArray(spend.adDetail) ? spend.adDetail : [];
 
       const COUNTRIES = [
         { key: 'IT', name: 'Leads Italy',   flag: '🇮🇹', lang: 'IT', region: 'Europe',        match: /ital|(?:^|[^a-z])it(?:[^a-z]|$)/i },
