@@ -135,6 +135,9 @@
   .creco.fix{background:rgba(255,192,77,.16);color:#ffd98a}
   .creco.wait{background:rgba(255,255,255,.07);color:var(--muted)}
   .creco.cool{background:rgba(91,140,255,.18);color:#9bbcff}
+  .cstat{font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;margin-left:9px}
+  .cstat.on{background:rgba(34,224,107,.14);color:#7cf3ac}
+  .cstat.off{background:rgba(255,255,255,.08);color:var(--muted)}
   .ctry-mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:8px;margin-top:12px}
   .cm{background:var(--bg);border-radius:9px;padding:8px 10px}
   .cm-n{font-size:15px;font-weight:800;display:block;letter-spacing:-.01em}
@@ -637,6 +640,7 @@ function trackBudgets(bc,today){
   try{ localStorage.setItem('budgets_v1',JSON.stringify(store)); }catch(e){}
 }
 function recoCountry(co){
+  if(co.status && co.status!=='ACTIVE') return {cls:'wait',label:'⏸ En pause',det:'Ad set en pause dans Meta — aucune reco tant qu\'il ne tourne pas. Réactive-le pour reprendre l\'optimisation.'};
   // 100% basé sur la RENTABILITÉ : ROAS = CA des leads qui ont payé ÷ dépense. Le CPL n'entre PAS en compte.
   var sp=co.spendTotal||0, leads=co.leads||0, roas=co.roas, bud=co.dailyBudget;
   if(leads<15 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Données encore trop faibles pour trancher — laisse mûrir avant de bouger le budget.'};
@@ -663,6 +667,7 @@ function countryCard(co){
   var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'—';
   var noAds=!co.adsets||!co.adsets.length;
   return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">'+co.name+'</span>'
+    +(co.status?'<span class="cstat '+(co.status==='ACTIVE'?'on':'off')+'">'+(co.status==='ACTIVE'?'● Active':'⏸ Pause')+'</span>':'')
     +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
     +'<div class="ctry-mets">'
     + m(curC(co.spendTotal),'Dépensé')
@@ -700,6 +705,7 @@ function renderCountries(d){
    Reco calée sur le coût/candidat & le taux candidat→inscrit — pas le ROAS seul
    (le ROAS candidat est structurellement bas : le tunnel candidat→inscrit met du temps). */
 function recoCandidat(co){
+  if(co.status && co.status!=='ACTIVE') return {cls:'wait',label:'⏸ En pause',det:'Campagne LAL en pause — aucune reco tant qu\'elle ne tourne pas. Réactive-la pour reprendre.'};
   // Basé sur la RENTABILITÉ : taux candidat→inscrit payant (cr) + ROAS. Le coût/candidat n'entre PAS en compte.
   var sp=co.spendTotal||0, cand=co.candidats||0, roas=co.roas, cr=co.convRate||0, bud=co.dailyBudget;
   if(cand<20 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Pas encore assez de candidats/dépense pour trancher — laisse le CBO apprendre avant de bouger le budget.'};
@@ -725,6 +731,7 @@ function candidatCard(co){
   var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'—';
   var noAds=!co.adsets||!co.adsets.length;
   return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">'+co.name+'</span>'
+    +(co.status?'<span class="cstat '+(co.status==='ACTIVE'?'on':'off')+'">'+(co.status==='ACTIVE'?'● Active':'⏸ Pause')+'</span>':'')
     +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
     +'<div class="ctry-mets">'
     + m(curC(co.spendTotal),'Dépensé')
