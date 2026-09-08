@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Suivi conversions — ExpoMetro</title>
+<style>
+  :root{--bg:#070a17;--card:#0e1431;--card2:#131a3d;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--blue:#5b8cff;--gold:#ffc04d;--txt:#eef1f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 80px}
+  h1{font-size:19px;margin:0}
+  .sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
+  #login{max-width:340px;margin:15vh auto;text-align:center}
+  #login input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:#fff;font-size:15px;margin:12px 0}
+  button{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-weight:700;font-size:15px;cursor:pointer;width:100%}
+  button:hover{filter:brightness(1.05)}
+  .err{color:#ff8a8a;font-size:13px;min-height:16px}
+  #dash{display:none}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .refresh{background:none;border:1px solid var(--line);color:var(--muted);width:auto;padding:6px 12px;font-size:12px;font-weight:600}
+  .updated{color:var(--muted);font-size:11.5px;display:block;margin-top:4px;text-align:right}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:14px}
+  /* Cumul : graphe CA/Pub à gauche, 4 KPIs en 2x2 à droite */
+  .cumul-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin-bottom:14px;align-items:stretch}
+  .cumul-grid>.box{display:flex;flex-direction:column}
+  .cumul-grid .kpis{grid-template-columns:1fr 1fr;gap:11px;margin-bottom:0}
+  @media(max-width:760px){ .cumul-grid{grid-template-columns:1fr} }
+  .kpi .ca-det{margin-top:8px;font-size:11px}
+  .kpi .ca-det summary{color:var(--muted);cursor:pointer;list-style:none;font-size:10.5px}
+  .kpi .ca-det summary::-webkit-details-marker{display:none}
+  .kpi .ca-det summary::before{content:'▸ '}
+  .kpi .ca-det[open] summary::before{content:'▾ '}
+  .kpi .ca-det .row{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+  .kpi .ca-det .cur{color:var(--muted)} .kpi .ca-det .v{font-weight:700}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+  .kpi .n{font-size:23px;font-weight:800;letter-spacing:-.01em}
+  .kpi .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+  .kpi.hi .n{color:var(--green)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .section{margin-top:22px}
+  .section>h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 11px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:13px}
+  #adsRecap{border-top:3px solid var(--gold)} #adsRecap>h3{color:var(--gold)}
+  .roas-lead{border-top:3px solid var(--blue)} .roas-lead>h3{color:var(--blue)}
+  .roas-cand{border-top:3px solid var(--accent)} .roas-cand>h3{color:var(--accent)}
+  /* Code couleur des blocs : bleu = Leads, rouge = Candidats */
+  .lead-top{border-top:3px solid var(--blue)} .lead-top>h3{color:var(--blue)}
+  .cand-top{border-top:3px solid var(--accent)} .cand-top>h3{color:var(--accent)}
+  #countries .ctry{border-top:3px solid var(--blue)}
+  #candidatCountries .ctry{border-top:3px solid var(--accent)}
+  /* Ventes via ManyChat */
+  .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mc-cell{background:var(--bg);border-radius:10px;padding:12px 14px}
+  .mc-lab{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .mc-n{font-size:22px;font-weight:800;color:var(--accent);margin-top:4px}
+  .mc-n span{font-size:12px;font-weight:600;color:var(--muted)}
+  .mc-ca{font-size:14px;font-weight:700;margin-top:2px}
+  #liveChatClicks{border-top:3px solid var(--gold)} #liveChatClicks>h3{color:var(--gold);margin:0 0 10px}
+  .mc-n.lcc-n{color:var(--gold)}
+  .mc-cell .mc-ca.lcc-sub{font-size:12px;font-weight:600;color:var(--muted)}
+  .lcc-types{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .lcc-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:6px}
+  .lcc-types .pleg .pval .auj{color:var(--muted);font-weight:600;font-size:11.5px}
+  .srow.sub{padding-left:22px;font-size:12.5px}
+  .srow.sub .sl{color:var(--muted)}
+  .adstbl tr.roas td{font-weight:800;font-size:15px;color:var(--txt);border-bottom:none}
+  .adstbl tr.sub2 td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px}
+  .adstbl tr.sub2 td:first-child{padding-left:14px}
+  #candConvtbl .clang{cursor:pointer} #candConvtbl .clang:hover{background:rgba(255,255,255,.03)}
+  #candConvtbl .chev{color:var(--muted);display:inline-block;width:12px;font-size:10px}
+  #candConvtbl .cdet td{color:var(--muted);font-size:12px;background:rgba(255,255,255,.02)}
+  #candConvtbl .cdet .cdet-c{padding-left:22px}
+  .box h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px;font-weight:600}
+  /* CA */
+  .ca .row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .ca .row.tot{border-bottom:none;border-top:2px solid var(--line);margin-top:5px;padding-top:9px;font-weight:800;font-size:17px}
+  .ca .row.tot .v{color:var(--green)}
+  .ca .cur{color:var(--muted)}
+  /* Leads combiné */
+  .lead-hero{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .lead-hero .big{font-size:30px;font-weight:800}
+  .lead-hero .arw{color:var(--muted);font-size:22px}
+  .lead-hero .rate{margin-left:auto;font-size:26px;font-weight:800;color:var(--green)}
+  .lead-hero .rlab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .sech{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 11px}
+  .split .srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);font-size:13.5px}
+  .split .sl{color:var(--muted);display:flex;align-items:center;gap:8px}
+  .split .sv{font-weight:700}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.blue{background:var(--blue)} .dot.green{background:var(--green)} .dot.gold{background:var(--gold)} .dot.candidat{background:var(--accent)}
+  .roasrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid rgba(255,255,255,.06)}
+  .roasrow:first-of-type{border-top:none}
+  .roasrow .rl{color:var(--muted);font-size:12.5px}
+  .roasrow .sp{color:var(--muted);font-size:12px;margin-right:12px}
+  .roasbig{font-size:22px;font-weight:800;color:var(--green)}
+  .manual{display:flex;gap:10px;align-items:center;margin:8px 0}
+  .manual input{flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:#fff;font-size:14px;min-width:0}
+  .adstbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+  .adstbl th,.adstbl td{padding:6px 4px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)}
+  .adstbl th:first-child,.adstbl td:first-child{text-align:left;color:var(--muted);font-weight:400}
+  .adstbl th{color:var(--muted);font-size:10.5px;text-transform:uppercase;font-weight:600}
+  .adstbl tr.sub td{color:var(--muted);font-size:11.5px;border-bottom:none;padding:1px 4px 6px}
+  .adstbl tr.sub td:first-child{padding-left:12px}
+  .adstbl tr.roas td{font-weight:800;border-bottom:none}
+  .adstbl tr.roas td:not(:first-child){color:var(--green);font-size:16px}
+  .adstbl tr.roas td:first-child{color:var(--txt)}
+  .adstbl tr.roas.dim td:not(:first-child){color:var(--muted);font-size:13px;font-weight:700}
+  .adstbl tr.roas.dim td:first-child{color:var(--muted);font-weight:600}
+  .camps{margin-top:10px}
+  .camps summary{cursor:pointer;color:var(--blue);font-size:12px;list-style:none;user-select:none}
+  .camps summary::-webkit-details-marker{display:none}
+  .camps summary::before{content:'▸ ';font-size:10px}
+  .camps[open] summary::before{content:'▾ '}
+  .camptbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  .camptbl td{padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .camptbl td.num{text-align:right}
+  .camptbl td:last-child{text-align:right;font-size:10.5px;font-weight:700;color:var(--green)}
+  .camptbl tr.ex td{color:var(--muted)}
+  .camptbl tr.ex td:last-child{color:var(--muted);font-weight:400}
+  /* Leads par pays (scaling) */
+  .creg{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .creg:first-child{margin-top:0}
+  .creg .crsum{font-size:11.5px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600}
+  .ctry{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 10px 16px;position:relative}
+  .ctry::before{content:'';position:absolute;left:-16px;top:26px;width:14px;height:2px;background:var(--line)}
+  .ctry-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .cflag{font-size:20px;line-height:1}
+  .cname{font-weight:800;font-size:15px}
+  .creco{margin-left:auto;font-size:10.5px;font-weight:800;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+  .creco.scale{background:rgba(34,224,107,.16);color:#7cf3ac}
+  .creco.hold{background:rgba(91,140,255,.16);color:#9bbcff}
+  .creco.fix{background:rgba(255,192,77,.16);color:#ffd98a}
+  .creco.wait{background:rgba(255,255,255,.07);color:var(--muted)}
+  .creco.cool{background:rgba(91,140,255,.18);color:#9bbcff}
+  .cstat{font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;margin-left:9px}
+  .cstat.on{background:rgba(34,224,107,.14);color:#7cf3ac}
+  .cstat.off{background:rgba(255,255,255,.08);color:var(--muted)}
+  .ctry-mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:8px;margin-top:12px}
+  .cm{background:var(--bg);border-radius:9px;padding:8px 10px}
+  .cm-n{font-size:15px;font-weight:800;display:block;letter-spacing:-.01em}
+  .cm-l{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:2px;display:block}
+  .cm.roas .cm-n{color:var(--green)}
+  .cm.roas.low .cm-n{color:var(--muted)}
+  .ctry-det{font-size:12.5px;color:var(--muted);margin-top:11px;line-height:1.5}
+  .ctry-det b{color:var(--txt);font-weight:700}
+  .cadsets{font-size:10.5px;color:var(--muted);margin-top:6px}
+  /* buckets */
+  .bkts{display:flex;gap:10px;flex-wrap:wrap}
+  .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+  .bkt .n{font-size:22px;font-weight:800}
+  .bkt .l{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .bkt.lead{border-color:rgba(91,140,255,.4)} .bkt.lead .n{color:var(--blue)}
+  .bkt.existant{border-color:rgba(34,224,107,.4)} .bkt.existant .n{color:var(--green)}
+  .bkt.nouveau{border-color:rgba(255,192,77,.4)} .bkt.nouveau .n{color:var(--gold)}
+  .bkt.first{border-color:rgba(255,192,77,.4)} .bkt.first .n{color:var(--gold)}
+  .bkt.recur{border-color:rgba(91,140,255,.4)} .bkt.recur .n{color:var(--blue)}
+  .bkt.candidat{border-color:rgba(255,82,103,.4)} .bkt.candidat .n{color:var(--accent)}
+
+  /* ===== Onglets (Conversions / Plan interactif) ===== */
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}
+  .tabb{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);width:auto;
+        padding:9px 15px;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+        border-radius:0;cursor:pointer}
+  .tabb:hover{color:var(--txt);filter:none}
+  .tabb[aria-selected="true"]{color:var(--txt);border-bottom-color:var(--accent)}
+  .tabb:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+  /* ===== Plan interactif du tunnel ===== */
+  .h2live{text-transform:none;letter-spacing:0;font-weight:600;color:var(--green);margin-left:9px;font-size:12px}
+  .h2live.warn{color:var(--gold)}
+  .pl-hint{color:var(--muted);font-size:11.5px;line-height:1.55;margin:9px 0 0}
+  .pl-seq{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:13px;overflow:hidden}
+  .pl-seqhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 16px;
+              background:var(--card2);border-bottom:1px solid var(--line)}
+  .pl-seqn{background:var(--txt);color:var(--bg);border-radius:7px;padding:3px 9px;font-size:11.5px;font-weight:800;letter-spacing:.03em}
+  .pl-seqt{font-size:14px;font-weight:700}
+  .pl-seqm{margin-left:auto;display:flex;gap:13px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .pl-seqm .warn{color:var(--accent);font-weight:700}
+  .pl-seqm .done{color:var(--green);font-weight:700}
+  .pl-seqbody{padding:13px 16px 16px;overflow-x:auto}
+  .pl-inner{min-width:640px}
+  .pl-ruler{display:grid;grid-template-columns:88px repeat(5,1fr);gap:0 6px;align-items:end;margin-bottom:6px}
+  .pl-rc{border-left:1px solid var(--line);padding:0 0 3px 5px;font-size:10px;color:var(--muted)}
+  .pl-rc:last-child{border-right:1px solid var(--line)}
+  .pl-rdir{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:0 6px 3px 0;white-space:nowrap}
+  .pl-track{display:grid;grid-template-columns:88px repeat(5,1fr);gap:6px;margin-bottom:6px}
+  .pl-tl{display:flex;flex-direction:column;justify-content:center;gap:2px;padding-right:8px}
+  .pl-tl b{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+  .pl-tl span{font-size:9.5px;color:var(--muted)}
+  .pl-cell{border:1px solid var(--line);border-radius:9px;background:var(--card2);padding:7px 9px;
+           display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .pl-w{height:72px} .pl-c{height:126px}
+  .pl-ctop{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .pl-cid{font-size:15px;font-weight:800;line-height:1}
+  .pl-cfmt{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:right;line-height:1.25}
+  .pl-cbot{display:flex;align-items:center;gap:8px}
+  .pl-cnt{font-size:10.5px;font-weight:700;white-space:nowrap}
+  .pl-bar{flex:1;height:6px;background:rgba(255,255,255,.09);border-radius:3px;overflow:hidden}
+  .pl-bar i{display:block;height:100%;border-radius:3px}
+  .pl-full{border-color:rgba(34,224,107,.5);background:rgba(34,224,107,.09)}
+  .pl-full .pl-cid{color:var(--green)} .pl-full .pl-bar i{background:var(--green)}
+  .pl-fill{border-color:rgba(255,192,77,.5);background:rgba(255,192,77,.09)}
+  .pl-fill .pl-cid{color:var(--gold)} .pl-fill .pl-bar i{background:var(--gold)}
+  .pl-empty{border:1.5px dashed rgba(255,82,103,.65);background:none;align-items:center;justify-content:center;gap:3px;text-align:center}
+  .pl-empty b{color:var(--accent);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+  .pl-empty span{color:var(--muted);font-size:9.5px}
+  /* trous a combler */
+  .pl-gap{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+  .pl-gap:first-child{border-top:none;padding-top:2px}
+  .pl-gapn{font-size:27px;font-weight:800;min-width:48px;color:var(--accent);line-height:1}
+  .pl-gapn.ok{color:var(--green)}
+  .pl-gapt{font-size:13px;line-height:1.35}
+  .pl-gapt small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+  /* simulateur */
+  .pl-ctrl{margin-bottom:13px}
+  .pl-ctrl>label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
+  .pl-seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+  .pl-seg button{flex:1 1 auto;min-width:62px;width:auto;background:var(--card2);border:none;
+                 border-right:1px solid var(--line);border-radius:0;padding:8px 7px;color:var(--muted);
+                 font-size:11px;font-weight:600}
+  .pl-seg button:last-child{border-right:none}
+  .pl-seg button:hover{color:var(--txt);filter:none}
+  .pl-seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+  .pl-out{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+  .pl-orow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12.5px}
+  .pl-orow span:first-child{color:var(--muted)}
+  .pl-orow b{font-size:17px;font-weight:800}
+  .pl-verdict{margin-top:11px;padding:10px 12px;border-radius:9px;font-size:12.5px;line-height:1.45}
+  .pl-verdict.good{background:rgba(34,224,107,.1);color:var(--green);border-left:3px solid var(--green)}
+  .pl-verdict.bad{background:rgba(255,82,103,.1);color:var(--accent);border-left:3px solid var(--accent)}
+  .pl-pill{display:inline-block;padding:2px 8px;border-radius:11px;font-size:10.5px;white-space:nowrap}
+  .pl-pill.f{background:rgba(34,224,107,.14);color:var(--green)}
+  .pl-pill.p{background:rgba(255,192,77,.14);color:var(--gold)}
+  .pl-mini{display:flex;align-items:center;gap:9px;min-width:120px}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em}
+  td.num,th.num{text-align:right}
+  tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
+  .rate{font-weight:800;color:var(--green)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
+  .tag.lead{background:rgba(91,140,255,.16);color:#9bbcff}
+  .tag.existant{background:rgba(34,224,107,.15);color:#7cf3ac}
+  .tag.nouveau{background:rgba(255,192,77,.16);color:#ffd98a}
+  .tag.candidat{background:rgba(255,82,103,.16);color:#ff9aa8}
+  .exp{display:inline-block;min-width:20px;text-align:center;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.07);color:var(--muted)}
+  .exp.rec{background:rgba(91,140,255,.16);color:#9bbcff}
+  .medal{font-size:13px}
+  .hint{color:var(--muted);font-size:11px;margin:10px 0 0}
+  /* charts */
+  .legend{display:flex;gap:16px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .chart{width:100%;height:auto;display:block}
+  .chart .grid{stroke:rgba(255,255,255,.07);stroke-width:1}
+  .chart .bar{fill:var(--blue);opacity:.72}
+  .chart .bar2{fill:var(--accent);opacity:.72}
+  .chart .lineC{fill:none;stroke:var(--green);stroke-width:2.2}
+  .chart .dotC{fill:var(--green)}
+  .chart .lineT{fill:none;stroke:var(--gold);stroke-width:2.2}
+  .chart .dotT{fill:var(--gold)}
+  .chart .area{fill:rgba(34,224,107,.14)}
+  .chart .lineA{fill:none;stroke:var(--green);stroke-width:2.4}
+  .chart .lineP{fill:none;stroke:var(--accent);stroke-width:2.2}
+  .chart .dotP{fill:var(--accent)}
+  .chart .lineAds{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-dasharray:5 3}
+  .chart .dotAds{fill:var(--gold)}
+  .chart .dotA{fill:var(--green)}
+  .chart text{fill:var(--muted);font-size:9.5px;font-family:inherit}
+  .pierow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .plegs{flex:1;min-width:150px}
+  .pleg{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .pleg:last-child{border-bottom:none}
+  .pdot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+  .pleg .plab{color:var(--muted)}
+  .pleg .pval{margin-left:auto;font-weight:700}
+  /* Camembert "Type d'artiste" dans le recap (sous le ROAS) */
+  .recap-pie{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .recap-pie-h{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin-bottom:10px}
+  .pleg.pleg-main .plab{color:var(--txt);font-weight:800;font-size:14px}
+  .pleg.pleg-main .pval{font-weight:800;font-size:14px}
+  .pleg.pleg-sub{padding-left:16px;font-size:12.5px}
+  .pleg.pleg-sub .plab{color:var(--muted)}
+  .pleg.pleg-commu .plab,.pleg.pleg-commu .pval{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login">
+    <h1>Suivi conversions</h1><p class="sub">Accès protégé</p>
+    <input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password"/>
+    <button onclick="enter()">Entrer</button>
+    <p class="err" id="loginErr"></p>
+  </div>
+
+  <div id="dash">
+    <div class="top">
+      <div><h1>Contrôle Florence</h1><p class="sub" id="sub"></p></div>
+      <div><button class="refresh" onclick="load()">↻ Rafraîchir</button><span class="updated" id="upd"></span></div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tabb" id="tabConv" role="tab" aria-selected="true"  aria-controls="viewConv" onclick="showView('conv')">Conversions</button>
+      <button class="tabb" id="tabPlan" role="tab" aria-selected="false" aria-controls="viewPlan" onclick="showView('plan')">Plan interactif</button>
+    </div>
+
+    <div id="viewConv" role="tabpanel" aria-labelledby="tabConv">
+
+    <!-- CHIFFRES DU JOUR -->
+    <h2 class="sech" style="margin-top:0">Aujourd'hui — en direct</h2>
+    <div class="grid2">
+      <div class="box today-hero" id="todayHero"></div>
+      <div class="box" id="adsRecap"></div>
+    </div>
+    <div class="box" id="liveChatClicks" style="margin-top:14px"></div>
+
+    <!-- CUMUL -->
+    <h2 class="sech">Cumul depuis le 15 juillet</h2>
+    <div class="cumul-grid">
+      <div class="box"><h3>CA &amp; dépense pub par jour</h3>
+        <div class="legend"><span><i style="background:var(--green)"></i>CA encaissé (€)</span><span><i style="background:var(--gold)"></i>CA via ads (€)</span><span><i style="background:var(--accent)"></i>Dépense pub (€)</span></div>
+        <div id="chartCaPub"></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+    </div>
+
+    <!-- META ADS → ROAS -->
+    <div class="section">
+      <h2>Meta Ads → ROAS</h2>
+      <div class="grid2" style="align-items:start">
+        <div>
+          <div class="box roas-lead" id="roasLeads"></div>
+          <div class="box lead-top" style="margin-top:14px"><h3>Leads → Inscrits</h3>
+            <div class="lead-hero" id="leadHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
+              <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div>
+          <div class="box roas-cand" id="roasCand"></div>
+          <div class="box cand-top" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
+            <div class="lead-hero" id="candHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
+              <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </div>
+          <div class="src-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px">
+            <div class="box cand-top" style="margin:0"><h3>Ventes via Bio Instagram 📸</h3>
+              <div id="salesBio"></div>
+              <p class="hint" style="margin-top:8px">Ventes des artistes venus par le lien de ta bio Instagram (→ page /start → candidature). Compté depuis la pose du lien.</p>
+            </div>
+            <div class="box cand-top" style="margin:0"><h3>Ventes via ManyChat 🤖</h3>
+              <div id="salesSource"></div>
+              <p class="hint" style="margin-top:8px">Ventes des artistes venus par tes commentaires ManyChat (DM → candidature). Compté depuis la pose des liens (12/08). Pour le CA total des ads → section Meta Ads → ROAS.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADS PAR PAYS (scaling) -->
+    <div class="section" id="secCountries" style="display:none">
+      <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
+      <div id="countries"></div>
+    </div>
+
+    <!-- CANDIDATS PAR LANGUE (scaling) -->
+    <div class="section" id="secCandidatScale" style="display:none">
+      <h2>Candidats par langue — ROAS &amp; budget pour scaler 🚀</h2>
+      <div id="candidatCountries"></div>
+      <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat affiché pour info · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (structurellement bas : le tunnel candidat→inscrit prend du temps). Reco basée sur le taux candidat→inscrit &amp; le ROAS — le coût/candidat n'entre pas dans la décision.</p>
+    </div>
+
+    <!-- Graphique leads / jour -->
+    <div class="section">
+      <h2>Leads, candidats &amp; conversions par jour</h2>
+      <div class="box">
+        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Nouveaux candidats</span><span><i style="background:var(--green)"></i>Conversions ads</span><span><i style="background:var(--gold)"></i>Ventes totales</span></div>
+        <div id="chartLeads"></div>
+      </div>
+    </div>
+
+    <!-- Artistes participants -->
+    <div class="section">
+      <h2>Artistes participants à Florence<span class="h2live" id="artistTotalLive"></span></h2>
+      <div class="grid2">
+        <div class="box">
+          <div class="legend"><span><i style="background:var(--green)"></i>Cumul depuis le 15 juillet</span></div>
+          <div id="chartArtists"></div>
+          <p class="hint" id="artistTotalHint"></p>
+        </div>
+        <div class="box"><h3>Type d'artiste</h3>
+          <div class="bkts" id="artists"></div>
+          <p class="hint">« Récurrent » = a déjà participé à une expo avant celle-ci. « 1ʳᵉ expo » = Florence est sa première.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Communauté + Top artistes -->
+    <div class="section">
+      <h2>Communauté &amp; ambassadeurs</h2>
+      <div class="grid2">
+        <div class="box"><h3>Communauté ExpoMetro</h3><div class="bkts" id="commu"></div>
+          <p class="hint">Sur toute ta base : part qui a déjà payé au moins une fois (lifetime).</p></div>
+        <div class="box"><h3>Top artistes (par nb d'expos)</h3>
+          <div style="overflow-x:auto"><table id="toptbl">
+            <thead><tr><th>#</th><th>Artiste</th><th class="num">Expos</th><th class="num">Payé</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aujourd'hui -->
+    <div class="section">
+      <h2>Aujourd'hui — détail par langue</h2>
+      <div class="box">
+        <div style="overflow-x:auto"><table id="todaytbl">
+          <thead><tr><th>Langue</th><th class="num">Nouveaux leads</th><th class="num">Inscrits</th><th class="num">Taux</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- Derniers paiements -->
+    <div class="section">
+      <h2>Derniers paiements</h2>
+      <div class="box"><div style="overflow-x:auto"><table id="tbl">
+        <thead><tr><th>Date</th><th>Email</th><th class="num">Montant</th><th class="num">Expos</th><th>Source</th></tr></thead><tbody></tbody>
+      </table></div></div>
+    </div>
+    </div><!-- /viewConv -->
+
+    <div id="viewPlan" role="tabpanel" aria-labelledby="tabPlan" hidden>
+      <div class="kpis" id="planKpis"></div>
+      <p class="pl-hint" id="planNote"></p>
+
+      <div class="section">
+        <h2>Le tunnel, séquence par séquence</h2>
+        <p class="pl-hint" style="margin:-4px 0 12px">
+          Tunnel représenté <b>déplié</b> — mur gauche rabattu, plafond à plat, mur droit rabattu : c'est exactement
+          l'empilement du fichier vidéo master (768 + 1440 + 768 px). Les trois pistes partagent le même axe,
+          donc <b>ce qui est aligné verticalement est physiquement face à face</b>.
+          Les 5 premières œuvres murales occupent le mur gauche de 0 à 25 m, les 5 suivantes redescendent le mur droit
+          de 25 m à 0 — deux œuvres consécutives restent voisines, quel que soit le côté par lequel on entre.
+        </p>
+        <div id="planSeqs"></div>
+      </div>
+
+      <div class="section">
+        <h2>Ce qu'il reste à vendre</h2>
+        <div class="grid2" style="align-items:start">
+          <div class="box cand-top">
+            <h3>Les trous à combler</h3>
+            <p class="pl-hint" id="planGapSub" style="margin:0 0 10px"></p>
+            <div id="planGaps"></div>
+            <p class="pl-hint">Une séquence de 30 s réclame <b>10 œuvres murales</b> et <b>5 œuvres plafond</b>.
+              Le plafond consomme un tiers des emplacements mais ne représente qu'une petite part des ventes.</p>
+          </div>
+          <div class="box lead-top">
+            <h3>Simuler la fin de campagne</h3>
+            <div class="pl-ctrl"><label>Nombre de séquences visées</label><div class="pl-seg" id="planSegSeq"></div></div>
+            <div class="pl-ctrl"><label>Format des œuvres murales à ouvrir</label><div class="pl-seg" id="planSegWall"></div></div>
+            <div class="pl-ctrl"><label>Format des œuvres plafond à ouvrir</label><div class="pl-seg" id="planSegCeil"></div></div>
+            <div class="pl-out" id="planSimOut"></div>
+            <div id="planVerdict"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Les œuvres collectives</h2>
+        <div class="box"><div style="overflow-x:auto"><table id="planTbl">
+          <thead><tr><th>Œuvre</th><th>Surface</th><th>Format</th><th>Emplacement</th><th>Remplissage</th>
+            <th class="num">Places</th><th class="num">Restantes</th><th>Statut</th></tr></thead>
+          <tbody></tbody><tfoot></tfoot>
+        </table></div></div>
+      </div>
+
+      <p class="pl-hint" id="planSrc"></p>
+      <p class="err" id="planErr"></p>
+    </div><!-- /viewPlan -->
+
+    <p class="err" id="dashErr"></p>
+  </div>
+</div>
+
+<script>
+var KEY='';
+/* Session persistante 48h (glissante) : localStorage + timestamp renouvelé à chaque chargement réussi. */
+var SESSION_MS=48*3600*1000;
+function saveKey(k){ try{ localStorage.setItem('dk',k); localStorage.setItem('dk_ts',String(Date.now())); }catch(e){} }
+function clearKey(){ try{ localStorage.removeItem('dk'); localStorage.removeItem('dk_ts'); }catch(e){} }
+function storedKey(){ try{ var k=localStorage.getItem('dk'), ts=+(localStorage.getItem('dk_ts')||0);
+  if(k && ts && (Date.now()-ts)<SESSION_MS) return k; clearKey(); }catch(e){} return ''; }
+function enter(){ KEY=document.getElementById('pw').value||''; saveKey(KEY); load(); }
+document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') enter(); });
+function fr(n){ return (n||0).toLocaleString('fr-FR'); }
+// nom de pays -> code ISO (drapeau emoji), pour le détail par pays des candidats
+var C2I={"france":"FR","francia":"FR","frankreich":"FR","united states":"US","états-unis":"US","estados unidos":"US","stati uniti":"US","usa":"US","united kingdom":"GB","royaume-uni":"GB","reino unido":"GB","regno unito":"GB","vereinigtes königreich":"GB","großbritannien":"GB","canada":"CA","canadá":"CA","kanada":"CA","australia":"AU","australie":"AU","australien":"AU","ireland":"IE","irlande":"IE","irlanda":"IE","irland":"IE","new zealand":"NZ","nouvelle-zélande":"NZ","nueva zelanda":"NZ","nuova zelanda":"NZ","neuseeland":"NZ","united arab emirates":"AE","émirats arabes unis":"AE","emiratos árabes unidos":"AE","emirati arabi uniti":"AE","vereinigte arabische emirate":"AE","qatar":"QA","singapore":"SG","singapour":"SG","singapur":"SG","netherlands":"NL","pays-bas":"NL","países bajos":"NL","paesi bassi":"NL","niederlande":"NL","nederland":"NL","sweden":"SE","suède":"SE","suecia":"SE","svezia":"SE","schweden":"SE","norway":"NO","norvège":"NO","noruega":"NO","norvegia":"NO","norwegen":"NO","denmark":"DK","danemark":"DK","dinamarca":"DK","danimarca":"DK","dänemark":"DK","switzerland":"CH","suisse":"CH","suiza":"CH","svizzera":"CH","schweiz":"CH","italy":"IT","italie":"IT","italia":"IT","italien":"IT","spain":"ES","espagne":"ES","españa":"ES","spagna":"ES","spanien":"ES","germany":"DE","allemagne":"DE","alemania":"DE","germania":"DE","deutschland":"DE","austria":"AT","autriche":"AT","österreich":"AT","belgium":"BE","belgique":"BE","bélgica":"BE","belgio":"BE","belgien":"BE","luxembourg":"LU","luxemburgo":"LU","lussemburgo":"LU","luxemburg":"LU","monaco":"MC","mónaco":"MC","hong kong":"HK","san marino":"SM","south africa":"ZA","congo - kinshasa":"CD","mexico":"MX","lebanon":"LB","tunisia":"TN","botswana":"BW","malaysia":"MY","saudi arabia":"SA","myanmar (burma)":"MM","venezuela":"VE","georgia":"GE","colombia":"CO","mauritius":"MU","brazil":"BR","chile":"CL","chad":"TD","namibia":"NA","hongrie":"HU","hungary":"HU","sierra leone":"SL","burundi":"BI","bahrain":"BH","uzbekistan":"UZ","trinidad & tobago":"TT","azerbaijan":"AZ","north macedonia":"MK","gambia":"GM","jamaica":"JM","bosnia & herzegovina":"BA","honduras":"HN","ecuador":"EC","haiti":"HT","kazakhstan":"KZ","el salvador":"SV","ukraine":"UA","bulgaria":"BG","bhutan":"BT","croatia":"HR","guyana":"GY","liberia":"LR","cyprus":"CY","guatemala":"GT","papua new guinea":"PG","romania":"RO"};
+function flag(name){ var iso=C2I[String(name==null?'':name).trim().toLowerCase()]; return iso?String.fromCodePoint(0x1F1E6+iso.charCodeAt(0)-65,0x1F1E6+iso.charCodeAt(1)-65)+' ':''; }
+function toggleCand(l){ var open=false; document.querySelectorAll('.cdet-'+l).forEach(function(r){ r.style.display=(r.style.display==='none'?'':'none'); if(r.style.display!=='none')open=true; }); var ch=document.getElementById('chev-'+l); if(ch) ch.textContent=open?'▾':'▸'; }
+var MOIS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+function frDate(iso){ if(!iso) return ''; var p=String(iso).slice(0,10).split('-'); return parseInt(p[2],10)+' '+(MOIS[parseInt(p[1],10)-1]||''); }
+function money(o){ o=o||{}; return Object.keys(o).filter(function(c){return c!=='PWETH'&&o[c]>0;}); }
+function bkt(cls,n,l){ return '<div class="bkt '+cls+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
+
+/* ---- Graphique barres (leads) + ligne (conversions), double échelle ---- */
+function chartBarsLine(days,bars,bars2,line,line2){
+  bars2=bars2||[]; line2=line2||[];
+  var W=740,H=210,pl=30,pr=30,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var bmax=Math.max.apply(null,bars.concat(bars2).concat(1));   // échelle des barres = max(leads, candidats)
+  var lmax=Math.max.apply(null,line.concat(line2).concat(1)),slot=iw/n;   // échelle partagée des 2 lignes
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  var bw=slot*0.26,gap=slot*0.04;                               // 2 barres côte à côte : leads (bleu) + candidats (rouge)
+  for(var i=0;i<n;i++){
+    var x=pl+slot*i+slot*0.20;
+    var bh=ih*bars[i]/bmax,y=pt+ih-bh;
+    s+='<rect class="bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2"/>';
+    var bh2=ih*(bars2[i]||0)/bmax,x2=x+bw+gap,y2=pt+ih-bh2;
+    s+='<rect class="bar2" x="'+x2.toFixed(1)+'" y="'+y2.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh2.toFixed(1)+'" rx="2"/>';
+  }
+  function poly(a){return a.map(function(v,i){return [pl+slot*i+slot*0.5, pt+ih-ih*v/lmax];});}
+  function path(cls,a){return '<path class="'+cls+'" d="'+poly(a).map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ')+'"/>';}
+  if(line2.length){ s+=path('lineT',line2); poly(line2).forEach(function(p,i){ if(line2[i]>0) s+='<circle class="dotT" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4"/>'; }); }
+  s+=path('lineC',line); poly(line).forEach(function(p,i){ if(line[i]>0) s+='<circle class="dotC" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6"/>'; });
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+bmax+'</text>';
+  s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--gold)">'+lmax+'</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+/* ---- Graphique CA encaissé (vert, aire) vs dépense pub (rouge), par jour ---- */
+function chartCaPub(days,ca,pub,caAds){
+  ca=ca||[]; pub=pub||[]; caAds=caAds||[];
+  var W=740,H=210,pl=40,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var mx=Math.max.apply(null,ca.concat(pub).concat(caAds).concat(1)),slot=n>1?iw/(n-1):iw;   // échelle € partagée
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  function pts(a){return a.map(function(v,i){return [pl+slot*i, pt+ih-ih*(v||0)/mx];});}
+  function path(a){return a.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');}
+  var pca=pts(ca);
+  s+='<path class="area" d="'+path(pca)+' L'+pca[n-1][0].toFixed(1)+' '+(pt+ih)+' L'+pca[0][0].toFixed(1)+' '+(pt+ih)+' Z"/>';
+  s+='<path class="lineP" d="'+path(pts(pub))+'"/>';    // dépense pub (rouge)
+  s+='<path class="lineAds" d="'+path(pts(caAds))+'"/>'; // CA via ads (or)
+  s+='<path class="lineA" d="'+path(pca)+'"/>';         // CA encaissé total (vert)
+  pts(pub).forEach(function(p,i){ if(pub[i]>0) s+='<circle class="dotP" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.2"/>'; });
+  pts(caAds).forEach(function(p,i){ if(caAds[i]>0) s+='<circle class="dotAds" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.2"/>'; });
+  pca.forEach(function(p,i){ if(ca[i]>0) s+='<circle class="dotA" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4"/>'; });
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+fr(Math.round(mx))+' €</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+(pl+slot*i).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+/* ---- Graphique aire cumulée (artistes) ---- */
+function chartArea(days,vals){
+  var W=740,H=210,pl=30,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var mx=Math.max.apply(null,vals.concat(1)),slot=n>1?iw/(n-1):iw;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  var pts=vals.map(function(v,i){return [pl+slot*i, pt+ih-ih*v/mx];});
+  var d=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+  s+='<path class="area" d="'+d+' L'+pts[n-1][0].toFixed(1)+' '+(pt+ih)+' L'+pts[0][0].toFixed(1)+' '+(pt+ih)+' Z"/>';
+  s+='<path class="lineA" d="'+d+'"/>';
+  s+='<circle class="dotA" cx="'+pts[n-1][0].toFixed(1)+'" cy="'+pts[n-1][1].toFixed(1)+'" r="3.2"/>';
+  s+='<text x="'+pts[n-1][0].toFixed(1)+'" y="'+(pts[n-1][1]-7).toFixed(1)+'" text-anchor="end" style="fill:var(--green);font-weight:700">'+vals[n-1]+'</text>';
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+mx+'</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+pts[i][0].toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+
+/* ---- Camembert (donut) ---- */
+function pie(segs,cNum,cLab){
+  var total=segs.reduce(function(a,x){return a+x.value;},0)||1;
+  var cx=62,cy=62,r=54,ri=32,ang=-Math.PI/2;
+  var s='<svg viewBox="0 0 124 124" width="124" height="124" class="pie">';
+  segs.forEach(function(sg){
+    var frac=sg.value/total; if(frac<=0) return;
+    if(frac>=0.9999){ s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+((r+ri)/2)+'" fill="none" stroke="'+sg.color+'" stroke-width="'+(r-ri)+'"/>'; return; }
+    var a2=ang+frac*2*Math.PI, large=frac>0.5?1:0;
+    var x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    var xi2=cx+ri*Math.cos(a2),yi2=cy+ri*Math.sin(a2),xi1=cx+ri*Math.cos(ang),yi1=cy+ri*Math.sin(ang);
+    s+='<path d="M'+x1.toFixed(2)+' '+y1.toFixed(2)+' A'+r+' '+r+' 0 '+large+' 1 '+x2.toFixed(2)+' '+y2.toFixed(2)
+      +' L'+xi2.toFixed(2)+' '+yi2.toFixed(2)+' A'+ri+' '+ri+' 0 '+large+' 0 '+xi1.toFixed(2)+' '+yi1.toFixed(2)+' Z" fill="'+sg.color+'"/>';
+    ang=a2;
+  });
+  s+='<text x="62" y="60" text-anchor="middle" style="fill:var(--txt);font-size:21px;font-weight:800">'+cNum+'</text>';
+  s+='<text x="62" y="74" text-anchor="middle" style="fill:var(--muted);font-size:9px">'+cLab+'</text>';
+  return s+'</svg>';
+}
+
+/* ---- Leads par pays : ROAS + reco de budget (pour scaler) ---- */
+function eurC(v){ return fr(Math.round(v||0))+' €'; }
+var CUR_SYM='€';   // devise du compte pub (souvent $), fixee dans renderCountries
+function curSym(c){ return {EUR:'€',USD:'$',GBP:'£',CHF:' CHF',CAD:'C$',AUD:'A$'}[c]||(c||'€'); }
+function curC(v){ return fr(Math.round(v||0))+' '+CUR_SYM; }
+/* Suivi des budgets par ad set (localStorage) pour imposer un "cooldown" apres une hausse. */
+var BUDGET_COOLDOWN_DAYS=3;
+function daysBetween(a,b){ var d=(Date.parse(b)-Date.parse(a))/86400000; return isNaN(d)?null:Math.floor(d); }
+/* Hausses de budget faites à la main (garde-fou robuste, indépendant du localStorage/navigateur) :
+   après une hausse enregistrée ici, la reco force "Palier en cours" pendant BUDGET_COOLDOWN_DAYS jours,
+   même en navigation privée. Clés = co.key : leads IT/ES/DE/FR/US ; candidats CAND_EN/CAND_FR/CAND_ES/CAND_IT/CAND_DE.
+   -> ajoute une entrée à CHAQUE fois que tu montes des budgets juste avant de déployer. */
+var MANUAL_RAISES = { '2026-08-12': ['IT','ES','DE','FR','CAND_EN','CAND_FR'], '2026-09-06': ['CAND_EN'] };
+function manualRaiseDaysSince(key, today){
+  var best=null;
+  for(var dt in MANUAL_RAISES){
+    if(MANUAL_RAISES[dt].indexOf(key)<0) continue;
+    var dd=daysBetween(dt, today);
+    if(dd!=null && dd>=0 && (best==null || dd<best)) best=dd;
+  }
+  return best;
+}
+function trackBudgets(bc,today){
+  var store={}; try{ store=JSON.parse(localStorage.getItem('budgets_v1')||'{}'); }catch(e){}
+  bc.forEach(function(co){
+    if(co.dailyBudget==null){ co._daysSinceBudget=null; return; }
+    var prev=store[co.key];
+    if(!prev){                                                    // 1re observation : on ne sait pas depuis quand -> pas de cooldown
+      store[co.key]={budget:co.dailyBudget,since:today,raised:false}; co._daysSinceBudget=null;
+    } else if(prev.budget!==co.dailyBudget){                      // budget change
+      var up=co.dailyBudget>prev.budget;                          // cooldown seulement si HAUSSE
+      store[co.key]={budget:co.dailyBudget,since:today,raised:up}; co._daysSinceBudget=up?0:null; co._budgetPrev=prev.budget;
+    } else {                                                      // budget inchange
+      co._daysSinceBudget = prev.raised ? daysBetween(prev.since,today) : null;   // compte les jours seulement si le 'since' vient d'une hausse
+    }
+    // Garde-fou : hausse manuelle enregistrée -> impose le cooldown même sans historique localStorage.
+    var mr=manualRaiseDaysSince(co.key, today);
+    if(mr!=null && mr<BUDGET_COOLDOWN_DAYS && (co._daysSinceBudget==null || mr<co._daysSinceBudget)) co._daysSinceBudget=mr;
+  });
+  try{ localStorage.setItem('budgets_v1',JSON.stringify(store)); }catch(e){}
+}
+function recoCountry(co){
+  if(co.status && co.status!=='ACTIVE') return {cls:'wait',label:'⏸ En pause',det:'Ad set en pause dans Meta — aucune reco tant qu\'il ne tourne pas. Réactive-le pour reprendre l\'optimisation.'};
+  // 100% basé sur la RENTABILITÉ : ROAS = CA des leads qui ont payé ÷ dépense. Le CPL n'entre PAS en compte.
+  var sp=co.spendTotal||0, leads=co.leads||0, roas=co.roas, bud=co.dailyBudget;
+  if(leads<15 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Données encore trop faibles pour trancher — laisse mûrir avant de bouger le budget.'};
+  if(roas==null) return {cls:'wait',label:'Laisser tourner',det:'Aucune vente encore attribuée à ces leads — attends une conversion (lead→inscrit payant) avant d\'ajuster le budget.'};
+  var scale=roas>=1.5;                    // largement rentable -> on pousse
+  var bad=roas<0.8 && sp>=40;             // perd de l'argent malgré une dépense significative
+  var ok=roas>=1;                         // rentable
+  // COOLDOWN : budget monté récemment -> on laisse Meta se re-stabiliser avant le prochain palier
+  var ds=co._daysSinceBudget;
+  if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
+    var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
+    return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse Meta se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). ROAS '+roas.toFixed(2)+'× ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
+  }
+  if(scale){ var nb=bud?Math.round(bud*1.2):null; return {cls:'scale',label:'Scaler +20%',det:nb?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+20%, palier Meta-safe). Répète tous les 3–4 j tant que le ROAS tient ; jamais plus haut d\'un coup (reset de l\'apprentissage).'):'ROAS '+roas.toFixed(2)+'× — monte par paliers de +20% tous les 3–4 j.'}; }
+  if(bad) return {cls:'fix',label:'Optimiser',det:'ROAS <b>'+roas.toFixed(2)+'×</b> sous le seuil de rentabilité — refresh la créa / resserre le ciblage, ou baisse le budget. Pas de scale tant que ce n\'est pas > 1×.'};
+  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('ROAS <b>'+roas.toFixed(2)+'×</b> rentable — petit palier <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>. Un seul cran, puis observe 3–4 j.'):'ROAS rentable — petit palier de +20%, puis observe.'}; }
+  return {cls:'hold',label:'Maintenir',det:'ROAS <b>'+roas.toFixed(2)+'×</b> autour de l\'équilibre — garde le budget et surveille la rentabilité.'};
+}
+function countryCard(co){
+  var rc=recoCountry(co);
+  function m(n,l,extra){ return '<div class="cm'+(extra||'')+'"><span class="cm-n">'+n+'</span><span class="cm-l">'+l+'</span></div>'; }
+  var roasTxt=co.roas!=null?co.roas.toFixed(2)+'×':'—';
+  var cplTxt=co.cpl!=null?co.cpl.toFixed(2)+' '+CUR_SYM:'—';
+  var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'—';
+  var noAds=!co.adsets||!co.adsets.length;
+  return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">'+co.name+'</span>'
+    +(co.status?'<span class="cstat '+(co.status==='ACTIVE'?'on':'off')+'">'+(co.status==='ACTIVE'?'● Active':'⏸ Pause')+'</span>':'')
+    +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
+    +'<div class="ctry-mets">'
+    + m(curC(co.spendTotal),'Dépensé')
+    + m(fr(co.leads),'Leads')
+    + m(cplTxt,'CPL')
+    + m(fr(co.inscrits)+' · '+co.convRate+'%','Inscrits')
+    + m(eurC(co.revEUR),'CA')
+    + m(roasTxt,'ROAS',' roas'+(co.roas!=null&&co.roas>=1?'':' low'))
+    + m(budTxt,'Budget/j')
+    +'</div>'
+    +'<div class="ctry-det">'+rc.det+'</div>'
+    +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set « '+co.name.replace('Leads ','')+' » trouvé sous tes campagnes Leads — vérifie le nommage.</div>'
+           :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
+    +'</div>';
+}
+function renderCountries(d){
+  var a=(d.ads)||{}, secC=document.getElementById('secCountries');
+  if(!a.available){ secC.style.display='none'; return; }  // Meta non connecte -> la box ROAS gere deja le fallback
+  secC.style.display='block';
+  CUR_SYM=curSym(a.currency);
+  var bc=a.byCountry||[];
+  trackBudgets(bc, d.today||'');   // detecte les hausses de budget -> cooldown dans la reco
+  // Classement : actifs d'abord (du meilleur ROAS au moins bon), pausés en dessous.
+  var order=bc.slice().sort(function(x,y){
+    var ax=(x.status&&x.status!=='ACTIVE')?1:0, ay=(y.status&&y.status!=='ACTIVE')?1:0;
+    if(ax!==ay) return ax-ay;
+    return (y.roas==null?-1:y.roas)-(x.roas==null?-1:x.roas);
+  });
+  document.getElementById('countries').innerHTML=order.map(countryCard).join('');
+}
+
+/* ---- Candidats par langue : ROAS + reco de budget (haut de tunnel) ----
+   Reco calée sur le coût/candidat & le taux candidat→inscrit — pas le ROAS seul
+   (le ROAS candidat est structurellement bas : le tunnel candidat→inscrit met du temps). */
+function recoCandidat(co){
+  if(co.status && co.status!=='ACTIVE') return {cls:'wait',label:'⏸ En pause',det:'Campagne LAL en pause — aucune reco tant qu\'elle ne tourne pas. Réactive-la pour reprendre.'};
+  // Basé sur la RENTABILITÉ : taux candidat→inscrit payant (cr) + ROAS. Le coût/candidat n'entre PAS en compte.
+  var sp=co.spendTotal||0, cand=co.candidats||0, roas=co.roas, cr=co.convRate||0, bud=co.dailyBudget;
+  if(cand<20 || sp<15) return {cls:'wait',label:'Laisser tourner',det:'Pas encore assez de candidats/dépense pour trancher — laisse le CBO apprendre avant de bouger le budget.'};
+  var scale=(roas!=null&&roas>=1)||cr>=3;                       // rentable, OU fort taux candidat→inscrit
+  var bad=(cr<0.3&&sp>=50)||(roas!=null&&roas<0.2&&sp>=60);     // ne transforme pas en inscrits malgré la dépense
+  var ok=(roas!=null&&roas>=0.5)||cr>=1;
+  // COOLDOWN : budget monté récemment -> on laisse le CBO se re-stabiliser
+  var ds=co._daysSinceBudget;
+  if((scale||ok) && !bad && ds!=null && ds<BUDGET_COOLDOWN_DAYS){
+    var when=ds===0?'aujourd\'hui':('il y a '+ds+' j');
+    return {cls:'cool',label:'Palier en cours',det:'Budget monté '+when+' — laisse le CBO se re-stabiliser (attends '+BUDGET_COOLDOWN_DAYS+'–4 j après une hausse). La perf reste OK ✅, prochaine hausse possible dans '+(BUDGET_COOLDOWN_DAYS-ds)+' j.'};
+  }
+  if(scale){ var nb=bud?Math.round(bud*1.2):null; return {cls:'scale',label:'Scaler +20%',det:nb?('Bon taux candidat→inscrit — monte de <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb)+' '+CUR_SYM+'/j</b> (+20%, palier Meta-safe) pour plus de volume. Répète tous les 3–4 j.'):'Monte le budget par paliers de +20% tous les 3–4 j.'}; }
+  if(bad) return {cls:'fix',label:'Optimiser',det:'Peu d\'inscrits payants derrière ces candidats malgré la dépense — refresh la créa / resserre le LAL avant de scaler.'};
+  if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
+  return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le coût/candidat et le taux candidat→inscrit.'};
+}
+function candidatCard(co){
+  var rc=recoCandidat(co);
+  function m(n,l,extra){ return '<div class="cm'+(extra||'')+'"><span class="cm-n">'+n+'</span><span class="cm-l">'+l+'</span></div>'; }
+  var roasTxt=co.roas!=null?co.roas.toFixed(2)+'×':'—';
+  var cplTxt=co.cpl!=null?co.cpl.toFixed(2)+' '+CUR_SYM:'—';
+  var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'—';
+  var noAds=!co.adsets||!co.adsets.length;
+  return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">'+co.name+'</span>'
+    +(co.status?'<span class="cstat '+(co.status==='ACTIVE'?'on':'off')+'">'+(co.status==='ACTIVE'?'● Active':'⏸ Pause')+'</span>':'')
+    +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
+    +'<div class="ctry-mets">'
+    + m(curC(co.spendTotal),'Dépensé')
+    + m(fr(co.candidats),'Candidats')
+    + m(cplTxt,'Coût/cand.')
+    + m(fr(co.inscrits)+' · '+co.convRate+'%','Inscrits')
+    + m(eurC(co.revEUR),'CA')
+    + m(roasTxt,'ROAS',' roas'+(co.roas!=null&&co.roas>=1?'':' low'))
+    + m(budTxt,'Budget/j')
+    +'</div>'
+    +'<div class="ctry-det">'+rc.det+'</div>'
+    +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set candidat « '+co.name+' » trouvé — vérifie le nommage de la campagne LAL.</div>'
+           :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
+    +'</div>';
+}
+function renderCandidatScale(d){
+  var a=(d.ads)||{}, sec=document.getElementById('secCandidatScale');
+  var cc=(a.candidatByCountry)||[];
+  if(!a.available || !cc.length){ sec.style.display='none'; return; }
+  sec.style.display='block';
+  CUR_SYM=curSym(a.currency);
+  trackBudgets(cc, d.today||'');   // partage le suivi de budget (clés préfixées CAND_ côté API -> pas de collision avec les leads)
+  // tri : d'abord ceux qui ont de la dépense, puis par nb de candidats
+  var list=cc.slice().sort(function(x,y){ var ax=(x.status&&x.status!=='ACTIVE')?1:0, ay=(y.status&&y.status!=='ACTIVE')?1:0; if(ax!==ay) return ax-ay; return ((y.roas==null?-1:y.roas)-(x.roas==null?-1:x.roas))||(y.inscrits-x.inscrits); });
+  var sSum=list.reduce(function(s,x){return s+(x.spendTotal||0);},0);
+  var kSum=list.reduce(function(s,x){return s+(x.candidats||0);},0);
+  document.getElementById('candidatCountries').innerHTML=
+    '<div class="creg"><span>Campagnes candidature LAL</span><span class="crsum">'+curC(sSum)+' dépensés · '+fr(kSum)+' candidats</span></div>'
+    + list.map(candidatCard).join('');
+}
+
+/* ---- Ventes via ManyChat : Aujourd'hui + Cumulé ---- */
+function mcData(d){ return (d.salesBySource && d.salesBySource.manychat) || {paid:0,revEUR:0,paidToday:0,revEURToday:0}; }
+function bioData(d){ return (d.salesBySource && d.salesBySource.instagram) || {paid:0,revEUR:0,paidToday:0,revEURToday:0}; }
+function candCount(d,src){ return { total:(d.candidatsBySource&&d.candidatsBySource[src])||0, today:(d.candidatsBySourceToday&&d.candidatsBySourceToday[src])||0 }; }
+function candBadge(cc){ return '<div style="font-size:13px;color:var(--muted);font-weight:600;margin:0 0 10px">📋 '+fr(cc.total)+' candidat'+(cc.total>1?'s':'')+' capté'+(cc.total>1?'s':'')+(cc.today>0?" · +"+fr(cc.today)+" aujourd'hui":'')+'</div>'; }
+function renderManychat(d){
+  var el=document.getElementById('salesSource'); if(!el) return;
+  var mc=mcData(d);
+  function cell(lab,n,ca){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n">'+fr(n)+' <span>vente'+(n>1?'s':'')+'</span></div><div class="mc-ca">'+eurC(ca||0)+'</div></div>'; }
+  el.innerHTML=candBadge(candCount(d,'manychat'))+'<div class="mc-grid">'+cell('Aujourd\'hui',mc.paidToday,mc.revEURToday)+cell('Cumulé',mc.paid,mc.revEUR)+'</div>';
+}
+function renderBio(d){
+  var el=document.getElementById('salesBio'); if(!el) return;
+  var b=bioData(d);
+  function cell(lab,n,ca){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n">'+fr(n)+' <span>vente'+(n>1?'s':'')+'</span></div><div class="mc-ca">'+eurC(ca||0)+'</div></div>'; }
+  el.innerHTML=candBadge(candCount(d,'instagram'))+'<div class="mc-grid">'+cell('Aujourd\'hui',b.paidToday,b.revEURToday)+cell('Cumulé',b.paid,b.revEUR)+'</div>';
+}
+function renderClicks(d){
+  var el=document.getElementById('liveChatClicks'); if(!el) return;
+  var c=d.clicks;
+  if(!c){
+    el.innerHTML='<h3>Clics Live Chat 💬</h3><p class="hint" style="margin:0">Compteur pas encore connecté — ajoute le <code>doGet(?stats=clicks)</code> à l\'Apps Script du chat puis redéploie le Web App (même URL). Les clics sont déjà journalisés (profil = CLICK).</p>';
+    return;
+  }
+  function cell(lab,n){ n=n||0; return '<div class="mc-cell"><div class="mc-lab">'+lab+'</div><div class="mc-n lcc-n">'+fr(n)+' <span>clic'+(n>1?'s':'')+'</span></div></div>'; }
+  var html='<h3>Clics Live Chat 💬</h3><div class="mc-grid">'+cell('Aujourd\'hui',c.today)+cell('Cumulé',c.total)+'</div>';
+  var bt=c.byType;
+  if(bt){
+    var TYPES=[
+      {k:'resa',  label:'Réservation',  color:'#22e06b'},   // intention d'achat (checkout / #exhibition_posters)
+      {k:'expo',  label:'Voir l\'expo', color:'#5b8cff'},   // Wall of Art / page expo / avis / artistes
+      {k:'compte',label:'Compte',       color:'#ffc04d'},   // profil / œuvres / certificats
+      {k:'autre', label:'Autre',        color:'#8a93a6'}
+    ];
+    function trow(t){ var o=bt[t.k]||{today:0,total:0};
+      return '<div class="pleg"><span class="pdot" style="background:'+t.color+'"></span><span class="plab">'+t.label+'</span>'
+        +'<span class="pval">'+fr(o.total||0)+(o.today>0?' <span class="auj">· +'+fr(o.today)+' auj.</span>':'')+'</span></div>'; }
+    html+='<div class="lcc-types"><div class="lcc-h">Par type de lien (cumulé)</div><div class="plegs">'+TYPES.map(trow).join('')+'</div></div>';
+  }
+  html+='<p class="hint" style="margin:10px 0 0">Clics sur les liens donnés par l\'assistant (→ expometro.co). Proxy d\'engagement ; l\'attribution des ventes nécessite le tracking Stripe côté expometro.co.</p>';
+  el.innerHTML=html;
+}
+
+function load(){
+  if(PLAN_LOADED && !document.getElementById('viewPlan').hidden){ PLAN_LOADED=false; loadPlan(); }
+  KEY=KEY||storedKey()||''; if(!KEY) return;
+  fetch('/api/conversions',{headers:{'x-dash-key':KEY}})
+    .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
+    .then(function(d){
+      if(d.error) throw new Error(d.error);
+      document.getElementById('login').style.display='none';
+      document.getElementById('dash').style.display='block';
+      document.getElementById('dashErr').textContent='';
+      saveKey(KEY);   // renouvelle la fenetre de 48h a chaque chargement reussi
+      CUR_SYM=curSym((d.ads&&d.ads.currency)||'EUR');   // devise du compte pub ($ souvent), utilisee pour les depenses
+      var f=d.florence, c=f.conv.TOTAL, cm=d.communaute;
+      document.getElementById('sub').textContent='Base : '+fr(cm.inscrits)+' inscrits · '+fr(cm.exposants)+' exposants · depuis le '+frDate(d.since);
+
+      // KPIs
+      var panier=f.payments?Math.round(f.revenueEUR/f.payments):0;
+      var curD=f.revenueByCurrency||{};
+      var curRows=money(curD).sort(function(a,b){return curD[b]-curD[a];}).map(function(k){
+        return '<div class="row"><span class="cur">'+k+'</span><span class="v">'+fr(Math.round(curD[k]))+'</span></div>';
+      }).join('')||'<div class="row"><span class="cur">—</span><span class="v">0</span></div>';
+      var caDetail='<details class="ca-det"><summary>détail par devise</summary>'+curRows+'</details>';
+      document.getElementById('kpis').innerHTML=[
+        ['hi','≈ '+fr(f.revenueEUR)+' €','CA Florence (converti)',caDetail],
+        ['','≈ '+fr(panier)+' €','Panier moyen'],
+        ['',fr(f.payments),'Paiements'],
+        ['',fr(f.artistsTotal),'Artistes participants']
+      ].map(function(k){return '<div class="kpi '+k[0]+'"><div class="n">'+k[1]+'</div><div class="l">'+k[2]+'</div>'+(k[3]||'')+'</div>';}).join('');
+
+      // Graphe CA encaissé vs dépense pub, par jour (section Cumul)
+      // Démarre au 18/07 : avant, c'est le bruit du lancement (pas représentatif).
+      var CAPUB_START='2026-07-18';
+      var ddC=(d.daily||[]).filter(function(x){return x.date>=CAPUB_START;}), dslC=ddC.map(function(x){return x.date;});
+      document.getElementById('chartCaPub').innerHTML=chartCaPub(dslC, ddC.map(function(x){return x.caEUR||0;}), ddC.map(function(x){return x.pubEUR||0;}), ddC.map(function(x){return x.caAdsEUR||0;}));
+
+      // ---- Aujourd'hui : chiffres du jour (CA + ventes, par source) ----
+      var t=d.todayStats, trb=t.revEURByBucket||{candidat:0,lead:0,existant:0,nouveau:0};
+      var mcT=mcData(d); var bioT=bioData(d);
+      function srow(dot,label,n,eur){ return '<div class="srow"><span class="sl"><i class="dot '+dot+'"></i>'+label+'</span><span class="sv">'+fr(n)+' vente'+(n>1?'s':'')+' · '+fr(eur)+' €</span></div>'; }
+      function srowSub(label,n,eur){ n=n||0; return '<div class="srow sub"><span class="sl">'+label+'</span><span class="sv">'+fr(n)+' vente'+(n>1?'s':'')+' · '+fr(eur||0)+' €</span></div>'; }
+      document.getElementById('todayHero').innerHTML=
+        '<h3>Chiffres du jour</h3>'
+        +'<div class="lead-hero"><span class="big">≈ '+fr(t.revenueEUR)+' €</span><span class="rate"><span class="rlab">ventes</span> '+fr(t.payments)+'</span></div>'
+        +'<div class="split">'+srow('candidat','Candidats',t.buckets.candidat||0,trb.candidat||0)+srowSub('↳ 🤖 Via ManyChat',mcT.paidToday,mcT.revEURToday)+srowSub('↳ 📸 Via Bio Instagram',bioT.paidToday,bioT.revEURToday)+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
+        +(t.buckets.nouveau>0?srow('gold','Nouveaux',t.buckets.nouveau,trb.nouveau):'')+'</div>';
+
+      // ---- Meta Ads → ROAS : recap total + Leads (bleu) + Candidats (rouge) ----
+      var a=d.ads||{available:false};
+      var recapEl=document.getElementById('adsRecap'), leadEl=document.getElementById('roasLeads'), candEl=document.getElementById('roasCand');
+      function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // dépense en devise du compte
+      function eur(v){return fr(Math.round(v||0))+' €';}
+      function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
+      function rxc(v){return '<span style="font-weight:800;color:'+roasColor(v)+'">'+rx(v)+'</span>';}   // ROAS coloré : rouge <1× · orange 1–2× · vert ≥2×
+      if(a.available && a.cat){
+        var C=a.cat;
+        function catTbl(cat){
+          return '<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
+            +'<tr><td>Dépensé</td><td>'+spd(cat.spendToday)+'</td><td>'+spd(cat.spendTotal)+'</td></tr>'
+            +'<tr><td>CA</td><td>'+eur(cat.caToday)+'</td><td>'+eur(cat.caTotal)+'</td></tr>'
+            +'<tr class="roas"><td>ROAS</td><td>'+rxc(cat.roasToday)+'</td><td>'+rxc(cat.roasTotal)+'</td></tr>'
+            +'</tbody></table>';
+        }
+        recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
+          +'<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
+          +'<tr><td>Dépensé (total)</td><td>'+spd(C.total.spendToday)+'</td><td>'+spd(C.total.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont Leads</td><td>'+spd(C.lead.spendToday)+'</td><td>'+spd(C.lead.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont Candidats</td><td>'+spd(C.candidat.spendToday)+'</td><td>'+spd(C.candidat.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont Follow</td><td>'+spd(C.follow.spendToday)+'</td><td>'+spd(C.follow.spendTotal)+'</td></tr>'
+          +'<tr><td>CA total</td><td>'+eur(C.total.caToday)+'</td><td>'+eur(C.total.caTotal)+'</td></tr>'
+          +'<tr class="roas"><td>ROAS global</td><td>'+rxc(C.total.roasToday)+'</td><td>'+rxc(C.total.roasTotal)+'</td></tr>'
+          +'</tbody></table>';
+        leadEl.innerHTML='<h3>Leads</h3>'+catTbl(C.lead);
+        candEl.innerHTML='<h3>Candidats</h3>'+catTbl(C.candidat);
+      } else {
+        var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
+        recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
+          +'<p class="hint" style="margin:0 0 4px">Dépenses pub non connectées — entre ta dépense totale depuis le 15/07 :</p>'
+          +'<div class="manual"><input id="adSpend" type="number" inputmode="decimal" placeholder="€ dépensés" value="'+saved+'"/><span id="roasOut" class="roasbig">—</span></div>'
+          +'<p class="hint" style="margin:2px 0 0">ROAS = CA converti ('+fr(f.revenueEUR)+' €) ÷ dépense.</p>';
+        leadEl.innerHTML=''; candEl.innerHTML='';
+        var inp=document.getElementById('adSpend');
+        if(inp){ var calc=function(){ var v=parseFloat(inp.value)||0; try{localStorage.setItem('adspend',inp.value||'');}catch(e){} document.getElementById('roasOut').textContent=(v>0?(f.revenueEUR/v).toFixed(2)+'×':'—'); }; inp.addEventListener('input',calc); calc(); }
+      }
+
+      // ---- Camembert "Type d'artiste" dans le recap (sous le ROAS global) ----
+      // 1ʳᵉ expo = leads + candidats + nouveaux (artistes acquis) ; vs Communauté (membres existants).
+      var abk=(f.artistsByBucket)||{lead:0,candidat:0,nouveau:0,existant:0};
+      var tyFirst=(abk.lead||0)+(abk.candidat||0)+(abk.nouveau||0);
+      var tyCommu=abk.existant||0;
+      var tyTot=(tyFirst+tyCommu)||1;
+      var pct=function(v){return Math.round(100*v/tyTot);};
+      var tysegs=[
+        {label:'Leads',value:abk.lead||0,color:'#5b8cff'},
+        {label:'Candidats',value:abk.candidat||0,color:'#FF5267'},
+        {label:'Nouveaux',value:abk.nouveau||0,color:'#ffc04d'},
+        {label:'Communauté',value:tyCommu,color:'#22e06b'}
+      ];
+      // Liste hiérarchisée : 1ʳᵉ expo (mise en avant) > Leads/Candidats/Nouveaux (détail) > Communauté (mise en avant).
+      var tyRow=function(cls,dot,label,val){
+        return '<div class="pleg '+cls+'">'+(dot?'<span class="pdot" style="background:'+dot+'"></span>':'')+'<span class="plab">'+label+'</span><span class="pval">'+fr(val)+' · '+pct(val)+'%</span></div>';
+      };
+      var tyList='<div class="plegs">'
+        +tyRow('pleg-main','','1ʳᵉ expo',tyFirst)
+        +tyRow('pleg-sub','#5b8cff','Leads',abk.lead||0)
+        +tyRow('pleg-sub','#FF5267','Candidats',abk.candidat||0)
+        +tyRow('pleg-sub','#ffc04d','Nouveaux',abk.nouveau||0)
+        +tyRow('pleg-main pleg-commu','#22e06b','Communauté',tyCommu)
+        +'</div>';
+      recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+tyList+'</div></div>');
+
+      // ---- Leads par pays (scaling) ----
+      renderCountries(d);
+
+      // ---- Candidats par langue (scaling) ----
+      renderCandidatScale(d);
+      renderManychat(d);
+      renderBio(d);
+      renderClicks(d);
+
+
+      // Leads combiné
+      document.getElementById('leadHero').innerHTML=
+        '<span class="big">'+fr(c.leads)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(c.inscrits)+'</span>'
+        +'<span class="rate"><span class="rlab">taux</span> '+c.rate+' %</span>';
+      var CMAP=[{lang:'IT',name:'Leads Italy',flag:'🇮🇹'},{lang:'ES',name:'Leads Spain',flag:'🇪🇸'},{lang:'DE',name:'Leads Germany',flag:'🇩🇪'},{lang:'FR',name:'Leads France',flag:'🇫🇷'},{lang:'EN',name:'Leads USA',flag:'🇺🇸'}];
+      function roasColor(r){ if(r==null) return 'var(--muted)'; if(r>=2) return 'var(--green)'; if(r>=1) return 'var(--gold)'; return '#ff5c5c'; }
+      var byLang={}; ((d.ads&&d.ads.byCountry)||[]).forEach(function(co){ byLang[co.lang]=co; });
+      var crows=CMAP.map(function(m){var x=f.conv[m.lang]||{leads:0,inscrits:0,rate:0}; var bc=byLang[m.lang]||{}; return {m:m,leads:x.leads,inscrits:x.inscrits,rate:x.rate,roas:(bc.roas!=null?bc.roas:null)};});
+      crows.sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.rate-a.rate)||(b.inscrits-a.inscrits); });
+      var body=crows.map(function(r){ var col=roasColor(r.roas);
+        return '<tr><td>'+r.m.flag+' '+r.m.name+'</td><td class="num">'+fr(r.leads)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.rate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+      }).join('');
+      var totRoas=(d.ads&&d.ads.roasTotal!=null)?d.ads.roasTotal:null;
+      body+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(c.leads)+'</td><td class="num">'+fr(c.inscrits)+'</td><td class="num">'+c.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(totRoas)+'">'+(totRoas!=null?totRoas.toFixed(1)+'×':'—')+'</td></tr>';
+      document.querySelector('#convtbl tbody').innerHTML=body;
+
+      // ---- Candidats → Inscrits (ad sets candidature LAL) ----
+      var cdC=d.candidats||{total:0,converted:0,rate:0};
+      document.getElementById('candHero').innerHTML=
+        '<span class="big">'+fr(cdC.total)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(cdC.converted)+'</span>'
+        +'<span class="rate"><span class="rlab">taux</span> '+cdC.rate+' %</span>';
+      var cbc=((d.ads&&d.ads.candidatByCountry)||[]).slice().sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.convRate-a.convRate)||(b.inscrits-a.inscrits); });
+      var cbody=cbc.map(function(r){ var col=roasColor(r.roas);
+        var head='<tr class="clang" onclick="toggleCand(\''+r.lang+'\')"><td><span class="chev" id="chev-'+r.lang+'">▸</span> '+r.flag+' '+r.name+'</td><td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        var det=(r.detail||[]).map(function(x){ var dc=roasColor(x.roas);
+          return '<tr class="cdet cdet-'+r.lang+'" style="display:none"><td class="cdet-c">'+flag(x.country)+(x.country||'—')+'</td><td class="num">'+fr(x.candidats)+'</td><td class="num">'+fr(x.inscrits)+'</td><td class="num">'+x.convRate+' %</td><td class="num" style="font-weight:800;color:'+dc+'">'+(x.roas!=null?x.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        }).join('');
+        return head+det;
+      }).join('');
+      var candTot=(d.ads&&d.ads.cat&&d.ads.cat.candidat)?d.ads.cat.candidat.roasTotal:null;
+      cbody+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(cdC.total)+'</td><td class="num">'+fr(cdC.converted)+'</td><td class="num">'+cdC.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(candTot)+'">'+(candTot!=null?candTot.toFixed(1)+'×':'—')+'</td></tr>';
+      document.querySelector('#candConvtbl tbody').innerHTML=cbody;
+
+      // Graphiques
+      var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
+      // Graphe leads/candidats/conversions : démarre au 22/07 (avant = bruit de lancement). Le cumul artistes garde tout l'historique.
+      var LC_START='2026-07-22';
+      var ddL=dd.filter(function(x){return x.date>=LC_START;}), dslL=ddL.map(function(x){return x.date;});
+      document.getElementById('chartLeads').innerHTML=chartBarsLine(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}), ddL.map(function(x){return x.conv;}), ddL.map(function(x){return x.sales;}));
+      var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
+      document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
+
+      // Type d'artiste (camembert)
+      var ar=f.artistsSplit||{first:0,recurring:0};
+      var atot=(ar.first+ar.recurring)||1;
+      var asegs=[{label:'1ʳᵉ expo',value:ar.first,color:'#ffc04d'},{label:'Artistes récurrents',value:ar.recurring,color:'#5b8cff'}];
+      var aleg=asegs.map(function(sg){return '<div class="pleg"><span class="pdot" style="background:'+sg.color+'"></span><span class="plab">'+sg.label+'</span><span class="pval">'+fr(sg.value)+' · '+Math.round(100*sg.value/atot)+'%</span></div>';}).join('');
+      document.getElementById('artists').innerHTML='<div class="pierow">'+pie(asegs,fr(ar.first+ar.recurring),'artistes')+'<div class="plegs">'+aleg+'</div></div>';
+      ARTISTS_SINCE_J1=ar.first+ar.recurring; syncArtistTotal();
+
+      // Communauté (base totale)
+      document.getElementById('commu').innerHTML=
+        bkt('lead',fr(cm.inscrits),'Inscrits (total)')+bkt('existant',fr(cm.exposants),'Exposants payants')+bkt('nouveau',cm.rate+' %','Taux de conversion');
+
+
+      // Top artistes
+      var med=['🥇','🥈','🥉'];
+      document.querySelector('#toptbl tbody').innerHTML=(d.topArtists||[]).map(function(r,i){
+        return '<tr><td class="medal">'+(med[i]||(i+1))+'</td><td>'+(r.email||'—')+'</td><td class="num"><span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span></td><td class="num">'+fr(r.amount)+' '+r.currency+'</td></tr>';
+      }).join('')||'<tr><td colspan="4" style="color:var(--muted)">—</td></tr>';
+
+      // Aujourd'hui — détail par langue (t déjà défini plus haut)
+      var langs=['FR','EN','ES','IT','DE'];
+      document.querySelector('#todaytbl tbody').innerHTML=langs.map(function(L){var nl=t.newLeadsByLang[L]||0,ins=t.inscritsByLang[L]||0;var rt=nl>0?Math.round(100*ins/nl)+' %':'—';return '<tr><td>'+L+'</td><td class="num">'+nl+'</td><td class="num">'+ins+'</td><td class="num rate">'+rt+'</td></tr>';}).join('');
+
+      // Derniers paiements
+      document.querySelector('#tbl tbody').innerHTML=(d.recent||[]).map(function(r){
+        var lbl={candidat:'Candidat '+(r.lang||''),lead:'Lead '+(r.lang||''),existant:'Existant',nouveau:'Nouveau'}[r.bucket];
+        var ex=r.expos?('<span class="exp'+(r.expos>=2?' rec':'')+'">'+r.expos+'</span>'):'—';
+        return '<tr><td>'+frDate(r.date)+'</td><td>'+(r.email||'—')+'</td><td class="num">'+fr(Math.round(r.amount))+' '+r.currency+'</td><td class="num">'+ex+'</td><td><span class="tag '+r.bucket+'">'+lbl+'</span></td></tr>';
+      }).join('')||'<tr><td colspan="5" style="color:var(--muted)">Aucun paiement depuis J1.</td></tr>';
+
+      document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
+      if(!PLAN_LOADED) loadPlan();   // alimente aussi le total d'artistes de l'onglet Conversions
+    })
+    .catch(function(e){
+      if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; clearKey(); KEY=''; }
+      else document.getElementById('dashErr').textContent='Erreur : '+e.message;
+    });
+}
+
+/* =======================================================================
+   PLAN INTERACTIF DU TUNNEL — Florence
+   Source = /api/florence-plan (lit la page d'inscriptions publique en direct).
+   Le nombre d'ARTISTES vient de count_artist (artistes distincts) ; la somme
+   des places vendues est un chiffre different (un artiste peut prendre
+   plusieurs places) — les deux sont affiches separement.
+   ======================================================================= */
+var PLAN=null, PLAN_LOADED=false, ARTISTS_SINCE_J1=null;
+
+/* Le compteur "Artistes participants" de l'onglet Conversions compte les payeurs Stripe
+   DISTINCTS DEPUIS J1 (15 juillet). Il est structurellement plus bas que le total de la page
+   d'inscriptions pour deux raisons : (1) Rudolph credite certains artistes A LA MAIN (virement
+   bancaire ou place offerte) -> aucune trace Stripe ; (2) les ventes ont ouvert avant J1.
+   Ces artistes comptent pour l'objectif des 1 000 mais pas pour le CA ni le ROAS.
+   On affiche donc les deux chiffres cote a cote plutot que de laisser croire a une erreur. */
+function syncArtistTotal(){
+  var badge=document.getElementById('artistTotalLive'), hint=document.getElementById('artistTotalHint');
+  if(!badge||!hint) return;
+  if(!PLAN||!PLAN.artists){ badge.textContent=''; hint.textContent=''; return; }
+  var tot=PLAN.artists, since=ARTISTS_SINCE_J1;
+  badge.textContent='· '+fr(tot)+' au total';
+  if(since==null){ hint.textContent=''; return; }
+  var delta=tot-since;
+  var open='';
+  if(PLAN.saleStartDate){
+    open=' — les ventes ont ouvert le '+new Date(PLAN.saleStartDate).toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  }
+  badge.className='h2live'+(delta>0?' warn':'');
+  hint.innerHTML= delta>0
+    ? '<b>'+fr(tot)+' artistes</b> exposent à Florence d\'après la page d\'inscriptions, dont <b>'+fr(since)+
+      '</b> ont payé par Stripe depuis le 15 juillet. Les <b>'+fr(delta)+'</b> autres sont des <b>crédits manuels</b> '+
+      '(virement, place offerte) ou des inscriptions antérieures au 15 juillet'+open+'. Stripe ne les voit pas : '+
+      'ils sont absents de ce graphe, du CA et du ROAS, mais ils comptent bien dans l\'objectif des 1 000 artistes.'
+    : 'Les '+fr(since)+' artistes comptés depuis le 15 juillet couvrent la totalité des inscrits à Florence.';
+}
+var GOAL_ARTISTS=1000;
+var WALL_PER_SEQ=5, CEIL_PER_SEQ=5, WALL_SLOTS_PER_SEQ=10;
+var WALL_FORMATS=[{n:'Small',c:120},{n:'Medium',c:30},{n:'Large',c:5}];
+var CEIL_FORMATS=[{n:'Large Ceiling',c:16},{n:'Extra Large',c:4}];
+var sim={seqs:null,wall:'Small',ceil:'Large Ceiling'};
+
+function showView(v){
+  var conv=v==='conv';
+  document.getElementById('viewConv').hidden=!conv;
+  document.getElementById('viewPlan').hidden=conv;
+  document.getElementById('tabConv').setAttribute('aria-selected',conv?'true':'false');
+  document.getElementById('tabPlan').setAttribute('aria-selected',conv?'false':'true');
+  try{ localStorage.setItem('dashview',v); }catch(e){}
+  if(!conv && !PLAN_LOADED) loadPlan();
+}
+
+function loadPlan(){
+  if(!KEY) return;
+  document.getElementById('planErr').textContent='';
+  document.getElementById('planSrc').textContent='Lecture de la page d’inscriptions…';
+  fetch('/api/florence-plan',{headers:{'x-dash-key':KEY}})
+    .then(function(r){ if(!r.ok) throw new Error(r.status===401?'401':('HTTP '+r.status)); return r.json(); })
+    .then(function(d){ if(d.error) throw new Error(d.error); PLAN=d; PLAN_LOADED=true; sim.seqs=null; renderPlan(); })
+    .catch(function(e){
+      document.getElementById('planSrc').textContent='';
+      document.getElementById('planErr').textContent='Plan indisponible : '+e.message+
+        (String(e.message)==='401'?'' : ' — la page d’inscriptions a peut-être changé de structure.');
+    });
+}
+
+function planStats(){
+  var a=PLAN.artworks||[];
+  var w=a.filter(function(x){return x.surface==='wall';}).sort(function(p,q){return p.id-q.id;});
+  var c=a.filter(function(x){return x.surface==='ceiling';}).sort(function(p,q){return p.id-q.id;});
+  var filled=a.reduce(function(s,x){return s+x.filled;},0);
+  var total=a.reduce(function(s,x){return s+x.total;},0);
+  var seqs=Math.max(1,Math.ceil(w.length/WALL_SLOTS_PER_SEQ),Math.ceil(c.length/CEIL_PER_SEQ));
+  return {a:a,w:w,c:c,filled:filled,total:total,remaining:total-filled,
+    complete:a.filter(function(x){return x.filled>=x.total;}).length,
+    seqs:seqs, wallGap:seqs*WALL_SLOTS_PER_SEQ-w.length, ceilGap:seqs*CEIL_PER_SEQ-c.length,
+    perArtist: (PLAN.artists>0? filled/PLAN.artists : 1)};
+}
+
+function planCell(a,h){
+  if(!a) return '<div class="pl-cell '+h+' pl-empty"><b>À vendre</b><span>5 m disponibles</span></div>';
+  var pct=Math.round(a.filled/a.total*100), full=a.filled>=a.total;
+  return '<div class="pl-cell '+h+' '+(full?'pl-full':'pl-fill')+'">'+
+    '<div class="pl-ctop"><span class="pl-cid">'+a.id+'</span><span class="pl-cfmt">'+a.format+'</span></div>'+
+    '<div class="pl-cbot"><span class="pl-bar"><i style="width:'+pct+'%"></i></span>'+
+    '<span class="pl-cnt">'+a.filled+'/'+a.total+'</span></div></div>';
+}
+
+function renderPlanSeqs(s){
+  var pad=function(x,n){var r=x.slice();while(r.length<n)r.push(null);return r;};
+  var ruler='<div class="pl-ruler"><div class="pl-rdir">Position</div>'+
+    [0,5,10,15,20].map(function(m){return '<div class="pl-rc">'+m+' m</div>';}).join('')+'</div>';
+  var out='';
+  for(var i=0;i<s.seqs;i++){
+    var L=pad(s.w.slice(i*WALL_SLOTS_PER_SEQ,i*WALL_SLOTS_PER_SEQ+WALL_PER_SEQ),WALL_PER_SEQ);
+    /* mur droit inverse : la 6e oeuvre fait face a la 5e (pas d'aller-retour de 25 m).
+       On complete AVANT d'inverser, pour que les emplacements libres restent au bout de la file. */
+    var R=pad(s.w.slice(i*WALL_SLOTS_PER_SEQ+WALL_PER_SEQ,(i+1)*WALL_SLOTS_PER_SEQ),WALL_PER_SEQ).reverse();
+    var C=pad(s.c.slice(i*CEIL_PER_SEQ,(i+1)*CEIL_PER_SEQ),CEIL_PER_SEQ);
+    var placed=L.concat(C,R).filter(Boolean);
+    var artists=placed.reduce(function(t,x){return t+x.filled;},0);
+    var slots=WALL_SLOTS_PER_SEQ+CEIL_PER_SEQ, free=slots-placed.length;
+    var tr=function(nm,dim,arr,hh){
+      return '<div class="pl-track"><div class="pl-tl"><b>'+nm+'</b><span>'+dim+'</span></div>'+
+        arr.map(function(x){return planCell(x,hh);}).join('')+'</div>';
+    };
+    out+='<div class="pl-seq"><div class="pl-seqhead"><span class="pl-seqn">30 s — '+(i+1)+'</span>'+
+      '<span class="pl-seqt">Séquence '+(i+1)+'</span><span class="pl-seqm">'+
+      '<span>'+fr(artists)+' places</span><span>'+placed.length+'/'+slots+' emplacements</span>'+
+      (free>0?'<span class="warn">'+free+' à vendre</span>':'<span class="done">complète</span>')+
+      '</span></div><div class="pl-seqbody"><div class="pl-inner">'+ruler+
+      tr('Mur gauche','9600 × 768 px',L,'pl-w')+
+      tr('Plafond','9600 × 1440 px',C,'pl-c')+
+      tr('Mur droit','9600 × 768 px',R,'pl-w')+
+      '</div></div></div>';
+  }
+  document.getElementById('planSeqs').innerHTML=out;
+}
+
+function planSeg(node,opts,cur,cb){
+  node.innerHTML=opts.map(function(o){
+    return '<button type="button" data-v="'+o.v+'" aria-pressed="'+(o.v===cur)+'">'+o.l+'</button>';
+  }).join('');
+  [].forEach.call(node.querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ cb(b.dataset.v); });
+  });
+}
+
+function renderPlanSim(s){
+  if(sim.seqs===null||sim.seqs<s.seqs) sim.seqs=s.seqs;
+  var so=[]; for(var k=s.seqs;k<=s.seqs+4;k++) so.push({v:String(k),l:k+' × 30 s'});
+  planSeg(document.getElementById('planSegSeq'),so,String(sim.seqs),function(v){sim.seqs=+v;renderPlanSim(planStats());});
+  planSeg(document.getElementById('planSegWall'),WALL_FORMATS.map(function(f){return {v:f.n,l:f.n+' · '+f.c};}),sim.wall,
+    function(v){sim.wall=v;renderPlanSim(planStats());});
+  planSeg(document.getElementById('planSegCeil'),CEIL_FORMATS.map(function(f){return {v:f.n,l:f.n+' · '+f.c};}),sim.ceil,
+    function(v){sim.ceil=v;renderPlanSim(planStats());});
+
+  var wc=WALL_FORMATS.filter(function(f){return f.n===sim.wall;})[0].c;
+  var cc=CEIL_FORMATS.filter(function(f){return f.n===sim.ceil;})[0].c;
+  var nw=Math.max(0,sim.seqs*WALL_SLOTS_PER_SEQ-s.w.length);
+  var nc=Math.max(0,sim.seqs*CEIL_PER_SEQ-s.c.length);
+  var newPlaces=nw*wc+nc*cc, projPlaces=s.total+newPlaces;
+  /* Places -> artistes via le ratio observe (un artiste prend en moyenne s.perArtist places). */
+  var projArtists=Math.round(projPlaces/(s.perArtist||1));
+  var row=function(l,v,st){return '<div class="pl-orow"><span>'+l+'</span>'+(st?'<b>'+v+'</b>':'<span style="font-weight:700">'+v+'</span>')+'</div>';};
+  document.getElementById('planSimOut').innerHTML=
+    row('Œuvres à ouvrir',nw+' murales + '+nc+' plafond')+
+    row('Places créées',fr(newPlaces))+
+    row('Capacité totale du tunnel',fr(projPlaces)+' places')+
+    row('Artistes projetés',fr(projArtists),true)+
+    row('Places restant à vendre',fr(projPlaces-s.filled))+
+    row('Vidéos à produire',sim.seqs+' × 30 s = '+(sim.seqs*30)+' s');
+  var ok=projArtists>=GOAL_ARTISTS;
+  document.getElementById('planVerdict').innerHTML='<div class="pl-verdict '+(ok?'good':'bad')+'">'+
+    (ok? 'Ce scénario atteint l’objectif : ≈ '+fr(projArtists)+' artistes pour 1 000 visés ('+fr(projPlaces)+' places, ratio observé '+s.perArtist.toFixed(2).replace('.',',')+' place/artiste). Il reste '+fr(projPlaces-s.filled)+' places à vendre.'
+       : 'Ce scénario plafonne à ≈ '+fr(projArtists)+' artistes, soit '+fr(GOAL_ARTISTS-projArtists)+' de moins que l’objectif. Passer les œuvres murales en Small ou le plafond en Large Ceiling, ou viser une séquence de plus.')+
+    '</div>';
+}
+
+function renderPlanTable(s){
+  var wi={},ci={};
+  s.w.forEach(function(a,i){ var right=(i%WALL_SLOTS_PER_SEQ)>=WALL_PER_SEQ, j=i%WALL_PER_SEQ;
+    wi[a.id]={seq:Math.floor(i/WALL_SLOTS_PER_SEQ)+1,side:right?'D':'G',pos:right?WALL_PER_SEQ-j:j+1}; });
+  s.c.forEach(function(a,i){ ci[a.id]={seq:Math.floor(i/CEIL_PER_SEQ)+1,pos:(i%CEIL_PER_SEQ)+1}; });
+  var rows=s.a.slice().sort(function(p,q){return p.id-q.id;});
+  document.querySelector('#planTbl tbody').innerHTML=rows.map(function(a){
+    var pct=Math.round(a.filled/a.total*100), full=a.filled>=a.total;
+    var loc=a.surface==='wall'
+      ? 'Séq. '+wi[a.id].seq+' · Mur '+wi[a.id].side+' · '+wi[a.id].pos
+      : 'Séq. '+ci[a.id].seq+' · Plafond · '+ci[a.id].pos;
+    return '<tr><td><b>Artwork '+a.id+'</b></td><td>'+(a.surface==='wall'?'Mur':'Plafond')+'</td>'+
+      '<td>'+a.format+'</td><td>'+loc+'</td>'+
+      '<td><span class="pl-mini"><span class="pl-bar"><i style="width:'+pct+'%;background:'+(full?'var(--green)':'var(--gold)')+'"></i></span>'+
+      '<span style="font-size:11px;color:var(--muted);min-width:32px;text-align:right">'+pct+' %</span></span></td>'+
+      '<td class="num">'+a.filled+' / '+a.total+'</td>'+
+      '<td class="num"'+(full?'':' style="color:var(--gold);font-weight:700"')+'>'+(a.total-a.filled)+'</td>'+
+      '<td><span class="pl-pill '+(full?'f':'p')+'">'+(full?'Complet':'En cours')+'</span></td></tr>';
+  }).join('');
+  document.querySelector('#planTbl tfoot').innerHTML='<tr><td colspan="5">'+rows.length+' œuvres · '+fr(rows.length*5)+' m d’écran</td>'+
+    '<td class="num">'+fr(s.filled)+' / '+fr(s.total)+'</td><td class="num">'+fr(s.remaining)+'</td><td></td></tr>';
+}
+
+function renderPlan(){
+  if(!PLAN) return;
+  var s=planStats();
+  var pct=s.total? Math.round(s.filled/s.total*100):0;
+  var kp=[
+    {n:fr(PLAN.artists),l:'Artistes',hi:true},
+    {n:fr(s.filled)+' / '+fr(s.total),l:'Places vendues ('+pct+' %)'},
+    {n:fr(s.remaining),l:'Places à vendre'},
+    {n:s.complete+'/'+s.a.length,l:'Œuvres complètes'},
+    {n:String(s.seqs),l:'Vidéos de 30 s'},
+    {n:String(s.ceilGap),l:'Œuvres plafond manquantes'}
+  ];
+  document.getElementById('planKpis').innerHTML=kp.map(function(k){
+    return '<div class="kpi'+(k.hi?' hi':'')+'"><div class="n">'+k.n+'</div><div class="l">'+k.l+'</div></div>';
+  }).join('');
+
+  var close=PLAN.saleEndDate? new Date(PLAN.saleEndDate).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'—';
+  document.getElementById('planNote').innerHTML=
+    '<b>'+fr(PLAN.artists)+' artistes</b> pour <b>'+fr(s.filled)+' places</b> vendues — un artiste prend en moyenne '+
+    s.perArtist.toFixed(2).replace('.',',')+' place. Objectif 1 000 artistes : il en manque <b>'+fr(Math.max(0,GOAL_ARTISTS-PLAN.artists))+'</b>. '+
+    'Clôture des inscriptions le <b>'+close+'</b>'+(PLAN.countries?' · '+PLAN.countries+' pays représentés':'')+'. '+
+    '<span style="color:var(--muted)">Ce compteur vient de la page d’inscriptions : il inclut les crédits manuels (virement, place offerte), '+
+    'contrairement au suivi Stripe de l’onglet Conversions.</span>';
+
+  renderPlanSeqs(s);
+
+  document.getElementById('planGapSub').textContent='Pour boucler les '+s.seqs+' séquences déjà entamées';
+  document.getElementById('planGaps').innerHTML=[
+    {n:s.wallGap,t:'œuvres collectives murales à ouvrir',s:s.w.length+' sur '+(s.seqs*WALL_SLOTS_PER_SEQ)+' emplacements muraux occupés'},
+    {n:s.ceilGap,t:'œuvres collectives plafond à ouvrir',s:s.c.length+' sur '+(s.seqs*CEIL_PER_SEQ)+' emplacements plafond occupés'},
+    {n:s.remaining,t:'places libres dans les œuvres déjà ouvertes',s:'vendables immédiatement, sans rien créer'}
+  ].map(function(g){
+    return '<div class="pl-gap"><span class="pl-gapn'+(g.n===0?' ok':'')+'">'+fr(g.n)+'</span>'+
+      '<span class="pl-gapt">'+g.t+'<small>'+g.s+'</small></span></div>';
+  }).join('');
+
+  renderPlanSim(s);
+  renderPlanTable(s);
+  syncArtistTotal();
+  document.getElementById('planSrc').innerHTML='Source : <a href="'+PLAN.source+'" target="_blank" rel="noopener" style="color:var(--blue)">page d’inscriptions</a> — lue '+
+    new Date(PLAN.updated).toLocaleTimeString('fr-FR')+(PLAN.cached?' (cache 2 min)':'')+
+    (PLAN.staleError?' — ⚠ dernière relecture en échec : '+PLAN.staleError:'');
+}
+
+// Auto-login : on cache tout de suite le login (sinon le champ mot de passe "flashe" pendant le fetch)
+if(storedKey()){ KEY=storedKey(); document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; document.getElementById('upd').textContent='Chargement…'; load();
+  var v=''; try{ v=localStorage.getItem('dashview')||''; }catch(e){}
+  if(v==='plan') showView('plan');
+}
+setInterval(function(){ if(KEY) load(); }, 60000);
+</script>
+</body>
+</html>
