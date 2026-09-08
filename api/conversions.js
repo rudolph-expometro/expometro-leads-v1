@@ -145,6 +145,35 @@ async function metaSpend() {
     }
     return out;
   }
+  // Historique des HAUSSES de budget par ad set, lu directement dans Meta (Activity log) :
+  // source de vérité pour le cooldown, indépendante du navigateur. Retourne { adset_id: 'YYYY-MM-DD' }.
+  async function adsetBudgetRaises() {
+    const sinceTs = Math.floor((Date.now() - 20 * 86400000) / 1000);   // 20 j : couvre large un cooldown de 3-4 j
+    let url = `https://graph.facebook.com/${ver}/${id}/activities?access_token=${encodeURIComponent(token)}`
+      + `&fields=event_type,event_time,object_id,object_type,extra_data&limit=500&since=${sinceTs}`;
+    const raises = {}; let seen = 0, hits = 0;
+    try {
+      for (let i = 0; i < 10; i++) {
+        let r; try { r = await fetch(url); } catch (e) { return { raises, dbg: 'throw' }; }
+        if (!r.ok) return { raises, dbg: 'http-' + r.status };
+        const d = await r.json();
+        for (const e of (d.data || [])) {
+          seen++;
+          if (String(e.event_type || '').toLowerCase().indexOf('budget') < 0) continue;   // events budget seulement
+          if (e.object_type && !/ad_?set/i.test(e.object_type)) continue;                  // ad sets seulement
+          let ov = NaN, nv = NaN;
+          try { const x = typeof e.extra_data === 'string' ? JSON.parse(e.extra_data) : (e.extra_data || {});
+            ov = parseFloat(x.old_value); nv = parseFloat(x.new_value); } catch (_) { }
+          if (!(nv > ov)) continue;                                                        // HAUSSE uniquement
+          hits++;
+          const day = String(e.event_time || '').slice(0, 10), oid = e.object_id;
+          if (oid && day && (!raises[oid] || day > raises[oid])) raises[oid] = day;         // la plus récente
+        }
+        if (d.paging && d.paging.next) url = d.paging.next; else break;
+      }
+    } catch (e) { return { raises, dbg: 'throw' }; }
+    return { raises, dbg: 'ok:' + seen + 'act/' + hits + 'raise' };
+  }
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
   const asBudgets = await adsetBudgets();
@@ -190,6 +219,9 @@ async function metaSpend() {
   for (const s of Object.values(byId)) {
     if (s.dailyBudget == null) { const fb = BUDGET_FALLBACK.find(f => f.re.test(s.name || '')); if (fb) s.dailyBudget = fb.budget; }
   }
+  // Date de la dernière HAUSSE de budget par ad set (source Meta) -> cooldown fiable, cross-appareil.
+  const _br = await adsetBudgetRaises();
+  for (const s of Object.values(byId)) { s.raiseDay = _br.raises[s.id] || null; }
   // Retrouve l'objectif de chaque ad set via sa campagne (la lecture campagne, elle, renvoie bien l'objectif)
   const campObj = {};
   for (const c of (totalRows || [])) { if (c.campaign_name) campObj[c.campaign_name] = c.objective || ''; }
@@ -207,7 +239,8 @@ async function metaSpend() {
   const adsetDbg = {
     totalRows: asTotal === null ? 'ERR' : asTotal.length,
     todayRows: asToday === null ? 'ERR' : asToday.length,
-    budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0)
+    budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0),
+    raises: _br.dbg
   };
 
   // Devise reelle du compte pub (souvent USD) : dépense/budget en devise native, ROAS reconverti en EUR.
@@ -465,6 +498,8 @@ export default async function handler(req, res) {
       const anyObj = allAdsets.some(a => a.objective);
       const pool = (anyObj ? allAdsets.filter(a => /LEAD/i.test(a.objective || '')) : allAdsets).filter(notCand);
       const roasRate = EUR_RATES[spend.currency] || 1;   // depense (devise compte) -> EUR pour le ROAS
+      // Nb de jours depuis une date 'YYYY-MM-DD' (pour le cooldown, alimenté par l'Activity log Meta).
+      const daysSince = (day) => { if (!day) return null; const n = Math.floor((Date.parse(today + 'T00:00:00Z') - Date.parse(day + 'T00:00:00Z')) / 86400000); return (n >= 0 && n < 3650) ? n : null; };
       const used = new Set();
       ads.byCountry = COUNTRIES.map(co => {
         const ms = pool.filter(a => co.match.test(a.name || ''));
@@ -473,6 +508,7 @@ export default async function handler(req, res) {
         const spD = ms.reduce((s, a) => s + a.spendToday, 0);
         const bud = ms.reduce((s, a) => s + (a.dailyBudget || 0), 0);
         const rev = revEURByLang[co.lang] || 0;
+        const lastRaise = ms.reduce((mx, a) => (a.raiseDay && (!mx || a.raiseDay > mx)) ? a.raiseDay : mx, null);
         const leadsN = leadsByLang[co.lang] || 0;
         const insc = inscritsByLang[co.lang] || 0;
         return {
@@ -484,7 +520,8 @@ export default async function handler(req, res) {
           leads: leadsN, inscrits: insc, revEUR: Math.round(rev),
           cpl: leadsN > 0 && spT > 0 ? +(spT / leadsN).toFixed(2) : null,
           convRate: leadsN > 0 ? +(100 * insc / leadsN).toFixed(1) : 0,
-          roas: spT > 0 ? +(rev / (spT * roasRate)).toFixed(2) : null
+          roas: spT > 0 ? +(rev / (spT * roasRate)).toFixed(2) : null,
+          lastRaise, raisedDaysAgo: daysSince(lastRaise)
         };
       });
       ads.unmatched = pool.filter(a => !used.has(a.id) && a.spendTotal > 0)
@@ -535,6 +572,7 @@ export default async function handler(req, res) {
           return { country, candidats: cc, inscrits: cv, convRate: cc > 0 ? +(100 * cv / cc).toFixed(1) : 0, roas: proxySpend > 0 ? +(rvC / (proxySpend * rr)).toFixed(2) : null };
         }).sort((x, y) => (y.inscrits - x.inscrits) || (y.candidats - x.candidats));
         const bud = ms.reduce((s, a) => s + (a.dailyBudget || 0), 0);
+        const lastRaise = ms.reduce((mx, a) => (a.raiseDay && (!mx || a.raiseDay > mx)) ? a.raiseDay : mx, null);
         return {
           key: 'CAND_' + co.key, name: co.name, flag: co.flag, lang: co.lang,
           status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
@@ -545,6 +583,7 @@ export default async function handler(req, res) {
           convRate: cand > 0 ? +(100 * insc / cand).toFixed(1) : 0,
           roas: spT > 0 ? +(rev / (spT * rr)).toFixed(2) : null,
           adsets: ms.map(a => a.name),
+          lastRaise, raisedDaysAgo: daysSince(lastRaise),
           detail
         };
       });
