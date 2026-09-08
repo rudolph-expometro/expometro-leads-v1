@@ -610,7 +610,7 @@ function daysBetween(a,b){ var d=(Date.parse(b)-Date.parse(a))/86400000; return 
    après une hausse enregistrée ici, la reco force "Palier en cours" pendant BUDGET_COOLDOWN_DAYS jours,
    même en navigation privée. Clés = co.key : leads IT/ES/DE/FR/US ; candidats CAND_EN/CAND_FR/CAND_ES/CAND_IT/CAND_DE.
    -> ajoute une entrée à CHAQUE fois que tu montes des budgets juste avant de déployer. */
-var MANUAL_RAISES = { '2026-08-12': ['IT','ES','DE','FR','CAND_EN','CAND_FR'] };
+var MANUAL_RAISES = { '2026-08-12': ['IT','ES','DE','FR','CAND_EN','CAND_FR'], '2026-09-06': ['CAND_EN'] };
 function manualRaiseDaysSince(key, today){
   var best=null;
   for(var dt in MANUAL_RAISES){
