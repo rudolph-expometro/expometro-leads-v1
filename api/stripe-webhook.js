@@ -38,7 +38,7 @@ async function stripeGetEvent(eventId) {
 async function sendPurchaseCapi(email, value, currency, eventId, ts) {
   const token = process.env.META_CAPI_TOKEN;
   const pixel = process.env.META_PIXEL_ID;
-  if (!token || !pixel) return;
+  if (!token || !pixel) return 'skip:no-token/pixel';
   const ver = process.env.META_GRAPH_VERSION || 'v21.0';
   const user_data = {};
   const em = sha256(email);
@@ -53,11 +53,22 @@ async function sendPurchaseCapi(email, value, currency, eventId, ts) {
   if (eventId) ev.event_id = String(eventId); // dédup : même id que la transaction Stripe
   const payload = { data: [ev] };
   if (process.env.META_TEST_EVENT_CODE) payload.test_event_code = process.env.META_TEST_EVENT_CODE;
-  await fetch(`https://graph.facebook.com/${ver}/${pixel}/events?access_token=${encodeURIComponent(token)}`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+  try {
+    const r = await fetch(`https://graph.facebook.com/${ver}/${pixel}/events?access_token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const body = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const msg = (body && body.error) ? (body.error.message || JSON.stringify(body.error)) : JSON.stringify(body);
+      return 'err:' + r.status + ':' + String(msg).slice(0, 180);
+    }
+    // Succès : Meta renvoie events_received (=1 attendu) + fbtrace_id.
+    return 'sent:received=' + (body.events_received != null ? body.events_received : '?') + (body.fbtrace_id ? ':' + body.fbtrace_id : '');
+  } catch (e) {
+    return 'err:throw:' + String((e && e.message) || e).slice(0, 140);
+  }
 }
 
 // Extrait email / valeur / devise + un id de dédup selon le type d'event Stripe.
@@ -235,9 +246,10 @@ export default async function handler(req, res) {
     if (data === undefined) return res.status(200).json({ ignored: type }); // event non pertinent
     if (data === null) return res.status(200).json({ ignored: 'unpaid' });
 
+    let capi = data.value > 0 ? 'pending' : 'skip:no-value';
     if (data.value > 0) {
       // event_id = id du PaymentIntent → dédup stable côté Meta.
-      await sendPurchaseCapi(data.email, data.value, data.currency, data.dedupId, event.created);
+      capi = await sendPurchaseCapi(data.email, data.value, data.currency, data.dedupId, event.created);
     }
     // Mail de confirmation. Cet endpoint n'est abonné qu'à UN SEUL event de succès
     // -> on envoie sur celui qui arrive, quel qu'il soit (checkout.session / payment_intent / charge).
@@ -252,7 +264,7 @@ export default async function handler(req, res) {
       mail = 'skip:no-email(' + type + ')';
       list = 'skip:no-email';
     }
-    return res.status(200).json({ ok: true, mail, list });
+    return res.status(200).json({ ok: true, capi, mail, list });
   } catch (e) {
     // On répond 200 pour éviter les retries Stripe en boucle (l'event_id dédup de toute façon).
     return res.status(200).json({ ok: true, note: 'processed with error' });
