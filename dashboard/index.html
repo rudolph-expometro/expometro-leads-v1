@@ -750,7 +750,7 @@ function candidatCard(co, subRings){
     +'<div class="ctry-det">'+rc.det+'</div>'
     +((subRings&&subRings.length)?'<div class="crings">'+subRings.map(function(r){ var rt=r.roas!=null?r.roas.toFixed(2)+'×':'—';
         return '<div class="cring"><span class="cring-name">'+r.name+(r.status&&r.status!=='ACTIVE'?' ⏸':'')+'</span>'
-          +'<span class="cring-kpis"><b>'+curC(r.spendTotal)+'</b> dép · <b>'+fr(r.candidats)+'</b> cand · <b>'+eurC(r.revEUR)+'</b> CA · <b style="color:'+roasColor(r.roas)+'">'+rt+'</b> ROAS · <b>'+(r.dailyBudget!=null?fr(r.dailyBudget)+' '+CUR_SYM+'/j':'—')+'</b></span></div>';
+          +'<span class="cring-kpis"><b>'+curC(r.spendTotal)+'</b> dép · <b>'+fr(r.candidats)+'</b> cand · <b>'+eurC(r.revEUR)+'</b> CA · <b style="color:'+(r.roas==null?'var(--muted)':(r.roas>=2?'var(--green)':(r.roas>=1?'var(--gold)':'#ff5c5c')))+'">'+rt+'</b> ROAS · <b>'+(r.dailyBudget!=null?fr(r.dailyBudget)+' '+CUR_SYM+'/j':'—')+'</b></span></div>';
       }).join('')+'</div>':'')
     +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set candidat « '+co.name+' » trouvé — vérifie le nommage de la campagne LAL.</div>'
            :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
