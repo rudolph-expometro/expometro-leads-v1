@@ -149,11 +149,11 @@
   .ctry-det b{color:var(--txt);font-weight:700}
   .cadsets{font-size:10.5px;color:var(--muted);margin-top:6px}
   /* sous-lignes rings (EN 1% / 1-2%) imbriquées dans la carte candidat */
-  .crings{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
-  .cring{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px}
-  .cring-name{color:var(--head);font-weight:700}
-  .cring-kpis{color:var(--muted);font-variant-numeric:tabular-nums}
-  .cring-kpis b{color:var(--txt);font-weight:700}
+  .crings{margin-top:13px;padding-top:13px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+  .cring2{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px}
+  .cring2-head{display:flex;align-items:center}
+  .cring2-name{font-weight:700;color:var(--head);font-size:13.5px}
+  .cring2 .ctry-mets{margin-top:10px}
   /* buckets */
   .bkts{display:flex;gap:10px;flex-wrap:wrap}
   .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -748,9 +748,21 @@ function candidatCard(co, subRings){
     + m(budTxt,'Budget/j')
     +'</div>'
     +'<div class="ctry-det">'+rc.det+'</div>'
-    +((subRings&&subRings.length)?'<div class="crings">'+subRings.map(function(r){ var rt=r.roas!=null?r.roas.toFixed(2)+'×':'—';
-        return '<div class="cring"><span class="cring-name">'+r.name+(r.status&&r.status!=='ACTIVE'?' ⏸':'')+'</span>'
-          +'<span class="cring-kpis"><b>'+curC(r.spendTotal)+'</b> dép · <b>'+fr(r.candidats)+'</b> cand · <b>'+eurC(r.revEUR)+'</b> CA · <b style="color:'+(r.roas==null?'var(--muted)':(r.roas>=2?'var(--green)':(r.roas>=1?'var(--gold)':'#ff5c5c')))+'">'+rt+'</b> ROAS · <b>'+(r.dailyBudget!=null?fr(r.dailyBudget)+' '+CUR_SYM+'/j':'—')+'</b></span></div>';
+    +((subRings&&subRings.length)?'<div class="crings">'+subRings.map(function(r){
+        var rRoasTxt=r.roas!=null?r.roas.toFixed(2)+'×':'—';
+        var rCpl=r.cpl!=null?r.cpl.toFixed(2)+' '+CUR_SYM:'—';
+        var rBud=r.dailyBudget!=null?fr(r.dailyBudget)+' '+CUR_SYM+'/j':'—';
+        return '<div class="cring2"><div class="cring2-head"><span class="cring2-name">'+r.name+'</span>'
+          +(r.status?'<span class="cstat '+(r.status==='ACTIVE'?'on':'off')+'">'+(r.status==='ACTIVE'?'● Active':'⏸ Pause')+'</span>':'')+'</div>'
+          +'<div class="ctry-mets">'
+          + m(curC(r.spendTotal),'Dépensé')
+          + m(fr(r.candidats),'Candidats')
+          + m(rCpl,'Coût/cand.')
+          + m(fr(r.inscrits)+' · '+r.convRate+'%','Inscrits')
+          + m(eurC(r.revEUR),'CA')
+          + m(rRoasTxt,'ROAS',' roas'+(r.roas!=null&&r.roas>=1?'':' low'))
+          + m(rBud,'Budget/j')
+          +'</div></div>';
       }).join('')+'</div>':'')
     +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set candidat « '+co.name+' » trouvé — vérifie le nommage de la campagne LAL.</div>'
            :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
