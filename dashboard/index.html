@@ -385,11 +385,20 @@
       <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat affiché pour info · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (structurellement bas : le tunnel candidat→inscrit prend du temps). Reco basée sur le taux candidat→inscrit &amp; le ROAS — le coût/candidat n'entre pas dans la décision.</p>
     </div>
 
-    <!-- Graphique leads / jour -->
+    <!-- Graphique ventes / jour par source -->
     <div class="section">
-      <h2>Leads, candidats &amp; conversions par jour</h2>
+      <h2>Ventes par jour</h2>
       <div class="box">
-        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Nouveaux candidats</span><span><i style="background:var(--green)"></i>Conversions ads</span><span><i style="background:var(--gold)"></i>Ventes totales</span></div>
+        <div class="legend"><span><i style="background:var(--green)"></i>Via ads (leads + candidats)</span><span><i style="background:var(--blue)"></i>Communauté</span><span><i style="background:var(--gold)"></i>Nouveaux</span></div>
+        <div id="chartSales"></div>
+      </div>
+    </div>
+
+    <!-- Graphique acquisition : nouveaux leads & candidats / jour -->
+    <div class="section">
+      <h2>Nouveaux leads &amp; candidats par jour</h2>
+      <div class="box">
+        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Nouveaux candidats</span></div>
         <div id="chartLeads"></div>
       </div>
     </div>
@@ -541,6 +550,44 @@ function chartBarsLine(days,bars,bars2,line,line2){
   s+=path('lineC',line); poly(line).forEach(function(p,i){ if(line[i]>0) s+='<circle class="dotC" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6"/>'; });
   s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+bmax+'</text>';
   s+='<text x="'+(W-pr+4)+'" y="'+(pt+4)+'" text-anchor="start" style="fill:var(--gold)">'+lmax+'</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+/* ---- Graphique multi-courbes (echelle partagee) : series = [{vals, color}] ---- */
+function chartLines(days,series){
+  var W=740,H=210,pl=30,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var all=[1]; series.forEach(function(se){ all=all.concat(se.vals); });
+  var mx=Math.max.apply(null,all),slot=n>1?iw/(n-1):iw;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  function pts(a){return a.map(function(v,i){return [pl+slot*i, pt+ih-ih*(v||0)/mx];});}
+  series.forEach(function(se){
+    var p=pts(se.vals);
+    s+='<path fill="none" stroke="'+se.color+'" stroke-width="2.2" d="'+p.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' ')+'"/>';
+    p.forEach(function(q,i){ if(se.vals[i]>0) s+='<circle fill="'+se.color+'" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="2.4"/>'; });
+  });
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+mx+'</text>';
+  var step=Math.ceil(n/9);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){s+='<text x="'+(pl+slot*i).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
+  return s+'</svg>';
+}
+/* ---- Graphique 2 barres cote a cote (leads bleu + candidats rouge), sans ligne ---- */
+function chartBars(days,bars,bars2){
+  bars2=bars2||[];
+  var W=740,H=210,pl=30,pr=14,pt=16,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=days.length||1;
+  var bmax=Math.max.apply(null,bars.concat(bars2).concat(1)),slot=iw/n;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" class="chart">';
+  for(var g=0;g<=2;g++){var y=pt+ih*g/2;s+='<line class="grid" x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'"/>';}
+  var bw=slot*0.26,gap=slot*0.04;
+  for(var i=0;i<n;i++){
+    var x=pl+slot*i+slot*0.20;
+    var bh=ih*bars[i]/bmax,y=pt+ih-bh;
+    s+='<rect class="bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2"/>';
+    var bh2=ih*(bars2[i]||0)/bmax,x2=x+bw+gap,y2=pt+ih-bh2;
+    s+='<rect class="bar2" x="'+x2.toFixed(1)+'" y="'+y2.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh2.toFixed(1)+'" rx="2"/>';
+  }
+  s+='<text x="'+(pl-4)+'" y="'+(pt+4)+'" text-anchor="end">'+bmax+'</text>';
   var step=Math.ceil(n/9);
   for(var i=0;i<n;i++){ if(i%step===0||i===n-1){var x=pl+slot*i+slot*0.5;s+='<text x="'+x.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+frDate(days[i])+'</text>';} }
   return s+'</svg>';
@@ -990,7 +1037,12 @@ function load(){
       // Graphe leads/candidats/conversions : démarre au 22/07 (avant = bruit de lancement). Le cumul artistes garde tout l'historique.
       var LC_START='2026-07-22';
       var ddL=dd.filter(function(x){return x.date>=LC_START;}), dslL=ddL.map(function(x){return x.date;});
-      document.getElementById('chartLeads').innerHTML=chartBarsLine(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}), ddL.map(function(x){return x.conv;}), ddL.map(function(x){return x.sales;}));
+      document.getElementById('chartSales').innerHTML=chartLines(dslL, [
+        {vals: ddL.map(function(x){return x.salesAds||0;}), color:'var(--green)'},
+        {vals: ddL.map(function(x){return x.salesComm||0;}), color:'var(--blue)'},
+        {vals: ddL.map(function(x){return x.salesNew||0;}), color:'var(--gold)'}
+      ]);
+      document.getElementById('chartLeads').innerHTML=chartBars(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}));
       var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
       document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
 
