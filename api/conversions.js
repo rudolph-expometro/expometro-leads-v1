@@ -637,9 +637,11 @@ export default async function handler(req, res) {
               detail: []
             };
           };
-          ads.candidatByCountry.splice(_enIdx, 1,
-            mkRing('Candidats EN 1%',   /en\s*1%/i,  '1'),
-            mkRing('Candidats EN 1-2%', /en\s*1-2/i, '12'));
+          // On GARDE la ligne « Candidats EN » (historique cumulé) et on insère les 2 rings JUSTE APRÈS (fenêtre depuis le tag).
+          const _sd = EN_SPLIT_SINCE.slice(8, 10) + '/' + EN_SPLIT_SINCE.slice(5, 7);   // ex "10/09"
+          ads.candidatByCountry.splice(_enIdx + 1, 0,
+            mkRing('↳ EN 1% (depuis ' + _sd + ')',   /en\s*1%/i,  '1'),
+            mkRing('↳ EN 1-2% (depuis ' + _sd + ')', /en\s*1-2/i, '12'));
         }
       }
     }
