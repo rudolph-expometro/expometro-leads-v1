@@ -83,7 +83,7 @@ function dossier(st, formats) {
 
 const CONSIGNE_SORTIE = `
 Tu rends UNIQUEMENT un objet JSON valide, sans texte autour, sans bloc de code :
-{"repondre":true,"demande":"<la demande en une ligne>","brouillon":"<le corps de l'email>"}
+{"repondre":true,"resume_fr":"","demande":"<la demande en une ligne>","brouillon":"<le corps de l'email>"}
 
 AVANT TOUT, decide si cet email appelle une reponse.
 Mets "repondre":false et laisse "brouillon" vide pour : newsletters, publicites, notifications
@@ -97,6 +97,13 @@ Un message VIDE ou sans texte utile (signature seule, « Inviato da iPhone », p
 envoye par une PERSONNE est une OCCASION, pas un message a ignorer : reponds par une invitation.
 Ne mets "repondre":false que pour ce qui est manifestement automatique ou publicitaire.
 Dans le doute, reponds (true).
+
+Le champ "resume_fr" : UNIQUEMENT quand l'email de l'artiste n'est NI en francais NI en
+anglais (donc ES, IT, DE, PT, NL, PL, RU...). Deux lignes en FRANCAIS, dans ce format exact :
+  Demande : <ce que l'artiste dit ou demande, en une phrase>
+  Reponse : <ce que le brouillon lui repond, en une phrase>
+Il sert a Rudolph pour comprendre et verifier sans traducteur. Si l'email est en francais ou
+en anglais, mets une chaine VIDE : il saurait lire, le resume ne ferait que l'encombrer.
 
 Le champ "brouillon" contient le corps de l'email et la signature, rien d'autre :
 ni objet, ni briefing, ni commentaire, ni marqueur interne.
@@ -219,6 +226,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       repondre: true,
       brouillon: String(out.brouillon),
+      // Resume francais pour les langues que Rudolph ne lit pas. Vide en FR et en EN.
+      resume_fr: String(out.resume_fr || '').slice(0, 600),
       briefing: {
         demande: String(out.demande || '').slice(0, 300),
         verdict: st.verdict + ' — ' + st.resume,
