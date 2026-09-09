@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 import { COMMUNITY_HASHES, PARTICIPATION } from '../lib/community.js';
 
 const J1 = '2026-07-15';                       // debut des inscriptions Florence
+const EN_SPLIT_SINCE = '2026-09-10';           // 1ère journée 100% taguée (tag posé le 09/09 10h50 CET → 09/09 est mixte, on démarre le 10). Split candidat EN 1% vs 1-2%. null = désactivé.
 const J1_TS = Math.floor(new Date(J1 + 'T00:00:00Z').getTime() / 1000);
 const LEAD_LISTS = { 152: 'FR', 153: 'EN', 154: 'ES', 155: 'IT', 156: 'DE' };
 const CANDIDAT_LISTS = { 157: 'FR', 158: 'EN', 159: 'ES', 160: 'IT', 161: 'DE' }; // funnel apply-florence (pubs LAL)
@@ -63,7 +64,7 @@ async function brevoContacts(lists) {
       const cs = d.contacts || [];
       for (const c of cs) {
         const e = (c.email || '').trim().toLowerCase();
-        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10), pays: ((c.attributes && c.attributes.PAYS) || '').trim(), source: ((c.attributes && c.attributes.UTM_SOURCE) || '').toLowerCase().trim() };
+        if (e && !map[e]) map[e] = { lang: lists[lid], created: (c.createdAt || '').slice(0, 10), pays: ((c.attributes && c.attributes.PAYS) || '').trim(), source: ((c.attributes && c.attributes.UTM_SOURCE) || '').toLowerCase().trim(), content: ((c.attributes && c.attributes.UTM_CONTENT) || '').trim() };
       }
       if (cs.length < 500) break;
       off += 500;
@@ -178,6 +179,8 @@ async function metaSpend() {
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
   const asBudgets = await adsetBudgets();
+  // Dépense par ad set DEPUIS la date de split (pour un ROAS par ring comparable : dépense et CA sur la même fenêtre).
+  const asSplit = EN_SPLIT_SINCE ? await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: EN_SPLIT_SINCE, until: todayISO() }))) : null;
   // --- Depense PAR AD (créa) : ROAS (Purchase ROAS Meta) + leads par créa ---
   async function adInsightsRaw(dateQs) {
     let url = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}`
@@ -206,6 +209,7 @@ async function metaSpend() {
   }
   for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); }
   for (const r of (asToday || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendToday += +(r.spend || 0); }
+  for (const r of (asSplit || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendSplit = (s.spendSplit || 0) + +(r.spend || 0); }
   for (const b of (asBudgets || [])) { const s = byId[b.id]; if (s) { s.dailyBudget = b.daily_budget ? +b.daily_budget / 100 : null; s.status = b.effective_status || ''; } }
   // Filet de secours : Meta ne remonte pas toujours le budget par ad set (CBO, permission, champ vide).
   // On retombe alors sur le budget réel saisi ici (devise du compte pub, $). Ne remplit QUE les budgets
@@ -333,10 +337,25 @@ export default async function handler(req, res) {
     // Candidats Brevo (funnel apply-florence / pubs LAL) : total par langue + nouveaux aujourd'hui
     const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {}, candidatsByLangCountry = {}, candidatsByDay = {};
     let candidatsTotal = 0;
+    // --- Split candidat EN en 2 rings (1% = créa en_vX, 1-2% = {{adset.id}}), attribué par UTM_CONTENT, uniquement depuis EN_SPLIT_SINCE ---
+    let en12Id = null;
+    if (EN_SPLIT_SINCE && spend && Array.isArray(spend.adsets)) {
+      const _a12 = spend.adsets.find(a => /en\s*1-2/i.test(a.name || ''));
+      if (_a12) en12Id = String(_a12.id);
+    }
+    const enRing = (cd) => {
+      if (!EN_SPLIT_SINCE || !cd || cd.lang !== 'EN' || (cd.created || '') < EN_SPLIT_SINCE) return null;
+      const ct = String(cd.content || '');
+      if (en12Id && ct === en12Id) return '12';          // 1-2% = tagué avec l'ID de l'ad set
+      if (/^en_v\d+/i.test(ct)) return '1';              // 1% = garde ses codes créa en_vX (seul EN LAL à les utiliser après le tag)
+      return null;                                        // autre source EN (ManyChat/bio/organique) -> hors rings
+    };
+    const candidatsByRing = { '1': 0, '12': 0 }, revEURCandidatByRing = { '1': 0, '12': 0 }, candidatConvByRing = { '1': 0, '12': 0 };
     for (const e in candidats) {
       const cd = candidats[e];
       candidatsByLang[cd.lang] = (candidatsByLang[cd.lang] || 0) + 1;
       candidatsTotal++;
+      { const _r = enRing(cd); if (_r) candidatsByRing[_r]++; }
       const co = cd.pays || '(inconnu)';
       candidatsByCountry[co] = (candidatsByCountry[co] || 0) + 1;
       const lc = candidatsByLangCountry[cd.lang] || (candidatsByLangCountry[cd.lang] = {});
@@ -395,6 +414,7 @@ export default async function handler(req, res) {
         candidatConvByLang[candidat.lang] = (candidatConvByLang[candidat.lang] || 0) + 1;
         const lcv = candidatConvByLangCountry[candidat.lang] || (candidatConvByLangCountry[candidat.lang] = {});
         lcv[cco] = (lcv[cco] || 0) + 1;
+        { const _r = enRing(candidat); if (_r) candidatConvByRing[_r]++; }
       }
 
       const amtEUR = amt * (EUR_RATES[cur] || 0);
@@ -421,6 +441,7 @@ export default async function handler(req, res) {
       }
       if (candidat) {
         revEURCandidatByLang[candidat.lang] += amtEUR;
+        { const _r = enRing(candidat); if (_r) revEURCandidatByRing[_r] += amtEUR; }
         const cco2 = candidat.pays || '(inconnu)';
         const lcr = revEURCandidatByLangCountry[candidat.lang] || (revEURCandidatByLangCountry[candidat.lang] = {});
         lcr[cco2] = (lcr[cco2] || 0) + amtEUR;
@@ -591,6 +612,36 @@ export default async function handler(req, res) {
           detail
         };
       });
+      // --- Split du groupe candidat EN en 2 lignes : 1% (créa en_vX) vs 1-2% ({{adset.id}}), fenêtre depuis EN_SPLIT_SINCE ---
+      if (EN_SPLIT_SINCE) {
+        const _enIdx = ads.candidatByCountry.findIndex(c => c.key === 'CAND_EN');
+        if (_enIdx >= 0) {
+          const mkRing = (name, reAdset, ring) => {
+            const ms = candPool.filter(a => reAdset.test(a.name || ''));
+            const spW = ms.reduce((s, a) => s + (a.spendSplit || 0), 0);   // dépense SUR LA FENÊTRE (depuis le tag) -> ROAS comparable
+            const spD = ms.reduce((s, a) => s + a.spendToday, 0);
+            const bud = ms.reduce((s, a) => s + (a.dailyBudget || 0), 0);
+            const rev = revEURCandidatByRing[ring] || 0, cand = candidatsByRing[ring] || 0, insc = candidatConvByRing[ring] || 0;
+            const lastRaise = ms.reduce((mx, a) => (a.raiseDay && (!mx || a.raiseDay > mx)) ? a.raiseDay : mx, null);
+            return {
+              key: 'CAND_EN_' + ring, name, flag: '🌍', lang: 'EN', sinceSplit: EN_SPLIT_SINCE,
+              status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
+              spendTotal: Math.round(spW), spendToday: Math.round(spD),
+              dailyBudget: bud > 0 ? Math.round(bud) : null,
+              candidats: cand, inscrits: insc, revEUR: Math.round(rev),
+              cpl: cand > 0 && spW > 0 ? +(spW / cand).toFixed(2) : null,
+              convRate: cand > 0 ? +(100 * insc / cand).toFixed(1) : 0,
+              roas: spW > 0 ? +(rev / (spW * rr)).toFixed(2) : null,
+              adsets: ms.map(a => a.name),
+              lastRaise, raisedDaysAgo: daysSince(lastRaise),
+              detail: []
+            };
+          };
+          ads.candidatByCountry.splice(_enIdx, 1,
+            mkRing('Candidats EN 1%',   /en\s*1%/i,  '1'),
+            mkRing('Candidats EN 1-2%', /en\s*1-2/i, '12'));
+        }
+      }
     }
 
     // Taux de conversion par langue (depuis J1)
