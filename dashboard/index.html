@@ -73,6 +73,7 @@
   #candConvtbl .chev{color:var(--muted);display:inline-block;width:12px;font-size:10px}
   #candConvtbl .cdet td{color:var(--muted);font-size:12px;background:rgba(255,255,255,.02)}
   #candConvtbl .cdet .cdet-c{padding-left:22px}
+  #candConvtbl .csub td:first-child{padding-left:22px;color:var(--muted)}
   .box h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 12px;font-weight:600}
   /* CA */
   .ca .row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -947,7 +948,9 @@ function load(){
         +'<span class="rate"><span class="rlab">taux</span> '+cdC.rate+' %</span>';
       var cbc=((d.ads&&d.ads.candidatByCountry)||[]).slice().sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.convRate-a.convRate)||(b.inscrits-a.inscrits); });
       var cbody=cbc.map(function(r){ var col=roasColor(r.roas);
-        var head='<tr class="clang" onclick="toggleCand(\''+r.lang+'\')"><td><span class="chev" id="chev-'+r.lang+'">▸</span> '+r.flag+' '+r.name+'</td><td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+        var cells='<td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td>';
+        if(!(r.detail&&r.detail.length)){ return '<tr class="csub"><td>'+r.flag+' '+r.name+'</td>'+cells+'</tr>'; }   // ligne ring (pas de drill-down)
+        var head='<tr class="clang" onclick="toggleCand(\''+r.lang+'\')"><td><span class="chev" id="chev-'+r.lang+'">▸</span> '+r.flag+' '+r.name+'</td>'+cells+'</tr>';
         var det=(r.detail||[]).map(function(x){ var dc=roasColor(x.roas);
           return '<tr class="cdet cdet-'+r.lang+'" style="display:none"><td class="cdet-c">'+flag(x.country)+(x.country||'—')+'</td><td class="num">'+fr(x.candidats)+'</td><td class="num">'+fr(x.inscrits)+'</td><td class="num">'+x.convRate+' %</td><td class="num" style="font-weight:800;color:'+dc+'">'+(x.roas!=null?x.roas.toFixed(1)+'×':'—')+'</td></tr>';
         }).join('');
