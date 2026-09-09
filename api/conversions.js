@@ -232,8 +232,10 @@ async function metaSpend() {
   // Type de campagne par ad set (pour séparer le ROAS Leads / Candidats / Follow).
   function adsetCat(a) {
     const n = a.campaign || '';
-    if (/candidat|LAL/i.test(n)) return 'candidat';
+    // ⚠️ « follow » AVANT « LAL » : une campagne follow (ex. « Ads to follow - LAL WORLD », objectif
+    // LINK_CLICKS) reste un follow même si son nom contient « LAL » — sinon elle pollue les Candidats.
     if (/follow/i.test(n) || !ACQ_OBJECTIVES.has(a.objective)) return 'follow';
+    if (/candidat|LAL/i.test(n)) return 'candidat';
     return 'lead';
   }
   const spendCat = { lead: { today: 0, total: 0 }, candidat: { today: 0, total: 0 }, follow: { today: 0, total: 0 } };
