@@ -148,6 +148,12 @@
   .ctry-det{font-size:12.5px;color:var(--muted);margin-top:11px;line-height:1.5}
   .ctry-det b{color:var(--txt);font-weight:700}
   .cadsets{font-size:10.5px;color:var(--muted);margin-top:6px}
+  /* sous-lignes rings (EN 1% / 1-2%) imbriquées dans la carte candidat */
+  .crings{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+  .cring{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px}
+  .cring-name{color:var(--head);font-weight:700}
+  .cring-kpis{color:var(--muted);font-variant-numeric:tabular-nums}
+  .cring-kpis b{color:var(--txt);font-weight:700}
   /* buckets */
   .bkts{display:flex;gap:10px;flex-wrap:wrap}
   .bkt{flex:1;min-width:110px;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -722,7 +728,7 @@ function recoCandidat(co){
   if(ok){ var nb2=bud?Math.round(bud*1.2):null; return {cls:'hold',label:'Palier +20%',det:nb2?('Petit palier : <b>'+fr(bud)+' '+CUR_SYM+'</b> → <b>'+fr(nb2)+' '+CUR_SYM+'/j</b>.'):'Petit palier de +20%.'}; }
   return {cls:'hold',label:'Maintenir',det:'Garde le budget, surveille le coût/candidat et le taux candidat→inscrit.'};
 }
-function candidatCard(co){
+function candidatCard(co, subRings){
   var rc=recoCandidat(co);
   function m(n,l,extra){ return '<div class="cm'+(extra||'')+'"><span class="cm-n">'+n+'</span><span class="cm-l">'+l+'</span></div>'; }
   var roasTxt=co.roas!=null?co.roas.toFixed(2)+'×':'—';
@@ -742,6 +748,10 @@ function candidatCard(co){
     + m(budTxt,'Budget/j')
     +'</div>'
     +'<div class="ctry-det">'+rc.det+'</div>'
+    +((subRings&&subRings.length)?'<div class="crings">'+subRings.map(function(r){ var rt=r.roas!=null?r.roas.toFixed(2)+'×':'—';
+        return '<div class="cring"><span class="cring-name">'+r.name+(r.status&&r.status!=='ACTIVE'?' ⏸':'')+'</span>'
+          +'<span class="cring-kpis"><b>'+curC(r.spendTotal)+'</b> dép · <b>'+fr(r.candidats)+'</b> cand · <b>'+eurC(r.revEUR)+'</b> CA · <b style="color:'+roasColor(r.roas)+'">'+rt+'</b> ROAS · <b>'+(r.dailyBudget!=null?fr(r.dailyBudget)+' '+CUR_SYM+'/j':'—')+'</b></span></div>';
+      }).join('')+'</div>':'')
     +(noAds?'<div class="cadsets" style="color:var(--gold)">⚠ Aucun ad set candidat « '+co.name+' » trouvé — vérifie le nommage de la campagne LAL.</div>'
            :'<div class="cadsets">Ad set'+(co.adsets.length>1?'s':'')+' : '+co.adsets.join(' · ')+'</div>')
     +'</div>';
@@ -753,13 +763,16 @@ function renderCandidatScale(d){
   sec.style.display='block';
   CUR_SYM=curSym(a.currency);
   trackBudgets(cc, d.today||'');   // partage le suivi de budget (clés préfixées CAND_ côté API -> pas de collision avec les leads)
+  // Les rings EN (CAND_EN_1 / CAND_EN_12) sont IMBRIQUÉS dans la carte « Candidats EN », pas des cartes séparées.
+  var rings=cc.filter(function(x){return /^CAND_EN_/.test(x.key);});
+  var top=cc.filter(function(x){return !/^CAND_EN_/.test(x.key);});
   // tri : d'abord ceux qui ont de la dépense, puis par nb de candidats
-  var list=cc.slice().sort(function(x,y){ var ax=(x.status&&x.status!=='ACTIVE')?1:0, ay=(y.status&&y.status!=='ACTIVE')?1:0; if(ax!==ay) return ax-ay; return ((y.roas==null?-1:y.roas)-(x.roas==null?-1:x.roas))||(y.inscrits-x.inscrits); });
+  var list=top.slice().sort(function(x,y){ var ax=(x.status&&x.status!=='ACTIVE')?1:0, ay=(y.status&&y.status!=='ACTIVE')?1:0; if(ax!==ay) return ax-ay; return ((y.roas==null?-1:y.roas)-(x.roas==null?-1:x.roas))||(y.inscrits-x.inscrits); });
   var sSum=list.reduce(function(s,x){return s+(x.spendTotal||0);},0);
   var kSum=list.reduce(function(s,x){return s+(x.candidats||0);},0);
   document.getElementById('candidatCountries').innerHTML=
     '<div class="creg"><span>Campagnes candidature LAL</span><span class="crsum">'+curC(sSum)+' dépensés · '+fr(kSum)+' candidats</span></div>'
-    + list.map(candidatCard).join('');
+    + list.map(function(co){ return candidatCard(co, co.key==='CAND_EN'?rings:null); }).join('');
 }
 
 /* ---- Ventes via ManyChat : Aujourd'hui + Cumulé ---- */
