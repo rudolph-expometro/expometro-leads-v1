@@ -371,7 +371,8 @@ export default async function handler(req, res) {
     const inscritsByLang = zeroLang(), inscritsTodayByLang = zeroLang();
     const convByDay = {};                 // conversions (leads qui paient) par jour
     const salesByDay = {};                // TOTAL des ventes par jour (tous buckets)
-    const salesAdsByDay = {};             // ventes/jour via ads (buckets lead + candidat)
+    const salesLeadByDay = {};            // ventes/jour via LEADS (bucket lead)
+    const salesCandByDay = {};            // ventes/jour via CANDIDATS (bucket candidat)
     const salesCommByDay = {};            // ventes/jour de la communaute (bucket existant)
     const salesNewByDay = {};             // ventes/jour "nouveaux" (bucket nouveau)
     const revEURByDay = {};               // CA (EUR) par jour, pour le graphe CA vs Pub
@@ -424,7 +425,8 @@ export default async function handler(req, res) {
       buckets[bucket]++;
       revEURtotByBucket[bucket] += amtEUR;
       salesByDay[date] = (salesByDay[date] || 0) + 1;
-      if (bucket === 'lead' || bucket === 'candidat') salesAdsByDay[date] = (salesAdsByDay[date] || 0) + 1;
+      if (bucket === 'lead') salesLeadByDay[date] = (salesLeadByDay[date] || 0) + 1;
+      else if (bucket === 'candidat') salesCandByDay[date] = (salesCandByDay[date] || 0) + 1;
       else if (bucket === 'existant') salesCommByDay[date] = (salesCommByDay[date] || 0) + 1;
       else salesNewByDay[date] = (salesNewByDay[date] || 0) + 1;
       revEURByDay[date] = (revEURByDay[date] || 0) + amtEUR;
@@ -477,7 +479,7 @@ export default async function handler(req, res) {
     const daily = days.map(d => ({
       date: d, leads: leadsByDay[d] || 0, candidats: candidatsByDay[d] || 0,
       conv: convByDay[d] || 0, sales: salesByDay[d] || 0, artists: artByDay[d] || 0,
-      salesAds: salesAdsByDay[d] || 0, salesComm: salesCommByDay[d] || 0, salesNew: salesNewByDay[d] || 0,
+      salesLead: salesLeadByDay[d] || 0, salesCand: salesCandByDay[d] || 0, salesComm: salesCommByDay[d] || 0, salesNew: salesNewByDay[d] || 0,
       caEUR: Math.round(revEURByDay[d] || 0),                                  // CA du jour en €
       caAdsEUR: Math.round(revEURAdsByDay[d] || 0),                            // CA du jour venant des ads (leads+candidats)
       pubEUR: Math.round((_spendByDay[d] || 0) * _eurRateSpend)               // depense pub du jour en €
