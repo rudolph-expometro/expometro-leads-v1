@@ -384,6 +384,12 @@
       <div id="candidatCountries"></div>
       <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat affiché pour info · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (structurellement bas : le tunnel candidat→inscrit prend du temps). Reco basée sur le taux candidat→inscrit &amp; le ROAS — le coût/candidat n'entre pas dans la décision.</p>
     </div>
+    <!-- RETARGETING (bas de funnel) -->
+    <div class="section" id="secRetgt" style="display:none">
+      <h2>Retargeting — reciblage des visiteurs non-payés 🎯</h2>
+      <div id="retargeting"></div>
+      <p class="hint">Campagne « Retargeting Florence » (bas de funnel, public chaud), <b>exclue du ROAS acquisition</b> pour ne pas le fausser. Résultat = <b>ClicInscription</b> (event d\'optimisation, pas la vente). <b>Pas de ROAS attribué ici</b> : une même vente est aussi touchée par Leads/Candidats → mesure l\'impact via le <b>ROAS global du compte</b>. Alerte si la fréquence dépasse ~4-5/pers. sur 7 j (fatigue de l\'audience).</p>
+    </div>
 
     <!-- Graphique ventes / jour par source -->
     <div class="section">
@@ -752,6 +758,44 @@ function renderCountries(d){
   });
   document.getElementById('countries').innerHTML=order.map(countryCard).join('');
 }
+/* ---- Retargeting (bas de funnel) : dépense + ClicInscription + fréquence ; PAS de ROAS attribué ---- */
+function recoRetgt(co){
+  if(co.status && co.status!=='ACTIVE') return {cls:'wait',label:'\u23f8 En pause',det:'Ad set en pause dans Meta \u2014 r\u00e9active-le pour reprendre l\'optimisation.'};
+  var f=co.freq7, ds=(co.raisedDaysAgo!=null)?co.raisedDaysAgo:null;
+  if(f!=null && f>=5) return {cls:'fix',label:'Fr\u00e9quence haute',det:'Fr\u00e9quence <b>'+f.toFixed(1)+'</b>/pers. sur 7\u00a0j (seuil ~4-5) \u2014 l\'audience sature. Rafra\u00eechis la cr\u00e9a ou \u00e9largis l\'audience de retargeting avant qu\'elle ne fatigue.'};
+  if(ds!=null && ds<BUDGET_COOLDOWN_DAYS) return {cls:'cool',label:'Palier en cours',det:'Budget mont\u00e9 '+(ds===0?'aujourd\'hui':'il y a '+ds+'\u00a0j')+' \u2014 laisse Meta se re-stabiliser avant le prochain palier.'};
+  if(f!=null && f>=4) return {cls:'hold',label:'Surveiller fr\u00e9quence',det:'Fr\u00e9quence <b>'+f.toFixed(1)+'</b>/7\u00a0j \u2014 proche du seuil. Au-del\u00e0 de 5, pr\u00e9vois un refresh cr\u00e9a.'};
+  return {cls:'hold',label:'Laisse tourner',det:'Public chaud, fr\u00e9quence saine. Le ROAS n\'est pas attribu\u00e9 ici (une m\u00eame vente est aussi touch\u00e9e par Leads/Candidats) \u2192 mesure l\'impact via le <b>ROAS global du compte</b>.'};
+}
+function retgtCard(co){
+  var rc=recoRetgt(co);
+  function m(n,l,extra){ return '<div class="cm'+(extra||'')+'"><span class="cm-n">'+n+'</span><span class="cm-l">'+l+'</span></div>'; }
+  var cpr=(co.clicInsc>0 && co.spendTotal>0)?(co.spendTotal/co.clicInsc):null;
+  var fc=co.freq7==null?'':(co.freq7>=5?'#ff5c5c':(co.freq7>=4?'var(--gold)':''));
+  var freqVal=co.freq7!=null?(fc?'<span style="color:'+fc+'">'+co.freq7.toFixed(1)+'</span>':co.freq7.toFixed(1)):'\u2014';
+  var budTxt=co.dailyBudget!=null?fr(co.dailyBudget)+' '+CUR_SYM+'/j':'\u2014';
+  return '<div class="ctry"><div class="ctry-head"><span class="cflag">'+co.flag+'</span><span class="cname">Retgt '+co.lang+'</span>'
+    +(co.status?'<span class="cstat '+(co.status==='ACTIVE'?'on':'off')+'">'+(co.status==='ACTIVE'?'\u25cf Active':'\u23f8 Pause')+'</span>':'')
+    +'<span class="creco '+rc.cls+'">'+rc.label+'</span></div>'
+    +'<div class="ctry-mets">'
+    + m(curC(co.spendTotal),'D\u00e9pens\u00e9')
+    + m(curC(co.spendToday),'Aujourd\'hui')
+    + m(fr(co.clicInsc),'ClicInscription')
+    + m(cpr!=null?cpr.toFixed(2)+' '+CUR_SYM:'\u2014','Co\u00fbt/clic insc.')
+    + m(freqVal,'Fr\u00e9q. 7j')
+    + m(budTxt,'Budget/j')
+    +'</div>'
+    +'<div class="ctry-det">'+rc.det+'</div>'
+    +'</div>';
+}
+function renderRetargeting(d){
+  var a=(d.ads)||{}, rt=a.retargeting, sec=document.getElementById('secRetgt');
+  if(!rt || !rt.available || !(rt.rows&&rt.rows.length)){ if(sec) sec.style.display='none'; return; }
+  sec.style.display='block'; CUR_SYM=curSym(a.currency);
+  var head='<div class="creg"><span>Campagne \u00ab Retargeting Florence \u00bb</span><span class="crsum">'+curC(rt.spendTotal)+' d\u00e9pens\u00e9s \u00b7 <b>'+fr(rt.clicInscTotal)+'</b> ClicInscription</span></div>';
+  var order=rt.rows.slice().sort(function(x,y){ return (y.clicInsc||0)-(x.clicInsc||0); });
+  document.getElementById('retargeting').innerHTML=head+order.map(retgtCard).join('');
+}
 
 /* ---- Candidats par langue : ROAS + reco de budget (haut de tunnel) ----
    Reco calée sur le coût/candidat & le taux candidat→inscrit — pas le ROAS seul
@@ -992,6 +1036,7 @@ function load(){
 
       // ---- Candidats par langue (scaling) ----
       renderCandidatScale(d);
+      renderRetargeting(d);
       renderManychat(d);
       renderBio(d);
       renderClicks(d);
