@@ -201,7 +201,7 @@ async function metaSpend() {
   }
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
-  const asFreq7 = await adsetInsights('date_preset=last_7d');   // fréquence 7j (retargeting)
+  const asFreq7 = null;   // (retiré) fréquence lue depuis asTotal -> 1 appel Meta de moins
   // Dépense par ad set DEPUIS la date de split (pour un ROAS par ring comparable : dépense et CA sur la même fenêtre).
   const asSplit = EN_SPLIT_SINCE ? await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: EN_SPLIT_SINCE, until: todayISO() }))) : null;
   // --- Depense PAR AD (créa) : ROAS (Purchase ROAS Meta) + leads par créa ---
@@ -218,7 +218,7 @@ async function metaSpend() {
     }
     return out;
   }
-  const adRows = await adInsightsRaw('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
+  const adRows = null;   // détail par créa (adDetail) non affiché dans le dashboard -> on économise 1-2 appels Meta (rate-limit).
   function actSum(arr, re) { let s = 0; for (const a of (arr || [])) if (re.test(a.action_type || '')) s += +(a.value || 0); return s; }
   const adList = (adRows || []).map(function (r) {
     const leads = actSum(r.actions, /lead/i);
@@ -230,7 +230,7 @@ async function metaSpend() {
   function slot(k, name, campaign, objective) {
     return byId[k] || (byId[k] = { id: k, name: name || '', campaign: campaign || '', objective: objective || '', spendTotal: 0, spendToday: 0, dailyBudget: null, status: '' });
   }
-  for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); if (r.actions) s.actionsTotal = r.actions; }
+  for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); if (r.actions) s.actionsTotal = r.actions; if (r.frequency != null) s.freq7 = +r.frequency; }
   for (const r of (asToday || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendToday += +(r.spend || 0); }
   for (const r of (asSplit || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendSplit = (s.spendSplit || 0) + +(r.spend || 0); }
   for (const r of (asFreq7 || [])) { const s = byId[r.adset_id]; if (s && r.frequency != null) s.freq7 = +r.frequency; }
@@ -253,10 +253,18 @@ async function metaSpend() {
   // manquants -> la valeur LIVE de Meta reste prioritaire quand elle existe. À mettre à jour SEULEMENT
   // si tu changes un budget dans Meta pendant que Meta ne le remonte pas (sinon ça se met à jour tout seul).
   const BUDGET_FALLBACK = [
-    { re: /leads\s*italy/i,  budget: 45 },   // Leads Italy
-    { re: /leads\s*spain/i,  budget: 35 },   // Leads Spain
-    { re: /leads\s*german/i, budget: 55 },   // Leads Germany
-    { re: /leads\s*france/i, budget: 50 }    // Leads France
+    // Snapshot manuel des budgets/jour (devise compte, $) — MAJ 2026-09-10 depuis l'Ads Manager.
+    // Utilisé UNIQUEMENT quand Meta ne remonte pas le budget live (/adsets rate-limité) ; la valeur LIVE prime dès qu'elle revient.
+    { re: /leads\s*italy/i,   budget: 94 },
+    { re: /leads\s*german/i,  budget: 137 },
+    { re: /leads\s*france/i,  budget: 130 },
+    { re: /leads\s*spain/i,   budget: 60 },
+    { re: /LAL\s*EN\s*1-2/i,  budget: 60 },   // Candidatures EN 1-2% (AVANT EN 1%)
+    { re: /LAL\s*EN\b/i,      budget: 93 },   // Candidatures EN 1%
+    { re: /LAL\s*FR\b/i,      budget: 44 },
+    { re: /LAL\s*IT\b/i,      budget: 38 },
+    { re: /LAL\s*ES\b/i,      budget: 44 },
+    { re: /LAL\s*DE\b/i,      budget: 65 }
   ];
   for (const s of Object.values(byId)) {
     if (s.dailyBudget == null) { const fb = BUDGET_FALLBACK.find(f => f.re.test(s.name || '')); if (fb) s.dailyBudget = fb.budget; }
