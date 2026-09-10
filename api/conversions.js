@@ -76,7 +76,8 @@ async function brevoContacts(lists) {
 // Depenses Meta Ads via la Marketing API. Optionnel : si META_AD_ACCOUNT_ID absent ou token
 // sans permission ads_read -> renvoie null (le front bascule sur saisie manuelle). Ne throw jamais.
 // Env : META_AD_ACCOUNT_ID (act_xxx ou xxx) + META_ADS_TOKEN (sinon on tente META_CAPI_TOKEN).
-async function metaSpend() {
+async function metaSpend(opts) {
+  opts = opts || {};
   const acct = process.env.META_AD_ACCOUNT_ID;
   const token = process.env.META_ADS_TOKEN || process.env.META_CAPI_TOKEN;
   if (!acct || !token) return null;
@@ -109,13 +110,25 @@ async function metaSpend() {
     breakdown.sort((a, b) => b.spend - a.spend);
     return { total, acq, breakdown };
   }
-  // Lectures d'OBJETS ad set/campagne (budget + statut) EN PREMIER -> meilleures chances sous le rate-limit Meta (code 17), avant les insights lourds.
-  const asBudgets = await adsetBudgets();
-  const asCampBudgets = await campaignBudgets();
   const todayRows = await campaigns('date_preset=today');
   const totalRows = await campaigns('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   if (todayRows === null && totalRows === null) return null; // pas d'acces -> feature off
   const t = summarize(todayRows), g = summarize(totalRows);
+  // Devise du compte pub (léger) — nécessaire au ROAS EUR ; fetchée tôt pour le mode léger.
+  let acctCur = 'EUR', curDbg = 'default-EUR';
+  try {
+    const rc = await fetch(`https://graph.facebook.com/${ver}/${id}?fields=currency&access_token=${encodeURIComponent(token)}`);
+    if (rc.ok) { const dc = await rc.json(); if (dc.currency) { acctCur = dc.currency; curDbg = 'ok'; } else curDbg = 'no-field'; }
+    else curDbg = 'http-' + rc.status;
+  } catch (e) { curDbg = 'throw'; }
+  const spendByDay = await dailySpend();
+  // MODE LÉGER (onglet Dashboard) : on s'arrête ici -> AUCUN appel niveau ad set (évite le rate-limit /adsets sur le refresh fréquent).
+  if (opts.adsets === false) {
+    return { currency: acctCur, spendByDay, today: t.total, todayAcq: t.acq, total: g.total, totalAcq: g.acq, breakdown: g.breakdown, adsets: [], adDetail: [], spendCat: null, adsetDbg: { light: true, currency: curDbg + ':' + acctCur } };
+  }
+  // ===== PARTIE LOURDE (onglet Meta Ads uniquement) : lectures niveau AD SET =====
+  const asBudgets = await adsetBudgets();
+  const asCampBudgets = await campaignBudgets();
 
   // --- Depense PAR AD SET (pour le detail par pays / ROAS par ad set) ---
   async function adsetInsightsRaw(fields, dateQs) {
@@ -298,13 +311,6 @@ async function metaSpend() {
     raises: _br.dbg + '/' + _matched + 'matched'
   };
 
-  // Devise reelle du compte pub (souvent USD) : dépense/budget en devise native, ROAS reconverti en EUR.
-  let acctCur = 'EUR', curDbg = 'default-EUR';
-  try {
-    const rc = await fetch(`https://graph.facebook.com/${ver}/${id}?fields=currency&access_token=${encodeURIComponent(token)}`);
-    if (rc.ok) { const dc = await rc.json(); if (dc.currency) { acctCur = dc.currency; curDbg = 'ok'; } else curDbg = 'no-field'; }
-    else curDbg = 'http-' + rc.status;
-  } catch (e) { curDbg = 'throw'; }
   adsetDbg.currency = curDbg + ':' + acctCur;   // ex "ok:USD" ou "http-400:default-EUR"
 
   // --- Depense PAR JOUR (devise compte) pour le graphe CA vs Pub : insights niveau compte, time_increment=1 ---
@@ -322,8 +328,6 @@ async function metaSpend() {
     }
     return by;
   }
-  const spendByDay = await dailySpend();
-
   return {
     currency: acctCur,
     spendByDay,              // depense (devise compte) par jour, pour le graphe CA vs Pub
@@ -365,7 +369,8 @@ export default async function handler(req, res) {
   try {
     const today = todayISO();
     const nowTs = Math.floor(Date.now() / 1000);
-    const [charges, leads, candidats, spend, clicks] = await Promise.all([stripeCharges(), brevoContacts(LEAD_LISTS), brevoContacts(CANDIDAT_LISTS), metaSpend(), chatClicks()]);
+    const wantMeta = (req.query && req.query.view) === 'meta';   // onglet Meta Ads -> détail ad-set (lourd) ; sinon léger (pas d'appel /adsets).
+    const [charges, leads, candidats, spend, clicks] = await Promise.all([stripeCharges(), brevoContacts(LEAD_LISTS), brevoContacts(CANDIDAT_LISTS), metaSpend({ adsets: wantMeta }), chatClicks()]);
 
     // Axe des jours J1 -> aujourd'hui (UTC)
     const days = [];
@@ -555,7 +560,7 @@ export default async function handler(req, res) {
     // --- Detail par PAYS (ad sets Leads) : ROAS + reco budget pour scaler ---
     // Attribution du CA par langue de lead Brevo -> pays de l'ad set (IT->Italy, ES->Spain,
     // DE->Germany, FR->France, EN->USA). Depense = somme des ad sets Leads dont le nom matche le pays.
-    if (spend) {
+    if (wantMeta && spend) {
       const allAdsets = Array.isArray(spend.adsets) ? spend.adsets : [];
       // Diagnostic (visible dans le dashboard) : ce que Meta renvoie vraiment, pour caler le nommage.
       ads.adsetsCount = allAdsets.length;
