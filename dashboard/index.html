@@ -313,7 +313,8 @@
     </div>
 
     <div class="tabs" role="tablist">
-      <button class="tabb" id="tabConv" role="tab" aria-selected="true"  aria-controls="viewConv" onclick="showView('conv')">Conversions</button>
+      <button class="tabb" id="tabConv" role="tab" aria-selected="true"  aria-controls="viewConv" onclick="showView('conv')">Dashboard</button>
+      <button class="tabb" id="tabMeta" role="tab" aria-selected="false" aria-controls="viewMeta" onclick="showView('meta')">Meta Ads</button>
       <button class="tabb" id="tabPlan" role="tab" aria-selected="false" aria-controls="viewPlan" onclick="showView('plan')">Plan interactif</button>
     </div>
 
@@ -346,29 +347,10 @@
       </div>
     </div>
 
-    <!-- META ADS → ROAS -->
+    <!-- Ventes Bio / ManyChat -->
     <div class="section">
-      <h2>Meta Ads → ROAS</h2>
-      <div class="grid2" style="align-items:start">
-        <div>
-          <div class="box roas-lead" id="roasLeads"></div>
-          <div class="box lead-top" style="margin-top:14px"><h3>Leads → Inscrits</h3>
-            <div class="lead-hero" id="leadHero"></div>
-            <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
-              <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
-              <tbody></tbody>
-            </table></div>
-          </div>
-        </div>
-        <div>
-          <div class="box roas-cand" id="roasCand"></div>
-          <div class="box cand-top" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
-            <div class="lead-hero" id="candHero"></div>
-            <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
-              <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
-              <tbody></tbody>
-            </table></div>
-          </div>
+      <h2>Ventes via Bio &amp; ManyChat</h2>
+      <div class="box">
           <div class="src-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px">
             <div class="box cand-top" style="margin:0"><h3>Ventes via Bio Instagram 📸</h3>
               <div id="salesBio"></div>
@@ -379,35 +361,6 @@
               <p class="hint" style="margin-top:8px">Ventes des artistes venus par tes commentaires ManyChat (DM → candidature). Compté depuis la pose des liens (12/08). Pour le CA total des ads → section Meta Ads → ROAS.</p>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- LEADS PAR PAYS (scaling) -->
-    <div class="section" id="secCountries" style="display:none">
-      <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
-      <div id="countries"></div>
-    </div>
-
-    <!-- CANDIDATS PAR LANGUE (scaling) -->
-    <div class="section" id="secCandidatScale" style="display:none">
-      <h2>Candidats par langue — ROAS &amp; budget pour scaler 🚀</h2>
-      <div id="candidatCountries"></div>
-      <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat affiché pour info · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (structurellement bas : le tunnel candidat→inscrit prend du temps). Reco basée sur le taux candidat→inscrit &amp; le ROAS — le coût/candidat n'entre pas dans la décision.</p>
-    </div>
-    <!-- RETARGETING (bas de funnel) -->
-    <div class="section" id="secRetgt" style="display:none">
-      <h2>Retargeting — reciblage des visiteurs non-payés 🎯</h2>
-      <div id="retargeting"></div>
-      <p class="hint">Campagne « Retargeting Florence » (bas de funnel, public chaud), <b>exclue du ROAS acquisition</b> pour ne pas le fausser. Résultat = <b>ClicInscription</b> (event d\'optimisation, pas la vente). <b>Pas de ROAS attribué ici</b> : une même vente est aussi touchée par Leads/Candidats → mesure l\'impact via le <b>ROAS global du compte</b>. Alerte si la fréquence dépasse ~4-5/pers. sur 7 j (fatigue de l\'audience).</p>
-    </div>
-
-    <!-- Graphique acquisition : nouveaux leads & candidats / jour -->
-    <div class="section">
-      <h2>Nouveaux leads &amp; candidats par jour</h2>
-      <div class="box">
-        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Nouveaux candidats</span></div>
-        <div id="chartLeads"></div>
       </div>
     </div>
 
@@ -461,6 +414,65 @@
       </table></div></div>
     </div>
     </div><!-- /viewConv -->
+
+    <div id="viewMeta" role="tabpanel" aria-labelledby="tabMeta" hidden>
+    <p id="metaLoading" class="hint" style="margin:0 0 10px"></p>
+    <!-- META ADS → ROAS -->
+    <div class="section">
+      <h2>Meta Ads → ROAS</h2>
+      <div class="grid2" style="align-items:start">
+        <div>
+          <div class="box roas-lead" id="roasLeads"></div>
+          <div class="box lead-top" style="margin-top:14px"><h3>Leads → Inscrits</h3>
+            <div class="lead-hero" id="leadHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
+              <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div>
+          <div class="box roas-cand" id="roasCand"></div>
+          <div class="box cand-top" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
+            <div class="lead-hero" id="candHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
+              <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADS PAR PAYS (scaling) -->
+    <div class="section" id="secCountries" style="display:none">
+      <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
+      <div id="countries"></div>
+    </div>
+
+    <!-- CANDIDATS PAR LANGUE (scaling) -->
+    <div class="section" id="secCandidatScale" style="display:none">
+      <h2>Candidats par langue — ROAS &amp; budget pour scaler 🚀</h2>
+      <div id="candidatCountries"></div>
+      <p class="hint">Campagnes candidature LAL (haut de tunnel). Coût/candidat affiché pour info · CA en €. ROAS candidat = CA des candidats qui ont payé ÷ dépense (structurellement bas : le tunnel candidat→inscrit prend du temps). Reco basée sur le taux candidat→inscrit &amp; le ROAS — le coût/candidat n'entre pas dans la décision.</p>
+    </div>
+    <!-- RETARGETING (bas de funnel) -->
+    <div class="section" id="secRetgt" style="display:none">
+      <h2>Retargeting — reciblage des visiteurs non-payés 🎯</h2>
+      <div id="retargeting"></div>
+      <p class="hint">Campagne « Retargeting Florence » (bas de funnel, public chaud), <b>exclue du ROAS acquisition</b> pour ne pas le fausser. Résultat = <b>ClicInscription</b> (event d\'optimisation, pas la vente). <b>Pas de ROAS attribué ici</b> : une même vente est aussi touchée par Leads/Candidats → mesure l\'impact via le <b>ROAS global du compte</b>. Alerte si la fréquence dépasse ~4-5/pers. sur 7 j (fatigue de l\'audience).</p>
+    </div>
+
+    <!-- Graphique acquisition : nouveaux leads & candidats / jour -->
+    <div class="section">
+      <h2>Nouveaux leads &amp; candidats par jour</h2>
+      <div class="box">
+        <div class="legend"><span><i style="background:var(--blue)"></i>Nouveaux leads</span><span><i style="background:var(--accent)"></i>Nouveaux candidats</span></div>
+        <div id="chartLeads"></div>
+      </div>
+    </div>
+
+    </div><!-- /viewMeta -->
 
     <div id="viewPlan" role="tabpanel" aria-labelledby="tabPlan" hidden>
       <div class="kpis" id="planKpis"></div>
@@ -923,6 +935,20 @@ function renderClicks(d){
   el.innerHTML=html;
 }
 
+// Helpers ROAS partagés (Dashboard + onglet Meta Ads)
+function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // dépense en devise du compte
+function eur(v){return fr(Math.round(v||0))+' €';}
+function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
+function roasColor(r){ if(r==null) return 'var(--muted)'; if(r>=2) return 'var(--green)'; if(r>=1) return 'var(--gold)'; return '#ff5c5c'; }
+function rxc(v){return '<span style="font-weight:800;color:'+roasColor(v)+'">'+rx(v)+'</span>';}   // ROAS coloré : rouge <1× · orange 1–2× · vert ≥2×
+function catTbl(cat){
+  return '<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
+    +'<tr><td>Dépensé</td><td>'+spd(cat.spendToday)+'</td><td>'+spd(cat.spendTotal)+'</td></tr>'
+    +'<tr><td>CA</td><td>'+eur(cat.caToday)+'</td><td>'+eur(cat.caTotal)+'</td></tr>'
+    +'<tr class="roas"><td>ROAS</td><td>'+rxc(cat.roasToday)+'</td><td>'+rxc(cat.roasTotal)+'</td></tr>'
+    +'</tbody></table>';
+}
+
 function load(){
   if(PLAN_LOADED && !document.getElementById('viewPlan').hidden){ PLAN_LOADED=false; loadPlan(); }
   KEY=KEY||storedKey()||''; if(!KEY) return;
@@ -969,40 +995,25 @@ function load(){
         +'<div class="split">'+srow('candidat','Candidats',t.buckets.candidat||0,trb.candidat||0)+srowSub('↳ 🤖 Via ManyChat',mcT.paidToday,mcT.revEURToday)+srowSub('↳ 📸 Via Bio Instagram',bioT.paidToday,bioT.revEURToday)+srow('blue','Via leads',t.buckets.lead,trb.lead)+srow('green','Communauté',t.buckets.existant,trb.existant)
         +(t.buckets.nouveau>0?srow('gold','Nouveaux',t.buckets.nouveau,trb.nouveau):'')+'</div>';
 
-      // ---- Meta Ads → ROAS : recap total + Leads (bleu) + Candidats (rouge) ----
+      // ---- Meta Ads → ROAS : recap global (données légères, sans /adsets) ----
+      // Le détail Leads/Candidats (tables + par pays/langue) vit sous l'onglet Meta Ads (renderMeta).
       var a=d.ads||{available:false};
-      var recapEl=document.getElementById('adsRecap'), leadEl=document.getElementById('roasLeads'), candEl=document.getElementById('roasCand');
-      function spd(v){return fr(Math.round(v||0))+' '+CUR_SYM;}   // dépense en devise du compte
-      function eur(v){return fr(Math.round(v||0))+' €';}
-      function rx(v){return v!=null?v.toFixed(2)+'×':'—';}
-      function rxc(v){return '<span style="font-weight:800;color:'+roasColor(v)+'">'+rx(v)+'</span>';}   // ROAS coloré : rouge <1× · orange 1–2× · vert ≥2×
-      if(a.available && a.cat){
-        var C=a.cat;
-        function catTbl(cat){
-          return '<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
-            +'<tr><td>Dépensé</td><td>'+spd(cat.spendToday)+'</td><td>'+spd(cat.spendTotal)+'</td></tr>'
-            +'<tr><td>CA</td><td>'+eur(cat.caToday)+'</td><td>'+eur(cat.caTotal)+'</td></tr>'
-            +'<tr class="roas"><td>ROAS</td><td>'+rxc(cat.roasToday)+'</td><td>'+rxc(cat.roasTotal)+'</td></tr>'
-            +'</tbody></table>';
-        }
+      var recapEl=document.getElementById('adsRecap');
+      if(a.available){
         recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
           +'<table class="adstbl"><thead><tr><th></th><th>Aujourd\'hui</th><th>Depuis 15/07</th></tr></thead><tbody>'
-          +'<tr><td>Dépensé (total)</td><td>'+spd(C.total.spendToday)+'</td><td>'+spd(C.total.spendTotal)+'</td></tr>'
-          +'<tr class="sub2"><td>dont Leads</td><td>'+spd(C.lead.spendToday)+'</td><td>'+spd(C.lead.spendTotal)+'</td></tr>'
-          +'<tr class="sub2"><td>dont Candidats</td><td>'+spd(C.candidat.spendToday)+'</td><td>'+spd(C.candidat.spendTotal)+'</td></tr>'
-          +'<tr class="sub2"><td>dont Follow</td><td>'+spd(C.follow.spendToday)+'</td><td>'+spd(C.follow.spendTotal)+'</td></tr>'
-          +'<tr><td>CA total</td><td>'+eur(C.total.caToday)+'</td><td>'+eur(C.total.caTotal)+'</td></tr>'
-          +'<tr class="roas"><td>ROAS global</td><td>'+rxc(C.total.roasToday)+'</td><td>'+rxc(C.total.roasTotal)+'</td></tr>'
-          +'</tbody></table>';
-        leadEl.innerHTML='<h3>Leads</h3>'+catTbl(C.lead);
-        candEl.innerHTML='<h3>Candidats</h3>'+catTbl(C.candidat);
+          +'<tr><td>Dépensé (total)</td><td>'+spd(a.spendToday)+'</td><td>'+spd(a.spendTotal)+'</td></tr>'
+          +'<tr class="sub2"><td>dont acquisition</td><td>'+spd(a.spendTodayAcq)+'</td><td>'+spd(a.spendTotalAcq)+'</td></tr>'
+          +'<tr><td>CA Florence</td><td>'+eur(t.revenueEUR)+'</td><td>'+eur(f.revenueEUR)+'</td></tr>'
+          +'<tr class="roas"><td>ROAS acquisition</td><td>'+rxc(a.roasToday)+'</td><td>'+rxc(a.roasTotal)+'</td></tr>'
+          +'</tbody></table>'
+          +'<p class="hint" style="margin:4px 0 0">Détail par campagne, pays et langue → onglet <b>Meta Ads</b>.</p>';
       } else {
         var saved=''; try{saved=localStorage.getItem('adspend')||'';}catch(e){}
         recapEl.innerHTML='<h3>Recap — toutes les pubs</h3>'
           +'<p class="hint" style="margin:0 0 4px">Dépenses pub non connectées — entre ta dépense totale depuis le 15/07 :</p>'
           +'<div class="manual"><input id="adSpend" type="number" inputmode="decimal" placeholder="€ dépensés" value="'+saved+'"/><span id="roasOut" class="roasbig">—</span></div>'
           +'<p class="hint" style="margin:2px 0 0">ROAS = CA converti ('+fr(f.revenueEUR)+' €) ÷ dépense.</p>';
-        leadEl.innerHTML=''; candEl.innerHTML='';
         var inp=document.getElementById('adSpend');
         if(inp){ var calc=function(){ var v=parseFloat(inp.value)||0; try{localStorage.setItem('adspend',inp.value||'');}catch(e){} document.getElementById('roasOut').textContent=(v>0?(f.revenueEUR/v).toFixed(2)+'×':'—'); }; inp.addEventListener('input',calc); calc(); }
       }
@@ -1033,51 +1044,10 @@ function load(){
         +'</div>';
       recapEl.insertAdjacentHTML('beforeend','<div class="recap-pie"><div class="recap-pie-h">Type d\'artiste</div><div class="pierow">'+pie(tysegs,fr(tyFirst+tyCommu),'artistes')+tyList+'</div></div>');
 
-      // ---- Leads par pays (scaling) ----
-      renderCountries(d);
-
-      // ---- Candidats par langue (scaling) ----
-      renderCandidatScale(d);
-      renderRetargeting(d);
+      // ---- Ventes Bio / ManyChat / clics chat (Dashboard) ----
       renderManychat(d);
       renderBio(d);
       renderClicks(d);
-
-
-      // Leads combiné
-      document.getElementById('leadHero').innerHTML=
-        '<span class="big">'+fr(c.leads)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(c.inscrits)+'</span>'
-        +'<span class="rate"><span class="rlab">taux</span> '+c.rate+' %</span>';
-      var CMAP=[{lang:'IT',name:'Leads Italy',flag:'🇮🇹'},{lang:'ES',name:'Leads Spain',flag:'🇪🇸'},{lang:'DE',name:'Leads Germany',flag:'🇩🇪'},{lang:'FR',name:'Leads France',flag:'🇫🇷'},{lang:'EN',name:'Leads USA',flag:'🇺🇸'}];
-      function roasColor(r){ if(r==null) return 'var(--muted)'; if(r>=2) return 'var(--green)'; if(r>=1) return 'var(--gold)'; return '#ff5c5c'; }
-      var byLang={}; ((d.ads&&d.ads.byCountry)||[]).forEach(function(co){ byLang[co.lang]=co; });
-      var crows=CMAP.map(function(m){var x=f.conv[m.lang]||{leads:0,inscrits:0,rate:0}; var bc=byLang[m.lang]||{}; return {m:m,leads:x.leads,inscrits:x.inscrits,rate:x.rate,roas:(bc.roas!=null?bc.roas:null)};});
-      crows.sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.rate-a.rate)||(b.inscrits-a.inscrits); });
-      var body=crows.map(function(r){ var col=roasColor(r.roas);
-        return '<tr><td>'+r.m.flag+' '+r.m.name+'</td><td class="num">'+fr(r.leads)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.rate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
-      }).join('');
-      var totRoas=(d.ads&&d.ads.roasTotal!=null)?d.ads.roasTotal:null;
-      body+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(c.leads)+'</td><td class="num">'+fr(c.inscrits)+'</td><td class="num">'+c.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(totRoas)+'">'+(totRoas!=null?totRoas.toFixed(1)+'×':'—')+'</td></tr>';
-      document.querySelector('#convtbl tbody').innerHTML=body;
-
-      // ---- Candidats → Inscrits (ad sets candidature LAL) ----
-      var cdC=d.candidats||{total:0,converted:0,rate:0};
-      document.getElementById('candHero').innerHTML=
-        '<span class="big">'+fr(cdC.total)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(cdC.converted)+'</span>'
-        +'<span class="rate"><span class="rlab">taux</span> '+cdC.rate+' %</span>';
-      var cbc=((d.ads&&d.ads.candidatByCountry)||[]).slice().sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.convRate-a.convRate)||(b.inscrits-a.inscrits); });
-      var cbody=cbc.map(function(r){ var col=roasColor(r.roas);
-        var cells='<td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td>';
-        if(!(r.detail&&r.detail.length)){ return '<tr class="csub"><td>'+r.flag+' '+r.name+'</td>'+cells+'</tr>'; }   // ligne ring (pas de drill-down)
-        var head='<tr class="clang" onclick="toggleCand(\''+r.lang+'\')"><td><span class="chev" id="chev-'+r.lang+'">▸</span> '+r.flag+' '+r.name+'</td>'+cells+'</tr>';
-        var det=(r.detail||[]).map(function(x){ var dc=roasColor(x.roas);
-          return '<tr class="cdet cdet-'+r.lang+'" style="display:none"><td class="cdet-c">'+flag(x.country)+(x.country||'—')+'</td><td class="num">'+fr(x.candidats)+'</td><td class="num">'+fr(x.inscrits)+'</td><td class="num">'+x.convRate+' %</td><td class="num" style="font-weight:800;color:'+dc+'">'+(x.roas!=null?x.roas.toFixed(1)+'×':'—')+'</td></tr>';
-        }).join('');
-        return head+det;
-      }).join('');
-      var candTot=(d.ads&&d.ads.cat&&d.ads.cat.candidat)?d.ads.cat.candidat.roasTotal:null;
-      cbody+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(cdC.total)+'</td><td class="num">'+fr(cdC.converted)+'</td><td class="num">'+cdC.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(candTot)+'">'+(candTot!=null?candTot.toFixed(1)+'×':'—')+'</td></tr>';
-      document.querySelector('#candConvtbl tbody').innerHTML=cbody;
 
       // Graphiques
       var dd=d.daily||[], dsl=dd.map(function(x){return x.date;});
@@ -1091,7 +1061,6 @@ function load(){
         {vals: ddL.map(function(x){return x.salesComm||0;}), color:'var(--green)'},
         {vals: ddL.map(function(x){return x.salesNew||0;}), color:'var(--gold)'}
       ]);
-      document.getElementById('chartLeads').innerHTML=chartBars(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}));
       var cum=0, cumArr=dd.map(function(x){cum+=x.artists;return cum;});
       document.getElementById('chartArtists').innerHTML=chartArea(dsl, cumArr);
 
@@ -1132,6 +1101,73 @@ function load(){
       if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; clearKey(); KEY=''; }
       else document.getElementById('dashErr').textContent='Erreur : '+e.message;
     });
+}
+
+function renderMeta(d){
+  var a=d.ads||{available:false};
+  var f=d.florence, c=f.conv.TOTAL;
+  CUR_SYM=curSym((a&&a.currency)||'EUR');
+
+  // Recap Leads / Candidats (tables ROAS)
+  var leadEl=document.getElementById('roasLeads'), candEl=document.getElementById('roasCand');
+  if(a.available && a.cat){
+    leadEl.innerHTML='<h3>Leads</h3>'+catTbl(a.cat.lead);
+    candEl.innerHTML='<h3>Candidats</h3>'+catTbl(a.cat.candidat);
+  } else { leadEl.innerHTML=''; candEl.innerHTML=''; }
+
+  // Par pays / langue / retargeting
+  renderCountries(d);
+  renderCandidatScale(d);
+  renderRetargeting(d);
+
+  // Leads combiné
+  document.getElementById('leadHero').innerHTML=
+    '<span class="big">'+fr(c.leads)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(c.inscrits)+'</span>'
+    +'<span class="rate"><span class="rlab">taux</span> '+c.rate+' %</span>';
+  var CMAP=[{lang:'IT',name:'Leads Italy',flag:'🇮🇹'},{lang:'ES',name:'Leads Spain',flag:'🇪🇸'},{lang:'DE',name:'Leads Germany',flag:'🇩🇪'},{lang:'FR',name:'Leads France',flag:'🇫🇷'},{lang:'EN',name:'Leads USA',flag:'🇺🇸'}];
+  var byLang={}; ((d.ads&&d.ads.byCountry)||[]).forEach(function(co){ byLang[co.lang]=co; });
+  var crows=CMAP.map(function(m){var x=f.conv[m.lang]||{leads:0,inscrits:0,rate:0}; var bc=byLang[m.lang]||{}; return {m:m,leads:x.leads,inscrits:x.inscrits,rate:x.rate,roas:(bc.roas!=null?bc.roas:null)};});
+  crows.sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.rate-a.rate)||(b.inscrits-a.inscrits); });
+  var body=crows.map(function(r){ var col=roasColor(r.roas);
+    return '<tr><td>'+r.m.flag+' '+r.m.name+'</td><td class="num">'+fr(r.leads)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.rate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td></tr>';
+  }).join('');
+  var totRoas=(d.ads&&d.ads.roasTotal!=null)?d.ads.roasTotal:null;
+  body+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(c.leads)+'</td><td class="num">'+fr(c.inscrits)+'</td><td class="num">'+c.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(totRoas)+'">'+(totRoas!=null?totRoas.toFixed(1)+'×':'—')+'</td></tr>';
+  document.querySelector('#convtbl tbody').innerHTML=body;
+
+  // Candidats → Inscrits (ad sets candidature LAL)
+  var cdC=d.candidats||{total:0,converted:0,rate:0};
+  document.getElementById('candHero').innerHTML=
+    '<span class="big">'+fr(cdC.total)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(cdC.converted)+'</span>'
+    +'<span class="rate"><span class="rlab">taux</span> '+cdC.rate+' %</span>';
+  var cbc=((d.ads&&d.ads.candidatByCountry)||[]).slice().sort(function(a,b){ var ra=a.roas==null?-1:a.roas, rb=b.roas==null?-1:b.roas; return (rb-ra)||(b.convRate-a.convRate)||(b.inscrits-a.inscrits); });
+  var cbody=cbc.map(function(r){ var col=roasColor(r.roas);
+    var cells='<td class="num">'+fr(r.candidats)+'</td><td class="num">'+fr(r.inscrits)+'</td><td class="num">'+r.convRate+' %</td><td class="num" style="font-weight:800;color:'+col+'">'+(r.roas!=null?r.roas.toFixed(1)+'×':'—')+'</td>';
+    if(!(r.detail&&r.detail.length)){ return '<tr class="csub"><td>'+r.flag+' '+r.name+'</td>'+cells+'</tr>'; }   // ligne ring (pas de drill-down)
+    var head='<tr class="clang" onclick="toggleCand(\''+r.lang+'\')"><td><span class="chev" id="chev-'+r.lang+'">▸</span> '+r.flag+' '+r.name+'</td>'+cells+'</tr>';
+    var det=(r.detail||[]).map(function(x){ var dc=roasColor(x.roas);
+      return '<tr class="cdet cdet-'+r.lang+'" style="display:none"><td class="cdet-c">'+flag(x.country)+(x.country||'—')+'</td><td class="num">'+fr(x.candidats)+'</td><td class="num">'+fr(x.inscrits)+'</td><td class="num">'+x.convRate+' %</td><td class="num" style="font-weight:800;color:'+dc+'">'+(x.roas!=null?x.roas.toFixed(1)+'×':'—')+'</td></tr>';
+    }).join('');
+    return head+det;
+  }).join('');
+  var candTot=(d.ads&&d.ads.cat&&d.ads.cat.candidat)?d.ads.cat.candidat.roasTotal:null;
+  cbody+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(cdC.total)+'</td><td class="num">'+fr(cdC.converted)+'</td><td class="num">'+cdC.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(candTot)+'">'+(candTot!=null?candTot.toFixed(1)+'×':'—')+'</td></tr>';
+  document.querySelector('#candConvtbl tbody').innerHTML=cbody;
+
+  // Graphe Nouveaux leads & candidats par jour
+  var dd=d.daily||[], LC_START='2026-07-22';
+  var ddL=dd.filter(function(x){return x.date>=LC_START;}), dslL=ddL.map(function(x){return x.date;});
+  document.getElementById('chartLeads').innerHTML=chartBars(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}));
+}
+
+var META_LOADED=false;
+function loadMeta(){
+  if(!KEY) return;
+  var mEl=document.getElementById('metaLoading'); if(mEl) mEl.textContent='Chargement des données Meta Ads (ad sets)…';
+  fetch('/api/conversions?view=meta',{headers:{'x-dash-key':KEY}})
+    .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
+    .then(function(d){ if(d.error) throw new Error(d.error); META_LOADED=true; if(mEl) mEl.textContent=''; renderMeta(d); })
+    .catch(function(e){ if(mEl) mEl.textContent='Meta Ads indisponible : '+e.message; });
 }
 
 /* =======================================================================
@@ -1176,13 +1212,16 @@ var CEIL_FORMATS=[{n:'Large Ceiling',c:16},{n:'Extra Large',c:4}];
 var sim={seqs:null,wall:'Small',ceil:'Large Ceiling'};
 
 function showView(v){
-  var conv=v==='conv';
-  document.getElementById('viewConv').hidden=!conv;
-  document.getElementById('viewPlan').hidden=conv;
-  document.getElementById('tabConv').setAttribute('aria-selected',conv?'true':'false');
-  document.getElementById('tabPlan').setAttribute('aria-selected',conv?'false':'true');
+  var isConv=v==='conv', isMeta=v==='meta', isPlan=v==='plan';
+  document.getElementById('viewConv').hidden=!isConv;
+  document.getElementById('viewMeta').hidden=!isMeta;
+  document.getElementById('viewPlan').hidden=!isPlan;
+  document.getElementById('tabConv').setAttribute('aria-selected',isConv?'true':'false');
+  document.getElementById('tabMeta').setAttribute('aria-selected',isMeta?'true':'false');
+  document.getElementById('tabPlan').setAttribute('aria-selected',isPlan?'true':'false');
   try{ localStorage.setItem('dashview',v); }catch(e){}
-  if(!conv && !PLAN_LOADED) loadPlan();
+  if(isPlan && !PLAN_LOADED) loadPlan();
+  if(isMeta && !META_LOADED) loadMeta();
 }
 
 function loadPlan(){
@@ -1362,9 +1401,13 @@ function renderPlan(){
 // Auto-login : on cache tout de suite le login (sinon le champ mot de passe "flashe" pendant le fetch)
 if(storedKey()){ KEY=storedKey(); document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; document.getElementById('upd').textContent='Chargement…'; load();
   var v=''; try{ v=localStorage.getItem('dashview')||''; }catch(e){}
-  if(v==='plan') showView('plan');
+  if(v==='plan'||v==='meta') showView(v);
 }
-setInterval(function(){ if(KEY) load(); }, 60000);
+setInterval(function(){
+  if(!KEY) return;
+  load();
+  if(META_LOADED && !document.getElementById('viewMeta').hidden) loadMeta();
+}, 180000);
 </script>
 </body>
 </html>
