@@ -327,6 +327,34 @@
       <div class="box" id="adsRecap"></div>
     </div>
 
+    <!-- META ADS → ROAS (détail complet, page 1) -->
+    <p id="roasLoading" class="hint" style="margin:14px 0 4px"></p>
+    <div class="section" style="margin-top:0">
+      <h2>Meta Ads → ROAS</h2>
+      <div class="grid2" style="align-items:start">
+        <div>
+          <div class="box roas-lead" id="roasLeads"></div>
+          <div class="box lead-top" style="margin-top:14px"><h3>Leads → Inscrits</h3>
+            <div class="lead-hero" id="leadHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
+              <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div>
+          <div class="box roas-cand" id="roasCand"></div>
+          <div class="box cand-top" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
+            <div class="lead-hero" id="candHero"></div>
+            <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
+              <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- CUMUL -->
     <h2 class="sech">Cumul depuis le 15 juillet</h2>
     <div class="cumul-grid">
@@ -419,33 +447,6 @@
 
     <div id="viewMeta" role="tabpanel" aria-labelledby="tabMeta" hidden>
     <p id="metaLoading" class="hint" style="margin:0 0 10px"></p>
-    <!-- META ADS → ROAS -->
-    <div class="section">
-      <h2>Meta Ads → ROAS</h2>
-      <div class="grid2" style="align-items:start">
-        <div>
-          <div class="box roas-lead" id="roasLeads"></div>
-          <div class="box lead-top" style="margin-top:14px"><h3>Leads → Inscrits</h3>
-            <div class="lead-hero" id="leadHero"></div>
-            <div style="overflow-x:auto;margin-top:12px"><table id="convtbl">
-              <thead><tr><th>Ad set (pays)</th><th class="num">Leads</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
-              <tbody></tbody>
-            </table></div>
-          </div>
-        </div>
-        <div>
-          <div class="box roas-cand" id="roasCand"></div>
-          <div class="box cand-top" style="margin-top:14px"><h3>Candidats → Inscrits</h3>
-            <div class="lead-hero" id="candHero"></div>
-            <div style="overflow-x:auto;margin-top:12px"><table id="candConvtbl">
-              <thead><tr><th>Ad set (langue)</th><th class="num">Candidats</th><th class="num">Insc.</th><th class="num">Taux</th><th class="num">ROAS</th></tr></thead>
-              <tbody></tbody>
-            </table></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- LEADS PAR PAYS (scaling) -->
     <div class="section" id="secCountries" style="display:none">
       <h2>Leads par pays — ROAS &amp; budget pour scaler 🚀</h2>
@@ -1098,6 +1099,7 @@ function load(){
 
       document.getElementById('upd').textContent='MàJ '+new Date(d.updated).toLocaleTimeString('fr-FR');
       if(!PLAN_LOADED) loadPlan();   // alimente aussi le total d'artistes de l'onglet Conversions
+      if(!HEAVY_LOADED && !HEAVY_INFLIGHT) loadHeavy();   // remplit les tableaux ROAS de la page 1 (1 appel lourd par ouverture)
     })
     .catch(function(e){
       if(String(e.message)==='401'){ document.getElementById('loginErr').textContent='Mot de passe incorrect.'; clearKey(); KEY=''; }
@@ -1105,7 +1107,7 @@ function load(){
     });
 }
 
-function renderMeta(d){
+function renderRoasTables(d){
   var a=d.ads||{available:false};
   var f=d.florence, c=f.conv.TOTAL;
   CUR_SYM=curSym((a&&a.currency)||'EUR');
@@ -1113,16 +1115,11 @@ function renderMeta(d){
   // Recap Leads / Candidats (tables ROAS)
   var leadEl=document.getElementById('roasLeads'), candEl=document.getElementById('roasCand');
   if(a.available && a.cat){
-    leadEl.innerHTML='<h3>Leads</h3>'+catTbl(a.cat.lead);
-    candEl.innerHTML='<h3>Candidats</h3>'+catTbl(a.cat.candidat);
-  } else { leadEl.innerHTML=''; candEl.innerHTML=''; }
+    if(leadEl) leadEl.innerHTML='<h3>Leads</h3>'+catTbl(a.cat.lead);
+    if(candEl) candEl.innerHTML='<h3>Candidats</h3>'+catTbl(a.cat.candidat);
+  } else { if(leadEl) leadEl.innerHTML=''; if(candEl) candEl.innerHTML=''; }
 
-  // Par pays / langue / retargeting
-  renderCountries(d);
-  renderCandidatScale(d);
-  renderRetargeting(d);
-
-  // Leads combiné
+  // Leads → Inscrits (par pays)
   document.getElementById('leadHero').innerHTML=
     '<span class="big">'+fr(c.leads)+'</span><span class="arw">→</span><span class="big" style="color:var(--green)">'+fr(c.inscrits)+'</span>'
     +'<span class="rate"><span class="rlab">taux</span> '+c.rate+' %</span>';
@@ -1155,21 +1152,31 @@ function renderMeta(d){
   var candTot=(d.ads&&d.ads.cat&&d.ads.cat.candidat)?d.ads.cat.candidat.roasTotal:null;
   cbody+='<tr class="tot"><td>TOTAL</td><td class="num">'+fr(cdC.total)+'</td><td class="num">'+fr(cdC.converted)+'</td><td class="num">'+cdC.rate+' %</td><td class="num" style="font-weight:800;color:'+roasColor(candTot)+'">'+(candTot!=null?candTot.toFixed(1)+'×':'—')+'</td></tr>';
   document.querySelector('#candConvtbl tbody').innerHTML=cbody;
+}
 
-  // Graphe Nouveaux leads & candidats par jour
+function renderMetaSections(d){
+  // Sections « scaling » + retargeting + graphe acquisition (onglet Meta Ads)
+  renderCountries(d);
+  renderCandidatScale(d);
+  renderRetargeting(d);
   var dd=d.daily||[], LC_START='2026-07-22';
   var ddL=dd.filter(function(x){return x.date>=LC_START;}), dslL=ddL.map(function(x){return x.date;});
   document.getElementById('chartLeads').innerHTML=chartBars(dslL, ddL.map(function(x){return x.leads;}), ddL.map(function(x){return x.candidats||0;}));
 }
 
-var META_LOADED=false;
-function loadMeta(){
-  if(!KEY) return;
-  var mEl=document.getElementById('metaLoading'); if(mEl) mEl.textContent='Chargement des données Meta Ads (ad sets)…';
+// Détail ad-set (LOURD, appel /adsets) : 1 fetch alimente À LA FOIS les tableaux ROAS de la page 1
+// ET les sections de l'onglet Meta Ads. Chargé 1x à l'ouverture, rafraîchi doucement (cf setInterval).
+var HEAVY_LOADED=false, HEAVY_TS=0, HEAVY_INFLIGHT=false;
+function loadHeavy(){
+  if(!KEY || HEAVY_INFLIGHT) return;
+  HEAVY_INFLIGHT=true;
+  var hints=[document.getElementById('roasLoading'), document.getElementById('metaLoading')];
+  if(!HEAVY_LOADED) hints.forEach(function(el){ if(el) el.textContent='Chargement des données Meta Ads (ad sets)…'; });
   fetch('/api/conversions?view=meta',{headers:{'x-dash-key':KEY}})
     .then(function(r){ if(r.status===401) throw new Error('401'); return r.json(); })
-    .then(function(d){ if(d.error) throw new Error(d.error); META_LOADED=true; if(mEl) mEl.textContent=''; renderMeta(d); })
-    .catch(function(e){ if(mEl) mEl.textContent='Meta Ads indisponible : '+e.message; });
+    .then(function(d){ if(d.error) throw new Error(d.error); HEAVY_LOADED=true; HEAVY_TS=Date.now(); hints.forEach(function(el){ if(el) el.textContent=''; }); renderRoasTables(d); renderMetaSections(d); })
+    .catch(function(e){ hints.forEach(function(el){ if(el) el.textContent='Meta Ads indisponible : '+e.message; }); })
+    .then(function(){ HEAVY_INFLIGHT=false; });
 }
 
 /* =======================================================================
@@ -1223,7 +1230,7 @@ function showView(v){
   document.getElementById('tabPlan').setAttribute('aria-selected',isPlan?'true':'false');
   try{ localStorage.setItem('dashview',v); }catch(e){}
   if(isPlan && !PLAN_LOADED) loadPlan();
-  if(isMeta && !META_LOADED) loadMeta();
+  if(isMeta && !HEAVY_LOADED) loadHeavy();
 }
 
 function loadPlan(){
@@ -1408,7 +1415,10 @@ if(storedKey()){ KEY=storedKey(); document.getElementById('login').style.display
 setInterval(function(){
   if(!KEY) return;
   load();
-  if(META_LOADED && !document.getElementById('viewMeta').hidden) loadMeta();
+  // Détail ad-set (lourd) : rafraîchi si l'onglet Meta Ads est ouvert, sinon en douceur toutes les ~10 min
+  // pour les tableaux ROAS de la page 1 (le ROAS cumulé bouge lentement -> pas besoin de rappeler /adsets à chaque tick).
+  if(!HEAVY_LOADED) return;
+  if(!document.getElementById('viewMeta').hidden || (Date.now()-HEAVY_TS>600000)) loadHeavy();
 }, 180000);
 </script>
 </body>
