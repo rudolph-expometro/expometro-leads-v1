@@ -180,7 +180,8 @@ async function metaSpend() {
   }
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
-  const asBudgets = await adsetBudgets();
+  let asBudgets = await adsetBudgets();
+  if (asBudgets === null) { await new Promise(r => setTimeout(r, 700)); asBudgets = await adsetBudgets(); }   // retry : /adsets échoue parfois (rate-limit) -> sinon tous les statuts tombent en "inconnu"
   const asFreq7 = await adsetInsights('date_preset=last_7d');   // fréquence 7j (retargeting)
   // Dépense par ad set DEPUIS la date de split (pour un ROAS par ring comparable : dépense et CA sur la même fenêtre).
   const asSplit = EN_SPLIT_SINCE ? await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: EN_SPLIT_SINCE, until: todayISO() }))) : null;
@@ -589,7 +590,7 @@ export default async function handler(req, res) {
         const insc = inscritsByLang[co.lang] || 0;
         return {
           key: co.key, name: co.name, flag: co.flag, region: co.region, lang: co.lang,
-          status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
+          status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.some(a => a.status) ? 'PAUSED' : ''),
           adsets: ms.map(a => a.name),
           spendTotal: Math.round(spT), spendToday: Math.round(spD),
           dailyBudget: bud > 0 ? Math.round(bud) : null,
@@ -651,7 +652,7 @@ export default async function handler(req, res) {
         const lastRaise = ms.reduce((mx, a) => (a.raiseDay && (!mx || a.raiseDay > mx)) ? a.raiseDay : mx, null);
         return {
           key: 'CAND_' + co.key, name: co.name, flag: co.flag, lang: co.lang,
-          status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
+          status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.some(a => a.status) ? 'PAUSED' : ''),
           spendTotal: Math.round(spT), spendToday: Math.round(spD),
           dailyBudget: bud > 0 ? Math.round(bud) : null,
           candidats: cand, inscrits: insc, revEUR: Math.round(rev),
@@ -676,7 +677,7 @@ export default async function handler(req, res) {
             const lastRaise = ms.reduce((mx, a) => (a.raiseDay && (!mx || a.raiseDay > mx)) ? a.raiseDay : mx, null);
             return {
               key: 'CAND_EN_' + ring, name, flag: '🌍', lang: 'EN', sinceSplit: EN_SPLIT_SINCE,
-              status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.length ? 'PAUSED' : ''),
+              status: ms.some(a => /ACTIVE/i.test(a.status || '')) ? 'ACTIVE' : (ms.some(a => a.status) ? 'PAUSED' : ''),
               spendTotal: Math.round(spW), spendToday: Math.round(spD),
               dailyBudget: bud > 0 ? Math.round(bud) : null,
               candidats: cand, inscrits: insc, revEUR: Math.round(rev),
