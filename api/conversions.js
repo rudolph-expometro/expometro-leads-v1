@@ -135,11 +135,29 @@ async function metaSpend() {
     if (r === null) r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,spend', dateQs);
     return r;
   }
+  let _asBudgetsErr = '';
   async function adsetBudgets() {
+    // filtre = seulement les ad sets vivants (exclut ARCHIVED/DELETED, la masse) -> payload réduit, moins de timeout/rate-limit.
+    const filt = encodeURIComponent(JSON.stringify([{ field: 'effective_status', operator: 'IN', value: ['ACTIVE', 'PAUSED', 'ADSET_PAUSED', 'CAMPAIGN_PAUSED', 'PENDING_REVIEW', 'IN_PROCESS', 'WITH_ISSUES', 'PENDING_BILLING_INFO'] }]));
     let url = `https://graph.facebook.com/${ver}/${id}/adsets?access_token=${encodeURIComponent(token)}`
-      + `&fields=name,daily_budget,lifetime_budget,effective_status&limit=500`;
+      + `&fields=name,daily_budget,lifetime_budget,effective_status&limit=200&filtering=${filt}`;
     let out = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
+      let r; try { r = await fetch(url); } catch (e) { _asBudgetsErr = 'throw'; return null; }
+      if (!r.ok) { _asBudgetsErr = 'http-' + r.status + ':' + (await r.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 140); return null; }
+      const d = await r.json();
+      out = out.concat(d.data || []);
+      if (d.paging && d.paging.next) url = d.paging.next; else break;
+    }
+    return out;
+  }
+  // Budget au niveau CAMPAGNE (pour les campagnes en CBO/Advantage Campaign Budget : l'ad set n'a pas de daily_budget).
+  async function campaignBudgets() {
+    const filt = encodeURIComponent(JSON.stringify([{ field: 'effective_status', operator: 'IN', value: ['ACTIVE', 'PAUSED', 'ADSET_PAUSED', 'CAMPAIGN_PAUSED', 'PENDING_REVIEW', 'IN_PROCESS', 'WITH_ISSUES'] }]));
+    let url = `https://graph.facebook.com/${ver}/${id}/campaigns?access_token=${encodeURIComponent(token)}`
+      + `&fields=name,daily_budget,lifetime_budget,effective_status&limit=200&filtering=${filt}`;
+    let out = [];
+    for (let i = 0; i < 6; i++) {
       let r; try { r = await fetch(url); } catch (e) { return null; }
       if (!r.ok) return null;
       const d = await r.json();
@@ -183,6 +201,7 @@ async function metaSpend() {
   let asBudgets = await adsetBudgets();
   if (asBudgets === null) { await new Promise(r => setTimeout(r, 700)); asBudgets = await adsetBudgets(); }   // retry : /adsets échoue parfois (rate-limit) -> sinon tous les statuts tombent en "inconnu"
   const asFreq7 = await adsetInsights('date_preset=last_7d');   // fréquence 7j (retargeting)
+  const asCampBudgets = await campaignBudgets();   // budgets CBO (niveau campagne) + repli statut
   // Dépense par ad set DEPUIS la date de split (pour un ROAS par ring comparable : dépense et CA sur la même fenêtre).
   const asSplit = EN_SPLIT_SINCE ? await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: EN_SPLIT_SINCE, until: todayISO() }))) : null;
   // --- Depense PAR AD (créa) : ROAS (Purchase ROAS Meta) + leads par créa ---
@@ -216,6 +235,19 @@ async function metaSpend() {
   for (const r of (asSplit || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendSplit = (s.spendSplit || 0) + +(r.spend || 0); }
   for (const r of (asFreq7 || [])) { const s = byId[r.adset_id]; if (s && r.frequency != null) s.freq7 = +r.frequency; }
   for (const b of (asBudgets || [])) { const s = byId[b.id]; if (s) { s.dailyBudget = b.daily_budget ? +b.daily_budget / 100 : null; s.status = b.effective_status || ''; } }
+  // CBO : rattache le budget campagne aux ad sets sans budget propre ; + repli statut campagne quand /adsets ne remonte pas le statut.
+  const campBud = {};
+  for (const c of (asCampBudgets || [])) {
+    const dbb = c.daily_budget ? +c.daily_budget / 100 : null, lbb = c.lifetime_budget ? +c.lifetime_budget / 100 : null;
+    if (c.name) campBud[c.name] = { daily: dbb, lifetime: lbb, cbo: !!(dbb || lbb), status: c.effective_status || '' };
+  }
+  for (const s of Object.values(byId)) {
+    if (s.dailyBudget == null && campBud[s.campaign] && campBud[s.campaign].cbo) {
+      s.dailyBudget = campBud[s.campaign].daily != null ? campBud[s.campaign].daily : campBud[s.campaign].lifetime;
+      s.budgetCbo = true;
+    }
+    if (!s.status && campBud[s.campaign] && campBud[s.campaign].status) s.status = campBud[s.campaign].status;
+  }
   // Filet de secours : Meta ne remonte pas toujours le budget par ad set (CBO, permission, champ vide).
   // On retombe alors sur le budget réel saisi ici (devise du compte pub, $). Ne remplit QUE les budgets
   // manquants -> la valeur LIVE de Meta reste prioritaire quand elle existe. À mettre à jour SEULEMENT
@@ -253,7 +285,8 @@ async function metaSpend() {
   const adsetDbg = {
     totalRows: asTotal === null ? 'ERR' : asTotal.length,
     todayRows: asToday === null ? 'ERR' : asToday.length,
-    budgetRows: asBudgets === null ? 'ERR' : (asBudgets ? asBudgets.length : 0),
+    budgetRows: asBudgets === null ? ('ERR:' + (_asBudgetsErr || '?')) : (asBudgets ? asBudgets.length : 0),
+    campBudgetRows: asCampBudgets === null ? 'ERR' : (asCampBudgets ? asCampBudgets.length : 0),
     raises: _br.dbg + '/' + _matched + 'matched'
   };
 
