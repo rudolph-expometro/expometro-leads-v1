@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow"/>
 <title>Suivi conversions — ExpoMetro</title>
 <style>
-  :root{--bg:#070a17;--card:#0e1431;--card2:#131a3d;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--blue:#5b8cff;--gold:#ffc04d;--txt:#eef1f7}
+  :root{--bg:#070a17;--card:#0e1431;--card2:#131a3d;--line:rgba(255,255,255,.12);--muted:#8a93a6;--accent:#FF5267;--green:#22e06b;--blue:#5b8cff;--gold:#ffc04d;--txt:#eef1f7;--retgt:#a87bff}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--txt);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 80px}
@@ -51,6 +51,8 @@
   .cand-top{border-top:3px solid var(--accent)} .cand-top>h3{color:var(--accent)}
   #countries .ctry{border-top:3px solid var(--blue)}
   #candidatCountries .ctry{border-top:3px solid var(--accent)}
+  #retargeting .ctry{border-top:3px solid var(--retgt)}
+  #secRetgt>h2{color:var(--retgt)}
   /* Ventes via ManyChat */
   .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .mc-cell{background:var(--bg);border-radius:10px;padding:12px 14px}
@@ -335,6 +337,15 @@
       <div class="kpis" id="kpis"></div>
     </div>
 
+    <!-- Graphique ventes / jour par source -->
+    <div class="section">
+      <h2>Ventes par jour</h2>
+      <div class="box">
+        <div class="legend"><span><i style="background:var(--txt)"></i>Total ventes</span><span><i style="background:var(--blue)"></i>Via leads</span><span><i style="background:var(--accent)"></i>Via candidats</span><span><i style="background:var(--green)"></i>Communauté</span><span><i style="background:var(--gold)"></i>Nouveaux</span></div>
+        <div id="chartSales"></div>
+      </div>
+    </div>
+
     <!-- META ADS → ROAS -->
     <div class="section">
       <h2>Meta Ads → ROAS</h2>
@@ -389,15 +400,6 @@
       <h2>Retargeting — reciblage des visiteurs non-payés 🎯</h2>
       <div id="retargeting"></div>
       <p class="hint">Campagne « Retargeting Florence » (bas de funnel, public chaud), <b>exclue du ROAS acquisition</b> pour ne pas le fausser. Résultat = <b>ClicInscription</b> (event d\'optimisation, pas la vente). <b>Pas de ROAS attribué ici</b> : une même vente est aussi touchée par Leads/Candidats → mesure l\'impact via le <b>ROAS global du compte</b>. Alerte si la fréquence dépasse ~4-5/pers. sur 7 j (fatigue de l\'audience).</p>
-    </div>
-
-    <!-- Graphique ventes / jour par source -->
-    <div class="section">
-      <h2>Ventes par jour</h2>
-      <div class="box">
-        <div class="legend"><span><i style="background:var(--txt)"></i>Total ventes</span><span><i style="background:var(--blue)"></i>Via leads</span><span><i style="background:var(--accent)"></i>Via candidats</span><span><i style="background:var(--green)"></i>Communauté</span><span><i style="background:var(--gold)"></i>Nouveaux</span></div>
-        <div id="chartSales"></div>
-      </div>
     </div>
 
     <!-- Graphique acquisition : nouveaux leads & candidats / jour -->
