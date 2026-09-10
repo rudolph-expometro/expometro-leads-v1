@@ -101,7 +101,7 @@ async function metaSpend() {
     let total = 0, acq = 0; const breakdown = [];
     for (const c of (rows || [])) {
       const s = +(c.spend || 0); total += s;
-      const counted = ACQ_OBJECTIVES.has(c.objective);
+      const counted = ACQ_OBJECTIVES.has(c.objective) && !/retarget/i.test(c.campaign_name || '');
       if (counted) acq += s;
       if (s > 0) breakdown.push({ name: c.campaign_name || '(sans nom)', objective: c.objective || '', spend: Math.round(s), counted });
     }
@@ -129,7 +129,9 @@ async function metaSpend() {
   }
   // Certaines versions d'API refusent `objective` au niveau ad set -> on retente sans si echec.
   async function adsetInsights(dateQs) {
-    let r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,objective,spend', dateQs);
+    let r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,objective,spend,actions,frequency', dateQs);
+    if (r === null) r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,spend,actions,frequency', dateQs);
+    if (r === null) r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,objective,spend', dateQs);
     if (r === null) r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,spend', dateQs);
     return r;
   }
@@ -179,6 +181,7 @@ async function metaSpend() {
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
   const asBudgets = await adsetBudgets();
+  const asFreq7 = await adsetInsights('date_preset=last_7d');   // fréquence 7j (retargeting)
   // Dépense par ad set DEPUIS la date de split (pour un ROAS par ring comparable : dépense et CA sur la même fenêtre).
   const asSplit = EN_SPLIT_SINCE ? await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: EN_SPLIT_SINCE, until: todayISO() }))) : null;
   // --- Depense PAR AD (créa) : ROAS (Purchase ROAS Meta) + leads par créa ---
@@ -207,9 +210,10 @@ async function metaSpend() {
   function slot(k, name, campaign, objective) {
     return byId[k] || (byId[k] = { id: k, name: name || '', campaign: campaign || '', objective: objective || '', spendTotal: 0, spendToday: 0, dailyBudget: null, status: '' });
   }
-  for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); }
+  for (const r of (asTotal || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendTotal += +(r.spend || 0); if (r.actions) s.actionsTotal = r.actions; }
   for (const r of (asToday || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendToday += +(r.spend || 0); }
   for (const r of (asSplit || [])) { const s = slot(r.adset_id, r.adset_name, r.campaign_name, r.objective); s.spendSplit = (s.spendSplit || 0) + +(r.spend || 0); }
+  for (const r of (asFreq7 || [])) { const s = byId[r.adset_id]; if (s && r.frequency != null) s.freq7 = +r.frequency; }
   for (const b of (asBudgets || [])) { const s = byId[b.id]; if (s) { s.dailyBudget = b.daily_budget ? +b.daily_budget / 100 : null; s.status = b.effective_status || ''; } }
   // Filet de secours : Meta ne remonte pas toujours le budget par ad set (CBO, permission, champ vide).
   // On retombe alors sur le budget réel saisi ici (devise du compte pub, $). Ne remplit QUE les budgets
@@ -239,10 +243,11 @@ async function metaSpend() {
     // ⚠️ « follow » AVANT « LAL » : une campagne follow (ex. « Ads to follow - LAL WORLD », objectif
     // LINK_CLICKS) reste un follow même si son nom contient « LAL » — sinon elle pollue les Candidats.
     if (/follow/i.test(n) || !ACQ_OBJECTIVES.has(a.objective)) return 'follow';
+    if (/retarget/i.test(n) || /retgt/i.test(a.name || '')) return 'retgt';
     if (/candidat|LAL/i.test(n)) return 'candidat';
     return 'lead';
   }
-  const spendCat = { lead: { today: 0, total: 0 }, candidat: { today: 0, total: 0 }, follow: { today: 0, total: 0 } };
+  const spendCat = { lead: { today: 0, total: 0 }, candidat: { today: 0, total: 0 }, follow: { today: 0, total: 0 }, retgt: { today: 0, total: 0 } };
   for (const a of adsets) { a.cat = adsetCat(a); spendCat[a.cat].today += a.spendToday; spendCat[a.cat].total += a.spendTotal; }
   const adsetDbg = {
     totalRows: asTotal === null ? 'ERR' : asTotal.length,
@@ -529,12 +534,49 @@ export default async function handler(req, res) {
       // MAIS on exclut toujours les ad sets candidature LAL (campagne séparée) : sinon "Candidatures LAL IT"
       // serait rattaché au pays "IT" et gonflerait à tort le budget / la dépense / le ROAS des Leads.
       const notCand = a => !/candidat|LAL/i.test(a.campaign || '') && !/candidat|LAL/i.test(a.name || '');
+      const notRetgt = a => !/retarget/i.test(a.campaign || '') && !/retgt/i.test(a.name || '');
       const anyObj = allAdsets.some(a => a.objective);
-      const pool = (anyObj ? allAdsets.filter(a => /LEAD/i.test(a.objective || '')) : allAdsets).filter(notCand);
+      const pool = (anyObj ? allAdsets.filter(a => /LEAD/i.test(a.objective || '')) : allAdsets).filter(notCand).filter(notRetgt);
       const roasRate = EUR_RATES[spend.currency] || 1;   // depense (devise compte) -> EUR pour le ROAS
       // Nb de jours depuis une date 'YYYY-MM-DD' (pour le cooldown, alimenté par l'Activity log Meta).
       const daysSince = (day) => { if (!day) return null; const n = Math.floor((Date.parse(today + 'T00:00:00Z') - Date.parse(day + 'T00:00:00Z')) / 86400000); return (n >= 0 && n < 3650) ? n : null; };
       const used = new Set();
+      // --- RETARGETING (bas de funnel, public chaud) : section ISOLÉE, exclue de l'acquisition ---
+      const RETGT = [
+        { key: 'RT_FR', lang: 'FR', flag: '🇫🇷', match: /(^|[^a-z])fr([^a-z]|$)/i, fbBudget: 20 },
+        { key: 'RT_EN', lang: 'EN', flag: '🇬🇧', match: /(^|[^a-z])en([^a-z]|$)/i, fbBudget: 20 },
+        { key: 'RT_IT', lang: 'IT', flag: '🇮🇹', match: /(^|[^a-z])it([^a-z]|$)/i, fbBudget: 15 },
+        { key: 'RT_DE', lang: 'DE', flag: '🇩🇪', match: /(^|[^a-z])de([^a-z]|$)/i, fbBudget: 15 },
+        { key: 'RT_ES', lang: 'ES', flag: '🇪🇸', match: /(^|[^a-z])es([^a-z]|$)/i, fbBudget: 15 }
+      ];
+      const isRetgt = a => /retarget/i.test(a.campaign || '') || /retgt/i.test(a.name || '');
+      const retgtAdsets = allAdsets.filter(isRetgt);
+      // Match ClicInscription (event d'optimisation, custom pixel) : best-effort v1, à figer via dbg.actionTypes.
+      const clicRe = /offsite_conversion\.custom|fb_pixel_custom|clicinscription|complete_registration|submit_application/i;
+      const _actAll = {};
+      retgtAdsets.forEach(a => { for (const x of (a.actionsTotal || [])) { const k = x.action_type || '?'; _actAll[k] = (_actAll[k] || 0) + (+x.value || 0); } });
+      const retgtRows = RETGT.map(rt => {
+        const a = retgtAdsets.find(x => rt.match.test(x.name || ''));
+        if (!a) return { key: rt.key, lang: rt.lang, flag: rt.flag, name: 'Retgt \u2013 Florence ' + rt.lang, missing: true, spendTotal: 0, spendToday: 0, dailyBudget: rt.fbBudget, clicInsc: 0, freq7: null, raisedDaysAgo: null, status: '' };
+        const clicInsc = (a.actionsTotal || []).reduce((s, x) => clicRe.test(x.action_type || '') ? s + (+x.value || 0) : s, 0);
+        return {
+          key: rt.key, lang: rt.lang, flag: rt.flag, name: a.name,
+          spendTotal: Math.round(a.spendTotal), spendToday: Math.round(a.spendToday),
+          dailyBudget: a.dailyBudget != null ? Math.round(a.dailyBudget) : rt.fbBudget,
+          clicInsc: Math.round(clicInsc),
+          freq7: a.freq7 != null ? +(+a.freq7).toFixed(1) : null,
+          raisedDaysAgo: daysSince(a.raiseDay),
+          status: /ACTIVE/i.test(a.status || '') ? 'ACTIVE' : (a.status ? 'PAUSED' : '')
+        };
+      });
+      ads.retargeting = {
+        available: retgtAdsets.length > 0,
+        spendTotal: Math.round(retgtAdsets.reduce((s, a) => s + a.spendTotal, 0)),
+        spendToday: Math.round(retgtAdsets.reduce((s, a) => s + a.spendToday, 0)),
+        clicInscTotal: retgtRows.reduce((s, r) => s + r.clicInsc, 0),
+        rows: retgtRows,
+        dbg: { count: retgtAdsets.length, actionTypes: _actAll }
+      };
       ads.byCountry = COUNTRIES.map(co => {
         const ms = pool.filter(a => co.match.test(a.name || ''));
         ms.forEach(a => used.add(a.id));
