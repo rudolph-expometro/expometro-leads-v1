@@ -82,6 +82,7 @@ async function metaSpend() {
   if (!acct || !token) return null;
   const ver = process.env.META_GRAPH_VERSION || 'v21.0';
   const id = String(acct).startsWith('act_') ? acct : 'act_' + acct;
+  let _asBudgetsErr = '';
   // On lit la depense PAR CAMPAGNE (avec objectif) pour ne compter que l'acquisition dans le ROAS.
   async function campaigns(dateQs) {
     let url = `https://graph.facebook.com/${ver}/${id}/insights?access_token=${encodeURIComponent(token)}`
@@ -108,6 +109,9 @@ async function metaSpend() {
     breakdown.sort((a, b) => b.spend - a.spend);
     return { total, acq, breakdown };
   }
+  // Lectures d'OBJETS ad set/campagne (budget + statut) EN PREMIER -> meilleures chances sous le rate-limit Meta (code 17), avant les insights lourds.
+  const asBudgets = await adsetBudgets();
+  const asCampBudgets = await campaignBudgets();
   const todayRows = await campaigns('date_preset=today');
   const totalRows = await campaigns('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   if (todayRows === null && totalRows === null) return null; // pas d'acces -> feature off
@@ -135,7 +139,6 @@ async function metaSpend() {
     if (r === null) r = await adsetInsightsRaw('adset_id,adset_name,campaign_name,spend', dateQs);
     return r;
   }
-  let _asBudgetsErr = '';
   async function adsetBudgets() {
     // filtre = seulement les ad sets vivants (exclut ARCHIVED/DELETED, la masse) -> payload réduit, moins de timeout/rate-limit.
     const filt = encodeURIComponent(JSON.stringify([{ field: 'effective_status', operator: 'IN', value: ['ACTIVE', 'PAUSED', 'ADSET_PAUSED', 'CAMPAIGN_PAUSED', 'PENDING_REVIEW', 'IN_PROCESS', 'WITH_ISSUES', 'PENDING_BILLING_INFO'] }]));
@@ -198,10 +201,7 @@ async function metaSpend() {
   }
   const asTotal = await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: J1, until: todayISO() })));
   const asToday = await adsetInsights('date_preset=today');
-  let asBudgets = await adsetBudgets();
-  if (asBudgets === null) { await new Promise(r => setTimeout(r, 700)); asBudgets = await adsetBudgets(); }   // retry : /adsets échoue parfois (rate-limit) -> sinon tous les statuts tombent en "inconnu"
   const asFreq7 = await adsetInsights('date_preset=last_7d');   // fréquence 7j (retargeting)
-  const asCampBudgets = await campaignBudgets();   // budgets CBO (niveau campagne) + repli statut
   // Dépense par ad set DEPUIS la date de split (pour un ROAS par ring comparable : dépense et CA sur la même fenêtre).
   const asSplit = EN_SPLIT_SINCE ? await adsetInsights('time_range=' + encodeURIComponent(JSON.stringify({ since: EN_SPLIT_SINCE, until: todayISO() }))) : null;
   // --- Depense PAR AD (créa) : ROAS (Purchase ROAS Meta) + leads par créa ---
