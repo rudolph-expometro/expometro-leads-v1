@@ -6,13 +6,22 @@ const UPSTREAM_ORIGIN = 'https://expometro-cae-firenze-2026.espace-de-tr-7258.ch
 const PROXY_PREFIX = `${ROUTE_PATH}/_site`;
 const PROXY_METHODS = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']);
 
+// Override CSS injecté : le site amont affiche « Attribuée » en beige très pâle (#e8e0d0),
+// quasi indistinguable des places « Libre » (blanc). On les rend nettement visibles (or de la marque).
+const STYLE_OVERRIDE = `<style id="cae-attr-fix">
+.slot.cae-slot,.slot.reserved{background:#d6aa62!important;box-shadow:inset 0 0 0 2px #a9781f!important}
+.slot.cae-slot span,.slot.cae-slot small,.slot.reserved span,.slot.reserved small{color:#2c2109!important}
+.legend .reserved{background:#d6aa62!important;border-color:#a9781f!important}
+</style>`;
+
 function transformText(text) {
   return text
     .split(UPSTREAM_ORIGIN).join(PROXY_PREFIX)
     .replace(/(["'`])\/_next\//g, `$1${PROXY_PREFIX}/_next/`)
     .replace(/(["'`])\/assets\//g, `$1${PROXY_PREFIX}/assets/`)
     .replace(/(["'`])\/api\//g, `$1${PROXY_PREFIX}/api/`)
-    .replace(/url\(\/(?!\/)/g, `url(${PROXY_PREFIX}/`);
+    .replace(/url\(\/(?!\/)/g, `url(${PROXY_PREFIX}/`)
+    .replace('</head>', `${STYLE_OVERRIDE}</head>`);   // couleur « Attribuée » lisible (n'affecte que les pages HTML)
 }
 
 function proxyBody(req) {
