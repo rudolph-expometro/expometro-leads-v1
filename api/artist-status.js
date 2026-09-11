@@ -44,11 +44,14 @@ async function stripePayments(email) {
   const key = process.env.STRIPE_API_KEY;
   if (!key || !email) return { ok: false, reason: 'no_key_or_email', charges: [] };
   const H = { Authorization: 'Bearer ' + key };
+  // expand[]=data.refunds : depuis les versions recentes de l'API, charge.refunds n'est PLUS
+  // renvoye par defaut. Sans cette extension, remboursements serait toujours vide — alors que
+  // amount_refunded, lui, est toujours present.
   const esc = String(email).replace(/"/g, '');
 
   try {
     const q = encodeURIComponent(`billing_details.email:"${esc}"`);
-    const r = await fetch(`https://api.stripe.com/v1/charges/search?limit=100&query=${q}`, { headers: H });
+    const r = await fetch(`https://api.stripe.com/v1/charges/search?limit=100&expand[]=data.refunds&query=${q}`, { headers: H });
     if (r.ok) {
       const d = await r.json();
       return { ok: true, via: 'search', charges: d.data || [] };
@@ -65,7 +68,7 @@ async function stripePayments(email) {
       if (ids.length) {
         let out = [];
         for (const cid of ids.slice(0, 5)) {
-          const rr = await fetch(`https://api.stripe.com/v1/charges?limit=100&customer=${cid}`, { headers: H });
+          const rr = await fetch(`https://api.stripe.com/v1/charges?limit=100&expand[]=data.refunds&customer=${cid}`, { headers: H });
           if (rr.ok) { const dd = await rr.json(); out = out.concat(dd.data || []); }
         }
         if (out.length) return { ok: true, via: 'client_stripe', charges: out };
@@ -78,7 +81,7 @@ async function stripePayments(email) {
     const since = Math.floor(new Date(FLORENCE_START + 'T00:00:00Z').getTime() / 1000);
     let out = [], after = null, target = String(email).toLowerCase();
     for (let i = 0; i < 10; i++) {
-      const url = `https://api.stripe.com/v1/charges?limit=100&created[gte]=${since}` + (after ? '&starting_after=' + after : '');
+      const url = `https://api.stripe.com/v1/charges?limit=100&expand[]=data.refunds&created[gte]=${since}` + (after ? '&starting_after=' + after : '');
       const r = await fetch(url, { headers: H });
       if (!r.ok) return { ok: false, reason: 'stripe_' + r.status, charges: [] };
       const d = await r.json();
@@ -162,7 +165,39 @@ async function florenceArtists() {
 // STATUT DE L'OEUVRE, via l'API publique que la page utilise pour sa popup artiste.
 // items non vide  -> au moins une oeuvre validee et exposee publiquement
 // items vide      -> rien de publie (pas encore envoyee OU en attente de validation : indiscernable ici)
-async function artworkStatus(exhibitionId, artistId, posters) {
+/**
+ * L'URL PUBLIQUE d'une oeuvre exposee.
+ *
+ * Trouvee le 08/09/2026 : la page existe deja sur le site, sous la forme
+ *   /XX/exhibition/2026-florence/artwork/<pseudo-en-slug>/<jeton>
+ * Le jeton n'est qu'une commodite : **l'identifiant de l'oeuvre marche a sa place**, et cet
+ * identifiant est deja dans la reponse de l'API par artiste. Le lien est donc calculable
+ * pour tout le monde, sans rien demander au dev.
+ *
+ * Le slug vient du pseudo porte par l'OEUVRE (artist_nickname), pas du nom de la liste des
+ * exposants — les deux different parfois. Regle mesuree : repli ASCII, suppression des
+ * caracteres non alphanumeriques SANS separateur (« angies.artlounge » -> « angiesartlounge »),
+ * espaces en tirets, minuscules. Verifie sur 56 artistes tires au hasard : 56 succes.
+ */
+function slugPseudo(nom) {
+  return String(nom || '')
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')   // e accent aigu -> e
+    .replace(/[^A-Za-z0-9 _-]+/g, '')                    // supprime, ne remplace pas
+    .replace(/[\s_]+/g, '-')
+    .replace(/-{2,}/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
+}
+
+function lienOeuvre(pseudo, idOeuvre, langue) {
+  const slug = slugPseudo(pseudo);
+  if (!slug || !idOeuvre) return null;
+  const xx = /^(en|fr|it|de|es)$/.test(String(langue || '').toLowerCase())
+    ? String(langue).toLowerCase() : 'en';
+  return `https://expometro.co/${xx}/exhibition/2026-florence/artwork/${slug}/${idOeuvre}`;
+}
+
+async function artworkStatus(exhibitionId, artistId, posters, langue) {
   if (!exhibitionId || !artistId) return null;
   try {
     const r = await fetch(`https://expometro.co/api/exhibition/${exhibitionId}/artist/${artistId}/?locale=en`,
@@ -176,10 +211,13 @@ async function artworkStatus(exhibitionId, artistId, posters) {
         // « 2_4-14516.png » -> ligne 2, colonne 4 (format verifie sur des cas reels)
         const coord = String(it.image_urn || '').split('-')[0].split('_');
         const panneau = (posters && posters[it.poster_id]) || {};
+        const pseudo = (it.data && it.data.artist_nickname) || '';
         return {
           titre: (it.data && it.data.artwork_title) || null,
           technique: (it.data && it.data.artwork_medium) || null,
           annee: (it.data && it.data.artwork_year) || null,
+          // Page publique de l'oeuvre : a donner a l'artiste, il ne la connait pas.
+          lien: lienOeuvre(pseudo, it.id, langue),
           emplacement: {
             artwork: panneau.nom || null,
             format: panneau.format || null,
@@ -292,6 +330,17 @@ export async function lookupArtistStatus(email, name) {
       montant: Math.round((c.amount || 0) / 100),
       devise: String(c.currency || '').toUpperCase(),
       rembourse: !!c.refunded,
+      // Le detail du remboursement, pas seulement son existence : permet de confirmer a
+      // l'artiste « le remboursement de 99 € du 7 septembre est parti » au lieu du vague
+      // « il y a eu un remboursement ». Un remboursement PARTIEL se lit ici : montant_rembourse
+      // inferieur au montant, avec rembourse = false cote Stripe.
+      montant_rembourse: Math.round((c.amount_refunded || 0) / 100),
+      remboursements: (((c.refunds && c.refunds.data) || []).map((r) => ({
+        date: r.created ? new Date(r.created * 1000).toISOString().slice(0, 10) : null,
+        montant: Math.round((r.amount || 0) / 100),
+        // 'succeeded' = parti chez la banque. 'pending' = en cours. 'failed' = a refaire.
+        statut: r.status || null
+      }))),
       description: c.description || null,
       // Convention reprise de /api/conversions : tout paiement depuis le 15/07/2026 = Florence.
       florence: new Date(c.created * 1000).toISOString().slice(0, 10) >= FLORENCE_START
@@ -335,7 +384,8 @@ export async function lookupArtistStatus(email, name) {
     if (nomTrouve && nomTrouve.exposant_exact.length === 1) { cible = nomTrouve.exposant_exact[0]; baseCible = 'correspondance de nom exacte'; }
     else if (nomTrouve && !nomDeduit && !nomTrouve.exposant_exact.length && nomTrouve.exposants_probables.length === 1) { cible = nomTrouve.exposants_probables[0]; baseCible = 'nom approchant (un seul candidat)'; }
     if (baseCible && sourceNom) baseCible += ' — nom ' + sourceNom;
-    const oeuvre = cible ? await artworkStatus(expo && expo.exhibitionId, cible.id, expo && expo.posters) : null;
+    const langueArtiste = (brevo && brevo.langue) || 'en';
+    const oeuvre = cible ? await artworkStatus(expo && expo.exhibitionId, cible.id, expo && expo.posters, langueArtiste) : null;
 
     // --- FLORENCE (expo en cours) : repondu en TEMPS REEL, jamais par le snapshot.
     let participeFlorence, sourceFlorence;
@@ -385,6 +435,13 @@ export async function lookupArtistStatus(email, name) {
     if (!brevo.ok) avertissements.push('Brevo injoignable sur cette requete : listes incompletes.');
     if (!artistes) avertissements.push('Liste publique des exposants injoignable : la recherche par nom n\'a pas pu etre faite.');
     if (paiements.some((p) => p.rembourse)) avertissements.push('Au moins un paiement a ete REMBOURSE : verifier avant de confirmer une place.');
+    // Remboursement PARTIEL : Stripe laisse refunded=false, il passerait donc inapercu.
+    if (paiements.some((p) => !p.rembourse && p.montant_rembourse > 0)) {
+      avertissements.push('Remboursement PARTIEL sur un paiement : lire montant_rembourse avant de confirmer un montant.');
+    }
+    if (paiements.some((p) => (p.remboursements || []).some((r) => r.statut === 'pending'))) {
+      avertissements.push('Un remboursement est EN COURS (pending) : ne pas annoncer qu il est arrive, dire qu il est parti.');
+    }
     if (brevo.desabonne) avertissements.push('Contact desabonne des emails marketing Brevo.');
     if (participeFlorence === 'probable' || participeFlorence === 'a_verifier') avertissements.push("Participation a Florence deduite du NOM uniquement (liste publique) : homonyme possible, faire confirmer par l'artiste.");
     avertissements.push(`Base users = snapshot du ${SNAPSHOT_DATE}. Les comptes crees apres cette date n'y sont pas.`);
