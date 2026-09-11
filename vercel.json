@@ -8,22 +8,6 @@
   ],
   "rewrites": [
     {
-      "source": "/_next/:assetPath*",
-      "destination": "/api/cercle-artistes-europeens?assetPath=_next/:assetPath*"
-    },
-    {
-      "source": "/florence/cercledesartisteseuropeens",
-      "destination": "/api/cercle-artistes-europeens"
-    },
-    {
-      "source": "/florence/cercledesartisteseuropeens/",
-      "destination": "/api/cercle-artistes-europeens"
-    },
-    {
-      "source": "/florence/cercledesartisteseuropeens/_site/:assetPath*",
-      "destination": "/api/cercle-artistes-europeens?assetPath=:assetPath*"
-    },
-    {
       "source": "/en/florence",
       "destination": "/florence/index.html"
     },
