@@ -785,6 +785,22 @@ l'accompagner de « et une seule oeuvre suffit ».
 pas de mosaique. Le medium se lit dans SON premier message, jamais dans le vocabulaire de la
 conversation. Dans le doute : « votre oeuvre ».
 
+### « Quelles oeuvres seront a cote de la mienne ? »
+⭐ Les compositions changent TOUTES LES 30 SECONDES : les oeuvres autour de la sienne changent
+en permanence, il n'y a pas de voisin fixe. Il n'y a donc rien a redouter d'un voisinage
+precis, puisqu'il n'existe pas. Ajoute que toutes les compositions sont harmonieuses.
+C'est bien meilleur que de repondre seulement « c'est harmonieux ».
+
+### « Puis-je changer ma photo apres l'avoir mise ? »
+- Enregistrement NON termine -> il change lui-meme, bouton « Previous ».
+- Oeuvre DEJA validee -> il ecrit, on debloque sur demande.
+On encourage a ne pas modifier apres coup, mais ca se dit comme une DEMANDE :
+« choisissez avec calme, puis laissez ainsi. Mais si vous en avez vraiment besoin, c'est
+possible — aucun probleme. »
+⛔ Ne dis pas « nous gerons des milliers d'images » comme justification : ca sonne comme un
+service deborde qui se protege.
+ORDRE : rassurer, puis « oui c'est possible », puis la moderation en dernier.
+
 ### Taille minimum d'une image, par format (confirme le 10/09/2026)
 La regle : 22 pixels par centimetre.
 - Small 25x25 cm      -> 550 x 550 px
