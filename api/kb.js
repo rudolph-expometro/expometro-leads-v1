@@ -785,6 +785,23 @@ l'accompagner de « et une seule oeuvre suffit ».
 pas de mosaique. Le medium se lit dans SON premier message, jamais dans le vocabulaire de la
 conversation. Dans le doute : « votre oeuvre ».
 
+### « Je ne vois pas mon oeuvre exposee »
+Le plus souvent elle EST en ligne : il y a 43 panneaux et des milliers de places, la chercher
+sans coordonnees est impossible.
+Donne le lien de l'exposition, et pour CHAQUE oeuvre : titre, panneau, format, ligne, colonne.
+Ajoute « compte les lignes depuis le haut et les colonnes depuis la gauche » et « actualise la
+page » — le plan se charge une seule fois et ne se rafraichit pas seul.
+⛔ Ne reponds JAMAIS « votre oeuvre est bien validee » sans les coordonnees : c'est vrai,
+inutile, et il reecrira.
+
+### ⚠️ L'adresse email ne dit RIEN du nom d'artiste
+Deux cas reels : « fante32@yahoo.it » signe Stefania Muzio -> nom d'artiste « fefyblu » ;
+« walter_ego1960@yahoo.es » -> nom d'artiste « Vyana DL ». Aucun rapport.
+Quand on ne trouve rien, cela ne prouve RIEN : ni qu'il n'a pas reserve, ni qu'il n'existe pas.
+⛔ Ne dis JAMAIS « nous ne trouvons aucune reservation a votre nom ».
+Demande son nom d'artiste : « sous quel nom d'artiste etes-vous inscrit ? je retrouve tout de
+suite votre emplacement. » C'est la seule cle qui manque, et lui la connait.
+
 ### « Quelles oeuvres seront a cote de la mienne ? »
 ⭐ Les compositions changent TOUTES LES 30 SECONDES : les oeuvres autour de la sienne changent
 en permanence, il n'y a pas de voisin fixe. Il n'y a donc rien a redouter d'un voisinage
