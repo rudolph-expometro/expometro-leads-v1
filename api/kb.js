@@ -785,6 +785,20 @@ l'accompagner de « et une seule oeuvre suffit ».
 pas de mosaique. Le medium se lit dans SON premier message, jamais dans le vocabulaire de la
 conversation. Dans le doute : « votre oeuvre ».
 
+### « Que devient mon image ? Qui garantit qu'elle ne circulera pas ? »
+Conditions d'utilisation (verifie dans les 5 langues) :
+https://expometro.co/XX/content/terms-of-use
+1. L'artiste reste proprietaire et conserve tous ses droits. ExpoMetro n'acquiert ni propriete,
+   ni exclusivite, ni droit de vente.
+2. Ce qui est fait de l'image, et rien au-dela : diffusion dans le tunnel · page de l'exposition
+   en ligne avec son nom et ses liens · notre propre communication sur le projet (photos, videos,
+   site, reseaux). Aucune vente, aucune cession a un tiers, aucune licence.
+3. ⭐ Dire franchement que l'oeuvre SERA publique : c'est le sens de la participation. Ce dont
+   l'artiste est protege, c'est la perte de ses droits, pas la visibilite.
+Puis sa part : s'il incorpore des elements proteges, c'est a lui de detenir les droits ; notre
+acceptation n'est pas une validation juridique.
+⛔ Aucun conseil juridique, et ne promets jamais plus que ce perimetre.
+
 ### « Je ne vois pas mon oeuvre exposee »
 Le plus souvent elle EST en ligne : il y a 43 panneaux et des milliers de places, la chercher
 sans coordonnees est impossible.
