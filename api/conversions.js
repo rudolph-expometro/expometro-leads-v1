@@ -389,25 +389,42 @@ export default async function handler(req, res) {
     // Candidats Brevo (funnel apply-florence / pubs LAL) : total par langue + nouveaux aujourd'hui
     const candidatsByLang = zeroLang(), newCandidatsToday = zeroLang(), candidatsByCountry = {}, candidatsByLangCountry = {}, candidatsByDay = {};
     let candidatsTotal = 0;
-    // --- Split candidat EN en 2 rings (1% = créa en_vX, 1-2% = {{adset.id}}), attribué par UTM_CONTENT, uniquement depuis EN_SPLIT_SINCE ---
+    // --- Split candidat EN en 2 rings (EN 1% vs EN 1-2%), attribué par UTM_CONTENT, uniquement depuis EN_SPLIT_SINCE ---
+    // Convention COMPOSÉE (annonces EN candidatures publiées à partir du 12/09) : utm_content = "<code créa>|<adset.id>"
+    //   -> la partie APRÈS le "|" est l'ID de l'ad set, l'anneau est déduit de son NOM (via l'API Meta).
+    // FALLBACKS historiques (annonces publiées avant) : "en_vX" -> EN 1% ; un adset.id nu ({{adset.id}}) -> EN 1-2%.
     let en12Id = null;
+    const enRingById = {};                                // adset.id -> '1' | '12', déduit du nom de l'ad set
     if (EN_SPLIT_SINCE && spend && Array.isArray(spend.adsets)) {
-      const _a12 = spend.adsets.find(a => /en\s*1-2/i.test(a.name || ''));
-      if (_a12) en12Id = String(_a12.id);
+      for (const a of spend.adsets) {
+        const nm = String(a.name || '');
+        if (/en\s*1-2/i.test(nm))     { enRingById[String(a.id)] = '12'; if (!en12Id) en12Id = String(a.id); }
+        else if (/en\s*1%/i.test(nm)) { enRingById[String(a.id)] = '1'; }
+      }
     }
     const enRing = (cd) => {
       if (!EN_SPLIT_SINCE || !cd || cd.lang !== 'EN' || (cd.created || '') < EN_SPLIT_SINCE) return null;
       const ct = String(cd.content || '');
+      if (ct.indexOf('|') >= 0) {                        // convention composée -> l'ID après le "|" décide
+        return enRingById[ct.slice(ct.lastIndexOf('|') + 1).trim()] || null;
+      }
       if (en12Id && ct === en12Id) return '12';          // 1-2% = tagué avec l'ID de l'ad set
       if (/^en_v\d+/i.test(ct)) return '1';              // 1% = garde ses codes créa en_vX (seul EN LAL à les utiliser après le tag)
       return null;                                        // autre source EN (ManyChat/bio/organique) -> hors rings
     };
+    // Code créa = partie AVANT le "|" (base d'un futur breakdown par créa ; "(non tagué)" pour l'historique sans "|").
+    const enCrea = (cd) => {
+      const ct = String((cd && cd.content) || '');
+      const i = ct.indexOf('|');
+      return i > 0 ? (ct.slice(0, i).trim() || '(non tagué)') : '(non tagué)';
+    };
     const candidatsByRing = { '1': 0, '12': 0 }, revEURCandidatByRing = { '1': 0, '12': 0 }, candidatConvByRing = { '1': 0, '12': 0 };
+    const creaByRing = { '1': {}, '12': {} };             // anneau -> { code créa: nb candidats }
     for (const e in candidats) {
       const cd = candidats[e];
       candidatsByLang[cd.lang] = (candidatsByLang[cd.lang] || 0) + 1;
       candidatsTotal++;
-      { const _r = enRing(cd); if (_r) candidatsByRing[_r]++; }
+      { const _r = enRing(cd); if (_r) { candidatsByRing[_r]++; const _c = enCrea(cd); creaByRing[_r][_c] = (creaByRing[_r][_c] || 0) + 1; } }
       const co = cd.pays || '(inconnu)';
       candidatsByCountry[co] = (candidatsByCountry[co] || 0) + 1;
       const lc = candidatsByLangCountry[cd.lang] || (candidatsByLangCountry[cd.lang] = {});
@@ -710,7 +727,7 @@ export default async function handler(req, res) {
           detail
         };
       });
-      // --- Split du groupe candidat EN en 2 lignes : 1% (créa en_vX) vs 1-2% ({{adset.id}}), fenêtre depuis EN_SPLIT_SINCE ---
+      // --- Split du groupe candidat EN en 2 lignes (EN 1% / EN 1-2%), attribué par UTM_CONTENT, fenêtre depuis EN_SPLIT_SINCE ---
       if (EN_SPLIT_SINCE) {
         const _enIdx = ads.candidatByCountry.findIndex(c => c.key === 'CAND_EN');
         if (_enIdx >= 0) {
@@ -731,6 +748,7 @@ export default async function handler(req, res) {
               convRate: cand > 0 ? +(100 * insc / cand).toFixed(1) : 0,
               roas: spW > 0 ? +(rev / (spW * rr)).toFixed(2) : null,
               adsets: ms.map(a => a.name),
+              creas: Object.keys(creaByRing[ring] || {}).map(c => ({ code: c, candidats: creaByRing[ring][c] })).sort((x, y) => y.candidats - x.candidats),
               lastRaise, raisedDaysAgo: daysSince(lastRaise),
               detail: []
             };
