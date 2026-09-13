@@ -3245,4 +3245,58 @@ Le fond était juste, mais l'artiste doit relire pour retrouver la réponse à c
 
 **Ce que le modèle peut écrire sans les avoir vues :** un remerciement chaleureux pour l'envoi. **Ce qu'il ne peut pas :** décrire, qualifier, juger, ou dire qu'elles conviennent.
 
-**À ne pas confondre avec la règle « jamais de photos par email ».** Celle-ci interdit de **demander** ou de **proposer** l'envoi de photos — le portfolio s'examine via la candidature, et chaque pièce jointe est un email de plus. Elle n'a jamais voulu dire qu'on repousse un artiste qui en envoie de lui-même.`;
+**À ne pas confondre avec la règle « jamais de photos par email ».** Celle-ci interdit de **demander** ou de **proposer** l'envoi de photos — le portfolio s'examine via la candidature, et chaque pièce jointe est un email de plus. Elle n'a jamais voulu dire qu'on repousse un artiste qui en envoie de lui-même.
+
+### 13 septembre 2026 — « Je viens de régler mon inscription » et aucun paiement n'existe
+
+**Le cas.** Philippe Boulinier écrit depuis \`tomtomeiproduction@gmail.com\` : *« Je viens de régler mon inscription. Puis envoyer ma planche d'expo ? »* Aucun paiement, ni sur Stripe ni sur PayPal. Le brouillon a ouvert sur **« félicitations pour votre réservation ! 🎉 »**, expliqué comment enregistrer son visuel, puis annoncé au quatrième paragraphe qu'aucune réservation n'était trouvée. Réponse de l'artiste : *« Je ne comprends pas. Avez-vous bien reçu le règlement ? »* Un aller-retour perdu sur quelqu'un qui essayait d'acheter.
+
+**⛔ Ce que l'artiste dit de son propre paiement n'est pas une vérification.** « Je viens de payer », « c'est réglé », « ma place est prise » : ce sont des **croyances sincères**, pas des faits. Un paiement peut échouer après le clic, sur une page fermée trop tôt, sur une vérification bancaire abandonnée — et l'artiste repart convaincu que c'est fait. **On n'affirme que ce que les systèmes montrent.**
+
+**⛔ Donc : jamais de félicitations sur une réservation non retrouvée.** Ni « félicitations », ni 🎉, ni « votre place est bien réservée », ni la moindre formule qui installe la réservation comme acquise. C'est la première ligne que l'artiste lit ; elle décide de tout ce qu'il comprend ensuite. Après un « félicitations », un « nous ne trouvons aucune réservation » ne se lit plus comme un fait, mais comme un détail administratif — ou comme une contradiction.
+
+**⭐ La règle d'ordre : quand un fait contredit la prémisse de l'artiste, il passe EN PREMIER.** Le brouillon a répondu à la question secondaire — comment envoyer son visuel — avant d'annoncer le fait principal. Tout ce qui précède une mauvaise nouvelle est lu comme une confirmation de la bonne. **On ouvre sur la vérification, on traite le reste après.**
+
+**⭐ Nommer les systèmes vérifiés.** « Nous ne trouvons aucune réservation » se lit « nous avons regardé vite ». **« Nous avons vérifié sur Stripe et sur PayPal »** dit que la recherche a été réelle et complète — et c'est exactement ce que l'artiste demandait en écrivant *« Avez-vous bien reçu le règlement ? »*. Il ne doute pas de notre bonne volonté, il doute qu'on ait cherché.
+
+**⚠️ Mais \`lookupArtistStatus\` ne voit QUE Stripe.** PayPal n'est pas interrogeable par l'outil. Le modèle ne peut donc pas affirmer de lui-même que PayPal a été vérifié : **il écrit la phrase et pose une alerte dans le résumé FR** — *« vérifier PayPal avant d'envoyer »*. Une phrase qui rassure sur une vérification qui n'a pas eu lieu est pire que pas de phrase du tout.
+
+**⭐ Un paiement qui n'est pas passé, ce sont des places qui sont reparties.** L'emplacement n'est tenu que par le paiement. Entre la tentative de l'artiste et notre réponse, d'autres ont réservé. **Le renvoyer vers \`/XX/checkout\` suppose que son panier tient encore** — il peut pointer vers des places qui n'existent plus. On l'envoie sur **la page de l'exposition**, pour choisir dans la disponibilité réelle du moment :
+
+\`https://expometro.co/XX/exhibition/2026-florence\`
+
+Et on le lui dit franchement, sans dramatiser : ses places ont pu être prises, il faut rafraîchir et re-sélectionner. Un artiste qui découvre seul que son emplacement a changé se sent floué ; prévenu, il choisit.
+
+**⚠️ La langue du lien suit la langue de l'artiste.** Le brouillon a donné \`/en/checkout\` à un francophone. Vérification systématique : tout lien d'une réponse française porte \`/fr/\`.
+
+**⭐ Dire « les places que vous aviez sélectionnées dans votre panier », jamais « vos places ».** Nuance apportée par Rudolph le 13 septembre, et elle porte tout le raisonnement de la fiche. **Sans paiement, l'artiste n'a jamais eu de places** — écrire « vos places » lui accorde une réservation qui n'a pas existé, et rend la suite incompréhensible : si elles étaient à lui, pourquoi devrait-il en choisir d'autres ?
+
+Ce qui a réellement existé, c'est **une sélection dans un panier**. C'est vrai, ça ne l'accuse de rien, et ça explique tout seul pourquoi il doit re-sélectionner. **Le panier retient, le paiement réserve** — c'est la phrase à avoir en tête chaque fois qu'on parle à quelqu'un dont la transaction n'est pas allée au bout.
+
+**Le modèle validé par Rudolph le 13 septembre :**
+
+> Bonjour Philippe,
+>
+> Nous avons vérifié sur Stripe et sur Paypal et n'avons trouvé aucun paiement lié à votre email tomtomeiproduction@gmail.com
+>
+> Avez-vous utilisé un autre email ?
+>
+> Si votre paiement n'est pas passé, il se peut que les places que vous aviez sélectionnées dans votre panier aient été déjà réservées par d'autres artistes.
+> Pour cela, je vous invite à rafraîchir la page de l'expo et sélectionner les dernières places disponibles.
+>
+> Voici le lien : https://expometro.co/fr/exhibition/2026-florence
+>
+> À très vite dans le Tunnel de l'Art Immersif !
+>
+> Bien à vous,
+> Rudolph
+> Founder of ExpoMetro
+
+**Ce que la réponse ne fait pas :** elle ne s'excuse pas, elle n'accuse pas l'artiste d'avoir mal payé, elle ne redonne pas le bloc commercial. Il est déjà convaincu — c'est la fiche « Artiste bloqué au paiement » qui s'applique : on règle, on n'argumente pas.
+
+**⛔ « Renouveler votre paiement » ne se dit pas.** Formulation produite par le premier brouillon (et orthographiée *« renouveller »*). On ne renouvelle pas un paiement qui n'a jamais eu lieu. On écrit **« réserver votre place »**, avec le lien.
+
+**À rapprocher :**
+
+- « Artiste BLOQUÉ au paiement » — là, l'artiste **sait** que ça ne passe pas et il est devant son écran ; on le renvoie au checkout, son panier est vivant. Ici il **croit** que c'est fait, du temps a passé, le panier ne vaut plus rien. Même verdict outil, deux réponses opposées.
+- « Deux adresses, deux rôles » et « Demander le nom d'artiste » — la question de l'autre adresse reste obligatoire **avant** de conclure à l'absence de réservation. Ici elle est posée, et c'est bien l'ordre : vérification, question, puis solution.`;
