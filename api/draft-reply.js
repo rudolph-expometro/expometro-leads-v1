@@ -236,6 +236,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         repondre: false,
         briefing: { demande: String(out.demande || 'aucune reponse attendue').slice(0, 300) },
+        modele: MODEL,
         genere_le: new Date().toISOString(),
       });
     }
@@ -264,6 +265,9 @@ export default async function handler(req, res) {
         statut_oeuvre: st.statut_oeuvre,
         langue: st.langue,
       },
+      // Quel modele a REELLEMENT redige. Sans ce champ, un basculement de DRAFT_MODEL ne se
+      // verifie nulle part : on croit tester Opus alors que Sonnet repond toujours.
+      modele: MODEL,
       genere_le: new Date().toISOString(),
     });
   } catch (e) {
