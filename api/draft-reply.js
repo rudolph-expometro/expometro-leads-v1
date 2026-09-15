@@ -17,7 +17,32 @@ import { lookupArtistStatus } from './artist-status.js';
 import { KB_EMAIL, REGLES_EMAIL } from './kb-email.js';
 
 const MODEL = process.env.DRAFT_MODEL || 'claude-sonnet-5';
-const MAX_TOKENS = 4500;   // 3000 tronquait les reponses longues (allemand, blocs complets)
+
+// Le brouillon peut demander une minute sur un modele qui reflechit. Sans cette ligne,
+// Vercel coupe la fonction avant la reponse et le fil part en IA/erreur sans raison lisible.
+export const maxDuration = 60;
+
+// --- PROFIL DU MODELE. Raisonnement et plafond de sortie se decident ENSEMBLE : un modele
+// qui reflechit consomme le budget de sortie, et la lettre revient coupee — ou vide.
+// C'est l'incident qui avait impose thinking:{disabled} ici et dans api/ask.js.
+//
+// Trois cas, choisis par la seule variable d'environnement DRAFT_MODEL :
+//
+//   haiku          le parametre thinking est refuse. 4500 suffisent.
+//   sonnet-5       raisonnement desactivable sans effet de bord. On le desactive. 4500 suffisent.
+//   opus-5 / fable ⚠️ NE JAMAIS le desactiver : raisonnement coupe, ces modeles laissent fuiter
+//                  des balises <thinking> dans le texte VISIBLE — donc dans un email d'artiste,
+//                  et personne ne le verrait avant l'envoi. On le laisse actif, effort 'low'
+//                  (le raisonnement reste court), et on releve le plafond pour qu'il ne mange
+//                  pas la lettre. 12000 laisse la place aux blocs complets en allemand.
+function profilModele(m) {
+  if (/haiku/.test(m)) return { maxTokens: 4500, extra: {} };
+  if (/opus|fable|mythos/.test(m)) {
+    return { maxTokens: 12000, extra: { output_config: { effort: 'low' } } };
+  }
+  return { maxTokens: 4500, extra: { thinking: { type: 'disabled' } } };
+}
+const { maxTokens: MAX_TOKENS, extra: OPTIONS_MODELE } = profilModele(MODEL);
 const MAX_CHARS = 8000;   // par champ, anti-abus
 
 // --- Grille des formats (dimensions et disponibilites, JAMAIS les prix : regle du 5 septembre)
@@ -171,9 +196,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        // Sonnet/Opus reflechissent par defaut : le raisonnement consomme le budget de sortie
-        // et la reponse revient VIDE. Meme correctif que dans api/ask.js. Haiku refuse ce parametre.
-        ...(/haiku/.test(MODEL) ? {} : { thinking: { type: 'disabled' } }),
+        // Raisonnement et plafond viennent du profil du modele — voir profilModele() en tete.
+        ...OPTIONS_MODELE,
         system: [
           { type: 'text', text: stable, cache_control: { type: 'ephemeral', ttl: '1h' } },
         ],
