@@ -3436,6 +3436,8 @@ Le rapprochement de proportions se dit **en mots** (« c'est celui qui se rappro
 
 **L'ouverture a lieu le 28 novembre, premier jour.** C'est désormais un fait affirmable.
 
+**Les jours de la semaine, confirmés par Rudolph le 16 septembre : le 28 novembre 2026 est un SAMEDI, le 29 un DIMANCHE.** Les nommer dans la réponse — « Saturday 28 November », « Sunday 29 November ». Un artiste qui réserve un vol vérifie le jour en même temps que la date, et une erreur à cet endroit décrédibilise tout le reste du message. Un week-end complet est aussi un argument en soi : il n'a pas à poser de congé.
+
 **Le programme de la journée :**
 
 | Heure | Rendez-vous |
@@ -3468,4 +3470,29 @@ Les trois meetups du tunnel servent aux **photos, aux vidéos et aux interviews 
 
 **⭐ LA PHRASE QUI COMPTE POUR QUELQU'UN QUI RÉSERVE UN VOL : « si vous ne pouvez venir qu'un seul jour, venez le 28 ».** Elle découle directement de ce qui précède, et c'est l'information la plus utile qu'on puisse donner à un artiste devant son moteur de réservation. **Ne jamais présenter les deux journées comme équivalentes** : un artiste qui viendrait le 29 seulement manquerait tout le programme officiel, et il l'apprendrait sur place.
 
-**À rapprocher :** « Horaires du meetup, interviews, photos : donner le PROGRAMME » (5 septembre) — cette fiche-ci la met à jour, elle ne l'annule qu'en partie : le lien du programme et le ton chaleureux restent.`;
+**À rapprocher :** « Horaires du meetup, interviews, photos : donner le PROGRAMME » (5 septembre) — cette fiche-ci la met à jour, elle ne l'annule qu'en partie : le lien du programme et le ton chaleureux restent.
+
+### 16 septembre 2026 — ⛔ Une cause unique se nomme en UNE phrase, puis on donne les étapes
+
+**Correction de Rudolph, 16 septembre :** *« je ne comprends rien à ce que tu dis. Cet artiste n'a pas payé sa place. Il faut aller droit au but : la place que vous essayez de réserver est déjà réservée par un autre artiste. => Comment réserver votre place ? 1. Rafraîchissez la page de l'expo… »*
+
+**Le brouillon rejeté** expliquait, dans l'ordre : ce que signifie l'étiquette « Reserviert » sur le plan, où l'artiste peut vérifier elle-même ses factures, comment interpréter une page vide, les étapes de réservation, les champs obligatoires incomplets de son profil, le conseil de ne pas recadrer, et une porte de sortie au cas où elle aurait quand même payé. **Sept sujets. Tous exacts. Illisible.**
+
+**La règle : quand le blocage a UNE cause, elle se dit en UNE phrase, en première ligne. Puis les étapes numérotées. Rien d'autre.**
+
+> Der Platz, den Sie buchen möchten, ist bereits von einer anderen Künstlerin reserviert. Deshalb können Sie dort kein Bild hochladen.
+>
+> **So buchen Sie Ihren Platz :**
+> 1. Seite neu laden … 2. freies Feld anklicken … 3. Buchung abschließen … 4. Foto hochladen …
+
+**⛔ Ce qu'il ne faut PAS ajouter quand la cause est identifiée :**
+
+- **L'explication du mécanisme.** Pourquoi l'étiquette dit ce qu'elle dit n'intéresse pas quelqu'un qui veut réserver.
+- **Une vérification à faire de son côté.** Elle rallonge le chemin et sous-entend qu'on n'est pas sûr.
+- **Les problèmes connexes** — profil incomplet, recadrage — tant qu'ils ne bloquent pas MAINTENANT. Ils viendront s'ils se présentent.
+- **La porte de sortie « et si je me trompais ».** Quand le fait est établi, l'hypothèse de secours affaiblit la réponse.
+- **Les excuses pour la formulation du site.** « C'est missverständlich, vous ne pouviez pas savoir » : personne ne se sentait fautif avant qu'on le dise.
+
+**⭐ Pourquoi la version courte est plus respectueuse, pas moins.** Sept informations exactes obligent l'artiste à trouver seule laquelle la concerne. Une cause et quatre étapes lui rendent sa soirée. **Le volume n'est pas une preuve de sérieux — c'est souvent le contraire : on écrit long quand on n'a pas tranché.**
+
+**À rapprocher :** « Artiste BLOQUÉ au paiement : régler, ne pas repitcher », et *« la réponse est trop lourde, il faut être plus léger et ouvert »* (7 septembre). Même reproche, troisième fois. **Le réflexe à installer : après avoir écrit, compter les sujets. Plus d'un par réponse quand la cause est unique, c'est un de trop.**`;
