@@ -3414,4 +3414,58 @@ Le rapprochement de proportions se dit **en mots** (« c'est celui qui se rappro
 
 **⭐ À quoi servent alors les mesures ?** À **choisir quoi proposer**, jamais à être montrées. Même règle que l'addition d'une fusion et que le prix des formats : on calcule pour décider, on n'affiche pas le calcul. *(Le détail chiffré du cas du 16 septembre est conservé dans la fiche « Pas de sens officiel au plafond » — pour notre usage interne.)*
 
-**À rapprocher :** « Le prix s'applique au format, pas à l'œuvre », « Comparer les proportions, pas seulement les dimensions », et la fiche sur la fusion. Toutes disent la même chose sous un autre angle : **l'artiste décide, nous éclairons.**`;
+**À rapprocher :** « Le prix s'applique au format, pas à l'œuvre », « Comparer les proportions, pas seulement les dimensions », et la fiche sur la fusion. Toutes disent la même chose sous un autre angle : **l'artiste décide, nous éclairons.**
+
+### 16 septembre 2026 — Une mesure ne s'interprète pas sans avoir lu son code
+
+**L'erreur, commise puis corrigée le même jour.** Le journal montrait 48 lignes à exactement 100 % de conservation. Un commentaire du script, écrit le 11 septembre, affirmait : *« un vrai envoi ne fait jamais 100 % — le retour à la ligne du client mail suffit à le faire descendre »*. J'en ai conclu, et annoncé à Rudolph, qu'un paquet de 100 % **signalait une mesure qui ment**.
+
+**C'était faux.** La fonction de comparaison réduit les deux textes à des **sacs de mots** : \`motsDe_\` supprime toute la ponctuation et tous les retours à la ligne avant de compter. **Un retour à la ligne ne peut donc pas faire baisser le score.** Un envoi verbatim fait bel et bien 100 %, et c'est le **meilleur** résultat possible.
+
+**Pourquoi le commentaire de 11 septembre semblait vrai.** Il l'était, ce jour-là : à ce moment toutes les lignes à 100 % venaient du défaut corrigé en v21 — le brouillon comparé à lui-même — et aucun envoi verbatim n'existait encore. **La conclusion était juste, la raison invoquée était fausse.** Une raison fausse survit à la situation qui la rendait inoffensive, et se retourne cinq jours plus tard.
+
+**⭐ La règle : avant d'interpréter un indicateur, lire la fonction qui le calcule.** Pas le commentaire à côté, pas le souvenir qu'on en a — le code. Ici, dix lignes de lecture séparaient « votre meilleur résultat » de « votre mesure est cassée ».
+
+**⛔ Corollaire immédiat : ne jamais relancer \`refaireLesBrouillonsCasses\`.** Elle marque \`NON_FIABLE\` toute ligne à exactement 100 %. Passée aujourd'hui, elle détruirait les 48 meilleurs résultats du journal.
+
+**À rapprocher :** « un tableau de bord qui n'affiche que du succès est un tableau de bord à vérifier » (11 septembre). Les deux fiches sont le même réflexe dans les deux sens — se méfier d'un chiffre trop beau, **et** se méfier de la raison qu'on invoque pour le rejeter.
+
+### 16 septembre 2026 — ⭐ LES HORAIRES DU 28 NOVEMBRE SONT FIXÉS (annule la consigne du 5 septembre)
+
+**Décision de Rudolph, 16 septembre. Ces horaires n'existaient nulle part avant : jusqu'ici la base interdisait d'en annoncer, faute d'en avoir.**
+
+**L'ouverture a lieu le 28 novembre, premier jour.** C'est désormais un fait affirmable.
+
+**Le programme de la journée :**
+
+| Heure | Rendez-vous |
+|---|---|
+| **7 h** | Meetup devant les œuvres, à l'intérieur du tunnel |
+| **10 h** | Meetup devant les œuvres, à l'intérieur du tunnel |
+| **18 h** | Meetup devant les œuvres, à l'intérieur du tunnel |
+| **19 h 30** | Drink Meetup dans un café à quelques minutes à pied de l'exposition |
+
+Les trois meetups du tunnel servent aux **photos, aux vidéos et aux interviews d'artistes**.
+
+**Et on ajoute :** *« nous enverrons un email pour confirmer les horaires et tous les détails »*.
+
+**⚠️ CE QUI CHANGE PAR RAPPORT À LA FICHE DU 5 SEPTEMBRE.** Celle-ci interdisait *« je vous communiquerai les horaires dès qu'ils seront fixés »* — et l'interdiction tient toujours **quand c'est la seule chose qu'on donne**. Le reproche n'a jamais porté sur la phrase : il portait sur le fait que **l'artiste repartait sans rien pour réserver son vol**.
+
+**Donc la règle devient : on donne les horaires, PUIS on annonce l'email de confirmation.** Jamais l'inverse, jamais l'un sans l'autre. La promesse d'email est un complément, pas un substitut.
+
+**⛔ Ne jamais écrire « tous les détails arrivent bientôt » sans les horaires ci-dessus.** C'est la formulation qui laissait l'artiste devant son moteur de réservation sans pouvoir choisir un vol.
+
+**⭐ Pourquoi ces horaires valent de l'or commercial.** Un artiste qui demande les horaires prend un avion : c'est l'engagement le plus fort du corpus, bien au-dessus d'un achat de place. Une réponse qui lui permet de réserver **le jour même** transforme une intention en voyage. Une réponse qui le renvoie à plus tard lui laisse le temps de renoncer.
+
+**Le lien du programme reste dans la réponse** — \`https://artinthe.city/XX/florence#info\` — pour le détail et les mises à jour, mais il ne remplace plus les horaires.
+
+**Le 29 novembre est une journée d'une autre nature — précisé par Rudolph le 16 septembre :**
+
+- **Aucun meetup officiel.** Les quatre rendez-vous ci-dessus sont ceux du 28, et seulement du 28.
+- C'est **une journée supplémentaire pour redécouvrir les œuvres**.
+- **L'équipe est sur place à certains moments** de la journée, pour rencontrer les artistes et interviewer les passants.
+- **Les informations sont communiquées sur nos réseaux sociaux** le jour même, pour se retrouver.
+
+**⭐ LA PHRASE QUI COMPTE POUR QUELQU'UN QUI RÉSERVE UN VOL : « si vous ne pouvez venir qu'un seul jour, venez le 28 ».** Elle découle directement de ce qui précède, et c'est l'information la plus utile qu'on puisse donner à un artiste devant son moteur de réservation. **Ne jamais présenter les deux journées comme équivalentes** : un artiste qui viendrait le 29 seulement manquerait tout le programme officiel, et il l'apprendrait sur place.
+
+**À rapprocher :** « Horaires du meetup, interviews, photos : donner le PROGRAMME » (5 septembre) — cette fiche-ci la met à jour, elle ne l'annule qu'en partie : le lien du programme et le ton chaleureux restent.`;
