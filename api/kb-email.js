@@ -1893,6 +1893,8 @@ Super ! Plus nous sommes nombreux, plus l'événement sera incroyable. Vous ête
 
 Au plaisir de découvrir votre œuvre et peut-être vous rencontrer à Florence. 🇮🇹
 
+N'hésitez pas à m'écrire quand vous voulez.
+
 Rudolph
 Founder of ExpoMetro
 
@@ -2058,6 +2060,8 @@ Fantastic! The more artists who join us, the more special the event will be. You
 The program includes meetups in front of the artworks, group photos, artist interviews, and an informal evening drink near the exhibition — a great opportunity to meet, connect, and enjoy the event together.
 
 I look forward to discovering your artwork and perhaps meeting you in Florence. 🇮🇹
+
+Feel free to contact me anytime.
 
 Rudolph
 Founder of ExpoMetro
@@ -3554,6 +3558,41 @@ Le script l'extrait bien et le transmet dans le champ \`name\`. **Le brouillon n
 
 **⚠️ Ceci lève, pour la clôture seulement, la règle « ne jamais inviter à répondre ».** Celle-ci visait les relances qui rouvrent un dossier réglé. Une formule de politesse finale n'est pas une invitation à rouvrir : c'est la signature d'un fondateur joignable.
 
+**⚠️ LES MODÈLES DE RÉFÉRENCE PORTENT DÉSORMAIS CETTE LIGNE.** Constat du 18 septembre : un brouillon de test s'est terminé sur *« Au plaisir de découvrir votre œuvre et peut-être vous rencontrer à Florence »*, sans la clôture — parce que c'est exactement ainsi que se terminait le modèle français de référence. **Une consigne générale perd toujours contre un modèle validé mot pour mot.** Les modèles FR et EN ont donc été modifiés à la source : « N'hésitez pas à m'écrire quand vous voulez. » / « Feel free to contact me anytime. »
+
 **⚠️ Adapter au cas, sans supprimer.** « Your amazing work » suppose une participation déjà engagée. Pour quelqu'un qui n'a encore rien réservé, garder les deux dernières lignes et remplacer la première par l'envie de découvrir son travail. **Ce qui ne s'omet jamais, c'est la clôture elle-même** — un email qui s'arrête sur une instruction technique se lit comme un ticket fermé.
 
-**À rapprocher :** « une cause, une phrase, puis les étapes » (16 septembre). Les deux fiches ne se contredisent pas : le CORPS va droit au but, la CLÔTURE reste chaleureuse. La brièveté porte sur l'information, jamais sur la relation.`;
+**À rapprocher :** « une cause, une phrase, puis les étapes » (16 septembre). Les deux fiches ne se contredisent pas : le CORPS va droit au but, la CLÔTURE reste chaleureuse. La brièveté porte sur l'information, jamais sur la relation.
+
+### 18 septembre 2026 — ⭐ LES 8 STATUTS D'UNE RÉSERVATION : on sait enfin OÙ l'artiste est bloqué
+
+**Communiqués par Julien le 18 septembre**, avec l'endpoint \`https://expometro.co/api/internal/artist?email=…\` (en-tête \`Authorization: Bearer\`).
+
+**Ce que ça règle.** Jusqu'ici \`statut_oeuvre\` valait \`VALIDEE\` ou \`NON_VALIDEE\`, et \`NON_VALIDEE\` voulait dire *« rien n'est publié, et on ne sait pas pourquoi »* — d'où la consigne de poser la question plutôt que d'accuser l'artiste de n'avoir rien envoyé. **Cette incertitude disparaît : le statut dit l'étape exacte.**
+
+**La liste, telle que donnée par Julien :**
+
+\`waiting_image\` · \`waiting_crop\` · \`waiting_info\` · \`waiting_submit\` · \`image_invalid\` · \`processing_validation\` · \`validated\` · \`deleted\`
+
+**Le parcours, et ce qu'on dit à l'artiste :**
+
+| Statut | Où il en est | Ce qu'on lui dit |
+|---|---|---|
+| \`waiting_image\` | Place payée, **aucune image envoyée** | Le lien Mes Œuvres, et le rappel : ne pas recadrer avant, envoyer le plus grand fichier |
+| \`waiting_crop\` | Image reçue, **recadrage non fait** | Il doit rouvrir l'œuvre et terminer le cadrage — c'est là que se trouve le bouton « Previous » |
+| \`waiting_info\` | Recadrage fait, **titre / description / liens manquants** | Compléter les informations de l'œuvre ; c'est court et ça débloque |
+| \`waiting_submit\` | Tout est rempli, **pas validé par lui** | Il reste un bouton à cliquer — le cas le plus frustrant, si près du but |
+| \`image_invalid\` | **Image refusée** | ⚠️ Comprendre POURQUOI avant d'écrire : fichier trop petit ou contenu non exposable ne se répondent pas pareil |
+| \`processing_validation\` | Envoyé, **en attente de notre validation** | Rien à faire de son côté. Le rassurer : c'est chez nous |
+| \`validated\` | **En ligne** | Féliciter, donner le lien de ses œuvres |
+| \`deleted\` | Réservation supprimée | Ne rien affirmer sans avoir compris. Demander à Rudolph |
+
+**⭐ CE QUE ÇA CHANGE VRAIMENT : on arrête de demander « où êtes-vous bloqué ? ».** C'était jusqu'ici l'aller-retour obligatoire sur tous les cas d'enregistrement. On peut désormais **nommer l'étape** et donner le geste exact. Un email au lieu de trois.
+
+**⛔ Et on n'écrit plus « je ne trouve aucune œuvre »** à quelqu'un qui est en \`waiting_crop\` : son image est bien là, c'est le cadrage qui n'a pas abouti. Cette formulation, appliquée à un artiste qui a téléversé, lui fait croire que son envoi s'est perdu.
+
+**⚠️ Les quatre statuts intermédiaires sont une LECTURE, pas une définition de Julien.** \`waiting_crop\`, \`waiting_info\`, \`waiting_submit\` et surtout \`image_invalid\` sont interprétés d'après leur nom. **À confirmer avec lui**, en particulier : \`image_invalid\` recouvre-t-il le fichier trop petit, le contenu non exposable, ou les deux ? Les réponses à donner sont opposées.
+
+**⚠️ \`order.amount\` ne dit PAS si l'artiste a payé.** Mesuré le 18 septembre : la plupart des réservations \`validated\` d'un artiste historique affichent \`0\`, une affiche \`null\` avec \`currency\` et \`date\` à \`null\`. **Le signal fiable est l'existence de la réservation et son \`status\`**, jamais le montant.
+
+**À rapprocher :** « L'absence de la liste publique ne prouve rien » (17 septembre) — cet endpoint remplace cette béquille. Et « l'adresse email ne dit rien du nom d'artiste » (12 septembre) : le champ \`nickname\` répond enfin à la question, sans avoir à la poser à l'artiste.`;
